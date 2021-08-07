@@ -45,7 +45,7 @@ pipelines:
               - npm test
               - npm run build
             artifacts:
-              - build/**
+              - out/**
         - step:
             name: Security Scan
             script:

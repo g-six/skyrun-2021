@@ -1,8 +1,12 @@
 import Head from 'next/head'
-import Link from 'next/link'
+import { NextPage } from 'next'
 import styles from '../styles/Index.module.scss'
 
-export default function Home() {
+interface Props {
+    user_agent?: string
+}
+
+const Login: NextPage<Props> = ({ user_agent }) => {
     return (
         <div className={styles.container}>
             <Head>
@@ -15,13 +19,11 @@ export default function Home() {
             </Head>
 
             <main className={styles.main}>
-                <h1 className={styles.title}>
-                    Welcome to <Link href="/">Always On Time</Link>
-                </h1>
+                <h1 className={styles.title}>Login</h1>
 
                 <p className={styles.description}>
-                    Edit this page
-                    <code className={styles.code}>pages/index.tsx</code>
+                    Your user agent
+                    <code className={styles.code}>{ user_agent }</code>
                 </p>
 
                 <div className={styles.grid}>
@@ -82,3 +84,10 @@ export default function Home() {
         </div>
     )
 }
+
+Login.getInitialProps = async ({ req }) => {
+    const user_agent = req ? req.headers['user-agent'] : navigator.userAgent
+    return { user_agent }
+}
+
+export default Login

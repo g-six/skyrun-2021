@@ -1,8 +1,12 @@
+import { NextPage } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
 import styles from '../styles/Index.module.scss'
 
-export default function Home() {
+interface Props {
+    user_agent?: string
+}
+const Home: NextPage<Props> = ({ user_agent }) => {
     return (
         <div className={styles.container}>
             <Head>
@@ -82,3 +86,4 @@ export default function Home() {
         </div>
     )
 }
+export default Home

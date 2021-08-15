@@ -86,6 +86,7 @@ pipelines:
                   AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
                   AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
                   DISTRIBUTION_ID: $DISTRIBUTION_ID
+      - parallel:
         - step:
             name: Deploy to Staging
             deployment: Staging

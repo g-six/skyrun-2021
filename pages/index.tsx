@@ -1,89 +1,66 @@
-import { NextPage } from 'next'
+import type { NextPage } from 'next'
 import Head from 'next/head'
-import Link from 'next/link'
-import styles from '../styles/Index.module.scss'
+import Image from 'next/image'
+import Navbar, {
+    NavigationItem,
+    Props as NavbarProps,
+} from '../components/Navbar'
+import styles from '../styles/Home.module.scss'
+import LandingHero, { Props as LandingHeroProps } from './Landing/hero'
 
-interface Props {
-    user_agent?: string
-}
-const Home: NextPage<Props> = ({ user_agent }) => {
+const Home: NextPage = () => {
+    const hero_props: LandingHeroProps = {
+        title_left: 'On time, ',
+        title_right: 'Always',
+        subtitle: 'Connecting with your customers',
+        button_label: 'View Plans',
+    }
+    const navbar_props: NavbarProps = {
+        current: NavigationItem.menu_1,
+        nav_labels: {
+            menu_1: 'Industries',
+            menu_2: 'Features',
+        },
+    }
     return (
-        <div className={styles.container}>
+        <div>
             <Head>
-                <title>Skywalk Front-end | NextTs</title>
+                <title>
+                    Nerubia | Your Software as a Solution development
+                    partner
+                </title>
                 <meta
-                    name='description'
-                    content='Skywalk Front-end | NextTs'
+                    name="description"
+                    content="Skyrun - A Nerubia base code"
                 />
-                <link rel='icon' href='/favicon.ico' />
+                <link rel="icon" href="/favicon.ico" />
             </Head>
+            <Navbar {...navbar_props} />
 
-            <main className={styles.main}>
-                <h1 className={styles.title}>
-                    Welcome to <Link href="/">Always On Time</Link>
-                </h1>
+            <LandingHero {...hero_props} />
 
-                <p className={styles.description}>
-                    Edit this page
-                    <code className={styles.code}>pages/index.tsx</code>
-                </p>
+            <main className="container mx-auto">
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div className="lg:col-span-1 lg:col-start-2">
+                        <h1 className="mt-20 mb-10 lg:mb-5 text-purple-900 text-5xl font-extrabold leading-none tracking-tight">
+                            Anim aute id magna aliqua ad.
+                        </h1>
 
-                <div className={styles.grid}>
-                    <a
-                        href='https://bitbucket.org/Greg_AOT/aot_backend'
-                        className={styles.card}
-                    >
-                        <h2>Documentation &rarr;</h2>
-                        <p>
-                            Link to the AOT API <br/>Documentation
+                        <p className="text-regal-blue">
+                            Anim aute id magna aliqua ad ad non deserunt
+                            sunt. Qui irure qui lorem cupidatat commodo.
+                            Elit sunt amet fugiat veniam occaecat fugiat
+                            aliqua.
                         </p>
-                    </a>
+                    </div>
 
-                    <a
-                        href='https://nextjs.org/learn'
-                        className={styles.card}
-                    >
-                        <h2>Learn NextJs &rarr;</h2>
-                        <p>
-                            Learn about the framework &ldquo;Next.js&rdquo;
-                        </p>
-                    </a>
-
-                    <a
-                        href='https://www.telerik.com/kendo-ui'
-                        className={styles.card}
-                    >
-                        <h2>Learn KendoUI &rarr;</h2>
-                        <p>
-                            Discover KendoUI.<br />&nbsp;
-                            <br />&nbsp;
-                            <br />&nbsp;
-                        </p>
-                    </a>
-
-                    <div
-                        className={styles.card}
-                    >
-                        <h2>Demo App &rarr;</h2>
-                        <p>
-                            Check this out!<br />&nbsp;
-                            <br />&nbsp;
-                            <input name="TextToSynth" type="text" />
-                        </p>
+                    <div className="mt-20">
+                        <div className={styles.vectorA} />
                     </div>
                 </div>
             </main>
-
-            <footer className={styles.footer}>
-                <a
-                    href='https://www.nerubia.com/'
-                    target='_blank'
-                    rel='noopener noreferrer'
-                >
-                    Powered by&nbsp;<strong>NERUBIA</strong>
-                </a>
-            </footer>
         </div>
     )
 }
+
 export default Home

@@ -1,0 +1,33 @@
+button.primary {
+    background: linear-gradient(20deg, #E543FF 3.35%, #6A2EC1 51.38%, #2342C0 97.44%);
+    border-radius: 200px;
+    color: #fff;
+    overflow: hidden;
+    position: relative;
+    min-width: 100px;
+    span {
+        padding: 8px 16px;
+        display: block;
+        position: relative;
+    }
+
+    &::before {
+        background: linear-gradient(190deg, #E543FF 3.35%, #6A2EC1 51.38%, #2342C0 97.44%);
+        content: " ";
+        display: inline-block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        opacity: 0;
+        transition-property: all;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 750ms;
+    }
+    &:hover {
+        &::before {
+            opacity: 1;
+        }
+    }
+}

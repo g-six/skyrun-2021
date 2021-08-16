@@ -67,7 +67,8 @@ export default function Navbar({ current, nav_labels }: Props) {
                                         <img
                                             src="https://tailwindui.com/img/logos/workflow-logo-indigo-500-mark-white-text.svg"
                                             alt="Workflow"
-                                            layout="fill"
+                                            height="24"
+                                            width="24"
                                         />
                                     </div>
                                 </div>

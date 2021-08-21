@@ -2,7 +2,7 @@ import { CognitoIdentityProviderClient, RevokeTokenCommand, RevokeTokenCommandIn
 import { CredentialProvider } from '@aws-sdk/types'
 import Cookies from 'js-cookie'
 
-async function logout(data: CognitoIdentityProviderClientConfig) {
+async function logout(data: Record<string, string>) {
     const {
         region,
         ClientId,

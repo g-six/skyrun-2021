@@ -1,4 +1,3 @@
-import { NextPage } from 'next'
 import signUp from 'services/UserPool'
 import { LockClosedIcon, RefreshIcon } from '@heroicons/react/outline'
 import { useForm, SubmitHandler } from 'react-hook-form'
@@ -263,7 +262,7 @@ function SignUpForm({ region, ClientId, onSuccess }: LoginPageProps) {
     )
 }
 
-const Signup: NextPage = (props: LoginPageProps) => {
+function Signup(props: LoginPageProps) {
     const [dialog_state, setDialog] = useState(false)
     const toggleDialog = () => {
         setDialog(!dialog_state)

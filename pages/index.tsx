@@ -1,4 +1,3 @@
-import type { NextPage } from 'next'
 import Head from 'next/head'
 import Navbar, {
     NavigationItem,
@@ -11,7 +10,8 @@ interface HomePageProps {
     region: string
     ClientId: string
 }
-const Home: NextPage = ({ region, ClientId }: HomePageProps) => {
+
+function Home({ region, ClientId }: HomePageProps) {
     const hero_props: LandingHeroProps = {
         title_left: 'On time, ',
         title_right: 'Always',

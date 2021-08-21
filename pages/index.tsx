@@ -7,7 +7,11 @@ import Navbar, {
 import styles from '../styles/Home.module.scss'
 import LandingHero, { Props as LandingHeroProps } from './Landing/hero'
 
-const Home: NextPage = () => {
+interface HomePageProps {
+    region: string
+    ClientId: string
+}
+const Home: NextPage = ({ region, ClientId }: HomePageProps) => {
     const hero_props: LandingHeroProps = {
         title_left: 'On time, ',
         title_right: 'Always',
@@ -16,6 +20,8 @@ const Home: NextPage = () => {
     }
     const navbar_props: NavbarProps = {
         current: NavigationItem.menu_1,
+        region,
+        ClientId,
         nav_labels: {
             menu_1: 'Industries',
             menu_2: 'Features',
@@ -60,6 +66,15 @@ const Home: NextPage = () => {
             </main>
         </div>
     )
+}
+
+export async function getStaticProps() {
+    return {
+        props: {
+            region: process.env.COGNITO_REGION,
+            ClientId: process.env.COGNITO_CLIENT_ID,
+        },
+    }
 }
 
 export default Home

@@ -46,9 +46,15 @@ function SignUpForm({ region, ClientId, onSuccess }: LoginPageProps) {
                 reset()
             }
         } catch (e) {
-            if (e.name == CognitoErrorTypes.UserExistsException) {
+            let message = e.message
+            if (e.name == CognitoErrorTypes.InvalidPasswordException) {
+                setError('password', {
+                    type: e.name,
+                    message,
+                })
+            } else if (e.name == CognitoErrorTypes.UserExistsException) {
                 setError('email', {
-                    type: CognitoErrorTypes.UserExistsException,
+                    type: e.name,
                     message: 'User already exists',
                 })
             }
@@ -207,6 +213,11 @@ function SignUpForm({ region, ClientId, onSuccess }: LoginPageProps) {
                                 <span className="text-sm text-red-700">
                                     Password should have at least 8
                                     alpha-numeric
+                                </span>
+                            )}
+                            {errors.password?.type === CognitoErrorTypes.InvalidPasswordException && (
+                                <span className="text-sm text-red-700">
+                                    {errors.password?.message}
                                 </span>
                             )}
                         </div>

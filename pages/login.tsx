@@ -1,9 +1,10 @@
+import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { LockClosedIcon } from '@heroicons/react/outline'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { CognitoErrorTypes } from 'services/CognitoErrorTypes'
 import { classNames } from 'utils/dom-helpers'
-import { useEffect, useState } from 'react'
 import login from 'services/login'
 
 interface LoginPageProps {
@@ -179,6 +180,32 @@ function Login(props: LoginPageProps) {
                                         </span>
                                     )}
                                 </div>
+
+
+                                <div className="col-span-6 hidden">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center">
+                                            <input
+                                                id="remember-me"
+                                                name="remember-me"
+                                                type="checkbox"
+                                                className={
+                                                    classNames('h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded')
+                                                }
+                                            />
+                                            <label htmlFor="remember-be" className="ml-2 block text-sm text-gray-900">
+                                                Remember me
+                                            </label>
+                                        </div>
+
+                                        <div className="text-sm">
+                                            <Link passHref href="#">
+                                                <a className="font-medium text-indigo-600 hover:text-indigo-500">Forgot your password?</a>
+                                            </Link>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div className="col-span-6">
                                     {Object.values(CognitoErrorTypes).includes(errors.email?.type as CognitoErrorTypes) ? (
                                         <div className="bg-red-100 rounded px-3 py-1 mb-5">

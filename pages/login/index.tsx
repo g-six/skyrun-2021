@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import { LockClosedIcon } from '@heroicons/react/outline'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { CognitoErrorTypes } from 'services/CognitoErrorTypes'
@@ -18,7 +17,6 @@ type FormValues = {
 }
 
 function Login(props: LoginPageProps) {
-    const router = useRouter()
     const [loading, toggleLoading] = useState(true)
     const [mounted, setMounted] = useState(false)
     const {
@@ -35,6 +33,7 @@ function Login(props: LoginPageProps) {
         setMounted(true)
         toggleLoading(false)
     }, [])
+
 
     const onSubmit: SubmitHandler<FormValues> = async (
         data: Record<string, string>

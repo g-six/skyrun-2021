@@ -215,7 +215,8 @@ function SignUpForm({ region, ClientId, onSuccess }: LoginPageProps) {
                                     alpha-numeric
                                 </span>
                             )}
-                            {errors.password?.type === CognitoErrorTypes.InvalidPasswordException && (
+                            {errors.password?.type ===
+                                CognitoErrorTypes.InvalidPasswordException && (
                                 <span className="text-sm text-red-700">
                                     {errors.password?.message}
                                 </span>

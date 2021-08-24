@@ -34,7 +34,6 @@ function Login(props: LoginPageProps) {
         toggleLoading(false)
     }, [])
 
-
     const onSubmit: SubmitHandler<FormValues> = async (
         data: Record<string, string>
     ) => {
@@ -180,7 +179,6 @@ function Login(props: LoginPageProps) {
                                     )}
                                 </div>
 
-
                                 <div className="col-span-6 hidden">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center">
@@ -188,28 +186,37 @@ function Login(props: LoginPageProps) {
                                                 id="remember-me"
                                                 name="remember-me"
                                                 type="checkbox"
-                                                className={
-                                                    classNames('h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded')
-                                                }
+                                                className={classNames(
+                                                    'h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded'
+                                                )}
                                             />
-                                            <label htmlFor="remember-be" className="ml-2 block text-sm text-gray-900">
+                                            <label
+                                                htmlFor="remember-be"
+                                                className="ml-2 block text-sm text-gray-900"
+                                            >
                                                 Remember me
                                             </label>
                                         </div>
 
                                         <div className="text-sm">
                                             <Link passHref href="#">
-                                                <a className="font-medium text-indigo-600 hover:text-indigo-500">Forgot your password?</a>
+                                                <a className="font-medium text-indigo-600 hover:text-indigo-500">
+                                                    Forgot your password?
+                                                </a>
                                             </Link>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div className="col-span-6">
-                                    {Object.values(CognitoErrorTypes).includes(errors.email?.type as CognitoErrorTypes) ? (
+                                    {Object.values(
+                                        CognitoErrorTypes
+                                    ).includes(
+                                        errors.email
+                                            ?.type as CognitoErrorTypes
+                                    ) ? (
                                         <div className="bg-red-100 rounded px-3 py-1 mb-5">
-                                            {
-                                                errors.email?.message && (
+                                            {errors.email?.message && (
                                                 <span className="text-sm text-red-700">
                                                     {errors.email?.message}
                                                 </span>

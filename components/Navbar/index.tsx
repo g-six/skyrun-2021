@@ -200,7 +200,9 @@ export default function Navbar({
                                                 <Menu.Item>
                                                     {({ active }) => (
                                                         <button
-                                                            onClick={killSession}
+                                                            onClick={
+                                                                killSession
+                                                            }
                                                             className={classNames(
                                                                 active
                                                                     ? 'bg-gray-200'

@@ -16,7 +16,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     const [is_mounted, setMounted] = useState(false)
     const [is_fetching, setFetching] = useState(true)
     const [context, setContext] = useState(SkyContext)
-    const [blur, removeBlur] = useState(true)
+    const [blur, setBlur] = useState(true)
 
     const onLanguageChange = useCallback(
         (event) => {
@@ -46,9 +46,9 @@ function MyApp({ Component, pageProps }: AppProps) {
             setTimeout(() => {
                 setMounted(true)
                 setTimeout(() => {
-                    removeBlur(true)
-                }, 510)
-            }, 2500)
+                    setBlur(false)
+                }, 310)
+            }, 600)
         }
         if (is_fetching) getProfile()
         setFetching(false)

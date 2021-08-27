@@ -35,15 +35,19 @@ function Dashboard({ region, ClientId, children }: DashboardPageProps) {
                             themeColor="inherit"
                         >
                             <AppBarSection className="flex-grow">
-                                <h1 className="font-3xl font-bold text-gray-700">
-                                    Welcome, {ctx.first_name}!
-                                </h1>
+                                {
+                                    ctx.first_name
+                                        ? <h1 className="font-3xl font-bold text-gray-700">
+                                            Welcome, {ctx.first_name}!
+                                        </h1>
+                                        : ''
+                                }
                             </AppBarSection>
                             <AppBarSection>
                                 <span className="k-appbar-separator"></span>
                             </AppBarSection>
                             <AppBarSection className="actions">
-                                <span>{ctx.uuid}</span>
+                                {ctx.uuid ? <span>{ctx.uuid}</span> : ''}
                             </AppBarSection>
                         </AppBar>
                         {children}

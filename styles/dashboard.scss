@@ -1,0 +1,20 @@
+.k-drawer {
+    .k-drawer-item[role="option"] {
+        color: $primary;
+        transition-property: background-color, border-color, color, fill, stroke;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 350ms;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+
+        &:active,
+        &:hover,
+        &.k-state-selected,
+        &:focus {
+            background-color: transparentize($color: #312E81, $amount: 0.9);
+        }
+        &:hover {
+            background-color: transparentize($color: #312E81, $amount: 0.85);
+        }
+    }
+}

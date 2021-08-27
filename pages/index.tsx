@@ -3,10 +3,11 @@ import Navbar, {
     NavigationItem,
     Props as NavbarProps,
 } from '../components/Navbar'
+import Footer from '../components/Footer'
 import styles from '../styles/Home.module.scss'
 import LandingHero, { Props as LandingHeroProps } from './Landing/hero'
 
-interface HomePageProps {
+export interface HomePageProps {
     region: string
     ClientId: string
 }
@@ -64,6 +65,7 @@ function Home({ region, ClientId }: HomePageProps) {
                     </div>
                 </div>
             </main>
+            <Footer />
         </div>
     )
 }

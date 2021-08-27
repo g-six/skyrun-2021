@@ -47,8 +47,8 @@ function MyApp({ Component, pageProps }: AppProps) {
                 setMounted(true)
                 setTimeout(() => {
                     setBlur(false)
-                }, 510)
-            }, 2500)
+                }, 310)
+            }, 600)
         }
         if (is_fetching) getProfile()
         setFetching(false)

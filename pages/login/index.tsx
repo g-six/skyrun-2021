@@ -46,7 +46,7 @@ function Login(props: LoginPageProps) {
             })
 
             if (res.AuthenticationResult) {
-                const { AccessToken, ExpiresIn, RefreshToken } =
+                const { IdToken, AccessToken, ExpiresIn, RefreshToken } =
                     res.AuthenticationResult
                 document.cookie = `email=${
                     data.email
@@ -55,6 +55,7 @@ function Login(props: LoginPageProps) {
                     ExpiresIn
                 )}`
                 document.cookie = `refresh_token=${RefreshToken}; path=/`
+                document.cookie = `id_token=${IdToken}; path=/`
                 reset()
                 document.location.href = '/'
             }

@@ -4,21 +4,19 @@ import { LockClosedIcon } from '@heroicons/react/outline'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { CognitoErrorTypes } from 'services/CognitoErrorTypes'
 import { classNames } from 'utils/dom-helpers'
-import login from 'services/login'
-
-interface LoginPageProps {
-    region: string
-    ClientId: string
-}
+import login, { LoginModel } from 'services/login'
+import { useContext } from 'react'
+import SkyContext from 'context/AppContext'
 
 type FormValues = {
     email: string
     password: string
 }
 
-function Login(props: LoginPageProps) {
+function Login() {
     const [loading, toggleLoading] = useState(true)
     const [mounted, setMounted] = useState(false)
+    const { region, client_id } = useContext(SkyContext)
     const {
         register,
         handleSubmit,
@@ -35,15 +33,11 @@ function Login(props: LoginPageProps) {
     }, [])
 
     const onSubmit: SubmitHandler<FormValues> = async (
-        data: Record<string, string>
+        data: LoginModel
     ) => {
         toggleLoading(true)
         try {
-            const res = await login({
-                ...data,
-                region: props.region,
-                ClientId: props.ClientId,
-            })
+            const res = await login(data, region, client_id)
 
             if (res.AuthenticationResult) {
                 const { IdToken, AccessToken, ExpiresIn, RefreshToken } =
@@ -278,15 +272,6 @@ function Login(props: LoginPageProps) {
             </div>
         </div>
     )
-}
-
-export async function getStaticProps() {
-    return {
-        props: {
-            region: process.env.COGNITO_REGION,
-            ClientId: process.env.COGNITO_CLIENT_ID,
-        },
-    }
 }
 
 export default Login

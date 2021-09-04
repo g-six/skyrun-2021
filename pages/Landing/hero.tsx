@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import styles from '../../styles/Landing/hero.module.scss'
 export interface Props {
     title_left: string

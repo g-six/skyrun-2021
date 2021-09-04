@@ -5,9 +5,10 @@ import {
     DrawerContent,
     DrawerSelectEvent,
 } from '@progress/kendo-react-layout'
-import logout from 'services/logout'
+import LoginModal from 'components/Modals/Login'
 import { classNames } from 'utils/dom-helpers'
 import { UserModel } from 'services/profile'
+import { useAuth } from 'context/AuthContext'
 
 type SidebarItem = {
     text?: string
@@ -18,11 +19,14 @@ type SidebarItem = {
 }
 interface Props {
     children?: ReactElement[] | string
-    region: string
-    ClientId: string
     user?: UserModel
 }
 const items: SidebarItem[] = [
+    {
+        text: '',
+        icon: 'logo-icon w-32 h-12 bg-no-repeat bg-cover duration-400 ease-linear transition-all',
+        route: '/',
+    },
     { text: 'Home', icon: 'feather-sidebar', route: '/dashboard' },
     {
         text: 'Calendar',
@@ -76,9 +80,10 @@ const items: SidebarItem[] = [
     },
 ]
 
-function Sidebar({ children, region, ClientId, user }: Props) {
+function Sidebar({ children, user }: Props) {
     const router = useRouter()
     const [expanded, setExpanded] = useState(false)
+    const ctx = useAuth()
     const handleClick = (e: MouseEvent) => {
         e.preventDefault()
         setExpanded(!expanded)
@@ -106,10 +111,14 @@ function Sidebar({ children, region, ClientId, user }: Props) {
                 mini={true}
                 onSelect={onSelect}
                 position={'start'}
-                items={items.map((item) => ({
-                    ...item,
-                    selected: item.text === selected,
-                }))}
+                items={
+                    ctx.user?.uuid
+                        ? items.map((item) => ({
+                              ...item,
+                              selected: item.text === selected,
+                          }))
+                        : []
+                }
             >
                 <DrawerContent>
                     {children}
@@ -119,7 +128,7 @@ function Sidebar({ children, region, ClientId, user }: Props) {
                             expanded
                                 ? 'left-56 shadow-xl border-r border-indigo-50 hover:text-indigo-700 rounded-full'
                                 : 'left-2 hover:bg-indigo-900 hover:bg-opacity-10 rounded-lg',
-                            'duration-400 ease-in-out transition-all'
+                            'duration-400 ease-linear transition-all'
                         )}
                         id="BtnExpandSidebar"
                         onClick={handleClick}
@@ -135,15 +144,16 @@ function Sidebar({ children, region, ClientId, user }: Props) {
                     <button
                         className={classNames(
                             'btn-logout absolute bottom-16 left-2 w-9 h-9 rounded-lg',
-                            'duration-400 ease-in-out transition-all',
+                            'duration-400 ease-linear transition-all',
                             'hover:bg-indigo-900 hover:bg-opacity-10'
                         )}
-                        onClick={() => logout({ region, ClientId })}
+                        onClick={ctx.logout}
                     >
                         <span className="feather-unlock"></span>
                     </button>
                 </DrawerContent>
             </Drawer>
+            <LoginModal />
         </>
     )
 }

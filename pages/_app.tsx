@@ -3,19 +3,20 @@ import type { AppProps } from 'next/app'
 import dynamic from 'next/dynamic'
 import '../styles/globals.scss'
 import SkyContext from '../context/AppContext'
-import profile, { UserModel } from 'services/profile'
 import { classNames } from 'utils/dom-helpers'
+import { SkyAuthProvider } from 'context/AuthContext'
 
-const GridSpinner = dynamic(
-    () => import('components/Spinners/grid'),
-    { ssr: false }
-)
+const GridSpinner = dynamic(() => import('components/Spinners/grid'), {
+    ssr: false,
+})
 
 function MyApp({ Component, pageProps }: AppProps) {
     SkyContext.displayName = 'AppContext'
     const [is_mounted, setMounted] = useState(false)
     const [is_fetching, setFetching] = useState(true)
-    const [context, setContext] = useState(SkyContext)
+    const [context, setContext] = useState({
+        locale_id: '',
+    })
     const [blur, setBlur] = useState(true)
 
     const onLanguageChange = useCallback(
@@ -31,18 +32,6 @@ function MyApp({ Component, pageProps }: AppProps) {
 
     useEffect(() => {
         async function getProfile() {
-            const results: UserModel = await profile(
-                pageProps.region,
-                pageProps.ClientId
-            )
-            const ctx = {
-                ...context,
-                first_name: results.given_name,
-                last_name: results.family_name,
-                uuid: results.uuid,
-            }
-
-            setContext(ctx)
             setTimeout(() => {
                 setMounted(true)
                 setTimeout(() => {
@@ -50,13 +39,17 @@ function MyApp({ Component, pageProps }: AppProps) {
                 }, 310)
             }, 600)
         }
-        if (is_fetching) getProfile()
+
+        if (is_fetching) {
+            getProfile()
+        }
+
         setFetching(false)
-    }, [is_fetching, context, pageProps])
+    }, [is_fetching, context])
 
     return (
-        <>
-            <SkyContext.Provider value={context}>
+        <SkyContext.Provider value={[context, setContext]}>
+            <SkyAuthProvider>
                 {blur ? (
                     <div
                         className={classNames(
@@ -81,8 +74,8 @@ function MyApp({ Component, pageProps }: AppProps) {
                     {...pageProps}
                     onLanguageChange={onLanguageChange}
                 />
-            </SkyContext.Provider>
-        </>
+            </SkyAuthProvider>
+        </SkyContext.Provider>
     )
 }
 
@@ -90,8 +83,8 @@ export async function getStaticProps() {
     return {
         props: {
             region: process.env.COGNITO_REGION,
-            ClientId: process.env.COGNITO_CLIENT_ID,
-        },
+            client_id: process.env.COGNITO_CLIENT_ID,
+        } as CognitoProps,
     }
 }
 

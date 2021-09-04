@@ -1,6 +1,8 @@
 import { Context, createContext } from 'react'
 
 export interface SkyContextProps {
+    region?: string
+    client_id?: string
     first_name: string
     last_name: string
     uuid: string

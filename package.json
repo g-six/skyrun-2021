@@ -9,7 +9,11 @@
     "format": "prettier --write ./pages ./components ./__tests__",
     "lint": "next lint",
     "test": "jest",
-    "preinstall": "echo $KENDO_UI_LICENSE > ./kendo-ui-license.txt",
+    "pre:kendo-ui": "echo $KENDO_UI_LICENSE > ./kendo-ui-license.txt",
+    "pre:cog-region": "echo $COGNITO_REGION >> ./.env",
+    "pre:cog-id": "echo $COGNITO_CLIENT_ID >> ./.env",
+    "pre:cog-domain": "echo $COGNITO_DOMAIN >> ./.env",
+    "preinstall": "pre:cog-domain && pre:cog-region && pre:cog-id && pre:kendo-ui",
     "postinstall": "kendo-ui-license activate"
   },
   "dependencies": {

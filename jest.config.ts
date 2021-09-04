@@ -19,12 +19,15 @@ const conf = {
       '^.+\\.module\\.(css|sass|scss)$': 'identity-obj-proxy',
       '^.+\\.(css|sass|scss)$': '<rootDir>/__mocks__/styleMock.js',
       '^.+\\.(jpg|jpeg|png|gif|webp|svg)$': `<rootDir>/__mocks__/fileMock.js`,
+      '^components/(.*)$': '<rootDir>/components/$1',
+      '^context/(.*)$': '<rootDir>/context/$1',
       '^services/(.*)$': '<rootDir>/services/$1',
       '^utils/(.*)$': '<rootDir>/utils/$1',
     },
     testPathIgnorePatterns: [
       '<rootDir>/node_modules/',
       '<rootDir>/.next/',
+      '<rootDir>/context/',
       '<rootDir>/services/',
     ],
     transform: {

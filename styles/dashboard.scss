@@ -1,6 +1,7 @@
 .k-drawer {
     .k-drawer-item[role="option"] {
-        color: $primary;
+        border-left: 4px solid transparent;
+        color: rgba(0,0,0,0.7);
         transition-property: background-color, border-color, color, fill, stroke;
         transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
         transition-duration: 350ms;
@@ -11,10 +12,15 @@
         &:hover,
         &.k-state-selected,
         &:focus {
-            background-color: transparentize($color: #312E81, $amount: 0.9);
+            border-left: 4px solid $primary;
+            background-color: transparentize($color: $primary, $amount: 0.9);
         }
         &:hover {
-            background-color: transparentize($color: #312E81, $amount: 0.85);
+            background-color: transparentize($color: $primary, $amount: 0.85);
         }
+    }
+
+    .k-drawer-item {
+        font-family: 'Poppins', sans-serif;
     }
 }

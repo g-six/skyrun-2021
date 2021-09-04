@@ -6,7 +6,6 @@ async function fetchLanguage() {
                 mode: 'cors',
             },
         )
-        console.log(res)
     } catch (e) {
         console.error(e)
     }

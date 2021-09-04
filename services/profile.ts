@@ -1,4 +1,5 @@
-import { AttributeType, CognitoIdentityProviderClient, CognitoIdentityProviderClientConfig, GetUserCommand, GetUserCommandInput, GetUserCommandOutput } from '@aws-sdk/client-cognito-identity-provider'
+import { AttributeType, CognitoIdentityProviderClient, GetUserCommand, GetUserCommandInput, GetUserCommandOutput } from '@aws-sdk/client-cognito-identity-provider'
+import getConfig from 'next/config'
 import Cookies from 'js-cookie'
 import { CognitoErrorTypes } from './CognitoErrorTypes'
 import refreshToken from './use-refresh-token'
@@ -9,13 +10,17 @@ export interface UserModel {
     family_name: string
 }
 
-async function profile(region = 'us-east-1', ClientId = '') {
+async function profile() {
+    const { COGNITO_CLIENT_ID: ClientId, COGNITO_REGION: region } = getConfig().publicRuntimeConfig
     if (!Cookies.get('access_token')) {
         const tokens = await refreshToken({ region, ClientId })
         if (tokens?.AuthenticationResult) {
             Cookies.set('access_token', tokens?.AuthenticationResult.AccessToken as string)
+        } else {
+            return false
         }
     }
+
     const input: GetUserCommandInput = {
         AccessToken: Cookies.get('access_token'),
     }

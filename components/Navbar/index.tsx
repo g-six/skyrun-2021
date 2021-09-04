@@ -32,10 +32,9 @@ export enum NavigationItem {
 export interface Props {
     current?: NavigationItem
     nav_labels: Record<string, string>
-    onClose: () => {}
 }
 
-export default function Navbar({ current, nav_labels, onClose }: Props) {
+export default function Navbar({ current, nav_labels }: Props) {
     const { user } = useAuth()
     const [mounted, setMounted] = useState(false)
     const [username, setUsername] = useState(Cookies.get('email'))

@@ -79,13 +79,4 @@ function MyApp({ Component, pageProps }: AppProps) {
     )
 }
 
-export async function getStaticProps() {
-    return {
-        props: {
-            region: process.env.COGNITO_REGION,
-            client_id: process.env.COGNITO_CLIENT_ID,
-        } as CognitoProps,
-    }
-}
-
 export default MyApp

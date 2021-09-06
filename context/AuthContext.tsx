@@ -1,10 +1,11 @@
-import { AuthenticationResultType, InitiateAuthCommandOutput } from '@aws-sdk/client-cognito-identity-provider'
+import { AuthenticationResultType, InitiateAuthCommandOutput, SignUpCommandOutput } from '@aws-sdk/client-cognito-identity-provider'
 import { createWrapper } from 'components/LogicalWrapperFactory'
 import useModal from 'components/Modals/useModal'
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
 import login from 'services/login'
 import logout from 'services/logout'
 import profile from 'services/profile'
+import signUp from 'services/UserPool'
 import { AuthContextType, SkyUser } from './types'
 
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType)
@@ -52,6 +53,19 @@ export function SkyAuthProvider({ children }: Props) {
             document.location.href = '/'
         },
         profile,
+        signup: async (email: string, password: string, given_name: string, family_name: string): Promise<string | boolean> => {
+            const {
+                UserSub,                
+            }: SignUpCommandOutput = await signUp({ email, password, given_name, family_name })
+            console.log(UserSub)
+
+            if (UserSub) {
+                setFetching(true)
+            } else {
+                console.log(UserSub)
+            }
+            return UserSub || false
+        },
         LoginModal,
         SignupModal,
     }

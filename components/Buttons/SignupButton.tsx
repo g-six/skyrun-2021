@@ -1,10 +1,10 @@
-import { LoginModalOpener } from 'components/Modals/Login'
+import { SignupModalOpener } from 'components/Modals/Signup'
 import { withClass } from 'components/types'
 import { classNames } from 'utils/dom-helpers'
 
-function LoginButton({ className = '' }: withClass) {
+function SignupButton({ className = '' }: withClass) {
     return (
-        <LoginModalOpener
+        <SignupModalOpener
             className={
                 className ||
                 classNames(
@@ -17,4 +17,4 @@ function LoginButton({ className = '' }: withClass) {
     )
 }
 
-export default LoginButton
+export default SignupButton

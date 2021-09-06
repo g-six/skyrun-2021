@@ -7,6 +7,7 @@ import logout from 'services/logout'
 import LoginButton from 'components/Buttons/LoginButton'
 import SkyContext, { SkyContextProps } from 'context/AppContext'
 import { useAuth } from 'context/AuthContext'
+import SignupButton from 'components/Buttons/SignupButton'
 
 const navigation = [
     {
@@ -120,7 +121,7 @@ export default function Navbar({ current, nav_labels }: Props) {
                                                                             current
                                                                             ? 'bg-gray-900 text-white'
                                                                             : 'text-gray-800 hover:bg-gray-100 hover:text-black',
-                                                                        'px-3 py-2 rounded-md text-sm font-medium'
+                                                                        'px-3 py-2 rounded-md text-sm'
                                                                     )}
                                                                     aria-current={
                                                                         item.id ==
@@ -146,7 +147,7 @@ export default function Navbar({ current, nav_labels }: Props) {
                                                     href="/pricing"
                                                     className={classNames(
                                                         'text-gray-800 hover:bg-gray-100 hover:text-black',
-                                                        'px-3 py-2 rounded-md text-sm font-medium lg:mr-2'
+                                                        'px-3 py-2 rounded-md text-sm lg:mr-2'
                                                     )}
                                                 >
                                                     Pricing
@@ -245,18 +246,9 @@ export default function Navbar({ current, nav_labels }: Props) {
                                                 ) : (
                                                     <>
                                                         <LoginButton />
-                                                        <Link
-                                                            href="/signup"
-                                                            passHref
-                                                        >
-                                                            <a className="button primary inline-block">
-                                                                <span>
-                                                                    Start
-                                                                    Free
-                                                                    Trial
-                                                                </span>
-                                                            </a>
-                                                        </Link>
+                                                        <SignupButton
+                                                            className="button primary inline-block px-5 p-2"
+                                                        />
                                                     </>
                                                 )}
                                             </div>
@@ -273,7 +265,7 @@ export default function Navbar({ current, nav_labels }: Props) {
                                                         item.current
                                                             ? 'bg-gray-900 text-black'
                                                             : 'text-gray-100 hover:bg-gray-200 hover:text-black',
-                                                        'block px-3 py-2 rounded-md text-base font-medium'
+                                                        'block px-3 py-2 rounded-md text-base'
                                                     )}
                                                     aria-current={
                                                         item.current

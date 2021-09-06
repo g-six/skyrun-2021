@@ -20,10 +20,6 @@ function Dashboard({
     const auth = useAuth()
     const { user } = auth
 
-    useEffect(() => {
-        console.log(user)
-    }, [user])
-
     return (
         <>
             <Head>

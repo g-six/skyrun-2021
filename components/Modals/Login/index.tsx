@@ -87,7 +87,7 @@ function LoginModal() {
                         <label
                             htmlFor="email-address"
                             className={classNames(
-                                'block text-sm font-medium text-gray-700',
+                                'block font-bold text-gray-600',
                                 errors.email?.type ? 'text-red-700' : ''
                             )}
                         >
@@ -98,7 +98,7 @@ function LoginModal() {
                             id="email-address"
                             autoComplete="email"
                             className={classNames(
-                                'mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md',
+                                'mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm sm:text-sm border-gray-300 rounded-md',
                                 errors.email?.type
                                     ? 'border-red-300 bg-red-100'
                                     : ''
@@ -130,7 +130,7 @@ function LoginModal() {
                         <label
                             htmlFor="password"
                             className={classNames(
-                                'block text-sm font-medium text-gray-700',
+                                'block font-bold text-gray-600',
                                 errors.password?.type ? 'text-red-700' : ''
                             )}
                         >
@@ -141,7 +141,7 @@ function LoginModal() {
                             id="password"
                             autoComplete="email"
                             className={classNames(
-                                'mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md',
+                                'mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm sm:text-sm border-gray-300 rounded-md',
                                 errors.password?.type
                                     ? 'border-red-300 bg-red-100'
                                     : ''
@@ -185,8 +185,8 @@ function LoginModal() {
                                 'text-md font-medium rounded-md text-white',
                                 'focus:outline-none',
                                 loading
-                                    ? 'bg-indigo-300'
-                                    : 'bg-indigo-600 hover:bg-indigo-700 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                                    ? 'bg-primary-light'
+                                    : 'bg-primary hover:bg-primary-dark focus:ring-2 focus:ring-offset-2 focus:ring-primary-light'
                             )}
                             onClick={handleSubmit(onSubmit)}
                         >
@@ -214,7 +214,7 @@ function LoginModal() {
                                     </svg>
                                 ) : (
                                     <LockClosedIcon
-                                        className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
+                                        className="h-5 w-5 text-white"
                                         aria-hidden="true"
                                     />
                                 )}

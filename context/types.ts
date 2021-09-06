@@ -19,7 +19,7 @@ export type AuthContextType = {
     LoginModal: ModalHook
     SignupModal: ModalHook
     login(email: string, password: string): Promise<AuthenticationResultType | boolean>
-    signup(email: string, password: string, first_name: string, last_name: string): Promise<AuthenticationResultType | boolean>
+    signup(email: string, password: string, first_name: string, last_name: string): Promise<string | boolean>
     logout(): Promise<void>
     profile(): Promise<UserModel | boolean>
 }

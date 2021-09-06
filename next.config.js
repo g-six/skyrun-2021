@@ -16,7 +16,6 @@ module.exports = {
     return {
       '/': { page: '/' },
       '/dashboard': { page: '/dashboard' },
-      '/signup': { page: '/signup' },
     }
   },
 }

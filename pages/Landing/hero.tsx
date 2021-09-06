@@ -34,8 +34,7 @@ export default function LandingHero({
                                     href="#"
                                     className="
                                 shadow w-full flex items-center justify-center 
-                                px-6 py-4 text-base 
-                                font-medium text-black 
+                                px-6 py-4 text-base text-black 
                                 bg-white border rounded-full
                                 transition duration-300 ease-in-out
                                 hover:bg-transparent hover:border-solid hover:border-white 

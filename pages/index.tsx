@@ -7,6 +7,7 @@ import Footer from '../components/Footer'
 import styles from '../styles/Home.module.scss'
 import LandingHero, { Props as LandingHeroProps } from './Landing/hero'
 import LoginModal from 'components/Modals/Login'
+import SignupModal from 'components/Modals/Signup'
 
 function Home() {
     const hero_props: LandingHeroProps = {
@@ -62,6 +63,7 @@ function Home() {
             </main>
             <Footer />
             <LoginModal />
+            <SignupModal />
         </div>
     )
 }

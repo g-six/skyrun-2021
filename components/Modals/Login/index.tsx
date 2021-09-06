@@ -3,7 +3,6 @@ import { LockClosedIcon } from '@heroicons/react/solid'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { CognitoErrorTypes } from 'services/CognitoErrorTypes'
 import { classNames } from 'utils/dom-helpers'
-import login from 'services/login'
 import { createModal } from '../ModalFactory'
 import { AuthContext, useAuth } from 'context/AuthContext'
 import { ModalWrapper } from '../ModalWrapper'
@@ -73,7 +72,7 @@ function LoginModal() {
         <ModalProvider.Visible>
             <ModalWrapper>
                 <div className="flex justify-between px-10 text-gray-500 absolute z-10 h-10 w-full">
-                    <span className="inline-block self-center text-lg font-extrabold text-blue-700">
+                    <span className="inline-block self-center text-lg font-extrabold text-gray-600">
                         Login
                     </span>
                     <LoginModalCloser className="self-center" />
@@ -182,7 +181,7 @@ function LoginModal() {
                             className={classNames(
                                 'group relative w-full flex justify-center',
                                 'py-2 mt-4 px-4 border border-transparent',
-                                'text-md font-medium rounded-md text-white',
+                                'text-md rounded-md text-white',
                                 'focus:outline-none',
                                 loading
                                     ? 'bg-primary-light'

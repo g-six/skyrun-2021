@@ -10,6 +10,8 @@ const conf = {
       '**/*.{ts,tsx}',
       '!**/services/*.{ts,tsx}',
       '!**/*.d.ts',
+      '!**/types.ts',
+      '!**/jest.config.ts',
       '!**/node_modules/**',
     ],
     coverageDirectory: "coverage",

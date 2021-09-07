@@ -17,7 +17,6 @@
     "@aws-sdk/client-cognito-identity-provider": "^3.27.0",
     "@headlessui/react": "^1.4.0",
     "@heroicons/react": "^1.0.4",
-    "@progress/kendo-licensing": "^1.2.0",
     "@progress/kendo-react-dateinputs": "^4.8.0",
     "@progress/kendo-react-intl": "^4.8.0",
     "@progress/kendo-react-layout": "^4.8.0",
@@ -34,6 +33,7 @@
     "sass": "^1.38.1"
   },
   "devDependencies": {
+    "@progress/kendo-licensing": "^1.2.0",
     "@testing-library/react": "^12.0.0",
     "@types/enzyme": "^3.10.9",
     "@types/jest": "^27.0.1",

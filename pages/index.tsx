@@ -3,15 +3,13 @@ import Navbar, {
     NavigationItem,
     Props as NavbarProps,
 } from '../components/Navbar'
+import Footer from '../components/Footer'
 import styles from '../styles/Home.module.scss'
 import LandingHero, { Props as LandingHeroProps } from './Landing/hero'
+import LoginModal from 'components/Modals/Login'
+import SignupModal from 'components/Modals/Signup'
 
-interface HomePageProps {
-    region: string
-    ClientId: string
-}
-
-function Home({ region, ClientId }: HomePageProps) {
+function Home() {
     const hero_props: LandingHeroProps = {
         title_left: 'On time, ',
         title_right: 'Always',
@@ -20,13 +18,12 @@ function Home({ region, ClientId }: HomePageProps) {
     }
     const navbar_props: NavbarProps = {
         current: NavigationItem.menu_1,
-        region,
-        ClientId,
         nav_labels: {
             menu_1: 'Industries',
             menu_2: 'Features',
         },
     }
+
     return (
         <div>
             <Head>
@@ -64,17 +61,11 @@ function Home({ region, ClientId }: HomePageProps) {
                     </div>
                 </div>
             </main>
+            <Footer />
+            <LoginModal />
+            <SignupModal />
         </div>
     )
-}
-
-export async function getStaticProps() {
-    return {
-        props: {
-            region: process.env.COGNITO_REGION,
-            ClientId: process.env.COGNITO_CLIENT_ID,
-        },
-    }
 }
 
 export default Home

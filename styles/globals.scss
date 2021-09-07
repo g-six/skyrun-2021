@@ -1,12 +1,21 @@
-@import './buttons.scss';
+@import './fonts.scss';
+@import './variables';
+@import './colors.scss';
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+
+@import "~@progress/kendo-theme-default/scss/drawer/index";
+@import "~@progress/kendo-theme-default/scss/appbar/index";
+@import './dashboard';
+
+@import './buttons.scss';
+
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+  font-family: -apple-system, "Circular", BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
@@ -17,4 +26,25 @@ a {
 
 * {
   box-sizing: border-box;
+}
+
+.logo-icon,
+.logo-icon.k-icon {
+  background-image: url(https://static.aot.plus/images/logo.svg);
+  background-size: contain;
+  display: block;
+  margin: 0 4px;
+  padding-top: 3px;
+  width: 12rem;
+  height: 42px;
+  + .k-item-text {
+    display: none;
+  }
+}
+
+.k-drawer-expanded {
+  .logo-icon.k-icon {
+    background-position: center;
+    margin: 0 auto;
+  }
 }

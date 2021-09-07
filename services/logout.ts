@@ -1,13 +1,10 @@
 import { CognitoIdentityProviderClient, RevokeTokenCommand, RevokeTokenCommandInput, RevokeTokenCommandOutput } from '@aws-sdk/client-cognito-identity-provider'
 import { CredentialProvider } from '@aws-sdk/types'
+import getConfig from 'next/config'
 import Cookies from 'js-cookie'
 
-async function logout(data: Record<string, string>) {
-    const {
-        region,
-        ClientId,
-    } = data
-
+async function logout() {
+    const { COGNITO_CLIENT_ID: ClientId, COGNITO_REGION: region } = getConfig().publicRuntimeConfig
     const input: RevokeTokenCommandInput = {
         Token: Cookies.get('refresh_token'),
         ClientId,
@@ -24,6 +21,7 @@ async function logout(data: Record<string, string>) {
         const res: RevokeTokenCommandOutput = await client.send(command)
         Cookies.remove('access_token')
         Cookies.remove('refresh_token')
+        Cookies.remove('id_token')
         Cookies.remove('email')
         
     } catch (e) {

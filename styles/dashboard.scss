@@ -1,0 +1,26 @@
+.k-drawer {
+    .k-drawer-item[role="option"] {
+        border-left: 4px solid transparent;
+        color: rgba(0,0,0,0.7);
+        transition-property: background-color, border-color, color, fill, stroke;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 350ms;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+
+        &:active,
+        &:hover,
+        &.k-state-selected,
+        &:focus {
+            border-left: 4px solid $primary;
+            background-color: transparentize($color: $primary, $amount: 0.9);
+        }
+        &:hover {
+            background-color: transparentize($color: $primary, $amount: 0.85);
+        }
+    }
+
+    .k-drawer-item {
+        font-family: 'Poppins', sans-serif;
+    }
+}

@@ -2,12 +2,12 @@ import {
     CognitoIdentityProviderClient,
     CognitoIdentityProviderClientConfig,
     SignUpCommand,
-} from '@aws-sdk/client-cognito-identity-provider';
+} from '@aws-sdk/client-cognito-identity-provider'
+import getConfig from 'next/config'
 
 async function signUp(data: Record<string, string>) {
+    const { COGNITO_CLIENT_ID: client_id, COGNITO_REGION: region } = getConfig().publicRuntimeConfig
     const {
-        region,
-        ClientId,
         email,
         password,
         given_name,
@@ -18,7 +18,7 @@ async function signUp(data: Record<string, string>) {
     }
     const client = new CognitoIdentityProviderClient(config)
     const command = new SignUpCommand({
-        ClientId,
+        ClientId: client_id,
         Username: email,
         Password: password,
         UserAttributes: [
@@ -27,8 +27,7 @@ async function signUp(data: Record<string, string>) {
             { Name: 'custom:user_type', Value: 'TENANT' },
         ]
     })
-    const res = await client.send(command)
-    return res
+    return await client.send(command)
 }
 
 export default signUp

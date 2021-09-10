@@ -22,11 +22,6 @@ interface Props {
     user?: UserModel
 }
 const items: SidebarItem[] = [
-    {
-        text: '',
-        icon: 'logo-icon w-32 h-12 bg-no-repeat bg-cover duration-400 ease-linear transition-all',
-        route: '/',
-    },
     { text: 'Home', icon: 'feather-sidebar', route: '/dashboard' },
     {
         text: 'Calendar',

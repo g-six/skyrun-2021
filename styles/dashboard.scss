@@ -1,4 +1,10 @@
 .k-drawer {
+    background-image: url(https://static.aot.plus/images/logo.svg);
+    background-size: 106px auto;
+    background-repeat: no-repeat;
+    background-position: 14px 6px;
+    padding-top: 56px;
+
     .k-drawer-item[role="option"] {
         border-left: 4px solid transparent;
         color: rgba(0,0,0,0.7);

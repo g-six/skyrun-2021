@@ -17,6 +17,7 @@
     "@aws-sdk/client-cognito-identity-provider": "^3.27.0",
     "@headlessui/react": "^1.4.0",
     "@heroicons/react": "^1.0.4",
+    "@progress/kendo-drawing": "^1.11.0",
     "@progress/kendo-react-dateinputs": "^4.8.0",
     "@progress/kendo-react-inputs": "^4.8.0",
     "@progress/kendo-react-intl": "^4.8.0",

@@ -2,6 +2,7 @@ import { AuthenticationResultType, InitiateAuthCommandOutput, SignUpCommandOutpu
 import { createWrapper } from 'components/LogicalWrapperFactory'
 import useModal from 'components/Modals/useModal'
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
+import forgotPassword, { confirmForgotPassword } from 'services/forgot-password'
 import login from 'services/login'
 import logout from 'services/logout'
 import profile from 'services/profile'
@@ -47,6 +48,15 @@ export function SkyAuthProvider({ children }: Props) {
                 setFetching(true)
             }
             return AuthenticationResult || false
+        },
+        confirmForgotPassword: async (email: string, new_password: string, code: string) => {
+            const res = await confirmForgotPassword(email, new_password, code)
+            console.log('confirmForgotPassword:', res)
+            return res
+        },
+        forgotPassword: async (email: string) => {
+            const x = await forgotPassword({ email })
+            console.log(x)
         },
         logout: async () => {
             await logout()

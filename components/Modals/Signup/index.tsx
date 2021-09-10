@@ -13,7 +13,11 @@ type FormValues = {
     last_name: string
 }
 
-const ModalProvider = createModal(AuthContext, 'SignupModal', 'Start Free Trial')
+const ModalProvider = createModal(
+    AuthContext,
+    'SignupModal',
+    'Start Free Trial'
+)
 
 export const SignupModalOpener = ModalProvider.Opener
 export const SignupModalCloser = ModalProvider.Closer
@@ -39,7 +43,12 @@ function SignupModal() {
         toggleLoading(true)
         try {
             const { email, password, first_name, last_name } = values
-            const res = await ctx.signup(email, password, first_name, last_name)
+            const res = await ctx.signup(
+                email,
+                password,
+                first_name,
+                last_name
+            )
 
             if (res) {
                 reset()
@@ -71,13 +80,14 @@ function SignupModal() {
                     </span>
                     <SignupModalCloser className="self-center" />
                 </div>
-                {success
-                    ? <div className="z-20 pt-16 px-10">
+                {success ? (
+                    <div className="z-20 pt-16 px-10">
                         <p className="text-lg font-light">
                             Please check your email inbox for your account
                             activation link.
                         </p>
-                    </div> : 
+                    </div>
+                ) : (
                     <form
                         method="POST"
                         onSubmit={handleSubmit(onSubmit)}
@@ -89,7 +99,9 @@ function SignupModal() {
                                     htmlFor="first-name"
                                     className={classNames(
                                         'block font-bold text-gray-600',
-                                        errors.first_name?.type ? 'text-red-700' : ''
+                                        errors.first_name?.type
+                                            ? 'text-red-700'
+                                            : ''
                                     )}
                                 >
                                     First name
@@ -119,7 +131,9 @@ function SignupModal() {
                                     htmlFor="last-name"
                                     className={classNames(
                                         'block font-bold text-gray-600',
-                                        errors.last_name?.type ? 'text-red-700' : ''
+                                        errors.last_name?.type
+                                            ? 'text-red-700'
+                                            : ''
                                     )}
                                 >
                                     Last name
@@ -145,7 +159,7 @@ function SignupModal() {
                                 )}
                             </fieldset>
                         </div>
-                        
+
                         <fieldset className="pb-6">
                             <label
                                 htmlFor="email-address"
@@ -194,7 +208,9 @@ function SignupModal() {
                                 htmlFor="password"
                                 className={classNames(
                                     'block font-bold text-gray-600',
-                                    errors.password?.type ? 'text-red-700' : ''
+                                    errors.password?.type
+                                        ? 'text-red-700'
+                                        : ''
                                 )}
                             >
                                 Password
@@ -293,7 +309,7 @@ function SignupModal() {
                             </button>
                         </div>
                     </form>
-                }
+                )}
             </ModalWrapper>
         </ModalProvider.Visible>
     )

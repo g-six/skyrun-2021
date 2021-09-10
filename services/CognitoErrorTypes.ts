@@ -3,4 +3,6 @@ export enum CognitoErrorTypes {
     NotAuthorizedException = 'NotAuthorizedException',
     UserNotConfirmedException = 'UserNotConfirmedException',
     InvalidPasswordException = 'InvalidPasswordException',
+    InvalidParameterException = 'InvalidParameterException',
+    LimitExceededException = 'LimitExceededException',
 }

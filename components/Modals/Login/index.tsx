@@ -76,7 +76,7 @@ function LoginModal() {
             )
             reset()
             setNewPasswordMode(false)
-        } catch (e: unknown) {
+        } catch (e) {
             if (e.name == CognitoErrorTypes.InvalidParameterException) {
                 setError('new_password', {
                     type: CognitoErrorTypes.InvalidParameterException,

@@ -3,6 +3,8 @@ import { useRouter } from 'next/router'
 import {
     Drawer,
     DrawerContent,
+    DrawerItem,
+    DrawerItemProps,
     DrawerSelectEvent,
 } from '@progress/kendo-react-layout'
 import LoginModal from 'components/Modals/Login'
@@ -75,6 +77,17 @@ const items: SidebarItem[] = [
     },
 ]
 
+const CustomItem = (props: DrawerItemProps) => {
+    return (
+        <DrawerItem {...props} title={props.text}>
+            <span className={`k-icon ${props.icon}`}></span>
+            <div className="item-descr-wrap ml-2 w-full" title={props.text}>
+                <div>{props.text}</div>
+            </div>
+        </DrawerItem>
+    )
+}
+
 function Sidebar({ children, user }: Props) {
     const router = useRouter()
     const [expanded, setExpanded] = useState(false)
@@ -114,6 +127,7 @@ function Sidebar({ children, user }: Props) {
                           }))
                         : []
                 }
+                item={CustomItem}
             >
                 <DrawerContent>
                     {children}

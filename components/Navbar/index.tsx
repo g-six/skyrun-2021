@@ -246,9 +246,7 @@ export default function Navbar({ current, nav_labels }: Props) {
                                                 ) : (
                                                     <>
                                                         <LoginButton />
-                                                        <SignupButton
-                                                            className="button primary inline-block px-5 p-2"
-                                                        />
+                                                        <SignupButton className="button primary inline-block px-5 p-2" />
                                                     </>
                                                 )}
                                             </div>

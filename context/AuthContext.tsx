@@ -1,7 +1,7 @@
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
 import { AuthenticationResultType, InitiateAuthCommandOutput, SignUpCommandOutput } from '@aws-sdk/client-cognito-identity-provider'
 import { createWrapper } from 'components/LogicalWrapperFactory'
 import useModal from 'components/Modals/useModal'
-import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
 import forgotPassword, { confirmForgotPassword } from 'services/forgot-password'
 import login from 'services/login'
 import logout from 'services/logout'
@@ -67,12 +67,9 @@ export function SkyAuthProvider({ children }: Props) {
             const {
                 UserSub,                
             }: SignUpCommandOutput = await signUp({ email, password, given_name, family_name })
-            console.log(UserSub)
 
             if (UserSub) {
                 setFetching(true)
-            } else {
-                console.log(UserSub)
             }
             return UserSub || false
         },
@@ -93,8 +90,10 @@ export function SkyAuthProvider({ children }: Props) {
         }
 
         
-        if (is_fetching && !user?.uuid) {
-            getProfile()
+        if (is_fetching) {
+            if (!user?.uuid) {
+                getProfile()
+            }
         }
 
         if (user?.uuid) {
@@ -105,7 +104,9 @@ export function SkyAuthProvider({ children }: Props) {
         setFetching(false)
     }, [LoginModal, SignupModal, user, is_fetching])
     return (
-        <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+        <AuthContext.Provider value={value}>
+            {children}
+        </AuthContext.Provider>
     )
 }
 

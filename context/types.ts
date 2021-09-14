@@ -25,3 +25,9 @@ export type AuthContextType = {
     logout(): Promise<void>
     profile(): Promise<UserModel | boolean>
 }
+
+declare global {
+    interface Window { Chargebee: any }
+}
+
+window.Chargebee = window.Chargebee || {}

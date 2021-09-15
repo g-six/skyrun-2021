@@ -3,6 +3,10 @@ module.exports = {
   target: 'serverless',
   async rewrites() {
     return [
+      {
+        source: '/dashboard/settings',
+        destination: '/dashboard/settings/',
+      },
       // Rewrite eveything to pages/index
       {
         source: '/:any*',

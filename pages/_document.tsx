@@ -17,7 +17,7 @@ class MyDocument extends Document {
             <Html>
                 <Head>
                     <script
-                        async
+                        defer
                         src="https://js.chargebee.com/v2/chargebee.js"
                         data-cb-site="aotplus-test"
                     ></script>

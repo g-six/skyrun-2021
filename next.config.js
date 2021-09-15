@@ -26,6 +26,7 @@ module.exports = {
     return {
       '/': { page: '/' },
       '/dashboard': { page: '/dashboard' },
+      '/dashboard/settings': { page: '/dashboard/settings' },
     }
   },
 }

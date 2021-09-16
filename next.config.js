@@ -1,15 +1,5 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
-  target: 'serverless',
-  async rewrites() {
-    return [
-      // Rewrite eveything to pages/index
-      {
-        source: '/:any*',
-        destination: '/',
-      },
-    ]
-  },
   trailingSlash: true,
   reactStrictMode: true,
   images: {

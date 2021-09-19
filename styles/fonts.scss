@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;400&display=swap');
 @font-face {
     font-family: 'Circular';
     font-style: normal;
@@ -54,4 +54,16 @@
     font-weight: 800;
     font-display: swap;
     src: url(https://static.aot.plus/fonts/circular-blackitalic.woff) format('woff');
+}
+.circular-thin {
+    font-family: 'Poppins', 'Circular', sans-serif;
+    font-weight: 100;
+}
+.circular-extra-light {
+    font-family: 'Poppins', 'Circular', sans-serif;
+    font-weight: 200;
+}
+.circular {
+    font-family: 'Poppins', 'Circular', sans-serif;
+    font-weight: 400;
 }

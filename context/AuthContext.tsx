@@ -27,6 +27,7 @@ export function SkyAuthProvider({ children }: Props) {
     const [is_fetching, setFetching] = useState(true)
     const LoginModal = useModal()
     const SignupModal = useModal()
+    const CreateClientModal = useModal()
 
     const value = {
         user,
@@ -73,6 +74,7 @@ export function SkyAuthProvider({ children }: Props) {
             }
             return UserSub || false
         },
+        CreateClientModal,
         LoginModal,
         SignupModal,
     }
@@ -102,7 +104,7 @@ export function SkyAuthProvider({ children }: Props) {
         }
 
         setFetching(false)
-    }, [LoginModal, SignupModal, user, is_fetching])
+    }, [LoginModal, SignupModal, CreateClientModal, user, is_fetching])
     return (
         <AuthContext.Provider value={value}>
             {children}

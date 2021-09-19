@@ -3,6 +3,7 @@ export type JSXProvider<Props> = (props: Props) => JSX.Element
 
 export interface Wrapper {
     children: string | JSX.Element | JSX.Element[]
+    actions?: JSX.Element | JSX.Element[]
 }
 
 export interface SVGProps {

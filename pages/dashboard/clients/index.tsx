@@ -52,7 +52,7 @@ function HeaderActions(props: HeaderProps) {
     return (
         <>
             <SearchInputGroup />
-            <CreateClientModalOpener className="bg-primary text-white px-8 py-2 text-lg font-light rounded-lg" />
+            <CreateClientModalOpener className="bg-primary text-white px-8 py-2 text-lg font-light rounded-lg">asdasd</CreateClientModalOpener>
         </>
     )
 }

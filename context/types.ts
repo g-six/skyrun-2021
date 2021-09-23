@@ -12,6 +12,15 @@ export interface SkyUser {
     last_name: string
     uuid: string
     email?: string
+    city?: string
+    country?: string
+    date_of_birth?: string
+    gender?: string
+    phone?: string
+    state?: string
+    street_1: string
+    street_2?: string
+    zip?: string
 }
 
 export type AuthContextType = {

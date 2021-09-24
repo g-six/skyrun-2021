@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
+import getConfig from 'next/config'
 
-enum FetchMethods {
+export enum FetchMethods {
     GET = 'GET',
     POST = 'POST',
     PUT = 'PUT',
@@ -8,7 +9,8 @@ enum FetchMethods {
 }
 
 function fetchPath(path: string) {
-    return (process.env.API_PATH || '/api') + path
+    const { API_ENDPOINT } = getConfig().publicRuntimeConfig
+    return (API_ENDPOINT || '/api') + path
 }
 
 
@@ -24,9 +26,11 @@ export function useFetch<Body = any, Result = any>(
 
     const doFetch = useCallback(
         async (body?: Body, query: string = '') => {
-            let req_init: RequestInit = { method }
+            let req_init: RequestInit = { method, mode: 'no-cors' }
             if (body) {
                 req_init = body
+                req_init.method = method
+                req_init.mode = 'no-cors'
                 req_init.headers = { 'Content-Type': 'application/json' }
             }
             setLoading(true)

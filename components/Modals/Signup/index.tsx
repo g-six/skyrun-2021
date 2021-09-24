@@ -6,6 +6,7 @@ import { classNames } from 'utils/dom-helpers'
 import { createModal } from '../ModalFactory'
 import { AuthContext, useAuth } from 'context/AuthContext'
 import { ModalWrapper } from '../ModalWrapper'
+import { FetchMethods, useFetch } from 'utils/fetch-helper'
 type FormValues = {
     email: string
     password: string
@@ -26,7 +27,11 @@ function SignupModal() {
     const ctx = useAuth()
     const [loading, toggleLoading] = useState(false)
     const [success, setSuccess] = useState(false)
-
+    const api_fetch = useFetch(
+        '/v1/tenants',
+        FetchMethods.POST,
+        false
+    )
     const {
         register,
         handleSubmit,
@@ -43,17 +48,22 @@ function SignupModal() {
         toggleLoading(true)
         try {
             const { email, password, first_name, last_name } = values
-            const res = await ctx.signup(
+            api_fetch.doFetch({
                 email,
-                password,
                 first_name,
-                last_name
-            )
+                last_name,
+            })
+            // const res = await ctx.signup(
+            //     email,
+            //     password,
+            //     first_name,
+            //     last_name
+            // )
 
-            if (res) {
-                reset()
-                setSuccess(true)
-            }
+            // if (res) {
+            //     reset()
+            //     setSuccess(true)
+            // }
         } catch (e) {
             if (e.name == CognitoErrorTypes.UserExistsException) {
                 setError('email', {

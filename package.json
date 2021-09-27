@@ -31,6 +31,7 @@
     "@progress/kendo-react-popup": "^4.8.0",
     "@progress/kendo-react-progressbars": "^4.8.0",
     "@progress/kendo-react-scheduler": "^4.9.0",
+    "@progress/kendo-react-treeview": "^4.9.0",
     "@progress/kendo-theme-default": "^4.41.2",
     "@tailwindcss/forms": "^0.3.3",
     "js-cookie": "^3.0.0",

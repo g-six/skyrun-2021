@@ -96,6 +96,7 @@ function CreateClientModal() {
                         selected={selected}
                         onSelect={handleSelect}
                         className="z-20 pt-16 px-10"
+                        animation={false}
                     >
                         <TabStripTab title="General">
                             <form

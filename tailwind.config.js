@@ -2,6 +2,12 @@ module.exports = {
   purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
   darkMode: false, // or 'media' or 'class'
   theme: {
+    boxShadow: {
+      '2xl': '0px 13.3517px 50.069px rgba(73, 97, 117, 0.1)',
+    },
+    fontFamily: {
+      'sans': ['Proxima\\ Nova', 'ui-sans-serif', 'system-ui']
+    },
     extend: {
       backgroundImage: theme => ({
         'hero-pattern': "url('https://static.aot.plus/images/bruce-mars-gJtDg6WfMlQ-unsplash.jpg')",
@@ -18,7 +24,7 @@ module.exports = {
           dark: '#00273F',
         },
         secondary: {
-          DEFAULT: '#7048E8',
+          DEFAULT: '#F15D22',
           dark: '#5028C6',
         },
         fontSize: {

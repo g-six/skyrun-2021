@@ -1,0 +1,46 @@
+.spriteExercising {
+    background: url(//static.aot.plus/images/exercising-min.png) no-repeat;
+    background-position: top left;
+    background-size: 504px 504px;
+    display: inline-block;
+    min-height: 575px;
+    position: relative;
+    width: 576px;
+}
+
+.spriteTools {
+    background: url(//static.aot.plus/images/instructors-min.png) no-repeat;
+    background-position: top left;
+    background-size: 504px 504px;
+    display: inline-block;
+    min-height: 575px;
+    position: relative;
+    width: 576px;
+}
+
+.spriteLeapingLady {
+    background: url(//static.aot.plus/images/leaping-lady-min.png) no-repeat;
+    background-position: center top;
+    background-size: 456px 452px;
+    display: inline-block;
+    min-height: 452px;
+    position: relative;
+    width: 100%;
+}
+
+.smallRoundedSquare {
+    background: #508FAD;
+    opacity: 0.5;
+    height: 48px;
+    width: 48px;
+    z-index: -1;
+}
+
+.largeRoundedSquare {
+    background: #86C5E0;
+    border-radius: 82px;
+    opacity: 0.3;
+    height: 303px;
+    width: 297px;
+    z-index: -1;
+}

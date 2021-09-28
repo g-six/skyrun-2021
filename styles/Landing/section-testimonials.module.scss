@@ -1,0 +1,23 @@
+.sectionManResting {
+    background: url(//static.aot.plus/images/man-resting.jpg) no-repeat;
+    background-size: cover;
+    margin-top: 8rem;
+    min-height: 762px;
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+    width: 100%;
+}
+
+.largeCircle {
+    background: #86C5E0;
+    border-radius: 100%;
+    display: block;
+    right: -24rem;
+    bottom: -20rem;
+    position: absolute;
+    height: 772px;
+    width: 772px;
+    z-index: 0;
+}
+  

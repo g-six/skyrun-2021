@@ -8,13 +8,20 @@ import styles from '../styles/Home.module.scss'
 import LandingHero, { Props as LandingHeroProps } from './Landing/hero'
 import LoginModal from 'components/Modals/Login'
 import SignupModal from 'components/Modals/Signup'
+import { useState } from 'react'
+import { Switch, SwitchChangeEvent } from '@progress/kendo-react-inputs'
+import { Button, ButtonGroup } from '@progress/kendo-react-buttons'
+import LandingFeaturesSection from './Landing/section-features'
+import LandingSectionTestimonials from './Landing/section-testimonials'
 
 function Home() {
     const hero_props: LandingHeroProps = {
-        title_left: 'On time, ',
-        title_right: 'Always',
-        subtitle: 'Connecting with your customers',
-        button_label: 'View Plans',
+        title_left: 'always',
+        title_center: 'on',
+        title_right: 'time',
+        subtitle:
+            'Scheduling, booking and business management platform for your business.',
+        button_label: 'Try it for free',
     }
     const navbar_props: NavbarProps = {
         current: NavigationItem.menu_1,
@@ -23,6 +30,17 @@ function Home() {
             menu_2: 'Features',
         },
     }
+    const [checked, setChecked] = useState<boolean>(true)
+    const handleToggleSwitch = () => {
+        setChecked(!checked)
+    }
+    const handleChange = (event: SwitchChangeEvent) => {
+        console.log(event.target.value)
+    }
+
+    const date_of_exercise = new Date().toLocaleDateString()
+    const location_name = 'Taiseng'
+    const instructor_name = 'Muhammad Ali'
 
     return (
         <div>
@@ -36,31 +54,62 @@ function Home() {
                     content="Skyrun - A Nerubia base code"
                 />
                 <link rel="icon" href="/favicon.ico" />
+                <link
+                    href="https://static.aot.plus/feather.css"
+                    rel="stylesheet"
+                    type="text/css"
+                />
             </Head>
             <Navbar {...navbar_props} />
 
             <LandingHero {...hero_props} />
 
-            <main className="container mx-auto">
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div className="lg:col-span-1 lg:col-start-2">
-                        <h1 className="mt-20 mb-10 lg:mb-5 text-purple-900 text-5xl font-extrabold leading-none tracking-tight">
-                            Anim aute id magna aliqua ad.
-                        </h1>
-
-                        <p className="text-regal-blue">
-                            Anim aute id magna aliqua ad ad non deserunt
-                            sunt. Qui irure qui lorem cupidatat commodo.
-                            Elit sunt amet fugiat veniam occaecat fugiat
-                            aliqua.
-                        </p>
-                    </div>
-
-                    <div className="mt-20">
-                        <div className={styles.vectorA} />
-                    </div>
-                </div>
+            <main className="container max-w-7xl mx-auto">
+                <LandingFeaturesSection
+                    date_of_exercise={new Date().toLocaleDateString()}
+                    location_name="Taiseng"
+                    instructor_name="Muhammad Ali"
+                />
             </main>
+            <LandingSectionTestimonials />
+
+            <section className="pricing-plans">
+                <h3 className="text-center text-primary-dark drop-shadow text-5xl circular font-thin mb-8 mt-36">
+                    Pricing Plans
+                </h3>
+                <p className="text-gray-400 text-center leading-relaxed">
+                    Amet minim mollit non deserunt ullamco est sit aliqua
+                    dolor do amet sint.
+                    <br />
+                    Velit officia consequat duis enim velit mollit.
+                    Exercitation veniam <br />
+                    consequat sunt nostrud amet.
+                </p>
+                <div className="flex justify-center items-center w-auto my-5">
+                    <span className="text-gray-400 mr-4">Monthly</span>
+
+                    <Switch
+                        onLabel={''}
+                        offLabel={''}
+                        onChange={handleToggleSwitch}
+                        checked={checked}
+                    />
+
+                    <span className="text-gray-400 ml-3 mr-2">Yearly</span>
+                    <span className="text-white text-xs bg-primary-light rounded px-2 py-1">
+                        Save 20%
+                    </span>
+                </div>
+                <div className="flex justify-center items-center w-auto my-5">
+                    <ButtonGroup className="bg-primary-light">
+                        <Button togglable={true}>USD</Button>
+                        <Button togglable={true}>SGD</Button>
+                        <Button togglable={true}>PHP</Button>
+                        <Button togglable={true}>MYR</Button>
+                    </ButtonGroup>
+                </div>
+            </section>
+
             <Footer />
             <LoginModal />
             <SignupModal />

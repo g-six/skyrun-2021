@@ -1,5 +1,5 @@
 .button.primary {
-    background: linear-gradient(20deg, #E543FF 3.35%, #6A2EC1 51.38%, #2342C0 97.44%);
+    background: $primary;
     border-radius: 200px;
     color: #fff;
     overflow: hidden;
@@ -12,7 +12,7 @@
     }
 
     &::before {
-        background: linear-gradient(190deg, #E543FF 3.35%, #6A2EC1 51.38%, #2342C0 97.44%);
+        background: $primary;
         content: " ";
         display: inline-block;
         position: absolute;
@@ -29,5 +29,11 @@
         &::before {
             opacity: 1;
         }
+    }
+}
+
+.k-button-group.bg-primary-light {
+    .k-button {
+        background: transparent;
     }
 }

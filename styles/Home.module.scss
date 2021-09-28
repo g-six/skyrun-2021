@@ -1,15 +1,10 @@
-.vectorA {
-  background: url('https://static.aot.plus/images/splash-1.png') no-repeat;
-  width: 379px;
-  height: 269.71px;
-}
-.vector-2 {
-  position: absolute;
-  width: 297.19px;
-  height: 319.83px;
-  left: 16.09px;
-  top: 928px;
 
-  background: linear-gradient(223.51deg, #C961FF 19.5%, #827BF9 48.99%, #00AAEF 79.58%);
-  transform: rotate(19.72deg);
+.spriteLeapingLady {
+  background: url(//static.aot.plus/images/leaping-lady-min.png) no-repeat;
+  background-position: center top;
+  background-size: 456px 452px;
+  display: inline-block;
+  min-height: 452px;
+  position: relative;
+  width: 100%;
 }

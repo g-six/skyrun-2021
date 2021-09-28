@@ -8,6 +8,7 @@ import logout from 'services/logout'
 import profile from 'services/profile'
 import signUp from 'services/UserPool'
 import { AuthContextType, SkyUser } from './types'
+import { FetchMethods, useFetch } from 'utils/fetch-helper'
 
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 
@@ -20,11 +21,23 @@ type Props= {
 }
 
 export const Authenticated = createWrapper(AuthContext, ctx => !!ctx.user?.uuid)
+export const Activated = createWrapper(AuthContext, ctx => !!ctx.user?.phone)
 export const NotAuthenticated = createWrapper(AuthContext, ctx => !ctx.user?.uuid)
 
 export function SkyAuthProvider({ children }: Props) {
     const [user, setUser] = useState<SkyUser>({} as unknown as SkyUser)
-    const [is_fetching, setFetching] = useState(true)
+    const [is_initialized, setInit] = useState(true)
+    const {
+        is_loading,
+        data,
+        status,
+        doFetch,
+     } = useFetch(
+        '/v1/tenants',
+        FetchMethods.POST,
+        true,
+        true,
+    )
     const LoginModal = useModal()
     const SignupModal = useModal()
     const CreateClientModal = useModal()
@@ -46,7 +59,11 @@ export function SkyAuthProvider({ children }: Props) {
                 )}`
                 document.cookie = `refresh_token=${RefreshToken}; path=/`
                 document.cookie = `id_token=${IdToken}; path=/`
-                setFetching(true)
+                setInit(true)
+
+                const t = await doFetch({
+                    id: 'asd'
+                }, undefined)
             }
             return AuthenticationResult || false
         },
@@ -70,7 +87,7 @@ export function SkyAuthProvider({ children }: Props) {
             }: SignUpCommandOutput = await signUp({ email, password, given_name, family_name })
 
             if (UserSub) {
-                setFetching(true)
+                setInit(true)
             }
             return UserSub || false
         },
@@ -92,7 +109,7 @@ export function SkyAuthProvider({ children }: Props) {
         }
 
         
-        if (is_fetching) {
+        if (is_initialized) {
             if (!user?.uuid) {
                 getProfile()
             }
@@ -103,8 +120,8 @@ export function SkyAuthProvider({ children }: Props) {
             SignupModal.close()
         }
 
-        setFetching(false)
-    }, [LoginModal, SignupModal, CreateClientModal, user, is_fetching])
+        setInit(false)
+    }, [LoginModal, SignupModal, CreateClientModal, user, is_initialized])
     return (
         <AuthContext.Provider value={value}>
             {children}

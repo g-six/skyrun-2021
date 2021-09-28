@@ -13,7 +13,9 @@ function SignupButton({ className = '' }: withClass) {
                     'inline-block btn-navbar-login'
                 )
             }
-        >asdasd</SignupModalOpener>
+        >
+            asdasd
+        </SignupModalOpener>
     )
 }
 

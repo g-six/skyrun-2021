@@ -18,7 +18,7 @@ export interface SkyUser {
     gender?: string
     phone?: string
     state?: string
-    street_1: string
+    street_1?: string
     street_2?: string
     zip?: string
 }

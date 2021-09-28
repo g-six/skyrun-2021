@@ -11,6 +11,7 @@ import { Wrapper } from 'components/types'
 import LoginModal from 'components/Modals/Login'
 import LoginButton from 'components/Buttons/LoginButton'
 import { toTitleCase } from 'utils/string-helper'
+import { FetchMethods, useFetch } from 'utils/fetch-helper'
 
 const Sidebar = dynamic(() => import('./Sidebar'), { ssr: false })
 
@@ -22,6 +23,12 @@ function Dashboard({
     const router = useRouter()
     const auth = useAuth()
     const { user } = auth
+    const { data, doFetch, is_loading, status } = useFetch(
+        '/v1/users/current',
+        FetchMethods.GET,
+        true,
+        true
+    )
 
     return (
         <>

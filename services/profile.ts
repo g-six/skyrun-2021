@@ -9,7 +9,9 @@ export interface UserModel {
     given_name: string
     family_name: string
 }
-
+type ServiceError = {
+    name: CognitoErrorTypes
+}
 async function profile() {
     const { COGNITO_CLIENT_ID: ClientId, COGNITO_REGION: region } = getConfig().publicRuntimeConfig
     if (!Cookies.get('access_token')) {
@@ -47,7 +49,8 @@ async function profile() {
                 }
             }
         } catch (e) {
-            if (e.name == CognitoErrorTypes.NotAuthorizedException) {
+            const { name } = e as ServiceError
+            if (name == CognitoErrorTypes.NotAuthorizedException) {
                 Cookies.remove('access_token')
                 return user as unknown as UserModel
             }

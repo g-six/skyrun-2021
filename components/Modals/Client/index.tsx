@@ -28,6 +28,10 @@ const ModalProvider = createModal(AuthContext, 'CreateClientModal', () => (
 export const CreateClientModalOpener = ModalProvider.Opener
 export const CreateClientModalCloser = ModalProvider.Closer
 
+type SubmitError = {
+    name: CognitoErrorTypes
+    message: string
+}
 function CreateClientModal() {
     const ctx = useAuth()
     const [loading, toggleLoading] = useState(false)
@@ -61,17 +65,21 @@ function CreateClientModal() {
                 reset()
                 setSuccess(true)
             }
-        } catch (e) {
-            if (e.name == CognitoErrorTypes.UserExistsException) {
+        } catch (e: unknown) {
+            const {
+                name,
+                message,
+            } = e as SubmitError
+            if (name == CognitoErrorTypes.UserExistsException) {
                 setError('email', {
                     type: CognitoErrorTypes.UserExistsException,
-                    message: e.message,
+                    message,
                 })
             }
-            if (e.name == CognitoErrorTypes.InvalidPasswordException) {
+            if (name == CognitoErrorTypes.InvalidPasswordException) {
                 setError('password', {
                     type: CognitoErrorTypes.InvalidPasswordException,
-                    message: e.message,
+                    message,
                 })
             }
         }

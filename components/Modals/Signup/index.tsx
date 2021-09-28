@@ -7,6 +7,7 @@ import { createModal } from '../ModalFactory'
 import { AuthContext, useAuth } from 'context/AuthContext'
 import { ModalWrapper } from '../ModalWrapper'
 import { FetchMethods, useFetch } from 'utils/fetch-helper'
+import { SubmitError } from '../types'
 type FormValues = {
     email: string
     password: string
@@ -61,16 +62,17 @@ function SignupModal() {
             //     setSuccess(true)
             // }
         } catch (e) {
-            if (e.name == CognitoErrorTypes.UserExistsException) {
+            const { name, message } = e as SubmitError
+            if (name == CognitoErrorTypes.UserExistsException) {
                 setError('email', {
                     type: CognitoErrorTypes.UserExistsException,
-                    message: e.message,
+                    message,
                 })
             }
-            if (e.name == CognitoErrorTypes.InvalidPasswordException) {
+            if (name == CognitoErrorTypes.InvalidPasswordException) {
                 setError('password', {
                     type: CognitoErrorTypes.InvalidPasswordException,
-                    message: e.message,
+                    message,
                 })
             }
         }

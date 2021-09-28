@@ -9,6 +9,7 @@ import { classNames } from 'utils/dom-helpers'
 import { createModal } from '../ModalFactory'
 import { AuthContext, useAuth } from 'context/AuthContext'
 import { ModalWrapper } from '../ModalWrapper'
+import { SubmitError } from '../types'
 type FormValues = {
     email: string
     password?: string
@@ -56,9 +57,10 @@ function LoginModal() {
             setNewPasswordMode(true)
             setForgotMode(false)
         } catch (e) {
+            const { name, message } = e as SubmitError
             setError('email', {
-                type: e.name as CognitoErrorTypes,
-                message: e.message,
+                type: name,
+                message,
             })
         }
         toggleLoading(false)
@@ -77,20 +79,21 @@ function LoginModal() {
             reset()
             setNewPasswordMode(false)
         } catch (e) {
-            if (e.name == CognitoErrorTypes.InvalidParameterException) {
+            const { name, message } = e as SubmitError
+            if (name == CognitoErrorTypes.InvalidParameterException) {
                 setError('new_password', {
                     type: CognitoErrorTypes.InvalidParameterException,
-                    message: e.message,
+                    message,
                 })
             } else if (
-                e.name == CognitoErrorTypes.InvalidPasswordException
+                name == CognitoErrorTypes.InvalidPasswordException
             ) {
                 setError('new_password', {
                     type: CognitoErrorTypes.InvalidPasswordException,
-                    message: e.message,
+                    message,
                 })
             } else {
-                setError('email', e)
+                setError('email', { message })
             }
         }
         toggleLoading(false)
@@ -108,24 +111,25 @@ function LoginModal() {
                 router.push('/dashboard')
             }
         } catch (e) {
-            if (e.name == CognitoErrorTypes.NotAuthorizedException) {
+            const { name, message } = e as SubmitError
+            if (name == CognitoErrorTypes.NotAuthorizedException) {
                 setError('email', {
                     type: CognitoErrorTypes.NotAuthorizedException,
-                    message: e.message,
+                    message,
                 })
                 setError('password', {
                     type: CognitoErrorTypes.NotAuthorizedException,
-                    message: e.message,
+                    message,
                 })
             }
-            if (e.name == CognitoErrorTypes.UserNotConfirmedException) {
+            if (name == CognitoErrorTypes.UserNotConfirmedException) {
                 setError('email', {
                     type: CognitoErrorTypes.UserNotConfirmedException,
-                    message: e.message,
+                    message,
                 })
                 setError('password', {
                     type: CognitoErrorTypes.UserNotConfirmedException,
-                    message: e.message,
+                    message,
                 })
             }
         }

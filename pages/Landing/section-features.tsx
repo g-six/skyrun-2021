@@ -1,8 +1,11 @@
-import { Props } from '@headlessui/react/dist/types'
 import { classNames } from 'utils/dom-helpers'
 import styles from '../../styles/Landing/section-features.module.scss'
 
-export default function LandingFeaturesSection(props: Props) {
+type SectionProps = {
+    [key: string]: string
+}
+
+export default function LandingFeaturesSection(props: SectionProps) {
     return (
         <section className="py-20">
             <div className="grid md:grid-cols-2 gap-8">

@@ -88,13 +88,8 @@ export default function Navbar({ current, nav_labels }: Props) {
                                             </div>
                                             <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
                                                 <div className="flex-shrink-0 flex items-center">
-                                                    <div className="hidden lg:block h-6 w-auto">
-                                                        <img
-                                                            src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg"
-                                                            alt="Workflow"
-                                                            height="24"
-                                                            width="24"
-                                                        />
+                                                    <div className="hidden lg:block h-10 w-auto">
+                                                        <span className="logo-icon navbar-logo" />
                                                     </div>
                                                     <div className="block lg:hidden h-8 w-auto">
                                                         <img

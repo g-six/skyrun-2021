@@ -1,13 +1,18 @@
-import { Context } from 'react'
+import { Context, ReactNode } from 'react'
 import { XIcon } from '@heroicons/react/solid'
 import { action } from 'components/Buttons/ButtonFactory'
 import { createWrapper } from 'components/LogicalWrapperFactory'
 import { ModalHook } from './types'
+import { JSXProvider } from 'components/types'
+
+type Props = {
+    children: ReactNode
+}
 
 export function createModal<T extends object>(
     context: Context<T>,
     name: keyof T,
-    opener_label: string
+    opener_label: string | JSXProvider<Props>
 ) {
     return {
         Visible: createWrapper(

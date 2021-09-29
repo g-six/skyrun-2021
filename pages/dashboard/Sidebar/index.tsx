@@ -7,7 +7,6 @@ import {
     DrawerItemProps,
     DrawerSelectEvent,
 } from '@progress/kendo-react-layout'
-import LoginModal from 'components/Modals/Login'
 import { classNames } from 'utils/dom-helpers'
 import { UserModel } from 'services/profile'
 import { useAuth } from 'context/AuthContext'
@@ -162,7 +161,6 @@ function Sidebar({ children, user }: Props) {
                     </button>
                 </DrawerContent>
             </Drawer>
-            <LoginModal />
         </>
     )
 }

@@ -34,9 +34,6 @@ function Home() {
     const handleToggleSwitch = () => {
         setChecked(!checked)
     }
-    const handleChange = (event: SwitchChangeEvent) => {
-        console.log(event.target.value)
-    }
 
     const date_of_exercise = new Date().toLocaleDateString()
     const location_name = 'Taiseng'

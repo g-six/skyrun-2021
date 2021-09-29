@@ -18,8 +18,9 @@
         &:hover,
         &.k-state-selected,
         &:focus {
-            border-left: 4px solid $primary;
-            background-color: transparentize($color: $primary, $amount: 0.9);
+            border-left: 4px solid $primary-300;
+            background-color: transparentize($color: $primary-300, $amount: 0.9);
+            color: $primary;
         }
         &:hover {
             background-color: transparentize($color: $primary, $amount: 0.85);
@@ -29,4 +30,9 @@
     .k-drawer-item {
         font-family: 'Poppins', sans-serif;
     }
+}
+
+.k-appbar {
+    box-shadow: none;
+    padding: 33px 44px;
 }

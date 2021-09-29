@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
+import Cookies from 'js-cookie'
+import getConfig from 'next/config'
 
-enum FetchMethods {
+export enum FetchMethods {
     GET = 'GET',
     POST = 'POST',
     PUT = 'PUT',
@@ -8,7 +10,8 @@ enum FetchMethods {
 }
 
 function fetchPath(path: string) {
-    return (process.env.API_PATH || '/api') + path
+    const { API_ENDPOINT } = getConfig().publicRuntimeConfig
+    return (API_ENDPOINT || '/api') + path
 }
 
 
@@ -23,17 +26,28 @@ export function useFetch<Body = any, Result = any>(
     const [status, setStatus] = useState(0)
 
     const doFetch = useCallback(
-        async (body?: Body, query: string = '') => {
-            let req_init: RequestInit = { method }
+        async (body?: Body, query: string = '', headers = {}) => {
+            let req_init: RequestInit = {
+                method,
+                mode: 'no-cors',
+                headers,
+            }
             if (body) {
                 req_init = body
-                req_init.headers = { 'Content-Type': 'application/json' }
+                req_init.method = method
+                req_init.mode = 'no-cors'
             }
+
             setLoading(true)
             const response = await fetch(fetchPath(path) + query, req_init)
 
             if (expects_json) {
-                setData((await response.json()) as Result)
+                try {
+                    setData((await response.json()) as Result)
+                } catch (e) {
+                    setData({ error: 'API error' } as unknown as 
+                    Result)
+                }
             }
 
             setLoading(false)

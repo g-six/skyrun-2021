@@ -1,6 +1,15 @@
 .gradHero {
-    background: linear-gradient(90deg, rgba(233, 95, 65, 0.738) 8.77%,
-      rgba(255, 46, 146, 0.6806) 27.72%,
-      rgba(176, 56, 219, 0.7052) 53.26%, rgba(109, 14, 142, 0.7544) 72.72%,
-      #1d067cbe 85.42%, rgba(10, 7, 174, 0.7462) 100%)
+    background: #CFE2F5 url(//static.aot.plus/images/beautiful-young-female-athlete-min.png) no-repeat;
+    background-position: bottom right;
+    background-size: contain;
+}
+.spriteCircle {
+  background: #86C5E0;
+  border-radius: 82px;
+  position: absolute;
+  height: 127px;
+  width: 127px;
+  left: -67px;
+  top: 170px;
+  opacity: 0.5;
 }

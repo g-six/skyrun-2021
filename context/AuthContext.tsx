@@ -1,13 +1,14 @@
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
 import { AuthenticationResultType, InitiateAuthCommandOutput, SignUpCommandOutput } from '@aws-sdk/client-cognito-identity-provider'
 import { createWrapper } from 'components/LogicalWrapperFactory'
 import useModal from 'components/Modals/useModal'
-import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
 import forgotPassword, { confirmForgotPassword } from 'services/forgot-password'
 import login from 'services/login'
 import logout from 'services/logout'
 import profile from 'services/profile'
 import signUp from 'services/UserPool'
 import { AuthContextType, SkyUser } from './types'
+import { FetchMethods, useFetch } from 'utils/fetch-helper'
 
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 
@@ -20,13 +21,26 @@ type Props= {
 }
 
 export const Authenticated = createWrapper(AuthContext, ctx => !!ctx.user?.uuid)
+export const Activated = createWrapper(AuthContext, ctx => !!ctx.user?.phone)
 export const NotAuthenticated = createWrapper(AuthContext, ctx => !ctx.user?.uuid)
 
 export function SkyAuthProvider({ children }: Props) {
     const [user, setUser] = useState<SkyUser>({} as unknown as SkyUser)
-    const [is_fetching, setFetching] = useState(true)
+    const [is_initialized, setInit] = useState(true)
+    const {
+        is_loading,
+        data,
+        status,
+        doFetch,
+     } = useFetch(
+        '/v1/tenants',
+        FetchMethods.POST,
+        true,
+        true,
+    )
     const LoginModal = useModal()
     const SignupModal = useModal()
+    const CreateClientModal = useModal()
 
     const value = {
         user,
@@ -45,7 +59,11 @@ export function SkyAuthProvider({ children }: Props) {
                 )}`
                 document.cookie = `refresh_token=${RefreshToken}; path=/`
                 document.cookie = `id_token=${IdToken}; path=/`
-                setFetching(true)
+                setInit(true)
+
+                const t = await doFetch({
+                    id: 'asd'
+                }, undefined)
             }
             return AuthenticationResult || false
         },
@@ -67,15 +85,13 @@ export function SkyAuthProvider({ children }: Props) {
             const {
                 UserSub,                
             }: SignUpCommandOutput = await signUp({ email, password, given_name, family_name })
-            console.log(UserSub)
 
             if (UserSub) {
-                setFetching(true)
-            } else {
-                console.log(UserSub)
+                setInit(true)
             }
             return UserSub || false
         },
+        CreateClientModal,
         LoginModal,
         SignupModal,
     }
@@ -93,8 +109,10 @@ export function SkyAuthProvider({ children }: Props) {
         }
 
         
-        if (is_fetching && !user?.uuid) {
-            getProfile()
+        if (is_initialized) {
+            if (!user?.uuid) {
+                getProfile()
+            }
         }
 
         if (user?.uuid) {
@@ -102,10 +120,12 @@ export function SkyAuthProvider({ children }: Props) {
             SignupModal.close()
         }
 
-        setFetching(false)
-    }, [LoginModal, SignupModal, user, is_fetching])
+        setInit(false)
+    }, [LoginModal, SignupModal, CreateClientModal, user, is_initialized])
     return (
-        <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+        <AuthContext.Provider value={value}>
+            {children}
+        </AuthContext.Provider>
     )
 }
 

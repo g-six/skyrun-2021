@@ -4,10 +4,12 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import LoginModal from '.'
 
 describe('LoginModal', () => {
-    render(<SkyAuthProvider>
-        <LoginButton />
-        <LoginModal />
-    </SkyAuthProvider>)
+    render(
+        <SkyAuthProvider>
+            <LoginButton />
+            <LoginModal />
+        </SkyAuthProvider>
+    )
     it('should render a login button that would open modal', async () => {
         const btn = screen.getByText('Login')
         expect(btn).toBeDefined()

@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
+import Cookies from 'js-cookie'
 import { AuthenticationResultType, InitiateAuthCommandOutput, SignUpCommandOutput } from '@aws-sdk/client-cognito-identity-provider'
 import { createWrapper } from 'components/LogicalWrapperFactory'
 import useModal from 'components/Modals/useModal'
@@ -33,9 +34,9 @@ export function SkyAuthProvider({ children }: Props) {
         status,
         doFetch,
      } = useFetch(
-        '/v1/tenants',
+        '/v1/users',
         FetchMethods.POST,
-        true,
+        false,
         true,
     )
     const LoginModal = useModal()
@@ -60,21 +61,15 @@ export function SkyAuthProvider({ children }: Props) {
                 document.cookie = `refresh_token=${RefreshToken}; path=/`
                 document.cookie = `id_token=${IdToken}; path=/`
                 setInit(true)
-
-                const t = await doFetch({
-                    id: 'asd'
-                }, undefined)
             }
             return AuthenticationResult || false
         },
         confirmForgotPassword: async (email: string, new_password: string, code: string) => {
             const res = await confirmForgotPassword(email, new_password, code)
-            console.log('confirmForgotPassword:', res)
             return res
         },
         forgotPassword: async (email: string) => {
             const x = await forgotPassword({ email })
-            console.log(x)
         },
         logout: async () => {
             await logout()
@@ -105,6 +100,11 @@ export function SkyAuthProvider({ children }: Props) {
                     last_name: auth_data.family_name,
                     uuid: auth_data.uuid,
                 })
+                const t = await doFetch({
+                    firstName: auth_data.given_name,
+                    lastName: auth_data.family_name,
+                    email: auth_data.email,
+                }, undefined)
             }
         }
 
@@ -121,7 +121,7 @@ export function SkyAuthProvider({ children }: Props) {
         }
 
         setInit(false)
-    }, [LoginModal, SignupModal, CreateClientModal, user, is_initialized])
+    }, [LoginModal, SignupModal, CreateClientModal, user, is_initialized, doFetch])
     return (
         <AuthContext.Provider value={value}>
             {children}

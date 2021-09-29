@@ -29,13 +29,18 @@ export function useFetch<Body = any, Result = any>(
         async (body?: Body, query: string = '', headers = {}) => {
             let req_init: RequestInit = {
                 method,
-                mode: 'no-cors',
-                headers,
+                mode: 'cors',
+                headers: {
+                    ...headers,
+                    'Authorization': Cookies.get('id_token') ? `Bearer ${Cookies.get('id_token')}` : undefined,
+                    'Content-Type': 'application/json',
+                },
             }
             if (body) {
-                req_init = body
-                req_init.method = method
-                req_init.mode = 'no-cors'
+                req_init = {
+                    ...req_init,
+                    body: JSON.stringify(body),
+                }
             }
 
             setLoading(true)
@@ -52,7 +57,6 @@ export function useFetch<Body = any, Result = any>(
 
             setLoading(false)
             setStatus(response.status)
-
             return response
         },
         [method, path, expects_json]

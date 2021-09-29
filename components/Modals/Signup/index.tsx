@@ -49,7 +49,7 @@ function SignupModal() {
                 email,
                 first_name,
                 last_name,
-            })
+            }, undefined, { 'Content-type': 'application/json' })
             // const res = await ctx.signup(
             //     email,
             //     password,

@@ -6,6 +6,7 @@ import refreshToken from './use-refresh-token'
 
 export interface UserModel {
     uuid: string
+    email: string
     given_name: string
     family_name: string
 }
@@ -46,6 +47,7 @@ async function profile() {
                     uuid: Username,
                     given_name: UserAttributes?.find((attribute: AttributeType) => attribute.Name === 'given_name')?.Value as string,
                     family_name: UserAttributes?.find((attribute: AttributeType) => attribute.Name === 'family_name')?.Value as string,
+                    email: UserAttributes?.find((attribute: AttributeType) => attribute.Name === 'email')?.Value as string,
                 }
             }
         } catch (e) {

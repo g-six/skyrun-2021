@@ -29,6 +29,7 @@ function SignupModal() {
     const [loading, toggleLoading] = useState(false)
     const [success, setSuccess] = useState(false)
     const api_fetch = useFetch('/v1/users', FetchMethods.POST, false)
+
     const {
         register,
         handleSubmit,
@@ -45,22 +46,28 @@ function SignupModal() {
         toggleLoading(true)
         try {
             const { email, password, first_name, last_name } = values
-            api_fetch.doFetch({
+            const res = await ctx.signup(
                 email,
+                password,
                 first_name,
-                last_name,
-            }, undefined, { 'Content-type': 'application/json' })
-            // const res = await ctx.signup(
-            //     email,
-            //     password,
-            //     first_name,
-            //     last_name
-            // )
+                last_name
+            )
 
-            // if (res) {
-            //     reset()
-            //     setSuccess(true)
-            // }
+            await api_fetch.doFetch({
+                email,
+                firstName: first_name,
+                lastName: last_name,
+                phone: 'M-16',
+                zip: 'AK-47',
+                city: 'Kabul',
+                state: 'Kandahar',
+                country: 'Afghanistan',
+            })
+
+            if (res) {
+                reset()
+                setSuccess(true)
+            }
         } catch (e) {
             const { name, message } = e as SubmitError
             if (name == CognitoErrorTypes.UserExistsException) {

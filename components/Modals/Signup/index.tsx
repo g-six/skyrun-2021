@@ -41,7 +41,7 @@ function SignupModal() {
         mode: 'onChange',
     })
 
-    const { plan } = ctx.SignupModal.attributes
+    const { plan } = ctx.SignupModal.attributes as Record<string, string>
 
     const onSubmit: SubmitHandler<FormValues> = async (
         values: Record<string, string>

@@ -100,11 +100,16 @@ export function SkyAuthProvider({ children }: Props) {
                     last_name: auth_data.family_name,
                     uuid: auth_data.uuid,
                 })
-                const t = await doFetch({
-                    firstName: auth_data.given_name,
-                    lastName: auth_data.family_name,
-                    email: auth_data.email,
-                }, undefined)
+                // const t = await doFetch({
+                //     firstName: auth_data.given_name,
+                //     lastName: auth_data.family_name,
+                //     email: auth_data.email,
+                //     phone: 'M-16',
+                //     zip: 'AK-47',
+                //     city: 'Kabul',
+                //     state: 'Kandahar',
+                //     country: 'Afghanistan',
+                // }, undefined)
             }
         }
 

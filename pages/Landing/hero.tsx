@@ -1,3 +1,5 @@
+import { createModal } from 'components/Modals/ModalFactory'
+import { AuthContext } from 'context/AuthContext'
 import styles from '../../styles/Landing/hero.module.scss'
 export interface Props {
     title_left: string
@@ -13,6 +15,11 @@ export default function LandingHero({
     subtitle,
     button_label,
 }: Props) {
+    const ModalProvider = createModal(
+        AuthContext,
+        'SignupModal',
+        () => (<span>{button_label}</span>)
+    )
     return (
         <div className="bg-hero-pattern">
             <div className={styles.gradHero}>
@@ -36,19 +43,13 @@ export default function LandingHero({
                         </p>
                         <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
                             <div className="overflow-hidden ">
-                                <a
-                                    href="#"
-                                    className="
-                                shadow w-full flex items-center justify-center 
+                            <ModalProvider.Opener className="shadow w-full flex items-center justify-center 
                                 px-6 py-4 text-base text-white font-bold
                                 bg-primary border rounded-full
                                 transition duration-300 ease-in-out
                                 hover:bg-transparent border-solid border-primary 
                                 hover:text-primary
-                                md:text-xl md:px-10"
-                                >
-                                    {button_label}
-                                </a>
+                                md:text-xl md:px-10" />
                             </div>
                         </div>
                     </div>

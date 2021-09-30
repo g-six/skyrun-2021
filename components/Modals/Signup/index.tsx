@@ -8,6 +8,7 @@ import { AuthContext, useAuth } from 'context/AuthContext'
 import { ModalWrapper } from '../ModalWrapper'
 import { FetchMethods, useFetch } from 'utils/fetch-helper'
 import { SubmitError } from '../types'
+
 type FormValues = {
     email: string
     password: string
@@ -18,7 +19,8 @@ type FormValues = {
 const ModalProvider = createModal(
     AuthContext,
     'SignupModal',
-    'Try it for free'
+    () => (<span>Try it for free</span>),
+    { plan: 'free' }
 )
 
 export const SignupModalOpener = ModalProvider.Opener
@@ -29,7 +31,6 @@ function SignupModal() {
     const [loading, toggleLoading] = useState(false)
     const [success, setSuccess] = useState(false)
     const api_fetch = useFetch('/v1/users', FetchMethods.POST, false)
-
     const {
         register,
         handleSubmit,
@@ -39,6 +40,8 @@ function SignupModal() {
     } = useForm<FormValues>({
         mode: 'onChange',
     })
+
+    const { plan } = ctx.SignupModal.attributes
 
     const onSubmit: SubmitHandler<FormValues> = async (
         values: Record<string, string>
@@ -62,6 +65,7 @@ function SignupModal() {
                 city: 'Kabul',
                 state: 'Kandahar',
                 country: 'Afghanistan',
+                plan,
             })
 
             if (res) {

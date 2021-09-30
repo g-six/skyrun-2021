@@ -6,13 +6,14 @@ import { ModalHook } from './types'
 import { JSXProvider } from 'components/types'
 
 type Props = {
-    children: ReactNode
+    children?: ReactNode
 }
 
 export function createModal<T extends object>(
     context: Context<T>,
     name: keyof T,
-    opener_label: string | JSXProvider<Props>
+    opener_label: string | JSXProvider<Props>,
+    attributes?: Record<string, string>
 ) {
     return {
         Visible: createWrapper(
@@ -20,6 +21,9 @@ export function createModal<T extends object>(
             (ctx) => (ctx[name] as unknown as ModalHook).is_open
         ),
         Opener: action(opener_label, context, (ctx) => {
+            if (attributes) {
+                (ctx[name] as unknown as ModalHook).setAttributes(attributes)
+            }
             return (ctx[name] as unknown as ModalHook).open()
         }),
         Closer: action(

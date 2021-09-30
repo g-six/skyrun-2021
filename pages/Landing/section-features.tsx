@@ -7,7 +7,7 @@ type SectionProps = {
 
 export default function LandingFeaturesSection(props: SectionProps) {
     return (
-        <section className="py-20">
+        <section className="py-20 container max-w-7xl mx-auto">
             <div className="grid md:grid-cols-2 gap-8">
                 <div className={classNames(styles.spriteExercising, '')}>
                     <div className="absolute bottom-0 right-0 p-4">

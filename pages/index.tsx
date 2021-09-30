@@ -4,15 +4,12 @@ import Navbar, {
     Props as NavbarProps,
 } from '../components/Navbar'
 import Footer from '../components/Footer'
-import styles from '../styles/Home.module.scss'
 import LandingHero, { Props as LandingHeroProps } from './Landing/hero'
 import LoginModal from 'components/Modals/Login'
 import SignupModal from 'components/Modals/Signup'
-import { useState } from 'react'
-import { Switch, SwitchChangeEvent } from '@progress/kendo-react-inputs'
-import { Button, ButtonGroup } from '@progress/kendo-react-buttons'
 import LandingFeaturesSection from './Landing/section-features'
 import LandingSectionTestimonials from './Landing/section-testimonials'
+import LandingPricingSection from './Landing/section-pricing'
 
 function Home() {
     const hero_props: LandingHeroProps = {
@@ -30,14 +27,6 @@ function Home() {
             menu_2: 'Features',
         },
     }
-    const [checked, setChecked] = useState<boolean>(true)
-    const handleToggleSwitch = () => {
-        setChecked(!checked)
-    }
-
-    const date_of_exercise = new Date().toLocaleDateString()
-    const location_name = 'Taiseng'
-    const instructor_name = 'Muhammad Ali'
 
     return (
         <div>
@@ -61,51 +50,16 @@ function Home() {
 
             <LandingHero {...hero_props} />
 
-            <main className="container max-w-7xl mx-auto">
+            <main className="overflow-hidden">
                 <LandingFeaturesSection
                     date_of_exercise={new Date().toLocaleDateString()}
                     location_name="Taiseng"
                     instructor_name="Muhammad Ali"
                 />
+                <LandingSectionTestimonials />
+                <LandingPricingSection />
             </main>
-            <LandingSectionTestimonials />
 
-            <section className="pricing-plans">
-                <h3 className="text-center text-primary-dark drop-shadow text-5xl circular font-thin mb-8 mt-36">
-                    Pricing Plans
-                </h3>
-                <p className="text-gray-400 text-center leading-relaxed">
-                    Amet minim mollit non deserunt ullamco est sit aliqua
-                    dolor do amet sint.
-                    <br />
-                    Velit officia consequat duis enim velit mollit.
-                    Exercitation veniam <br />
-                    consequat sunt nostrud amet.
-                </p>
-                <div className="flex justify-center items-center w-auto my-5">
-                    <span className="text-gray-400 mr-4">Monthly</span>
-
-                    <Switch
-                        onLabel={''}
-                        offLabel={''}
-                        onChange={handleToggleSwitch}
-                        checked={checked}
-                    />
-
-                    <span className="text-gray-400 ml-3 mr-2">Yearly</span>
-                    <span className="text-white text-xs bg-primary-light rounded px-2 py-1">
-                        Save 20%
-                    </span>
-                </div>
-                <div className="flex justify-center items-center w-auto my-5">
-                    <ButtonGroup className="bg-primary-light">
-                        <Button togglable={true}>USD</Button>
-                        <Button togglable={true}>SGD</Button>
-                        <Button togglable={true}>PHP</Button>
-                        <Button togglable={true}>MYR</Button>
-                    </ButtonGroup>
-                </div>
-            </section>
 
             <Footer />
             <LoginModal />

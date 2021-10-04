@@ -13,9 +13,7 @@ function LoginButton({ className = '' }: withClass) {
                     'inline-block btn-navbar-login'
                 )
             }
-        >
-            asdasd
-        </LoginModalOpener>
+        />
     )
 }
 

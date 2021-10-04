@@ -8,6 +8,8 @@ import { AuthContext, useAuth } from 'context/AuthContext'
 import { ModalWrapper } from '../ModalWrapper'
 import { FetchMethods, useFetch } from 'utils/fetch-helper'
 import { SubmitError } from '../types'
+import { Tier } from 'context/AppContext'
+import { SignUpCommandOutput } from '@aws-sdk/client-cognito-identity-provider'
 
 type FormValues = {
     email: string
@@ -20,7 +22,8 @@ const ModalProvider = createModal(
     AuthContext,
     'SignupModal',
     () => (<span>Try it for free</span>),
-    { plan: 'free' }
+    undefined,
+    undefined,
 )
 
 export const SignupModalOpener = ModalProvider.Opener
@@ -30,7 +33,7 @@ function SignupModal() {
     const ctx = useAuth()
     const [loading, toggleLoading] = useState(false)
     const [success, setSuccess] = useState(false)
-    const api_fetch = useFetch('/v1/users', FetchMethods.POST, false)
+    const api_fetch = useFetch('/v1/tenants', FetchMethods.POST, false)
     const {
         register,
         handleSubmit,
@@ -41,7 +44,7 @@ function SignupModal() {
         mode: 'onChange',
     })
 
-    const { plan } = ctx.SignupModal.attributes as Record<string, string>
+    const { tier } = ctx.SignupModal.attributes as Record<string, string | Tier>
 
     const onSubmit: SubmitHandler<FormValues> = async (
         values: Record<string, string>
@@ -49,29 +52,36 @@ function SignupModal() {
         toggleLoading(true)
         try {
             const { email, password, first_name, last_name } = values
-            const res = await ctx.signup(
+            const cognito_res: SignUpCommandOutput = await ctx.signup(
                 email,
                 password,
                 first_name,
                 last_name
-            )
+            ) as SignUpCommandOutput
 
-            await api_fetch.doFetch({
-                email,
-                firstName: first_name,
-                lastName: last_name,
-                phone: 'M-16',
-                zip: 'AK-47',
-                city: 'Kabul',
-                state: 'Kandahar',
-                country: 'Afghanistan',
-                plan,
-            })
-
-            if (res) {
-                reset()
-                setSuccess(true)
+            if (cognito_res) {
+                const user = {
+                    email,
+                    firstName: first_name,
+                    lastName: last_name,
+                    phone: 'M-16',
+                    zip: 'AK-47',
+                    city: 'Kabul',
+                    state: 'Kandahar',
+                    country: 'Afghanistan',
+                    cognitoId: cognito_res.UserSub,
+                }
+                const res = await api_fetch.doFetch({
+                    tier,
+                    user,
+                    name: [first_name, last_name].join(' '),
+                })
+                if (res) {
+                    reset()
+                    setSuccess(true)
+                }
             }
+
         } catch (e) {
             const { name, message } = e as SubmitError
             if (name == CognitoErrorTypes.UserExistsException) {

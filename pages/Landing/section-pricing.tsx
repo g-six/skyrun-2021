@@ -2,13 +2,14 @@ import { MouseEvent, useState } from 'react'
 import { Switch, SwitchChangeEvent } from '@progress/kendo-react-inputs'
 import { Button, ButtonGroup } from '@progress/kendo-react-buttons'
 import { createModal } from 'components/Modals/ModalFactory'
-import { AuthContext } from 'context/AuthContext'
+import { AuthContext, useAppContext } from 'context/AuthContext'
 
 type SectionProps = {
     [key: string]: string
 }
 
 export default function LandingPricingSection(props: SectionProps) {
+    const { tiers } = useAppContext()
     const [checked, setChecked] = useState<boolean>(true)
     const [currency, setCurrency] = useState<string>('SGD')
 
@@ -16,21 +17,24 @@ export default function LandingPricingSection(props: SectionProps) {
         AuthContext,
         'SignupModal',
         () => (<span data-plan="free">Choose plan</span>),
-        { plan: 'free' }
+        () => (<span data-plan="free">Cancel</span>),
+        { tier: tiers[0] },
     )
 
     const SinglePlanModalProvider = createModal(
         AuthContext,
         'SignupModal',
         () => (<span>Try it for free</span>),
-        { plan: 'single' }
+        undefined,
+        { tier: tiers[1] },
     )
 
     const MultiLocModalProvider = createModal(
         AuthContext,
         'SignupModal',
         () => (<span>Try it for free</span>),
-        { plan: 'multi' }
+        undefined,
+        { tier: tiers[2] },
     )
 
     const handleToggleSwitch = () => {

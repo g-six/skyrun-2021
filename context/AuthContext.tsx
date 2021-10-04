@@ -10,11 +10,15 @@ import profile from 'services/profile'
 import signUp from 'services/UserPool'
 import { AuthContextType, SkyUser } from './types'
 import { FetchMethods, useFetch } from 'utils/fetch-helper'
+import SkyContext, { Tier } from './AppContext'
 
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 
 export function useAuth() {
     return useContext(AuthContext)
+}
+export function useAppContext() {
+    return useContext(SkyContext)
 }
 
 type Props= {
@@ -28,17 +32,18 @@ export const NotAuthenticated = createWrapper(AuthContext, ctx => !ctx.user?.uui
 export function SkyAuthProvider({ children }: Props) {
     const [user, setUser] = useState<SkyUser>({} as unknown as SkyUser)
     const [is_initialized, setInit] = useState(true)
+    const [tiers, setTiers] = useState([] as Tier[])
+
     const {
         is_loading,
         data,
-        status,
-        doFetch,
      } = useFetch(
-        '/v1/users',
-        FetchMethods.POST,
-        false,
+        '/v1/tiers',
+        FetchMethods.GET,
+        true,
         true,
     )
+
     const LoginModal = useModal()
     const SignupModal = useModal()
     const CreateClientModal = useModal()
@@ -52,15 +57,19 @@ export function SkyAuthProvider({ children }: Props) {
 
             if (AuthenticationResult) {
                 const { IdToken, AccessToken, ExpiresIn, RefreshToken } = AuthenticationResult
-                document.cookie = `email=${email}; path=/; max-age=${Number(
-                    ExpiresIn
-                )}`
-                document.cookie = `access_token=${AccessToken}; path=/; max-age=${Number(
-                    ExpiresIn
-                )}`
-                document.cookie = `refresh_token=${RefreshToken}; path=/`
-                document.cookie = `id_token=${IdToken}; path=/`
-                setInit(true)
+                if (AccessToken) {
+                    Cookies.set('email', email, {  path: '/', expires: Number(
+                        ExpiresIn
+                    )})
+                    Cookies.set('access_token', AccessToken, { path: '/', expires: Number(
+                        ExpiresIn
+                    )})
+                    document.cookie = `id_token=${IdToken}; path=/; max-age=${Number(
+                        ExpiresIn
+                    )}`
+                    document.cookie = `refresh_token=${RefreshToken}; path=/`
+                    setInit(true)
+                }
             }
             return AuthenticationResult || false
         },
@@ -76,15 +85,14 @@ export function SkyAuthProvider({ children }: Props) {
             document.location.href = '/'
         },
         profile,
-        signup: async (email: string, password: string, given_name: string, family_name: string): Promise<string | boolean> => {
-            const {
-                UserSub,                
-            }: SignUpCommandOutput = await signUp({ email, password, given_name, family_name })
+        signup: async (email: string, password: string, given_name: string, family_name: string): Promise<SignUpCommandOutput | boolean> => {
+            const output: SignUpCommandOutput = await signUp({ email, password, given_name, family_name })
 
-            if (UserSub) {
+            if (output.UserSub) {
                 setInit(true)
             }
-            return UserSub || false
+
+            return output || false
         },
         CreateClientModal,
         LoginModal,
@@ -100,16 +108,6 @@ export function SkyAuthProvider({ children }: Props) {
                     last_name: auth_data.family_name,
                     uuid: auth_data.uuid,
                 })
-                // const t = await doFetch({
-                //     firstName: auth_data.given_name,
-                //     lastName: auth_data.family_name,
-                //     email: auth_data.email,
-                //     phone: 'M-16',
-                //     zip: 'AK-47',
-                //     city: 'Kabul',
-                //     state: 'Kandahar',
-                //     country: 'Afghanistan',
-                // }, undefined)
             }
         }
 
@@ -125,12 +123,19 @@ export function SkyAuthProvider({ children }: Props) {
             SignupModal.close()
         }
 
+        if (data.length && tiers.length == 0) {
+            setTiers(data)
+        }
+
         setInit(false)
-    }, [LoginModal, SignupModal, CreateClientModal, user, is_initialized, doFetch])
+    }, [LoginModal, SignupModal, CreateClientModal, user, is_initialized, data, tiers])
+
     return (
-        <AuthContext.Provider value={value}>
-            {children}
-        </AuthContext.Provider>
+        <SkyContext.Provider value={{ tiers }}>
+            <AuthContext.Provider value={value}>
+                {children}
+            </AuthContext.Provider>
+        </SkyContext.Provider>
     )
 }
 

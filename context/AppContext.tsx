@@ -1,22 +1,17 @@
 import { Context, createContext } from 'react'
 
+export type Tier = {
+    id: string
+    name: string
+}
+
 export interface SkyContextProps {
-    region?: string
-    client_id?: string
-    first_name: string
-    last_name: string
-    uuid: string
-    email: string
-    locale_id: string
+    tiers: Tier[]
     onlanguagechange: () => unknown
 }
 
 const ctx: SkyContextProps = {
-    first_name: '',
-    last_name: '',
-    uuid: '',
-    email: '',
-    locale_id: '',
+    tiers: [],
     onlanguagechange: () => {},
 }
 

@@ -20,7 +20,7 @@ export function link<Props extends object = {}>(
 }
 
 export function action<T extends object, Props extends object = {}>(
-    label: string | JSXProvider<Props> | ReactNode,
+    ButtonElements: () => JSX.Element,
     context: React.Context<T>,
     consumer: (ctx: T) => void,
     disabledConsumer?: (ctx: T) => boolean
@@ -41,9 +41,7 @@ export function action<T extends object, Props extends object = {}>(
                 className={className}
                 disabled={disabled}
             >
-                {typeof label === 'string'
-                    ? label
-                    : (label as JSXProvider<Props>)(props as unknown as Props)}
+                <ButtonElements {...props as unknown as Props} />
             </button>
         )
     }

@@ -17,7 +17,7 @@ type FormValues = {
     code?: string
 }
 
-const ModalProvider = createModal(AuthContext, 'LoginModal', 'Login')
+const ModalProvider = createModal(AuthContext, 'LoginModal', () => (<>Login</>))
 
 export const LoginModalOpener = ModalProvider.Opener
 export const LoginModalCloser = ModalProvider.Closer

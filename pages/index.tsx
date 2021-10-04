@@ -18,7 +18,7 @@ function Home() {
         title_right: 'time',
         subtitle:
             'Scheduling, booking and business management platform for your business.',
-        button_label: 'Try it for free',
+        button_label: <>Try it for free</>,
     }
     const navbar_props: NavbarProps = {
         current: NavigationItem.menu_1,

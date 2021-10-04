@@ -20,6 +20,7 @@ const ModalProvider = createModal(
     AuthContext,
     'SignupModal',
     () => (<span>Try it for free</span>),
+    undefined,
     { plan: 'free' }
 )
 
@@ -30,7 +31,7 @@ function SignupModal() {
     const ctx = useAuth()
     const [loading, toggleLoading] = useState(false)
     const [success, setSuccess] = useState(false)
-    const api_fetch = useFetch('/v1/users', FetchMethods.POST, false)
+    const api_fetch = useFetch('/v1/tenants', FetchMethods.POST, false)
     const {
         register,
         handleSubmit,

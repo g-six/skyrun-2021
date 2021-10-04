@@ -6,7 +6,7 @@ export interface Props {
     title_center: string
     title_right: string
     subtitle: string
-    button_label: string
+    button_label: JSX.Element
 }
 export default function LandingHero({
     title_center,

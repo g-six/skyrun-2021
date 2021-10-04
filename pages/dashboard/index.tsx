@@ -12,6 +12,7 @@ import LoginModal from 'components/Modals/Login'
 import LoginButton from 'components/Buttons/LoginButton'
 import { toTitleCase } from 'utils/string-helper'
 import { FetchMethods, useFetch } from 'utils/fetch-helper'
+import { useEffect } from 'react'
 
 const Sidebar = dynamic(() => import('./Sidebar'), { ssr: false })
 
@@ -23,12 +24,18 @@ function Dashboard({
     const router = useRouter()
     const auth = useAuth()
     const { user } = auth
-    const { data, doFetch, is_loading, status } = useFetch(
+    const { data } = useFetch(
         '/v1/users/current',
         FetchMethods.GET,
         true,
         true
     )
+
+    useEffect(() => {
+        if (data && data.userInfo) {
+            const { id } = data.userInfo
+        }
+    }, [data])
 
     return (
         <>

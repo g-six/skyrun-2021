@@ -41,40 +41,44 @@ function Dashboard({
                     type="text/css"
                 />
             </Head>
-            <Sidebar>
-                <AppBar
-                    className="flex items-stretched h-24 bg-primary-lighter bg-opacity-50"
-                    themeColor="inherit"
-                >
-                    <AppBarSection className="flex-grow">
-                        {user?.first_name ? (
-                            <h1 className="text-2xl text-gray-700">
-                                {router.pathname.substr(1) === 'dashboard'
-                                    ? `Welcome, ${user.first_name}!`
-                                    : toTitleCase(
-                                          router.pathname.split('/')[
-                                              router.pathname.split('/')
-                                                  .length - 1
-                                          ]
-                                      )}
-                            </h1>
-                        ) : (
-                            ''
-                        )}
-                    </AppBarSection>
-                    <AppBarSection className="page-actions">
-                        {actions}
-                    </AppBarSection>
-                    <AppBarSection className="actions">
-                        {user?.uuid ? <span>{user.uuid}</span> : ''}
-                    </AppBarSection>
-                </AppBar>
-                <Authenticated>{children}</Authenticated>
-                <NotAuthenticated>
-                    <LoginModal />
-                    <LoginButton className="btn" />
-                </NotAuthenticated>
-            </Sidebar>
+            <Authenticated>
+                <Sidebar>
+                    <AppBar
+                        className="flex items-stretched h-24 bg-primary-lighter bg-opacity-50"
+                        themeColor="inherit"
+                    >
+                        <AppBarSection className="flex-grow">
+                            {user?.first_name ? (
+                                <h1 className="text-2xl text-gray-700">
+                                    {router.pathname.substr(1) === 'dashboard'
+                                        ? `Welcome, ${user.first_name}!`
+                                        : toTitleCase(
+                                            router.pathname.split('/')[
+                                                router.pathname.split('/')
+                                                    .length - 1
+                                            ]
+                                        )}
+                                </h1>
+                            ) : (
+                                ''
+                            )}
+                        </AppBarSection>
+                        <AppBarSection className="page-actions">
+                            {actions}
+                        </AppBarSection>
+                        <AppBarSection className="actions">
+                            {user?.uuid ? <span>{user.uuid}</span> : ''}
+                        </AppBarSection>
+                    </AppBar>
+                    <>{children}</>
+                </Sidebar>
+            </Authenticated>
+            <NotAuthenticated>
+                <LoginModal />
+                <div className="flex justify-center vertical-center">
+                    <LoginButton className="button primary text-2xl inline-block p-4 flex-1" />
+                </div>
+            </NotAuthenticated>
         </>
     )
 }

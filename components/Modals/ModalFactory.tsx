@@ -13,6 +13,11 @@ export function createModal<T extends object>(
     context: Context<T>,
     name: keyof T,
     opener_label: string | JSXProvider<Props>,
+    CloserComponent: ReactNode = () => (
+        <span className="text-sm inline-block w-6 h-6 text-gray-400 text-center font-extralight">
+            <XIcon />
+        </span>
+    ),
     attributes?: Record<string, string>
 ) {
     return {
@@ -27,11 +32,7 @@ export function createModal<T extends object>(
             return (ctx[name] as unknown as ModalHook).open()
         }),
         Closer: action(
-            () => (
-                <span className="text-sm inline-block w-6 h-6 text-gray-400 text-center font-extralight">
-                    <XIcon />
-                </span>
-            ),
+            CloserComponent,
             context,
             (ctx) => (ctx[name] as unknown as ModalHook).close()
         ),

@@ -19,6 +19,7 @@ async function profile() {
         const tokens = await refreshToken({ region, ClientId })
         if (tokens?.AuthenticationResult) {
             Cookies.set('access_token', tokens?.AuthenticationResult.AccessToken as string)
+            Cookies.set('id_token', tokens?.AuthenticationResult.IdToken as string)
         } else {
             return false
         }
@@ -54,6 +55,7 @@ async function profile() {
             const { name } = e as ServiceError
             if (name == CognitoErrorTypes.NotAuthorizedException) {
                 Cookies.remove('access_token')
+                Cookies.remove('id_token')
                 return user as unknown as UserModel
             }
             console.error(e)

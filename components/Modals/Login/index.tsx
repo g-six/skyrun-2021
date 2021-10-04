@@ -139,7 +139,7 @@ function LoginModal() {
     return (
         <ModalProvider.Visible>
             <ModalWrapper>
-                <div className="shadow-xl bg-white overflow-hidden sm:rounded-md w-11/12 sm:w-2/3 lg:w-1/2 xl:w-1/3 m-auto relative py-8">
+                <div className="shadow-2xl bg-white overflow-hidden sm:rounded-2xl w-11/12 sm:w-2/3 lg:w-1/2 xl:w-1/3 m-auto relative py-8">
                     <div className="flex justify-between px-10 text-gray-500 absolute z-10 h-10 w-full">
                         {new_password_mode || forgot_mode ? (
                             <button

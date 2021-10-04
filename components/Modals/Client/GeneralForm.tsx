@@ -42,7 +42,6 @@ function GeneralForm() {
         toggleLoading(true)
         try {
             const { email, notes, phone, first_name, last_name } = values
-            console.log(values)
         } catch (e: unknown) {
             const {
                 name,

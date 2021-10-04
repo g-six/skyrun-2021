@@ -57,34 +57,32 @@ function MyApp({ Component, pageProps }: AppProps) {
 
     return (
         <SafeHydrate>
-            <SkyContext.Provider value={[context, setContext]}>
-                <SkyAuthProvider>
-                    {blur ? (
-                        <div
-                            className={classNames(
-                                'absolute z-10 backdrop-filter backdrop-blur-sm',
-                                'flex flex-col justify-center self-center w-screen h-screen',
-                                'transition transition-all ease-in-out duration-500',
-                                is_fetching
-                                    ? ''
-                                    : is_mounted
-                                    ? 'opacity-0'
-                                    : 'opacity-100'
-                            )}
-                        >
-                            <div className="self-center">
-                                <GridSpinner height={24} width={24} />
-                            </div>
+            <SkyAuthProvider>
+                {blur ? (
+                    <div
+                        className={classNames(
+                            'absolute z-10 backdrop-filter backdrop-blur-sm',
+                            'flex flex-col justify-center self-center w-screen h-screen',
+                            'transition transition-all ease-in-out duration-500',
+                            is_fetching
+                                ? ''
+                                : is_mounted
+                                ? 'opacity-0'
+                                : 'opacity-100'
+                        )}
+                    >
+                        <div className="self-center">
+                            <GridSpinner height={24} width={24} />
                         </div>
-                    ) : (
-                        ''
-                    )}
-                    <Component
-                        {...pageProps}
-                        onLanguageChange={onLanguageChange}
-                    />
-                </SkyAuthProvider>
-            </SkyContext.Provider>
+                    </div>
+                ) : (
+                    ''
+                )}
+                <Component
+                    {...pageProps}
+                    onLanguageChange={onLanguageChange}
+                />
+            </SkyAuthProvider>
         </SafeHydrate>
     )
 }

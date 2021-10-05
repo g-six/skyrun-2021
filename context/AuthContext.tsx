@@ -9,16 +9,12 @@ import logout from 'services/logout'
 import profile from 'services/profile'
 import signUp from 'services/UserPool'
 import { AuthContextType, SkyUser } from './types'
-import { FetchMethods, useFetch } from 'utils/fetch-helper'
 import SkyContext, { Tier } from './AppContext'
 
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 
 export function useAuth() {
     return useContext(AuthContext)
-}
-export function useAppContext() {
-    return useContext(SkyContext)
 }
 
 type Props= {
@@ -32,17 +28,6 @@ export const NotAuthenticated = createWrapper(AuthContext, ctx => !ctx.user?.uui
 export function SkyAuthProvider({ children }: Props) {
     const [user, setUser] = useState<SkyUser>({} as unknown as SkyUser)
     const [is_initialized, setInit] = useState(true)
-    const [tiers, setTiers] = useState([] as Tier[])
-
-    const {
-        is_loading,
-        data,
-     } = useFetch(
-        '/v1/tiers',
-        FetchMethods.GET,
-        true,
-        true,
-    )
 
     const LoginModal = useModal()
     const SignupModal = useModal()
@@ -123,19 +108,13 @@ export function SkyAuthProvider({ children }: Props) {
             SignupModal.close()
         }
 
-        if (data.length && tiers.length == 0) {
-            setTiers(data)
-        }
-
         setInit(false)
-    }, [LoginModal, SignupModal, CreateClientModal, user, is_initialized, data, tiers])
+    }, [LoginModal, SignupModal, CreateClientModal, user, is_initialized])
 
     return (
-        <SkyContext.Provider value={{ tiers }}>
-            <AuthContext.Provider value={value}>
-                {children}
-            </AuthContext.Provider>
-        </SkyContext.Provider>
+        <AuthContext.Provider value={value}>
+            {children}
+        </AuthContext.Provider>
     )
 }
 

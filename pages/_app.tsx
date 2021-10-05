@@ -2,7 +2,7 @@ import { useCallback, useState, useEffect, ReactElement } from 'react'
 import type { AppProps } from 'next/app'
 import dynamic from 'next/dynamic'
 import '../styles/globals.scss'
-import SkyContext from '../context/AppContext'
+import SkyContext, { SkyAppDataProvider } from '../context/AppContext'
 import { classNames } from 'utils/dom-helpers'
 import { SkyAuthProvider } from 'context/AuthContext'
 
@@ -57,32 +57,34 @@ function MyApp({ Component, pageProps }: AppProps) {
 
     return (
         <SafeHydrate>
-            <SkyAuthProvider>
-                {blur ? (
-                    <div
-                        className={classNames(
-                            'absolute z-10 backdrop-filter backdrop-blur-sm',
-                            'flex flex-col justify-center self-center w-screen h-screen',
-                            'transition transition-all ease-in-out duration-500',
-                            is_fetching
-                                ? ''
-                                : is_mounted
-                                ? 'opacity-0'
-                                : 'opacity-100'
-                        )}
-                    >
-                        <div className="self-center">
-                            <GridSpinner height={24} width={24} />
+            <SkyAppDataProvider>
+                <SkyAuthProvider>
+                    {blur ? (
+                        <div
+                            className={classNames(
+                                'absolute z-10 backdrop-filter backdrop-blur-sm',
+                                'flex flex-col justify-center self-center w-screen h-screen',
+                                'transition transition-all ease-in-out duration-500',
+                                is_fetching
+                                    ? ''
+                                    : is_mounted
+                                    ? 'opacity-0'
+                                    : 'opacity-100'
+                            )}
+                        >
+                            <div className="self-center">
+                                <GridSpinner height={24} width={24} />
+                            </div>
                         </div>
-                    </div>
-                ) : (
-                    ''
-                )}
-                <Component
-                    {...pageProps}
-                    onLanguageChange={onLanguageChange}
-                />
-            </SkyAuthProvider>
+                    ) : (
+                        ''
+                    )}
+                    <Component
+                        {...pageProps}
+                        onLanguageChange={onLanguageChange}
+                    />
+                </SkyAuthProvider>
+            </SkyAppDataProvider>
         </SafeHydrate>
     )
 }

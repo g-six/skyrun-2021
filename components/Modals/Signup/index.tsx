@@ -17,6 +17,7 @@ type FormValues = {
     password: string
     first_name: string
     last_name: string
+    name: string
 }
 
 const ModalProvider = createModal(
@@ -88,7 +89,7 @@ function SignupModal() {
     ) => {
         toggleLoading(true)
         try {
-            const { email, password, first_name, last_name } = values
+            const { email, password, name, first_name, last_name } = values
             const cognito_res: SignUpCommandOutput = await ctx.signup(
                 email,
                 password,
@@ -101,17 +102,12 @@ function SignupModal() {
                     email,
                     firstName: first_name,
                     lastName: last_name,
-                    phone: 'M-16',
-                    zip: 'AK-47',
-                    city: 'Kabul',
-                    state: 'Kandahar',
-                    country: 'Afghanistan',
                     cognitoId: cognito_res.UserSub,
                 }
                 const res = await api_fetch.doFetch({
                     tier,
                     user,
-                    name: [first_name, last_name].join(' '),
+                    name,
                 })
                 if (res) {
                     reset()
@@ -120,14 +116,14 @@ function SignupModal() {
             }
 
         } catch (e) {
-            const { name, message } = e as SubmitError
-            if (name == CognitoErrorTypes.UserExistsException) {
+            const { name: error_name, message } = e as SubmitError
+            if (error_name == CognitoErrorTypes.UserExistsException) {
                 setError('email', {
                     type: CognitoErrorTypes.UserExistsException,
                     message,
                 })
             }
-            if (name == CognitoErrorTypes.InvalidPasswordException) {
+            if (error_name == CognitoErrorTypes.InvalidPasswordException) {
                 setError('password', {
                     type: CognitoErrorTypes.InvalidPasswordException,
                     message,
@@ -234,6 +230,39 @@ function SignupModal() {
 
                             <fieldset className="pb-6">
                                 <label
+                                    htmlFor="business_name"
+                                    className={classNames(
+                                        'block font-bold text-gray-600',
+                                        errors.name?.type
+                                            ? 'text-red-700'
+                                            : ''
+                                    )}
+                                >
+                                    {translations.business_name_label}
+                                </label>
+                                <input
+                                    type="text"
+                                    id="business_name"
+                                    autoComplete="name"
+                                    className={classNames(
+                                        'mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm sm:text-sm border-gray-300 rounded-md',
+                                        errors.name?.type
+                                            ? 'border-red-300 bg-red-100'
+                                            : ''
+                                    )}
+                                    {...register('name', {
+                                        required: true,
+                                    })}
+                                />
+                                {errors.email?.type === 'required' && (
+                                    <span className="text-sm text-red-700">
+                                        Business name is required
+                                    </span>
+                                )}
+                            </fieldset>
+
+                            <fieldset className="pb-6">
+                                <label
                                     htmlFor="email-address"
                                     className={classNames(
                                         'block font-bold text-gray-600',
@@ -277,6 +306,7 @@ function SignupModal() {
                                     </span>
                                 )}
                             </fieldset>
+
                             <fieldset className="pb-6">
                                 <label
                                     htmlFor="password"

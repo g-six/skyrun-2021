@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CursorClickIcon } from '@heroicons/react/solid'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { CognitoErrorTypes } from 'services/CognitoErrorTypes'
@@ -10,12 +10,14 @@ import { FetchMethods, useFetch } from 'utils/fetch-helper'
 import { SubmitError } from '../types'
 import { Tier } from 'context/AppContext'
 import { SignUpCommandOutput } from '@aws-sdk/client-cognito-identity-provider'
+import { getTranslation } from 'utils/language-helper'
 
 type FormValues = {
     email: string
     password: string
     first_name: string
     last_name: string
+    name: string
 }
 
 const ModalProvider = createModal(
@@ -33,6 +35,20 @@ function SignupModal() {
     const ctx = useAuth()
     const [loading, toggleLoading] = useState(false)
     const [success, setSuccess] = useState(false)
+
+    const ui_text = {
+        title_bar: 'Signup',
+        promotional_header: 'Join us today as an early adopter and receive 50% off your first 3 months with AOT!',
+        first_name_label: 'First name',
+        last_name_label: 'Last name',
+        email_address_label: 'Email address',
+        password_label: 'Password',
+        business_name_label: 'Business name',
+        signup_button: 'Sign Up',
+    }
+
+    const [translations, setTranslations] = useState(ui_text)
+
     const api_fetch = useFetch('/v1/tenants', FetchMethods.POST, false)
     const {
         register,
@@ -44,6 +60,28 @@ function SignupModal() {
         mode: 'onChange',
     })
 
+    const { data: translation } = useFetch(
+        `/v1/contents?url=${encodeURI('https://cms.aot.plus/jsonapi/node/page_translation/c043c316-895c-4d7d-862c-40da5cbb91da')}`,
+        FetchMethods.GET,
+        true,
+        true
+    )
+
+    useEffect(() => {
+        if (translation.data?.attributes.field_en_us) {
+            setTranslations({
+                title_bar: getTranslation('title_bar', translation.data?.attributes.field_zh_cn),
+                promotional_header: getTranslation('promotional_header', translation.data?.attributes.field_zh_cn),
+                signup_button: getTranslation('signup_button', translation.data?.attributes.field_zh_cn),
+                first_name_label: getTranslation('first_name_label', translation.data?.attributes.field_zh_cn),
+                last_name_label: getTranslation('last_name_label', translation.data?.attributes.field_zh_cn),
+                email_address_label: getTranslation('email_address_label', translation.data?.attributes.field_zh_cn),
+                password_label: getTranslation('password_label', translation.data?.attributes.field_zh_cn),
+                business_name_label: getTranslation('business_name_label', translation.data?.attributes.field_zh_cn),
+            })
+        }
+    }, [translation])
+
     const { tier } = ctx.SignupModal.attributes as Record<string, string | Tier>
 
     const onSubmit: SubmitHandler<FormValues> = async (
@@ -51,7 +89,7 @@ function SignupModal() {
     ) => {
         toggleLoading(true)
         try {
-            const { email, password, first_name, last_name } = values
+            const { email, password, name, first_name, last_name } = values
             const cognito_res: SignUpCommandOutput = await ctx.signup(
                 email,
                 password,
@@ -64,17 +102,12 @@ function SignupModal() {
                     email,
                     firstName: first_name,
                     lastName: last_name,
-                    phone: 'M-16',
-                    zip: 'AK-47',
-                    city: 'Kabul',
-                    state: 'Kandahar',
-                    country: 'Afghanistan',
                     cognitoId: cognito_res.UserSub,
                 }
                 const res = await api_fetch.doFetch({
                     tier,
                     user,
-                    name: [first_name, last_name].join(' '),
+                    name,
                 })
                 if (res) {
                     reset()
@@ -83,14 +116,14 @@ function SignupModal() {
             }
 
         } catch (e) {
-            const { name, message } = e as SubmitError
-            if (name == CognitoErrorTypes.UserExistsException) {
+            const { name: error_name, message } = e as SubmitError
+            if (error_name == CognitoErrorTypes.UserExistsException) {
                 setError('email', {
                     type: CognitoErrorTypes.UserExistsException,
                     message,
                 })
             }
-            if (name == CognitoErrorTypes.InvalidPasswordException) {
+            if (error_name == CognitoErrorTypes.InvalidPasswordException) {
                 setError('password', {
                     type: CognitoErrorTypes.InvalidPasswordException,
                     message,
@@ -106,7 +139,7 @@ function SignupModal() {
                 <div className="bg-white shadow-xl overflow-hidden sm:rounded-md w-11/12 sm:w-2/3 lg:w-1/2 xl:w-1/3 m-auto relative py-8">
                     <div className="flex justify-between px-10 text-gray-500 absolute z-10 h-10 w-full">
                         <span className="inline-block self-center text-lg font-light text-gray-600">
-                            {success ? 'Congratulations!' : 'Sign Up'}
+                            {success ? 'Congratulations!' : translations.title_bar}
                         </span>
                         <SignupModalCloser className="self-center" />
                     </div>
@@ -121,8 +154,11 @@ function SignupModal() {
                         <form
                             method="POST"
                             onSubmit={handleSubmit(onSubmit)}
-                            className="z-20 pt-16 px-10"
+                            className="z-20 pt-12 px-10"
                         >
+                            <div className="alert bg-secondary text-white bg-opacity-80 px-3 py-2 rounded-md mb-6">
+                                {translations.promotional_header}
+                            </div>
                             <div className="pb-6 lg:flex">
                                 <fieldset className="pb-6 lg:pb-0 lg:w-1/2 lg:pr-2">
                                     <label
@@ -194,6 +230,39 @@ function SignupModal() {
 
                             <fieldset className="pb-6">
                                 <label
+                                    htmlFor="business_name"
+                                    className={classNames(
+                                        'block font-bold text-gray-600',
+                                        errors.name?.type
+                                            ? 'text-red-700'
+                                            : ''
+                                    )}
+                                >
+                                    {translations.business_name_label}
+                                </label>
+                                <input
+                                    type="text"
+                                    id="business_name"
+                                    autoComplete="name"
+                                    className={classNames(
+                                        'mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm sm:text-sm border-gray-300 rounded-md',
+                                        errors.name?.type
+                                            ? 'border-red-300 bg-red-100'
+                                            : ''
+                                    )}
+                                    {...register('name', {
+                                        required: true,
+                                    })}
+                                />
+                                {errors.email?.type === 'required' && (
+                                    <span className="text-sm text-red-700">
+                                        Business name is required
+                                    </span>
+                                )}
+                            </fieldset>
+
+                            <fieldset className="pb-6">
+                                <label
                                     htmlFor="email-address"
                                     className={classNames(
                                         'block font-bold text-gray-600',
@@ -202,7 +271,7 @@ function SignupModal() {
                                             : ''
                                     )}
                                 >
-                                    Email address
+                                    {translations.email_address_label}
                                 </label>
                                 <input
                                     type="text"
@@ -237,6 +306,7 @@ function SignupModal() {
                                     </span>
                                 )}
                             </fieldset>
+
                             <fieldset className="pb-6">
                                 <label
                                     htmlFor="password"
@@ -247,7 +317,7 @@ function SignupModal() {
                                             : ''
                                     )}
                                 >
-                                    Password
+                                    {translations.password_label}
                                 </label>
                                 <input
                                     type="password"
@@ -339,7 +409,7 @@ function SignupModal() {
                                             />
                                         )}
                                     </span>
-                                    Sign Up
+                                    {translations.signup_button}
                                 </button>
                             </div>
                         </form>

@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { Switch } from '@progress/kendo-react-inputs'
 import { Button, ButtonGroup } from '@progress/kendo-react-buttons'
 import { createModal } from 'components/Modals/ModalFactory'
-import { AuthContext, useAppContext } from 'context/AuthContext'
+import { AuthContext } from 'context/AuthContext'
+import { useAppContext } from 'context/AppContext'
 
 type SectionProps = {
     [key: string]: string

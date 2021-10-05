@@ -8,7 +8,7 @@ import { AuthContext, useAuth } from 'context/AuthContext'
 import { ModalWrapper } from '../ModalWrapper'
 import { FetchMethods, useFetch } from 'utils/fetch-helper'
 import { SubmitError } from '../types'
-import { Tier } from 'context/AppContext'
+import { Tier, useAppContext } from 'context/AppContext'
 import { SignUpCommandOutput } from '@aws-sdk/client-cognito-identity-provider'
 import { getTranslation } from 'utils/language-helper'
 
@@ -33,6 +33,7 @@ export const SignupModalCloser = ModalProvider.Closer
 
 function SignupModal() {
     const ctx = useAuth()
+    const { lang } = useAppContext()
     const [loading, toggleLoading] = useState(false)
     const [success, setSuccess] = useState(false)
 
@@ -68,19 +69,19 @@ function SignupModal() {
     )
 
     useEffect(() => {
-        if (translation.data?.attributes.field_en_us) {
+        if (lang && translation.data?.attributes[lang]) {
             setTranslations({
-                title_bar: getTranslation('title_bar', translation.data?.attributes.field_zh_cn),
-                promotional_header: getTranslation('promotional_header', translation.data?.attributes.field_zh_cn),
-                signup_button: getTranslation('signup_button', translation.data?.attributes.field_zh_cn),
-                first_name_label: getTranslation('first_name_label', translation.data?.attributes.field_zh_cn),
-                last_name_label: getTranslation('last_name_label', translation.data?.attributes.field_zh_cn),
-                email_address_label: getTranslation('email_address_label', translation.data?.attributes.field_zh_cn),
-                password_label: getTranslation('password_label', translation.data?.attributes.field_zh_cn),
-                business_name_label: getTranslation('business_name_label', translation.data?.attributes.field_zh_cn),
+                title_bar: getTranslation('title_bar', translation.data?.attributes[lang]),
+                promotional_header: getTranslation('promotional_header', translation.data?.attributes[lang]),
+                signup_button: getTranslation('signup_button', translation.data?.attributes[lang]),
+                first_name_label: getTranslation('first_name_label', translation.data?.attributes[lang]),
+                last_name_label: getTranslation('last_name_label', translation.data?.attributes[lang]),
+                email_address_label: getTranslation('email_address_label', translation.data?.attributes[lang]),
+                password_label: getTranslation('password_label', translation.data?.attributes[lang]),
+                business_name_label: getTranslation('business_name_label', translation.data?.attributes[lang]),
             })
         }
-    }, [translation])
+    }, [translation, lang])
 
     const { tier } = ctx.SignupModal.attributes as Record<string, string | Tier>
 

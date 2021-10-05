@@ -54,3 +54,17 @@
 .k-switch-on .k-switch-container {
     background-color: $primary-300;
 }
+
+nav {
+    .k-button.k-button-icontext {
+        font-size: 1.25rem;
+    }
+    .k-i-flag-icon {
+        font-size: 2.25rem;
+        margin-right: 0.25rem;
+    }
+}
+
+.k-popup {
+    border: none;
+}

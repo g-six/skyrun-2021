@@ -19,7 +19,11 @@
 @import "~@progress/kendo-theme-default/scss/button";
 @import "~@progress/kendo-theme-default/scss/switch";
 
+@import "~flag-icon-css/sass/flag-icon-base";
+@import "~flag-icon-css/sass/flag-icon.scss";
+
 @import './k-tabstrip';
+@import './k-dropdown';
 @import './dashboard';
 
 @import './buttons.scss';

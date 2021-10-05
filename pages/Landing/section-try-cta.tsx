@@ -1,5 +1,6 @@
 import { createModal } from 'components/Modals/ModalFactory'
-import { AuthContext, useAppContext } from 'context/AuthContext'
+import { useAppContext } from 'context/AppContext'
+import { AuthContext } from 'context/AuthContext'
 import { classNames } from 'utils/dom-helpers'
 import styles from '../../styles/Landing/section-try-cta.module.scss'
 

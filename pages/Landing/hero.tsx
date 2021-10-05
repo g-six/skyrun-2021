@@ -21,7 +21,7 @@ export default function LandingHero({
         () => (<span>{button_label}</span>)
     )
     return (
-        <div className="bg-hero-pattern">
+        <div className={styles.gradBg}>
             <div className={styles.gradHero}>
                 <div className={styles.spriteCircle} />
                 <main className="py-60 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-0 lg:px-8 text-white">

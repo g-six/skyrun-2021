@@ -16,7 +16,7 @@ describe('LoginModal', () => {
         act(() => {
             fireEvent.click(btn)
         })
-        const items = await screen.findAllByText('Forgot Password?')
+        const items = await screen.findAllByText('Forgot password?')
         expect(items).toHaveLength(1)
     })
 })

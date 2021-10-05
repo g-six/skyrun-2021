@@ -10,6 +10,8 @@ import { createModal } from '../ModalFactory'
 import { AuthContext, useAuth } from 'context/AuthContext'
 import { ModalWrapper } from '../ModalWrapper'
 import { SubmitError } from '../types'
+import { FetchMethods, useFetch } from 'utils/fetch-helper'
+import { getTranslation } from 'utils/language-helper'
 type FormValues = {
     email: string
     password?: string
@@ -35,6 +37,13 @@ const StyledMaskedTextBox = styled(MaskedTextBox)`
 function LoginModal() {
     const router = useRouter()
     const ctx = useAuth()
+    const [translations, setTranslations] = useState({
+        login_button: 'Login',
+        login_title: 'Login',
+        email_address_label: 'Email',
+        password_label: 'Password',
+        forgot_password_link: 'Forgot password?',
+    })
     const [loading, toggleLoading] = useState(false)
     const [forgot_mode, setForgotMode] = useState(false)
     const [new_password_mode, setNewPasswordMode] = useState(false)
@@ -47,6 +56,25 @@ function LoginModal() {
     } = useForm<FormValues>({
         mode: 'onChange',
     })
+
+    const { data: translation } = useFetch(
+        `/v1/contents?url=${encodeURI('https://cms.aot.plus/jsonapi/node/page_translation/1d1a8c44-463b-474e-bc06-fc22ce77ab27')}`,
+        FetchMethods.GET,
+        true,
+        true
+    )
+
+    useEffect(() => {
+        if (translation.data?.attributes.field_en_us) {
+            setTranslations({
+                login_button: getTranslation('login_button', translation.data?.attributes.field_zh_cn),
+                login_title: getTranslation('login_title', translation.data?.attributes.field_zh_cn),
+                email_address_label: getTranslation('email_address_label', translation.data?.attributes.field_zh_cn),
+                password_label: getTranslation('password_label', translation.data?.attributes.field_zh_cn),
+                forgot_password_link: getTranslation('forgot_password_link', translation.data?.attributes.field_zh_cn),
+            })
+        }
+    }, [translation])
 
     const onSubmitRequestReset: SubmitHandler<FormValues> = async (
         values: Record<string, string>
@@ -156,7 +184,7 @@ function LoginModal() {
                             </button>
                         ) : (
                             <span className="inline-block self-center text-lg font-extrabold text-gray-600">
-                                Login
+                                {translations.login_title}
                             </span>
                         )}
                         <LoginModalCloser className="self-center" />
@@ -174,7 +202,7 @@ function LoginModal() {
                                     errors.email?.type ? 'text-red-700' : ''
                                 )}
                             >
-                                Email address
+                                { translations.email_address_label }
                             </label>
                             <input
                                 type="text"
@@ -221,7 +249,7 @@ function LoginModal() {
                                             : ''
                                     )}
                                 >
-                                    Password
+                                    {translations.password_label}
                                 </label>
                                 <input
                                     type="password"
@@ -498,7 +526,7 @@ function LoginModal() {
                                         />
                                     )}
                                 </span>
-                                Login
+                                { translations.login_button }
                             </button>
                         ) : (
                             ''
@@ -510,7 +538,7 @@ function LoginModal() {
                                 className="mt-8"
                                 onClick={() => setForgotMode(true)}
                             >
-                                <span>Forgot Password?</span>
+                                <span>{translations.forgot_password_link}</span>
                             </button>
                         </div>
                     ) : (

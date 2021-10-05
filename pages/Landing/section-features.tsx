@@ -1,7 +1,7 @@
 import { classNames } from 'utils/dom-helpers'
 import styles from '../../styles/Landing/section-features.module.scss'
 
-type SectionProps = {
+export type SectionProps = {
     [key: string]: string
 }
 
@@ -51,11 +51,10 @@ export default function LandingFeaturesSection(props: SectionProps) {
                 <div className="lg:col-span-1">
                     <h1 className="mt-20 mb-10 lg:mb-5 text-5xl circular leading-none tracking-wide">
                         <span className="text-primary-dark">
-                            Scheduling &amp; <br />
-                            Booking System <br />
+                            {props.left_title}
                         </span>
                         <span className="text-primary-light">
-                            in your language
+                            {props.right_title}
                         </span>
                     </h1>
 
@@ -111,12 +110,10 @@ export default function LandingFeaturesSection(props: SectionProps) {
                     />
                     <h1 className="mt-20 mb-10 lg:mb-5 text-5xl circular leading-none tracking-wide">
                         <span className="text-primary-dark">
-                            All-in-one easy to <br />
-                            use{' '}
+                            {props.mid_left_title}{' '}
                         </span>
                         <span className="text-primary-light">
-                            business <br />
-                            management tools
+                            {props.mid_right_title}
                         </span>
                     </h1>
 

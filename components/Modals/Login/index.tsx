@@ -12,6 +12,7 @@ import { ModalWrapper } from '../ModalWrapper'
 import { SubmitError } from '../types'
 import { FetchMethods, useFetch } from 'utils/fetch-helper'
 import { getTranslation } from 'utils/language-helper'
+import { useAppContext } from 'context/AppContext'
 type FormValues = {
     email: string
     password?: string
@@ -37,6 +38,7 @@ const StyledMaskedTextBox = styled(MaskedTextBox)`
 function LoginModal() {
     const router = useRouter()
     const ctx = useAuth()
+    const { lang } = useAppContext()
     const [translations, setTranslations] = useState({
         login_button: 'Login',
         login_title: 'Login',
@@ -65,16 +67,16 @@ function LoginModal() {
     )
 
     useEffect(() => {
-        if (translation.data?.attributes.field_en_us) {
+        if (lang && translation.data?.attributes[lang]) {
             setTranslations({
-                login_button: getTranslation('login_button', translation.data?.attributes.field_zh_cn),
-                login_title: getTranslation('login_title', translation.data?.attributes.field_zh_cn),
-                email_address_label: getTranslation('email_address_label', translation.data?.attributes.field_zh_cn),
-                password_label: getTranslation('password_label', translation.data?.attributes.field_zh_cn),
-                forgot_password_link: getTranslation('forgot_password_link', translation.data?.attributes.field_zh_cn),
+                login_button: getTranslation('login_button', translation.data?.attributes[lang]),
+                login_title: getTranslation('login_title', translation.data?.attributes[lang]),
+                email_address_label: getTranslation('email_address_label', translation.data?.attributes[lang]),
+                password_label: getTranslation('password_label', translation.data?.attributes[lang]),
+                forgot_password_link: getTranslation('forgot_password_link', translation.data?.attributes[lang]),
             })
         }
-    }, [translation])
+    }, [translation, lang])
 
     const onSubmitRequestReset: SubmitHandler<FormValues> = async (
         values: Record<string, string>

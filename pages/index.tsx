@@ -10,6 +10,7 @@ import SignupModal from 'components/Modals/Signup'
 import LandingFeaturesSection from './Landing/section-features'
 import LandingSectionTestimonials from './Landing/section-testimonials'
 import LandingPricingSection from './Landing/section-pricing'
+import LandingSectionTryCTA from './Landing/section-try-cta'
 
 function Home() {
     const hero_props: LandingHeroProps = {
@@ -58,6 +59,7 @@ function Home() {
                 />
                 <LandingSectionTestimonials />
                 <LandingPricingSection />
+                <LandingSectionTryCTA />
             </main>
 
 

@@ -1,5 +1,5 @@
-import { MouseEvent, useState } from 'react'
-import { Switch, SwitchChangeEvent } from '@progress/kendo-react-inputs'
+import { useState } from 'react'
+import { Switch } from '@progress/kendo-react-inputs'
 import { Button, ButtonGroup } from '@progress/kendo-react-buttons'
 import { createModal } from 'components/Modals/ModalFactory'
 import { AuthContext, useAppContext } from 'context/AuthContext'
@@ -46,9 +46,9 @@ export default function LandingPricingSection(props: SectionProps) {
     }
 
     return (
-        <section className="py-20 pricing-plans bg-primary bg-opacity-10">
+        <section className="pt-20 pb-40 pricing-plans bg-primary bg-opacity-10">
             <div className="container m-auto">
-                <h3 className="text-center text-primary-dark drop-shadow text-5xl circular font-thin mb-8 mt-36">
+                <h3 className="text-center text-primary-dark drop-shadow text-5xl circular font-thin mb-8">
                     Pricing Plans
                 </h3>
                 <p className="text-center leading-relaxed">

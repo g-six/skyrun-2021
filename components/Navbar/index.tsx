@@ -1,14 +1,28 @@
-import { cloneElement, Fragment, ReactElement, useEffect, useState } from 'react'
+import {
+    cloneElement,
+    Fragment,
+    ReactElement,
+    useEffect,
+    useState,
+} from 'react'
 import Cookies from 'js-cookie'
 import Link from 'next/link'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { MenuIcon, XIcon } from '@heroicons/react/outline'
 import logout from 'services/logout'
 import LoginButton from 'components/Buttons/LoginButton'
-import SkyContext, { Language, SkyContextProps, useAppContext } from 'context/AppContext'
+import SkyContext, {
+    Language,
+    SkyContextProps,
+    useAppContext,
+} from 'context/AppContext'
 import { useAuth } from 'context/AuthContext'
 import SignupButton from 'components/Buttons/SignupButton'
-import { DropDownList, DropDownListChangeEvent, ListItemProps } from '@progress/kendo-react-dropdowns'
+import {
+    DropDownList,
+    DropDownListChangeEvent,
+    ListItemProps,
+} from '@progress/kendo-react-dropdowns'
 
 const navigation = [
     {
@@ -37,9 +51,9 @@ export interface Props {
 }
 
 interface Item {
-    text: string;
-    icon: string;
-    code: Language;
+    text: string
+    icon: string
+    code: Language
 }
 
 export default function Navbar({ current, nav_labels }: Props) {
@@ -48,8 +62,16 @@ export default function Navbar({ current, nav_labels }: Props) {
     const [mounted, setMounted] = useState(false)
     const [username, setUsername] = useState(Cookies.get('email'))
     const languages: Item[] = [
-        { text: 'EN', code: Language.EN, icon: 'flag-icon flag-icon-us flag-icon-squared' },
-        { text: 'ZH', code: Language.ZH, icon: 'flag-icon flag-icon-cn flag-icon-squared' },
+        {
+            text: 'EN',
+            code: Language.EN,
+            icon: 'flag-icon flag-icon-us flag-icon-squared',
+        },
+        {
+            text: 'ZH',
+            code: Language.ZH,
+            icon: 'flag-icon flag-icon-cn flag-icon-squared',
+        },
     ]
 
     async function killSession() {
@@ -70,20 +92,29 @@ export default function Navbar({ current, nav_labels }: Props) {
         item_props: ListItemProps
     ) {
         const index = item_props.index
-        const children = (<>
-            <i className={languages[index].icon} />
-            <span className="inline-block ml-2">{languages[index].text}</span>
-        </>)
+        const children = (
+            <>
+                <i className={languages[index].icon} />
+                <span className="inline-block ml-2">
+                    {languages[index].text}
+                </span>
+            </>
+        )
 
         return cloneElement(li, li.props, children)
     }
 
-    function renderSelectedLanguage(element: ReactElement<HTMLSpanElement>, value: Item) {
+    function renderSelectedLanguage(
+        element: ReactElement<HTMLSpanElement>,
+        value: Item
+    ) {
         if (!value) return element
-        const children = (<>
-            <i className={value.icon} />
-            <span className="inline-block ml-2">{value.text}</span>
-        </>)
+        const children = (
+            <>
+                <i className={value.icon} />
+                <span className="inline-block ml-2">{value.text}</span>
+            </>
+        )
 
         return cloneElement(element, element.props, children)
     }
@@ -101,7 +132,10 @@ export default function Navbar({ current, nav_labels }: Props) {
                     <></>
                 ) : (
                     <>
-                        <Disclosure as="nav" className="bg-white-800 circular">
+                        <Disclosure
+                            as="nav"
+                            className="bg-white-800 circular"
+                        >
                             {({ open }) => (
                                 <>
                                     <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
@@ -180,12 +214,23 @@ export default function Navbar({ current, nav_labels }: Props) {
                                                 <DropDownList
                                                     className="country-selector"
                                                     data={languages}
-                                                    defaultItem={languages && languages[0]}
-                                                    onChange={handleLanguageChange}
+                                                    defaultItem={
+                                                        languages &&
+                                                        languages[0]
+                                                    }
+                                                    onChange={
+                                                        handleLanguageChange
+                                                    }
                                                     textField="text"
-                                                    itemRender={renderLanguageOptions}
-                                                    valueRender={renderSelectedLanguage}
-                                                    valueMap={ value => value && value.code }
+                                                    itemRender={
+                                                        renderLanguageOptions
+                                                    }
+                                                    valueRender={
+                                                        renderSelectedLanguage
+                                                    }
+                                                    valueMap={(value) =>
+                                                        value && value.code
+                                                    }
                                                 />
 
                                                 <a

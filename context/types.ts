@@ -28,8 +28,15 @@ export interface SkyUser {
     zip?: string
 }
 
+export interface TenantInfo {
+    id: string
+    business_name: string
+    tier: Tier
+}
+
 export type AuthContextType = {
     user?: SkyUser
+    tenant?: TenantInfo
     LoginModal: ModalHook
     SignupModal: ModalHook
     CreateClientModal: ModalHook

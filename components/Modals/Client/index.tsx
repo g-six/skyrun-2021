@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { CognitoErrorTypes } from 'services/CognitoErrorTypes'
 import { createModal } from '../ModalFactory'
 import { AuthContext } from 'context/AuthContext'
 import { ModalWrapper } from '../ModalWrapper'
@@ -10,9 +9,6 @@ import {
 } from '@progress/kendo-react-layout'
 import GeneralForm from './GeneralForm'
 import Appointments from './Appointments'
-import { FetchMethods, useFetch } from 'utils/fetch-helper'
-
-
 
 const ModalProvider = createModal(
     AuthContext,
@@ -22,10 +18,10 @@ const ModalProvider = createModal(
             <i className="feather feather-plus mr-4" />
             <span className="circular">Create</span>
         </>
-    ), 
+    ),
     () => (
         <span className="inline-block w-6 h-6 text-primary text-center font-extralight">
-            <i className="feather feather-chevron-left "/>
+            <i className="feather feather-chevron-left " />
         </span>
     )
 )
@@ -35,8 +31,6 @@ export const CreateClientModalCloser = ModalProvider.Closer
 
 function CreateClientModal() {
     const [selected, setSelected] = useState<number>(0)
-    const api_fetch = useFetch('/v1/clients', FetchMethods.POST, false)
-
     const handleSelect = (e: TabStripSelectEventArguments) => {
         setSelected(e.selected)
     }
@@ -52,7 +46,8 @@ function CreateClientModal() {
                                 <li>Clients</li>
                             </ul>
                             <span className="inline-block self-center text-lg text-primary-dark">
-                                <CreateClientModalCloser className="self-center" /><span className="circular">New Client</span>
+                                <CreateClientModalCloser className="self-center" />
+                                <span className="circular">New Client</span>
                             </span>
                         </div>
                     </div>
@@ -72,9 +67,8 @@ function CreateClientModal() {
                                 <Appointments />
                             </div>
                         </TabStripTab>
-                        <TabStripTab title="Memberships"><GeneralForm /></TabStripTab>
-                        <TabStripTab title="Orders"><GeneralForm /></TabStripTab>
-
+                        <TabStripTab title="Memberships">WIP</TabStripTab>
+                        <TabStripTab title="Orders">WIP</TabStripTab>
                     </TabStrip>
                 </div>
             </ModalWrapper>

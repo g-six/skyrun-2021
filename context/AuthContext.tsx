@@ -8,8 +8,8 @@ import login from 'services/login'
 import logout from 'services/logout'
 import profile from 'services/profile'
 import signUp from 'services/UserPool'
-import { AuthContextType, SkyUser } from './types'
-import SkyContext, { Tier } from './AppContext'
+import { AuthContextType, SkyUser, TenantInfo } from './types'
+import { FetchMethods, useFetch } from 'utils/fetch-helper'
 
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 
@@ -27,11 +27,18 @@ export const NotAuthenticated = createWrapper(AuthContext, ctx => !ctx.user?.uui
 
 export function SkyAuthProvider({ children }: Props) {
     const [user, setUser] = useState<SkyUser>({} as unknown as SkyUser)
+    const [tenant, setTenant] = useState<TenantInfo>({} as unknown as TenantInfo)
     const [is_initialized, setInit] = useState(true)
 
     const LoginModal = useModal()
     const SignupModal = useModal()
     const CreateClientModal = useModal()
+    const { data } = useFetch(
+        '/v1/users/current',
+        FetchMethods.GET,
+        true,
+        true
+    )
 
     const value = {
         user,
@@ -49,10 +56,14 @@ export function SkyAuthProvider({ children }: Props) {
                     Cookies.set('access_token', AccessToken, { path: '/', expires: Number(
                         ExpiresIn
                     )})
-                    document.cookie = `id_token=${IdToken}; path=/; max-age=${Number(
-                        ExpiresIn
-                    )}`
-                    document.cookie = `refresh_token=${RefreshToken}; path=/`
+                    if (IdToken) {
+                        Cookies.set('id_token', IdToken, { path: '/', expires: Number(
+                            ExpiresIn
+                        )})
+                    }
+                    if (RefreshToken) {
+                        Cookies.set('refresh_token', RefreshToken, { path: '/' })
+                    }
                     setInit(true)
                 }
             }
@@ -79,6 +90,7 @@ export function SkyAuthProvider({ children }: Props) {
 
             return output || false
         },
+        tenant,
         CreateClientModal,
         LoginModal,
         SignupModal,
@@ -95,7 +107,6 @@ export function SkyAuthProvider({ children }: Props) {
                 })
             }
         }
-
         
         if (is_initialized) {
             if (!user?.uuid) {
@@ -108,8 +119,21 @@ export function SkyAuthProvider({ children }: Props) {
             SignupModal.close()
         }
 
+
+        if (data.tenants && data.tenants[0] && !tenant.business_name) {
+            setTenant({
+                id: data.tenants[0].id,
+                business_name: data.tenants[0].name,
+                tier: data.tenants[0].tier,
+            })
+            setUser({
+                ...user,
+                email: data.userInfo.email,
+            })
+        }
+
         setInit(false)
-    }, [LoginModal, SignupModal, CreateClientModal, user, is_initialized])
+    }, [LoginModal, SignupModal, CreateClientModal, user, is_initialized, tenant, data])
 
     return (
         <AuthContext.Provider value={value}>

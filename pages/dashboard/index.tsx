@@ -24,18 +24,6 @@ function Dashboard({
     const router = useRouter()
     const auth = useAuth()
     const { user } = auth
-    const { data } = useFetch(
-        '/v1/users/current',
-        FetchMethods.GET,
-        true,
-        true
-    )
-
-    useEffect(() => {
-        if (data && data.userInfo) {
-            const { id } = data.userInfo
-        }
-    }, [data])
 
     return (
         <>
@@ -57,14 +45,15 @@ function Dashboard({
                         <AppBarSection className="flex-grow">
                             {user?.first_name ? (
                                 <h1 className="text-2xl text-gray-700">
-                                    {router.pathname.substr(1) === 'dashboard'
+                                    {router.pathname.substr(1) ===
+                                    'dashboard'
                                         ? `Welcome, ${user.first_name}!`
                                         : toTitleCase(
-                                            router.pathname.split('/')[
-                                                router.pathname.split('/')
-                                                    .length - 1
-                                            ]
-                                        )}
+                                              router.pathname.split('/')[
+                                                  router.pathname.split('/')
+                                                      .length - 1
+                                              ]
+                                          )}
                                 </h1>
                             ) : (
                                 ''

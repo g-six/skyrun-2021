@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { FormEvent, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { classNames } from 'utils/dom-helpers'
 import { AuthContext, useAuth } from 'context/AuthContext'
@@ -6,6 +6,7 @@ import { CognitoErrorTypes } from 'services/CognitoErrorTypes'
 import { SubmitError } from '../types'
 import { GeneralFormValues } from './types'
 import { createModal } from '../ModalFactory'
+import { FetchMethods, useFetch } from 'utils/fetch-helper'
 
 const ModalProvider = createModal(
     AuthContext,
@@ -15,9 +16,11 @@ const ModalProvider = createModal(
             <i className="feather feather-plus mr-4" />
             <span className="circular">Create</span>
         </>
-    ), 
+    ),
     () => (
-        <span className="border border-gray-300 rounded-lg py-3 inline-block mr-3 px-10">Cancel</span>
+        <span className="border border-gray-300 rounded-lg py-3 inline-block mr-3 px-10">
+            Cancel
+        </span>
     )
 )
 
@@ -33,8 +36,10 @@ function GeneralForm() {
         setError,
         reset,
     } = useForm<GeneralFormValues>({
-        mode: 'onChange',
+        mode: 'onSubmit',
     })
+
+    const api_fetch = useFetch('/v1/clients', FetchMethods.POST, false)
 
     const onSubmit: SubmitHandler<GeneralFormValues> = async (
         values: Record<string, string>
@@ -42,11 +47,25 @@ function GeneralForm() {
         toggleLoading(true)
         try {
             const { email, notes, phone, first_name, last_name } = values
+            const { tenant } = ctx
+
+            const res = await api_fetch.doFetch({
+                tenant,
+                user: {
+                    firstName: first_name,
+                    lastName: last_name,
+                    email,
+                    phone,
+                },
+                notes,
+            })
+
+            if (res) {
+                reset()
+                setSuccess(true)
+            }
         } catch (e: unknown) {
-            const {
-                name,
-                message,
-            } = e as SubmitError
+            const { name, message } = e as SubmitError
             if (name == CognitoErrorTypes.UserExistsException) {
                 setError('email', {
                     type: CognitoErrorTypes.UserExistsException,
@@ -58,19 +77,14 @@ function GeneralForm() {
     }
 
     return (
-        <form
-            method="POST"
-            onSubmit={handleSubmit(onSubmit)}
-        >
+        <form method="POST" onSubmit={handleSubmit(onSubmit)}>
             <div className="pb-6 lg:flex">
                 <fieldset className="pb-6 lg:pb-0 lg:w-1/2 lg:pr-4">
                     <label
                         htmlFor="first-name"
                         className={classNames(
                             'block text-lg',
-                            errors.first_name?.type
-                                ? 'text-red-700'
-                                : ''
+                            errors.first_name?.type ? 'text-red-700' : ''
                         )}
                     >
                         First name
@@ -89,8 +103,7 @@ function GeneralForm() {
                             required: true,
                         })}
                     />
-                    {errors.first_name?.type ===
-                        'required' && (
+                    {errors.first_name?.type === 'required' && (
                         <span className="text-sm text-red-700">
                             First name is required
                         </span>
@@ -101,9 +114,7 @@ function GeneralForm() {
                         htmlFor="last-name"
                         className={classNames(
                             'block text-lg',
-                            errors.last_name?.type
-                                ? 'text-red-700'
-                                : ''
+                            errors.last_name?.type ? 'text-red-700' : ''
                         )}
                     >
                         Last name
@@ -122,8 +133,7 @@ function GeneralForm() {
                             required: true,
                         })}
                     />
-                    {errors.last_name?.type ===
-                        'required' && (
+                    {errors.last_name?.type === 'required' && (
                         <span className="text-sm text-red-700">
                             Last name is required
                         </span>
@@ -132,52 +142,12 @@ function GeneralForm() {
             </div>
 
             <div className="pb-6 lg:flex">
-                <fieldset className="pb-6 lg:pb-0 lg:w-1/2 lg:pr-4">
-                    <label
-                        htmlFor="phone"
-                        className={classNames(
-                            'block text-lg',
-                            errors.phone?.type
-                                ? 'text-red-700'
-                                : ''
-                        )}
-                    >
-                        Phone
-                    </label>
-                    <input
-                        type="text"
-                        id="phone"
-                        autoComplete="phone"
-                        className={classNames(
-                            'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
-                            errors.phone?.type
-                                ? 'border-red-300 bg-red-100'
-                                : ''
-                        )}
-                        {...register('phone', {
-                            required: true,
-                        })}
-                    />
-                    {errors.phone?.type === 'required' && (
-                        <span className="text-sm text-red-700">
-                            Phone is required
-                        </span>
-                    )}
-                    {errors.phone?.type === 'pattern' && (
-                        <span className="text-sm text-red-700">
-                            A valid phone is required
-                        </span>
-                    )}
-                </fieldset>
-
-                <fieldset className="lg:w-1/2 lg:pl-4">
+                <fieldset className="lg:w-1/2 lg:pr-4">
                     <label
                         htmlFor="email-address"
                         className={classNames(
                             'block text-lg',
-                            errors.email?.type
-                                ? 'text-red-700'
-                                : ''
+                            errors.email?.type ? 'text-red-700' : ''
                         )}
                     >
                         Email
@@ -215,6 +185,34 @@ function GeneralForm() {
                         </span>
                     )}
                 </fieldset>
+                <fieldset className="pb-6 lg:pb-0 lg:w-1/2 lg:pl-4">
+                    <label
+                        htmlFor="phone"
+                        className={classNames(
+                            'block text-lg',
+                            errors.phone?.type ? 'text-red-700' : ''
+                        )}
+                    >
+                        Phone
+                    </label>
+                    <input
+                        type="text"
+                        id="phone"
+                        autoComplete="phone"
+                        className={classNames(
+                            'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
+                            errors.phone?.type
+                                ? 'border-red-300 bg-red-100'
+                                : ''
+                        )}
+                        {...register('phone')}
+                    />
+                    {errors.phone?.type === 'pattern' && (
+                        <span className="text-sm text-red-700">
+                            A valid phone is required
+                        </span>
+                    )}
+                </fieldset>
             </div>
 
             <fieldset className="pb-6">
@@ -222,9 +220,7 @@ function GeneralForm() {
                     htmlFor="notes"
                     className={classNames(
                         'block text-lg',
-                        errors.notes?.type
-                            ? 'text-red-700'
-                            : ''
+                        errors.notes?.type ? 'text-red-700' : ''
                     )}
                 >
                     Notes
@@ -250,11 +246,8 @@ function GeneralForm() {
             </fieldset>
 
             <div>
-                {Object.values(
-                    CognitoErrorTypes
-                ).includes(
-                    errors.email
-                        ?.type as CognitoErrorTypes
+                {Object.values(CognitoErrorTypes).includes(
+                    errors.email?.type as CognitoErrorTypes
                 ) ? (
                     <div className="bg-red-100 rounded px-3 py-1 mb-5">
                         {errors.email?.message && (
@@ -280,7 +273,6 @@ function GeneralForm() {
                                 ? 'bg-primary-light'
                                 : 'bg-primary hover:bg-primary-dark focus:ring-2 focus:ring-offset-2 focus:ring-primary-light'
                         )}
-                        onClick={handleSubmit(onSubmit)}
                     >
                         Save
                     </button>

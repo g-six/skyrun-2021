@@ -40,8 +40,9 @@ export function action<T extends object, Props extends object = {}>(
                 onClick={action}
                 className={className}
                 disabled={disabled}
+                type="button"
             >
-                <ButtonElements {...props as unknown as Props} />
+                <ButtonElements {...(props as unknown as Props)} />
             </button>
         )
     }

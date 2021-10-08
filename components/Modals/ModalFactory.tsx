@@ -28,14 +28,14 @@ export function createModal<T extends object>(
         ),
         Opener: action(OpenerComponent, context, (ctx) => {
             if (attributes) {
-                (ctx[name] as unknown as ModalHook).setAttributes(attributes)
+                ;(ctx[name] as unknown as ModalHook).setAttributes(
+                    attributes
+                )
             }
             return (ctx[name] as unknown as ModalHook).open()
         }),
-        Closer: action(
-            CloserComponent,
-            context,
-            (ctx) => (ctx[name] as unknown as ModalHook).close()
+        Closer: action(CloserComponent, context, (ctx) =>
+            (ctx[name] as unknown as ModalHook).close()
         ),
     }
 }

@@ -20,10 +20,10 @@ export default function LandingSectionTestimonials() {
                         <blockquote className="text-justify leading-relaxed text-gray-400">
                             Always on time just seemed so user-friendly for
                             clients and staff. Everything from managing the
-                            waitlist and doing the late cancels to inputting the
-                            schedule is very straightforward. A new staff member
-                            could get on to AOT and do whatever they needed to
-                            do without much training.
+                            waitlist and doing the late cancels to inputting
+                            the schedule is very straightforward. A new
+                            staff member could get on to AOT and do whatever
+                            they needed to do without much training.
                             <figcaption className="flex mt-8">
                                 <div className="w-12 h-12 rounded-full bg-primary" />
                                 <div className="w-auto pl-3">
@@ -41,10 +41,10 @@ export default function LandingSectionTestimonials() {
                         <blockquote className="text-justify leading-relaxed text-gray-400">
                             Always on time just seemed so user-friendly for
                             clients and staff. Everything from managing the
-                            waitlist and doing the late cancels to inputting the
-                            schedule is very straightforward. A new staff member
-                            could get on to AOT and do whatever they needed to
-                            do without much training.
+                            waitlist and doing the late cancels to inputting
+                            the schedule is very straightforward. A new
+                            staff member could get on to AOT and do whatever
+                            they needed to do without much training.
                             <figcaption className="flex mt-8">
                                 <div className="w-12 h-12 rounded-full bg-pink-500" />
                                 <div className="w-auto pl-3">

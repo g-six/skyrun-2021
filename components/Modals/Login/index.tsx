@@ -20,7 +20,9 @@ type FormValues = {
     code?: string
 }
 
-const ModalProvider = createModal(AuthContext, 'LoginModal', () => (<>Login</>))
+const ModalProvider = createModal(AuthContext, 'LoginModal', () => (
+    <>Login</>
+))
 
 export const LoginModalOpener = ModalProvider.Opener
 export const LoginModalCloser = ModalProvider.Closer
@@ -60,7 +62,9 @@ function LoginModal() {
     })
 
     const { data: translation } = useFetch(
-        `/v1/contents?url=${encodeURI('https://cms.aot.plus/jsonapi/node/page_translation/1d1a8c44-463b-474e-bc06-fc22ce77ab27')}`,
+        `/v1/contents?url=${encodeURI(
+            'https://cms.aot.plus/jsonapi/node/page_translation/1d1a8c44-463b-474e-bc06-fc22ce77ab27'
+        )}`,
         FetchMethods.GET,
         true,
         true
@@ -69,11 +73,26 @@ function LoginModal() {
     useEffect(() => {
         if (lang && translation.data?.attributes[lang]) {
             setTranslations({
-                login_button: getTranslation('login_button', translation.data?.attributes[lang]),
-                login_title: getTranslation('login_title', translation.data?.attributes[lang]),
-                email_address_label: getTranslation('email_address_label', translation.data?.attributes[lang]),
-                password_label: getTranslation('password_label', translation.data?.attributes[lang]),
-                forgot_password_link: getTranslation('forgot_password_link', translation.data?.attributes[lang]),
+                login_button: getTranslation(
+                    'login_button',
+                    translation.data?.attributes[lang]
+                ),
+                login_title: getTranslation(
+                    'login_title',
+                    translation.data?.attributes[lang]
+                ),
+                email_address_label: getTranslation(
+                    'email_address_label',
+                    translation.data?.attributes[lang]
+                ),
+                password_label: getTranslation(
+                    'password_label',
+                    translation.data?.attributes[lang]
+                ),
+                forgot_password_link: getTranslation(
+                    'forgot_password_link',
+                    translation.data?.attributes[lang]
+                ),
             })
         }
     }, [translation, lang])
@@ -115,9 +134,7 @@ function LoginModal() {
                     type: CognitoErrorTypes.InvalidParameterException,
                     message,
                 })
-            } else if (
-                name == CognitoErrorTypes.InvalidPasswordException
-            ) {
+            } else if (name == CognitoErrorTypes.InvalidPasswordException) {
                 setError('new_password', {
                     type: CognitoErrorTypes.InvalidPasswordException,
                     message,
@@ -204,7 +221,7 @@ function LoginModal() {
                                     errors.email?.type ? 'text-red-700' : ''
                                 )}
                             >
-                                { translations.email_address_label }
+                                {translations.email_address_label}
                             </label>
                             <input
                                 type="text"
@@ -528,7 +545,7 @@ function LoginModal() {
                                         />
                                     )}
                                 </span>
-                                { translations.login_button }
+                                {translations.login_button}
                             </button>
                         ) : (
                             ''
@@ -540,7 +557,9 @@ function LoginModal() {
                                 className="mt-8"
                                 onClick={() => setForgotMode(true)}
                             >
-                                <span>{translations.forgot_password_link}</span>
+                                <span>
+                                    {translations.forgot_password_link}
+                                </span>
                             </button>
                         </div>
                     ) : (

@@ -23,9 +23,9 @@ type FormValues = {
 const ModalProvider = createModal(
     AuthContext,
     'SignupModal',
-    () => (<span>Try it for free</span>),
+    () => <span>Try it for free</span>,
     undefined,
-    undefined,
+    undefined
 )
 
 export const SignupModalOpener = ModalProvider.Opener
@@ -39,7 +39,8 @@ function SignupModal() {
 
     const ui_text = {
         title_bar: 'Signup',
-        promotional_header: 'Join us today as an early adopter and receive 50% off your first 3 months with AOT!',
+        promotional_header:
+            'Join us today as an early adopter and receive 50% off your first 3 months with AOT!',
         first_name_label: 'First name',
         last_name_label: 'Last name',
         email_address_label: 'Email address',
@@ -62,7 +63,9 @@ function SignupModal() {
     })
 
     const { data: translation } = useFetch(
-        `/v1/contents?url=${encodeURI('https://cms.aot.plus/jsonapi/node/page_translation/c043c316-895c-4d7d-862c-40da5cbb91da')}`,
+        `/v1/contents?url=${encodeURI(
+            'https://cms.aot.plus/jsonapi/node/page_translation/c043c316-895c-4d7d-862c-40da5cbb91da'
+        )}`,
         FetchMethods.GET,
         true,
         true
@@ -71,19 +74,46 @@ function SignupModal() {
     useEffect(() => {
         if (lang && translation.data?.attributes[lang]) {
             setTranslations({
-                title_bar: getTranslation('title_bar', translation.data?.attributes[lang]),
-                promotional_header: getTranslation('promotional_header', translation.data?.attributes[lang]),
-                signup_button: getTranslation('signup_button', translation.data?.attributes[lang]),
-                first_name_label: getTranslation('first_name_label', translation.data?.attributes[lang]),
-                last_name_label: getTranslation('last_name_label', translation.data?.attributes[lang]),
-                email_address_label: getTranslation('email_address_label', translation.data?.attributes[lang]),
-                password_label: getTranslation('password_label', translation.data?.attributes[lang]),
-                business_name_label: getTranslation('business_name_label', translation.data?.attributes[lang]),
+                title_bar: getTranslation(
+                    'title_bar',
+                    translation.data?.attributes[lang]
+                ),
+                promotional_header: getTranslation(
+                    'promotional_header',
+                    translation.data?.attributes[lang]
+                ),
+                signup_button: getTranslation(
+                    'signup_button',
+                    translation.data?.attributes[lang]
+                ),
+                first_name_label: getTranslation(
+                    'first_name_label',
+                    translation.data?.attributes[lang]
+                ),
+                last_name_label: getTranslation(
+                    'last_name_label',
+                    translation.data?.attributes[lang]
+                ),
+                email_address_label: getTranslation(
+                    'email_address_label',
+                    translation.data?.attributes[lang]
+                ),
+                password_label: getTranslation(
+                    'password_label',
+                    translation.data?.attributes[lang]
+                ),
+                business_name_label: getTranslation(
+                    'business_name_label',
+                    translation.data?.attributes[lang]
+                ),
             })
         }
     }, [translation, lang])
 
-    const { tier } = ctx.SignupModal.attributes as Record<string, string | Tier>
+    const { tier } = ctx.SignupModal.attributes as Record<
+        string,
+        string | Tier
+    >
 
     const onSubmit: SubmitHandler<FormValues> = async (
         values: Record<string, string>
@@ -91,12 +121,12 @@ function SignupModal() {
         toggleLoading(true)
         try {
             const { email, password, name, first_name, last_name } = values
-            const cognito_res: SignUpCommandOutput = await ctx.signup(
+            const cognito_res: SignUpCommandOutput = (await ctx.signup(
                 email,
                 password,
                 first_name,
                 last_name
-            ) as SignUpCommandOutput
+            )) as SignUpCommandOutput
 
             if (cognito_res) {
                 const user = {
@@ -115,7 +145,6 @@ function SignupModal() {
                     setSuccess(true)
                 }
             }
-
         } catch (e) {
             const { name: error_name, message } = e as SubmitError
             if (error_name == CognitoErrorTypes.UserExistsException) {
@@ -140,7 +169,9 @@ function SignupModal() {
                 <div className="bg-white shadow-xl overflow-hidden sm:rounded-md w-11/12 sm:w-2/3 lg:w-1/2 xl:w-1/3 m-auto relative py-8">
                     <div className="flex justify-between px-10 text-gray-500 absolute z-10 h-10 w-full">
                         <span className="inline-block self-center text-lg font-light text-gray-600">
-                            {success ? 'Congratulations!' : translations.title_bar}
+                            {success
+                                ? 'Congratulations!'
+                                : translations.title_bar}
                         </span>
                         <SignupModalCloser className="self-center" />
                     </div>

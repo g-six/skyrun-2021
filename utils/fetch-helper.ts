@@ -44,20 +44,25 @@ export function useFetch<Body = any, Result = any>(
             }
 
             setLoading(true)
-            const response = await fetch(fetchPath(path) + query, req_init)
 
-            if (expects_json) {
-                try {
-                    setData((await response.json()) as Result)
-                } catch (e) {
-                    setData({ error: 'API error' } as unknown as 
-                    Result)
+            try {
+                const response = await fetch(fetchPath(path) + query, req_init)
+    
+                if (expects_json) {
+                    try {
+                        setData((await response.json()) as Result)
+                    } catch (e) {
+                        setData({ error: 'API error' } as unknown as 
+                        Result)
+                    }
                 }
+    
+                setLoading(false)
+                setStatus(response.status)
+                return response
+            } catch (e) {
+                console.error('doFetch:', e.message)
             }
-
-            setLoading(false)
-            setStatus(response.status)
-            return response
         },
         [method, path, expects_json]
     )

@@ -2,7 +2,7 @@ import { useCallback, useState, useEffect, ReactElement } from 'react'
 import type { AppProps } from 'next/app'
 import dynamic from 'next/dynamic'
 import '../styles/globals.scss'
-import SkyContext from '../context/AppContext'
+import SkyContext, { SkyAppDataProvider } from '../context/AppContext'
 import { classNames } from 'utils/dom-helpers'
 import { SkyAuthProvider } from 'context/AuthContext'
 
@@ -57,7 +57,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
     return (
         <SafeHydrate>
-            <SkyContext.Provider value={[context, setContext]}>
+            <SkyAppDataProvider>
                 <SkyAuthProvider>
                     {blur ? (
                         <div
@@ -84,7 +84,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                         onLanguageChange={onLanguageChange}
                     />
                 </SkyAuthProvider>
-            </SkyContext.Provider>
+            </SkyAppDataProvider>
         </SafeHydrate>
     )
 }

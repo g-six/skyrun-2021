@@ -6,6 +6,7 @@ import refreshToken from './use-refresh-token'
 
 export interface UserModel {
     uuid: string
+    email: string
     given_name: string
     family_name: string
 }
@@ -18,6 +19,7 @@ async function profile() {
         const tokens = await refreshToken({ region, ClientId })
         if (tokens?.AuthenticationResult) {
             Cookies.set('access_token', tokens?.AuthenticationResult.AccessToken as string)
+            Cookies.set('id_token', tokens?.AuthenticationResult.IdToken as string)
         } else {
             return false
         }
@@ -46,12 +48,14 @@ async function profile() {
                     uuid: Username,
                     given_name: UserAttributes?.find((attribute: AttributeType) => attribute.Name === 'given_name')?.Value as string,
                     family_name: UserAttributes?.find((attribute: AttributeType) => attribute.Name === 'family_name')?.Value as string,
+                    email: UserAttributes?.find((attribute: AttributeType) => attribute.Name === 'email')?.Value as string,
                 }
             }
         } catch (e) {
             const { name } = e as ServiceError
             if (name == CognitoErrorTypes.NotAuthorizedException) {
                 Cookies.remove('access_token')
+                Cookies.remove('id_token')
                 return user as unknown as UserModel
             }
             console.error(e)

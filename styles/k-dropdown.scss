@@ -1,0 +1,31 @@
+.k-dropdown .k-dropdown-wrap,
+.k-dropdowntree .k-dropdown-wrap {
+    background: none;
+    border: none;
+}
+
+.country-selector {
+    &.k-dropdown {
+        height: 2.25rem;
+        line-height: 2.25rem;
+        width: auto;
+        .k-dropdown-wrap,
+        .k-dropdown-wrap.k-state-focused,
+        .k-dropdown-wrap:hover {
+            background: none;
+            border: none;
+            box-shadow: none;
+        }
+        .flag-icon {
+            border-radius: 50%;
+            font-size: 2.25rem;
+            line-height: 2.25rem;
+            width: 2.25rem;
+        }
+        .k-input,
+        .k-select {
+            height: 2.25rem;
+            padding: 0;
+        }
+    }
+}

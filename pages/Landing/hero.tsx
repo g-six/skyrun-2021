@@ -1,10 +1,12 @@
+import { createModal } from 'components/Modals/ModalFactory'
+import { AuthContext } from 'context/AuthContext'
 import styles from '../../styles/Landing/hero.module.scss'
 export interface Props {
     title_left: string
     title_center: string
     title_right: string
     subtitle: string
-    button_label: string
+    button_label: JSX.Element
 }
 export default function LandingHero({
     title_center,
@@ -13,8 +15,11 @@ export default function LandingHero({
     subtitle,
     button_label,
 }: Props) {
+    const ModalProvider = createModal(AuthContext, 'SignupModal', () => (
+        <span>{button_label}</span>
+    ))
     return (
-        <div className="bg-hero-pattern">
+        <div className={styles.gradBg}>
             <div className={styles.gradHero}>
                 <div className={styles.spriteCircle} />
                 <main className="py-60 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-0 lg:px-8 text-white">
@@ -36,19 +41,15 @@ export default function LandingHero({
                         </p>
                         <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
                             <div className="overflow-hidden ">
-                                <a
-                                    href="#"
-                                    className="
-                                shadow w-full flex items-center justify-center 
+                                <ModalProvider.Opener
+                                    className="shadow w-full flex items-center justify-center 
                                 px-6 py-4 text-base text-white font-bold
                                 bg-primary border rounded-full
                                 transition duration-300 ease-in-out
                                 hover:bg-transparent border-solid border-primary 
                                 hover:text-primary
                                 md:text-xl md:px-10"
-                                >
-                                    {button_label}
-                                </a>
+                                />
                             </div>
                         </div>
                     </div>

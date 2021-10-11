@@ -5,6 +5,7 @@
 .env*.local
 .env
 kendo-ui-license.txt
+package-lock.json
 
 # Node artifact files
 node_modules/

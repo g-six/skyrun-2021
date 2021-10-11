@@ -1,4 +1,4 @@
-import { useCallback, useContext, useMemo } from 'react'
+import { ReactNode, useCallback, useContext, useMemo } from 'react'
 import { JSXProvider, withClass } from 'components/types'
 import Link from 'next/link'
 
@@ -20,7 +20,7 @@ export function link<Props extends object = {}>(
 }
 
 export function action<T extends object, Props extends object = {}>(
-    label: string | JSXProvider<Props>,
+    ButtonElements: () => JSX.Element,
     context: React.Context<T>,
     consumer: (ctx: T) => void,
     disabledConsumer?: (ctx: T) => boolean
@@ -40,10 +40,9 @@ export function action<T extends object, Props extends object = {}>(
                 onClick={action}
                 className={className}
                 disabled={disabled}
+                type="button"
             >
-                {typeof label === 'string'
-                    ? label
-                    : label(props as unknown as Props)}
+                <ButtonElements {...(props as unknown as Props)} />
             </button>
         )
     }

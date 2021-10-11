@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
+import Cookies from 'js-cookie'
 import { AuthenticationResultType, InitiateAuthCommandOutput, SignUpCommandOutput } from '@aws-sdk/client-cognito-identity-provider'
 import { createWrapper } from 'components/LogicalWrapperFactory'
 import useModal from 'components/Modals/useModal'
@@ -7,7 +8,7 @@ import login from 'services/login'
 import logout from 'services/logout'
 import profile from 'services/profile'
 import signUp from 'services/UserPool'
-import { AuthContextType, SkyUser } from './types'
+import { AuthContextType, SkyUser, TenantInfo } from './types'
 import { FetchMethods, useFetch } from 'utils/fetch-helper'
 
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType)
@@ -26,21 +27,18 @@ export const NotAuthenticated = createWrapper(AuthContext, ctx => !ctx.user?.uui
 
 export function SkyAuthProvider({ children }: Props) {
     const [user, setUser] = useState<SkyUser>({} as unknown as SkyUser)
+    const [tenant, setTenant] = useState<TenantInfo>({} as unknown as TenantInfo)
     const [is_initialized, setInit] = useState(true)
-    const {
-        is_loading,
-        data,
-        status,
-        doFetch,
-     } = useFetch(
-        '/v1/tenants',
-        FetchMethods.POST,
-        true,
-        true,
-    )
+
     const LoginModal = useModal()
     const SignupModal = useModal()
     const CreateClientModal = useModal()
+    const { data } = useFetch(
+        '/v1/users/current',
+        FetchMethods.GET,
+        true,
+        true
+    )
 
     const value = {
         user,
@@ -51,46 +49,48 @@ export function SkyAuthProvider({ children }: Props) {
 
             if (AuthenticationResult) {
                 const { IdToken, AccessToken, ExpiresIn, RefreshToken } = AuthenticationResult
-                document.cookie = `email=${email}; path=/; max-age=${Number(
-                    ExpiresIn
-                )}`
-                document.cookie = `access_token=${AccessToken}; path=/; max-age=${Number(
-                    ExpiresIn
-                )}`
-                document.cookie = `refresh_token=${RefreshToken}; path=/`
-                document.cookie = `id_token=${IdToken}; path=/`
-                setInit(true)
-
-                const t = await doFetch({
-                    id: 'asd'
-                }, undefined)
+                if (AccessToken) {
+                    Cookies.set('email', email, {  path: '/', expires: Number(
+                        ExpiresIn
+                    )})
+                    Cookies.set('access_token', AccessToken, { path: '/', expires: Number(
+                        ExpiresIn
+                    )})
+                    if (IdToken) {
+                        Cookies.set('id_token', IdToken, { path: '/', expires: Number(
+                            ExpiresIn
+                        )})
+                    }
+                    if (RefreshToken) {
+                        Cookies.set('refresh_token', RefreshToken, { path: '/' })
+                    }
+                    setInit(true)
+                }
             }
             return AuthenticationResult || false
         },
         confirmForgotPassword: async (email: string, new_password: string, code: string) => {
             const res = await confirmForgotPassword(email, new_password, code)
-            console.log('confirmForgotPassword:', res)
             return res
         },
         forgotPassword: async (email: string) => {
             const x = await forgotPassword({ email })
-            console.log(x)
         },
         logout: async () => {
             await logout()
             document.location.href = '/'
         },
         profile,
-        signup: async (email: string, password: string, given_name: string, family_name: string): Promise<string | boolean> => {
-            const {
-                UserSub,                
-            }: SignUpCommandOutput = await signUp({ email, password, given_name, family_name })
+        signup: async (email: string, password: string, given_name: string, family_name: string): Promise<SignUpCommandOutput | boolean> => {
+            const output: SignUpCommandOutput = await signUp({ email, password, given_name, family_name })
 
-            if (UserSub) {
+            if (output.UserSub) {
                 setInit(true)
             }
-            return UserSub || false
+
+            return output || false
         },
+        tenant,
         CreateClientModal,
         LoginModal,
         SignupModal,
@@ -107,7 +107,6 @@ export function SkyAuthProvider({ children }: Props) {
                 })
             }
         }
-
         
         if (is_initialized) {
             if (!user?.uuid) {
@@ -120,8 +119,22 @@ export function SkyAuthProvider({ children }: Props) {
             SignupModal.close()
         }
 
+
+        if (data.tenants && data.tenants[0] && !tenant.business_name) {
+            setTenant({
+                id: data.tenants[0].id,
+                business_name: data.tenants[0].name,
+                tier: data.tenants[0].tier,
+            })
+            setUser({
+                ...user,
+                email: data.userInfo.email,
+            })
+        }
+
         setInit(false)
-    }, [LoginModal, SignupModal, CreateClientModal, user, is_initialized])
+    }, [LoginModal, SignupModal, CreateClientModal, user, is_initialized, tenant, data])
+
     return (
         <AuthContext.Provider value={value}>
             {children}

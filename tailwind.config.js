@@ -9,9 +9,6 @@ module.exports = {
       'sans': ['Proxima\\ Nova', 'ui-sans-serif', 'system-ui']
     },
     extend: {
-      backgroundImage: theme => ({
-        'hero-pattern': "url('https://static.aot.plus/images/bruce-mars-gJtDg6WfMlQ-unsplash.jpg')",
-      }),
       backgroundSize: theme => ({
         'hero-pattern': 'contain',
       }),

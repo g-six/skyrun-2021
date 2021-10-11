@@ -1,7 +1,26 @@
+.gradBg {
+  background: #CFE2F5;
+  position: relative;
+  overflow: hidden;
+  &::before {
+    background: #8cc3dd;
+    border-radius: 50%;
+    content: " ";
+    position: absolute;
+    left: calc(100% - 600px);
+    bottom: -350px;
+    height: 900px;
+    width: 900px;
+    z-index: 0;
+  }
+}
 .gradHero {
-    background: #CFE2F5 url(//static.aot.plus/images/beautiful-young-female-athlete-min.png) no-repeat;
+    background: url(//static.aot.plus/images/beautiful-young-female-athlete-min.png) no-repeat;
     background-position: bottom right;
-    background-size: contain;
+    background-size: 544px 587px;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
 }
 .spriteCircle {
   background: #86C5E0;

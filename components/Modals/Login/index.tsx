@@ -10,6 +10,9 @@ import { createModal } from '../ModalFactory'
 import { AuthContext, useAuth } from 'context/AuthContext'
 import { ModalWrapper } from '../ModalWrapper'
 import { SubmitError } from '../types'
+import { FetchMethods, useFetch } from 'utils/fetch-helper'
+import { getTranslation } from 'utils/language-helper'
+import { useAppContext } from 'context/AppContext'
 type FormValues = {
     email: string
     password?: string
@@ -17,7 +20,9 @@ type FormValues = {
     code?: string
 }
 
-const ModalProvider = createModal(AuthContext, 'LoginModal', 'Login')
+const ModalProvider = createModal(AuthContext, 'LoginModal', () => (
+    <>Login</>
+))
 
 export const LoginModalOpener = ModalProvider.Opener
 export const LoginModalCloser = ModalProvider.Closer
@@ -35,6 +40,14 @@ const StyledMaskedTextBox = styled(MaskedTextBox)`
 function LoginModal() {
     const router = useRouter()
     const ctx = useAuth()
+    const { lang } = useAppContext()
+    const [translations, setTranslations] = useState({
+        login_button: 'Login',
+        login_title: 'Login',
+        email_address_label: 'Email',
+        password_label: 'Password',
+        forgot_password_link: 'Forgot password?',
+    })
     const [loading, toggleLoading] = useState(false)
     const [forgot_mode, setForgotMode] = useState(false)
     const [new_password_mode, setNewPasswordMode] = useState(false)
@@ -47,6 +60,42 @@ function LoginModal() {
     } = useForm<FormValues>({
         mode: 'onChange',
     })
+
+    const { data: translation } = useFetch(
+        `/v1/contents?url=${encodeURI(
+            'https://cms.aot.plus/jsonapi/node/page_translation/1d1a8c44-463b-474e-bc06-fc22ce77ab27'
+        )}`,
+        FetchMethods.GET,
+        true,
+        true
+    )
+
+    useEffect(() => {
+        if (lang && translation.data?.attributes[lang]) {
+            setTranslations({
+                login_button: getTranslation(
+                    'login_button',
+                    translation.data?.attributes[lang]
+                ),
+                login_title: getTranslation(
+                    'login_title',
+                    translation.data?.attributes[lang]
+                ),
+                email_address_label: getTranslation(
+                    'email_address_label',
+                    translation.data?.attributes[lang]
+                ),
+                password_label: getTranslation(
+                    'password_label',
+                    translation.data?.attributes[lang]
+                ),
+                forgot_password_link: getTranslation(
+                    'forgot_password_link',
+                    translation.data?.attributes[lang]
+                ),
+            })
+        }
+    }, [translation, lang])
 
     const onSubmitRequestReset: SubmitHandler<FormValues> = async (
         values: Record<string, string>
@@ -85,9 +134,7 @@ function LoginModal() {
                     type: CognitoErrorTypes.InvalidParameterException,
                     message,
                 })
-            } else if (
-                name == CognitoErrorTypes.InvalidPasswordException
-            ) {
+            } else if (name == CognitoErrorTypes.InvalidPasswordException) {
                 setError('new_password', {
                     type: CognitoErrorTypes.InvalidPasswordException,
                     message,
@@ -139,7 +186,7 @@ function LoginModal() {
     return (
         <ModalProvider.Visible>
             <ModalWrapper>
-                <div className="shadow-xl bg-white overflow-hidden sm:rounded-md w-11/12 sm:w-2/3 lg:w-1/2 xl:w-1/3 m-auto relative py-8">
+                <div className="shadow-2xl bg-white overflow-hidden sm:rounded-2xl w-11/12 sm:w-2/3 lg:w-1/2 xl:w-1/3 m-auto relative py-8">
                     <div className="flex justify-between px-10 text-gray-500 absolute z-10 h-10 w-full">
                         {new_password_mode || forgot_mode ? (
                             <button
@@ -156,7 +203,7 @@ function LoginModal() {
                             </button>
                         ) : (
                             <span className="inline-block self-center text-lg font-extrabold text-gray-600">
-                                Login
+                                {translations.login_title}
                             </span>
                         )}
                         <LoginModalCloser className="self-center" />
@@ -174,7 +221,7 @@ function LoginModal() {
                                     errors.email?.type ? 'text-red-700' : ''
                                 )}
                             >
-                                Email address
+                                {translations.email_address_label}
                             </label>
                             <input
                                 type="text"
@@ -221,7 +268,7 @@ function LoginModal() {
                                             : ''
                                     )}
                                 >
-                                    Password
+                                    {translations.password_label}
                                 </label>
                                 <input
                                     type="password"
@@ -498,7 +545,7 @@ function LoginModal() {
                                         />
                                     )}
                                 </span>
-                                Login
+                                {translations.login_button}
                             </button>
                         ) : (
                             ''
@@ -510,7 +557,9 @@ function LoginModal() {
                                 className="mt-8"
                                 onClick={() => setForgotMode(true)}
                             >
-                                <span>Forgot Password?</span>
+                                <span>
+                                    {translations.forgot_password_link}
+                                </span>
                             </button>
                         </div>
                     ) : (

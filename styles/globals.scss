@@ -6,25 +6,31 @@
 @import "tailwindcss/utilities";
 
 @import "~@progress/kendo-theme-default/scss/input";
-@import "~@progress/kendo-theme-default/scss/drawer/index";
-@import "~@progress/kendo-theme-default/scss/appbar/index";
-@import "~@progress/kendo-theme-default/scss/calendar/index";
-@import "~@progress/kendo-theme-default/scss/dialog/index";
-@import "~@progress/kendo-theme-default/scss/dropdowngrid/index";
-@import "~@progress/kendo-theme-default/scss/dropdownlist/index";
-@import "~@progress/kendo-theme-default/scss/dropdowntree/index";
-@import "~@progress/kendo-theme-default/scss/scheduler/index";
+@import "~@progress/kendo-theme-default/scss/drawer";
+@import "~@progress/kendo-theme-default/scss/appbar";
+@import "~@progress/kendo-theme-default/scss/calendar";
+@import "~@progress/kendo-theme-default/scss/dialog";
+@import "~@progress/kendo-theme-default/scss/dropdowngrid";
+@import "~@progress/kendo-theme-default/scss/dropdownlist";
+@import "~@progress/kendo-theme-default/scss/dropdowntree";
+@import "~@progress/kendo-theme-default/scss/scheduler";
 
 /* Needed for Switch component*/
 @import "~@progress/kendo-theme-default/scss/button";
 @import "~@progress/kendo-theme-default/scss/switch";
 
+@import "~flag-icon-css/sass/flag-icon-base";
+@import "~flag-icon-css/sass/flag-icon.scss";
+
+@import './k-tabstrip';
+@import './k-dropdown';
 @import './dashboard';
 
 @import './buttons.scss';
 
 html,
 body {
+  color: #6F899E;
   padding: 0;
   margin: 0;
   font-family: "Proxima Nova", -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
@@ -85,6 +91,7 @@ a {
   }
 }
 
-.pricing-plans {
-  background: rgba(207, 226, 245, 0.1);
+button {
+  font-family: 'Circular', sans-serif;
+  font-weight: 300;
 }

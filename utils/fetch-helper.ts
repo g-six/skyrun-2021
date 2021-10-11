@@ -61,7 +61,7 @@ export function useFetch<Body = any, Result = any>(
                 setStatus(response.status)
                 return response
             } catch (e) {
-                console.error('doFetch:', e.message)
+                console.error('doFetch:', (e as unknown as Error).message)
             }
         },
         [method, path, expects_json]

@@ -40,6 +40,7 @@ export type AuthContextType = {
     LoginModal: ModalHook
     SignupModal: ModalHook
     CreateClientModal: ModalHook
+    CreateStaffModal: ModalHook
     confirmForgotPassword(email: string, new_password: string, code: string): Promise<ConfirmForgotPasswordCommandOutput>
     forgotPassword(email: string): Promise<void>
     login(email: string, password: string): Promise<AuthenticationResultType | boolean>

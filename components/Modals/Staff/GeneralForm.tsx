@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react'
+import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { classNames } from 'utils/dom-helpers'
 import { AuthContext, useAuth } from 'context/AuthContext'

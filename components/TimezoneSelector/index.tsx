@@ -1,34 +1,43 @@
-import React, {
-    cloneElement,
-    ReactElement,
-    Fragment,
-    useState,
-} from 'react'
+import React, { Dispatch, Fragment, useState, SetStateAction } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid'
-import timezones from './zones'
+import timezones, { Timezone } from './zones'
 import { classNames } from 'utils/dom-helpers'
 import { withClass } from 'components/types'
 import { sortBy } from 'utils/array-helper'
 
 export interface TimezoneSelectProps {
     id: string
-    onChange(r: Record<string, string>): void
+    onChange: (t: Timezone) => void
+    error?: string
 }
 
-function TimezoneSelect(props: TimezoneSelectProps & withClass) {
-    const [selected, setSelected] = useState()
+function TimezoneSelector(props: TimezoneSelectProps & withClass) {
+    const [selected, setSelected] = useState<Timezone>()
+
+    function handleChange(value: Timezone) {
+        props.onChange(value)
+        setSelected(value)
+    }
 
     return (
-        <Listbox value={selected} onChange={setSelected}>
+        <Listbox value={selected} onChange={handleChange}>
             <div className="mt-1 relative">
                 <Listbox.Button
-                    className="relative w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-3 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-primary-light focus:border-primary-light sm:text-base"
+                    className={classNames(
+                        props.error
+                            ? 'bg-red-100 border-red-300'
+                            : 'bg-white border-gray-300',
+                        'relative w-full border rounded-md shadow-sm pl-3 pr-10 py-3 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-primary-light focus:border-primary-light sm:text-base'
+                    )}
                     role="button"
                 >
                     <span className="flex items-center">
                         <span className="ml-3 block truncate h-6">
-                            {selected}
+                            <span className="text-sm text-gray-500 mr-2 font-mono">
+                                {selected?.offset}
+                            </span>{' '}
+                            {selected?.text}
                         </span>
                     </span>
                     <span className="ml-3 absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
@@ -46,7 +55,7 @@ function TimezoneSelect(props: TimezoneSelectProps & withClass) {
                     leaveTo="opacity-0"
                 >
                     <Listbox.Options className="absolute z-10 mt-1 w-full bg-white shadow-2xl max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
-                        {timezones.sort(sortBy('offset')).map((tz) => (
+                        {timezones.sort(sortBy('city')).map((tz) => (
                             <Listbox.Option
                                 key={[tz.region, tz.city].join('/')}
                                 className={({ active }) =>
@@ -57,7 +66,7 @@ function TimezoneSelect(props: TimezoneSelectProps & withClass) {
                                         'cursor-default select-none relative py-2 pl-3 pr-9'
                                     )
                                 }
-                                value={tz.text}
+                                value={tz}
                             >
                                 {({ selected, active }) => (
                                     <>
@@ -67,10 +76,13 @@ function TimezoneSelect(props: TimezoneSelectProps & withClass) {
                                                     selected
                                                         ? 'font-semibold'
                                                         : 'font-normal',
-                                                    'ml-3 block truncate'
+                                                    'ml-3 block truncate text-base'
                                                 )}
                                             >
-                                                {tz.offset} {tz.city}
+                                                <span className="text-sm text-gray-500 mr-2 font-mono">
+                                                    {tz.offset}
+                                                </span>{' '}
+                                                {tz.city}
                                             </span>
                                         </div>
 
@@ -100,4 +112,4 @@ function TimezoneSelect(props: TimezoneSelectProps & withClass) {
     )
 }
 
-export default TimezoneSelect
+export default TimezoneSelector

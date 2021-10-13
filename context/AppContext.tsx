@@ -1,3 +1,4 @@
+import { Language } from 'components/LanguageSelector'
 import { Context, createContext, ReactNode, useContext, useEffect, useState } from 'react'
 import { FetchMethods, useFetch } from 'utils/fetch-helper'
 
@@ -6,10 +7,6 @@ export type Tier = {
     name: string
 }
 
-export enum Language {
-    EN = 'field_en_us',
-    ZH = 'field_zh_cn',
-}
 export interface SkyContextProps {
     tiers: Tier[]
     lang: Language

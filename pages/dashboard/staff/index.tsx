@@ -113,7 +113,7 @@ function ListHeader() {
 function DashboardStaff() {
     const ctx = useAuth()
     const [selected_search_category, setSearchCategory] = useState('')
-    const [staff, setStaff] = useState()
+    const [staff, setStaff] = useState<StaffItem[] | boolean>(false)
     const { is_loading, data, status, doFetch } = useFetch(
         `/v1/staff/?tenantId=${ctx.tenant?.id}`,
         FetchMethods.GET,
@@ -122,37 +122,52 @@ function DashboardStaff() {
 
     useEffect(() => {
         async function fetchData() {
-            await doFetch()
+            if (!staff && !!ctx.tenant?.id) {
+                await doFetch()
+            }
+        }
+
+        if (!staff && !!ctx.tenant?.id) {
+            setStaff([])
+            fetchData()
+        } else if (data.content) {
             setStaff(data.content)
         }
-        if (ctx.tenant?.id && !staff) {
-            fetchData()
-        }
-    }, [staff, ctx.tenant?.id, doFetch, data, is_loading])
+    }, [ctx.tenant, data, data.content, staff, doFetch])
 
     return (
         <Dashboard actions={<HeaderActions onSearch={setSearchCategory} />}>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-8">
-                {(staff || []).map((record: StaffItem) => (
-                    <div key={record.user.email} className="shadow-2xl p-8 rounded-xl border-t border-l border-gray-50 h-96 text-center">
-                        <div className="text-sm font-medium text-gray-900">
-                            {[record.user.firstName, record.user.lastName].join(' ')}
-                        </div>
-                        <div className="text-sm text-gray-900">
-                            {record.user.email}
-                        </div>
-                        {record.user.phone || 'None Specified'}
-                        <div className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 uppercase">
-                            Current member
-                        </div>
-                        <a
-                            href="#"
-                            className="text-indigo-600 hover:text-indigo-900"
-                        >
-                            Edit
-                        </a>
-                    </div>
-                ))}
+                {staff
+                    ? ((staff as StaffItem[]) || []).map(
+                          (record: StaffItem) => (
+                              <div
+                                  key={record.user.email}
+                                  className="shadow-2xl p-8 rounded-xl border-t border-l border-gray-50 h-96 text-center"
+                              >
+                                  <div className="text-sm font-medium text-gray-900">
+                                      {[
+                                          record.user.firstName,
+                                          record.user.lastName,
+                                      ].join(' ')}
+                                  </div>
+                                  <div className="text-sm text-gray-900">
+                                      {record.user.email}
+                                  </div>
+                                  {record.user.phone || 'None Specified'}
+                                  <div className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 uppercase">
+                                      Current member
+                                  </div>
+                                  <a
+                                      href="#"
+                                      className="text-indigo-600 hover:text-indigo-900"
+                                  >
+                                      Edit
+                                  </a>
+                              </div>
+                          )
+                      )
+                    : ''}
             </div>
 
             <CreateStaffModal />

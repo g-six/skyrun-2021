@@ -1,11 +1,17 @@
-import CreateStaffModal, {
-    CreateStaffModalOpener,
-} from 'components/Modals/Staff'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import StaffModal, { StaffModalOpener } from 'components/Modals/Staff'
+import {
+    Dispatch,
+    MouseEvent,
+    SetStateAction,
+    useEffect,
+    useState,
+} from 'react'
 import { classNames } from 'utils/dom-helpers'
 import Dashboard from '..'
+import Card from './card'
 import { FetchMethods, useFetch } from 'utils/fetch-helper'
 import { useAuth } from 'context/AuthContext'
+import { Staff } from './types'
 
 function SearchInputGroup({ selected_idx = 0 }) {
     return (
@@ -52,125 +58,102 @@ type HeaderProps = {
     onSearch: Dispatch<SetStateAction<string>>
 }
 
-type StaffItem = {
+type StaffResponseItem = {
     id: string
     user: Record<string, string>
 }
-type StaffListResponse = {
+type StaffResponseList = {
     [key: string]:
         | string
         | boolean
         | number
         | Record<string, string>
-        | StaffItem[]
+        | StaffResponseItem[]
 }
 
 function HeaderActions(props: HeaderProps) {
     return (
         <>
             <SearchInputGroup />
-            <CreateStaffModalOpener className="bg-primary text-white px-8 py-2 text-lg font-light rounded-lg" />
+            <StaffModalOpener className="bg-primary text-white px-8 py-2 text-lg font-light rounded-lg" />
         </>
     )
 }
 
-function ListHeader() {
-    return (
-        <thead className="bg-gray-50">
-            <tr>
-                <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                    Name
-                </th>
-                <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                    Title
-                </th>
-                <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                    Status
-                </th>
-                <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                    Role
-                </th>
-                <th scope="col" className="relative px-6 py-3">
-                    <span className="sr-only">Edit</span>
-                </th>
-            </tr>
-        </thead>
-    )
-}
-
 function DashboardStaff() {
-    const ctx = useAuth()
+    const { tenant, StaffModal: ModalContext } = useAuth()
     const [selected_search_category, setSearchCategory] = useState('')
-    const [staff, setStaff] = useState<StaffItem[] | boolean>(false)
+    const [staff, setStaff] = useState<Staff[] | boolean>(false)
     const { is_loading, data, status, doFetch } = useFetch(
-        `/v1/staff/?tenantId=${ctx.tenant?.id}`,
+        `/v1/staff/?tenantId=${tenant?.id}`,
         FetchMethods.GET,
         false
     )
+    const staff_list: Staff[] =
+        data &&
+        data.content &&
+        data.content.map((s: StaffResponseItem) => {
+            const {
+                id: user_id,
+                email,
+                firstName: first_name,
+                lastName: last_name,
+                phone,
+            } = s.user
+            return {
+                id: s.id,
+                user_id,
+                email,
+                first_name,
+                last_name,
+                phone,
+            }
+        })
 
     useEffect(() => {
         async function fetchData() {
-            if (!staff && !!ctx.tenant?.id) {
+            if (!staff && !!tenant?.id && !is_loading) {
                 await doFetch()
             }
         }
 
-        if (!staff && !!ctx.tenant?.id) {
+        if (!staff && !!tenant?.id && !is_loading) {
             setStaff([])
             fetchData()
-        } else if (data.content) {
-            setStaff(data.content)
+        } else if (staff && (staff as Staff[]).length == 0 && staff_list) {
+            setStaff(staff_list)
         }
-    }, [ctx.tenant, data, data.content, staff, doFetch])
+    }, [tenant, staff, doFetch, is_loading, staff_list])
 
     return (
         <Dashboard actions={<HeaderActions onSearch={setSearchCategory} />}>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-8">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-8 gap-6">
                 {staff
-                    ? ((staff as StaffItem[]) || []).map(
-                          (record: StaffItem) => (
-                              <div
-                                  key={record.user.email}
-                                  className="shadow-2xl p-8 rounded-xl border-t border-l border-gray-50 h-96 text-center"
-                              >
-                                  <div className="text-sm font-medium text-gray-900">
-                                      {[
-                                          record.user.firstName,
-                                          record.user.lastName,
-                                      ].join(' ')}
-                                  </div>
-                                  <div className="text-sm text-gray-900">
-                                      {record.user.email}
-                                  </div>
-                                  {record.user.phone || 'None Specified'}
-                                  <div className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 uppercase">
-                                      Current member
-                                  </div>
-                                  <a
-                                      href="#"
-                                      className="text-indigo-600 hover:text-indigo-900"
-                                  >
-                                      Edit
-                                  </a>
-                              </div>
+                    ? ((staff as Staff[]) || []).map(
+                          (record: Staff, idx) => (
+                            <Card
+                                key={idx} list={staff as Staff[]}
+                                idx={idx}
+                                archiveItem={console.log}
+                            />
                           )
                       )
                     : ''}
+                <div
+                    className={
+                        classNames(
+                            'p-8 rounded-xl text-center flex flex-col content-center justify-center',
+                            'border-2 border-dashed border-gray-150'
+                        )
+                    }
+                >
+                    <i className="block mx-auto mb-4 feather feather-plus font-back text-2xl block w-10 h-10 leading-relaxed px-2 rounded-xl bg-primary-lighter text-primary-light" />
+                    <span className="text-xl mx-auto block w-36">Click to add new staff</span>
+                </div>
+
             </div>
 
-            <CreateStaffModal />
+            <StaffModal />
         </Dashboard>
     )
 }

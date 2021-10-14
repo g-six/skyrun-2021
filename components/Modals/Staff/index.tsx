@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { createModal } from '../ModalFactory'
-import { AuthContext } from 'context/AuthContext'
+import { AuthContext, useAuth } from 'context/AuthContext'
 import { ModalWrapper } from '../ModalWrapper'
 import {
     TabStrip,
@@ -12,7 +12,7 @@ import Appointments from './Appointments'
 
 const ModalProvider = createModal(
     AuthContext,
-    'CreateStaffModal',
+    'StaffModal',
     () => (
         <>
             <i className="feather feather-plus mr-4" />
@@ -26,10 +26,11 @@ const ModalProvider = createModal(
     )
 )
 
-export const CreateStaffModalOpener = ModalProvider.Opener
-export const CreateStaffModalCloser = ModalProvider.Closer
+export const StaffModalOpener = ModalProvider.Opener
+export const StaffModalCloser = ModalProvider.Closer
 
-function CreateStaffModal() {
+function StaffModal() {
+    const { StaffModal } = useAuth()
     const [selected, setSelected] = useState<number>(0)
     const handleSelect = (e: TabStripSelectEventArguments) => {
         setSelected(e.selected)
@@ -46,8 +47,8 @@ function CreateStaffModal() {
                                 <li>Staff</li>
                             </ul>
                             <span className="inline-block self-center text-lg text-primary-dark">
-                                <CreateStaffModalCloser className="self-center" />
-                                <span className="circular">New Staff</span>
+                                <StaffModalCloser className="self-center" />
+                                <span className="circular">{ StaffModal.attributes?.id ? 'Edit' : 'New' } Staff</span>
                             </span>
                         </div>
                     </div>
@@ -76,4 +77,4 @@ function CreateStaffModal() {
     )
 }
 
-export default CreateStaffModal
+export default StaffModal

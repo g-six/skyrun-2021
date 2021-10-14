@@ -4,11 +4,23 @@
     border: none;
 }
 
+.k-dropdown.country-selector {
+    line-height: 2.5rem;
+    width: auto;
+    height: 3rem;
+}
+
+.country-selector-item,
+.country-selector.k-dropdown {
+    .flag-icon {
+        border-radius: 50%;
+    }
+}
+.k-animation-container {
+    border-radius: initial;
+}
 .country-selector {
     &.k-dropdown {
-        height: 2.25rem;
-        line-height: 2.25rem;
-        width: auto;
         .k-dropdown-wrap,
         .k-dropdown-wrap.k-state-focused,
         .k-dropdown-wrap:hover {
@@ -16,16 +28,92 @@
             border: none;
             box-shadow: none;
         }
-        .flag-icon {
-            border-radius: 50%;
-            font-size: 2.25rem;
-            line-height: 2.25rem;
-            width: 2.25rem;
-        }
         .k-input,
         .k-select {
-            height: 2.25rem;
+            height: 3rem;
             padding: 0;
+        }
+        .flag-icon {
+            font-size: 2.5rem;
+        }
+        &.form-country-selector {
+            .flag-icon {
+                font-size: 2rem;
+            }
+        }
+    }
+}
+.custom-popup {
+    .k-group-header,
+    .k-list .k-item,
+    .k-list-optionlabel {
+        line-height: 2;
+        min-height: 2;
+
+        &.k-state-focused {
+            background: transparentize($color: $primary, $amount: 0.3);
+            border: none;
+            box-shadow: none;
+        }
+    }
+}
+.k-list-container {
+    font-size: 16px;
+    line-height: 1.5rem;
+    .k-group-header {
+        background: rgba(0,0,0,0.7);
+        color: #fff;
+        font-size: 1.1rem;
+        font-weight: 700;
+        line-height: 2;
+    }
+}
+.custom-select {
+    height: 50px;
+    line-height: 1.5rem;
+    margin-top: 4px;
+    .k-combobox {
+        border: none;
+        font-size: inherit;
+        width: 100%;
+
+        > .k-state-focused {
+            border: none;
+        }
+
+        .k-select,
+        .k-dropdown-wrap,
+        .k-dropdown-wrap.k-state-focused {
+            background: none;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            outline: none;
+            box-shadow: none;
+            .k-group-header {
+                background: $primary;
+                line-height: 1.5rem;
+            }
+            .k-item.k-state-focused {
+                box-shadow: none;
+            }
+            .k-searchbar {
+                input {
+                    border: none;
+                    height: calc( 1.4285714286em + 1.5rem );
+                    font-size: 16px;
+                    line-height: 1.5rem;
+                    height: 50px;
+                    padding: 0.75rem 1.5rem;
+                    outline: none;
+                    outline-offset: initial;
+                    box-shadow: none;
+                }
+            }
+        }
+
+        span {
+            line-height: 1.5rem;
         }
     }
 }

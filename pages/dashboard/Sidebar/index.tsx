@@ -19,8 +19,7 @@ type SidebarItem = {
     route?: string
 }
 interface Props {
-    children?: ReactElement[] | string
-    user?: UserModel
+    children?: ReactElement | ReactElement[] | string
 }
 const items: SidebarItem[] = [
     { text: 'Home', icon: 'feather-sidebar', route: '/dashboard' },
@@ -87,7 +86,7 @@ const CustomItem = (props: DrawerItemProps) => {
     )
 }
 
-function Sidebar({ children, user }: Props) {
+function Sidebar({ children }: Props) {
     const router = useRouter()
     const [expanded, setExpanded] = useState(false)
     const ctx = useAuth()
@@ -110,58 +109,56 @@ function Sidebar({ children, user }: Props) {
     }
     const selected = setSelectedItem(router.pathname)
     return (
-        <>
-            <Drawer
-                className="h-screen"
-                expanded={expanded}
-                mode={'push'}
-                mini={true}
-                onSelect={onSelect}
-                position={'start'}
-                items={
-                    ctx.user?.uuid
-                        ? items.map((item) => ({
-                              ...item,
-                              selected: item.text === selected,
-                          }))
-                        : []
-                }
-                item={CustomItem}
-            >
-                <DrawerContent>
-                    {children}
-                    <button
+        <Drawer
+            className="h-screen"
+            expanded={expanded}
+            mode={'push'}
+            mini={true}
+            onSelect={onSelect}
+            position={'start'}
+            items={
+                ctx.user?.uuid
+                    ? items.map((item) => ({
+                            ...item,
+                            selected: item.text === selected,
+                        }))
+                    : []
+            }
+            item={CustomItem}
+        >
+            <DrawerContent>
+                {children}
+                <button
+                    className={classNames(
+                        'absolute bottom-28 bg-white text-indigo-900 w-9 h-9 transition-all duration-300',
+                        expanded
+                            ? 'left-56 shadow-xl border-r border-indigo-50 hover:text-indigo-700 rounded-full'
+                            : 'left-2 hover:bg-indigo-900 hover:bg-opacity-10 rounded-lg',
+                        'duration-400 ease-linear transition-all'
+                    )}
+                    id="BtnExpandSidebar"
+                    onClick={handleClick}
+                >
+                    <span
                         className={classNames(
-                            'absolute bottom-28 bg-white text-indigo-900 w-9 h-9 transition-all duration-300',
                             expanded
-                                ? 'left-56 shadow-xl border-r border-indigo-50 hover:text-indigo-700 rounded-full'
-                                : 'left-2 hover:bg-indigo-900 hover:bg-opacity-10 rounded-lg',
-                            'duration-400 ease-linear transition-all'
+                                ? 'feather-chevron-left'
+                                : 'feather-chevron-right'
                         )}
-                        id="BtnExpandSidebar"
-                        onClick={handleClick}
-                    >
-                        <span
-                            className={classNames(
-                                expanded
-                                    ? 'feather-chevron-left'
-                                    : 'feather-chevron-right'
-                            )}
-                        ></span>
-                    </button>
-                    <button
-                        className={classNames(
-                            'btn-logout absolute bottom-16 left-2 w-9 h-9 rounded-lg',
-                            'duration-400 ease-linear transition-all',
-                            'hover:bg-indigo-900 hover:bg-opacity-10'
-                        )}
-                        onClick={ctx.logout}
-                    >
-                        <span className="feather-unlock"></span>
-                    </button>
-                </DrawerContent>
-            </Drawer>
-        </>
+                    ></span>
+                </button>
+                <button
+                    className={classNames(
+                        'btn-logout absolute bottom-16 left-2 w-9 h-9 rounded-lg',
+                        'duration-400 ease-linear transition-all',
+                        'hover:bg-indigo-900 hover:bg-opacity-10'
+                    )}
+                    onClick={ctx.logout}
+                >
+                    <span className="feather-unlock"></span>
+                </button>
+            </DrawerContent>
+        </Drawer>
     )
 }
 

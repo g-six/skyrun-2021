@@ -33,6 +33,8 @@ export function SkyAuthProvider({ children }: Props) {
     const LoginModal = useModal()
     const SignupModal = useModal()
     const CreateClientModal = useModal()
+    const CreateLocationModal = useModal()
+    const CreateStaffModal = useModal()
     const { data } = useFetch(
         '/v1/users/current',
         FetchMethods.GET,
@@ -92,6 +94,8 @@ export function SkyAuthProvider({ children }: Props) {
         },
         tenant,
         CreateClientModal,
+        CreateLocationModal,
+        CreateStaffModal,
         LoginModal,
         SignupModal,
     }
@@ -133,7 +137,12 @@ export function SkyAuthProvider({ children }: Props) {
         }
 
         setInit(false)
-    }, [LoginModal, SignupModal, CreateClientModal, user, is_initialized, tenant, data])
+    }, [
+        LoginModal,
+        SignupModal,
+        CreateClientModal,
+        CreateStaffModal,
+        user, is_initialized, tenant, data])
 
     return (
         <AuthContext.Provider value={value}>

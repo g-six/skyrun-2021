@@ -1,12 +1,14 @@
 module.exports = {
   purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
   darkMode: false, // or 'media' or 'class'
+  important: true,
   theme: {
     boxShadow: {
       '2xl': '0px 13.3517px 50.069px rgba(73, 97, 117, 0.1)',
     },
     fontFamily: {
-      'sans': ['Proxima\\ Nova', 'ui-sans-serif', 'system-ui']
+      'sans': ['Proxima\\ Nova', 'ui-sans-serif', 'system-ui'],
+      'mono': ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation\\ Mono', 'Courier\\ New', 'monospace'],
     },
     extend: {
       backgroundSize: theme => ({

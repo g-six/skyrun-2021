@@ -12,7 +12,6 @@ import { MenuIcon, XIcon } from '@heroicons/react/outline'
 import logout from 'services/logout'
 import LoginButton from 'components/Buttons/LoginButton'
 import SkyContext, {
-    Language,
     SkyContextProps,
     useAppContext,
 } from 'context/AppContext'
@@ -21,8 +20,10 @@ import SignupButton from 'components/Buttons/SignupButton'
 import {
     DropDownList,
     DropDownListChangeEvent,
+    DropDownListProps,
     ListItemProps,
 } from '@progress/kendo-react-dropdowns'
+import LanguageSelector from 'components/LanguageSelector'
 
 const navigation = [
     {
@@ -50,29 +51,11 @@ export interface Props {
     nav_labels: Record<string, string>
 }
 
-interface Item {
-    text: string
-    icon: string
-    code: Language
-}
-
 export default function Navbar({ current, nav_labels }: Props) {
     const { user } = useAuth()
     const { lang, onLanguageChange } = useAppContext()
     const [mounted, setMounted] = useState(false)
     const [username, setUsername] = useState(Cookies.get('email'))
-    const languages: Item[] = [
-        {
-            text: 'EN',
-            code: Language.EN,
-            icon: 'flag-icon flag-icon-us flag-icon-squared',
-        },
-        {
-            text: 'ZH',
-            code: Language.ZH,
-            icon: 'flag-icon flag-icon-cn flag-icon-squared',
-        },
-    ]
 
     async function killSession() {
         try {
@@ -85,38 +68,6 @@ export default function Navbar({ current, nav_labels }: Props) {
 
     function handleLanguageChange(e: DropDownListChangeEvent) {
         onLanguageChange(e.value.code)
-    }
-
-    function renderLanguageOptions(
-        li: ReactElement<HTMLLIElement>,
-        item_props: ListItemProps
-    ) {
-        const index = item_props.index
-        const children = (
-            <>
-                <i className={languages[index].icon} />
-                <span className="inline-block ml-2">
-                    {languages[index].text}
-                </span>
-            </>
-        )
-
-        return cloneElement(li, li.props, children)
-    }
-
-    function renderSelectedLanguage(
-        element: ReactElement<HTMLSpanElement>,
-        value: Item
-    ) {
-        if (!value) return element
-        const children = (
-            <>
-                <i className={value.icon} />
-                <span className="inline-block ml-2">{value.text}</span>
-            </>
-        )
-
-        return cloneElement(element, element.props, children)
     }
 
     useEffect(() => {
@@ -211,25 +162,10 @@ export default function Navbar({ current, nav_labels }: Props) {
                                                 </div>
                                             </div>
                                             <div className="absolute inset-y-0  right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                                                <DropDownList
-                                                    className="country-selector"
-                                                    data={languages}
-                                                    defaultItem={
-                                                        languages &&
-                                                        languages[0]
-                                                    }
+                                                <LanguageSelector
+                                                    className="country-selector flex"
                                                     onChange={
                                                         handleLanguageChange
-                                                    }
-                                                    textField="text"
-                                                    itemRender={
-                                                        renderLanguageOptions
-                                                    }
-                                                    valueRender={
-                                                        renderSelectedLanguage
-                                                    }
-                                                    valueMap={(value) =>
-                                                        value && value.code
                                                     }
                                                 />
 

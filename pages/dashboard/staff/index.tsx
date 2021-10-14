@@ -127,30 +127,30 @@ function DashboardStaff() {
 
     return (
         <Dashboard actions={<HeaderActions onSearch={setSearchCategory} />}>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-8 gap-6">
+            <div className="grid w-80 sm:w-auto lg:grid-cols-2 xl:grid-cols-3 xl:max-w-5xl md:max-w-sm lg:max-w-2xl mx-auto p-8 gap-6">
                 {staff
                     ? ((staff as Staff[]) || []).map(
                           (record: Staff, idx) => (
-                            <Card
-                                key={idx} list={staff as Staff[]}
-                                idx={idx}
-                                archiveItem={console.log}
-                            />
+                              <Card
+                                  key={idx}
+                                  list={staff as Staff[]}
+                                  idx={idx}
+                                  archiveItem={console.log}
+                              />
                           )
                       )
                     : ''}
                 <div
-                    className={
-                        classNames(
-                            'p-8 rounded-xl text-center flex flex-col content-center justify-center',
-                            'border-2 border-dashed border-gray-150'
-                        )
-                    }
+                    className={classNames(
+                        'p-8 rounded-xl text-center flex flex-col content-center justify-center',
+                        'border-2 border-dashed border-gray-150'
+                    )}
                 >
                     <i className="block mx-auto mb-4 feather feather-plus font-back text-2xl block w-10 h-10 leading-relaxed px-2 rounded-xl bg-primary-lighter text-primary-light" />
-                    <span className="text-xl mx-auto block w-36">Click to add new staff</span>
+                    <span className="text-xl mx-auto block w-36">
+                        Click to add new staff
+                    </span>
                 </div>
-
             </div>
 
             <StaffModal />

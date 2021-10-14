@@ -48,7 +48,12 @@ function StaffModal() {
                             </ul>
                             <span className="inline-block self-center text-lg text-primary-dark">
                                 <StaffModalCloser className="self-center" />
-                                <span className="circular">{ StaffModal.attributes?.id ? 'Edit' : 'New' } Staff</span>
+                                <span className="circular">
+                                    {StaffModal.attributes?.id
+                                        ? 'Edit'
+                                        : 'New'}{' '}
+                                    Staff
+                                </span>
                             </span>
                         </div>
                     </div>

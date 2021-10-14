@@ -41,13 +41,10 @@ function GeneralForm() {
     })
 
     const api_fetch = useFetch(
-        attributes?.id
-            ? `/v1/staff/${attributes?.id}`
-            : '/v1/staff',
-        attributes?.id
-            ? FetchMethods.PUT
-            : FetchMethods.POST
-    , false)
+        attributes?.id ? `/v1/staff/${attributes?.id}` : '/v1/staff',
+        attributes?.id ? FetchMethods.PUT : FetchMethods.POST,
+        false
+    )
 
     const onSubmit: SubmitHandler<GeneralFormValues> = async (
         values: Record<string, string>
@@ -75,7 +72,10 @@ function GeneralForm() {
             if (res) {
                 let list: Record<string, string | number>[] = []
                 if (attributes && attributes.list) {
-                    list = attributes.list as Record<string, string | number>[]
+                    list = attributes.list as Record<
+                        string,
+                        string | number
+                    >[]
                     if (attributes.idx) {
                         list[attributes.idx as number] = {
                             ...list[attributes.idx as number],
@@ -152,7 +152,7 @@ function GeneralForm() {
                         )}
                         {...register('first_name', {
                             required: true,
-                            value: attributes?.first_name as string || '',
+                            value: (attributes?.first_name as string) || '',
                         })}
                     />
                     {errors.first_name?.type === 'required' && (
@@ -183,7 +183,7 @@ function GeneralForm() {
                         )}
                         {...register('last_name', {
                             required: true,
-                            value: attributes?.last_name as string || '',
+                            value: (attributes?.last_name as string) || '',
                         })}
                     />
                     {errors.last_name?.type === 'required' && (
@@ -217,7 +217,7 @@ function GeneralForm() {
                         )}
                         {...register('email', {
                             required: true,
-                            value: attributes?.email as string || '',
+                            value: (attributes?.email as string) || '',
                             pattern:
                                 /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
                         })}
@@ -260,7 +260,7 @@ function GeneralForm() {
                                 : ''
                         )}
                         {...register('phone', {
-                            value: attributes?.phone as string || '',
+                            value: (attributes?.phone as string) || '',
                         })}
                     />
                     {errors.phone?.type === 'pattern' && (

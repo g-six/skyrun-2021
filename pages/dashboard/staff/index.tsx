@@ -1,7 +1,6 @@
 import StaffModal, { StaffModalOpener } from 'components/Modals/Staff'
 import {
     Dispatch,
-    MouseEvent,
     SetStateAction,
     useEffect,
     useState,
@@ -11,7 +10,7 @@ import Dashboard from '..'
 import Card from './card'
 import { FetchMethods, useFetch } from 'utils/fetch-helper'
 import { useAuth } from 'context/AuthContext'
-import { Staff } from './types'
+import { Staff } from 'types/staff'
 
 function SearchInputGroup({ selected_idx = 0 }) {
     return (

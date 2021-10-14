@@ -1,6 +1,6 @@
 import { useAuth } from 'context/AuthContext'
 import { MouseEvent, PropsWithChildren } from 'react'
-import { Staff, StaffModalProps, StaffCardActions } from './types'
+import { Staff, StaffModalProps, StaffCardActions } from 'types/staff'
 
 function Card(
     props: PropsWithChildren<StaffModalProps & StaffCardActions>

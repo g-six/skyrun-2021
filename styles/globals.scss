@@ -47,11 +47,14 @@ a {
 * {
   box-sizing: border-box;
 }
-
+.logo-icon {
+  background-image: url(https://static.aot.plus/images/logo.svg);
+  background-repeat: no-repeat;
+  background-size: 120px 46px;
+}
 .logo-icon,
 .logo-icon.k-icon {
   background-image: url(https://static.aot.plus/images/logo.svg);
-  background-size: contain;
   background-repeat: no-repeat;
   display: block;
   margin: 0 4px;

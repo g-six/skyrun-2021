@@ -3,7 +3,6 @@ import { XIcon } from '@heroicons/react/solid'
 import { action } from 'components/Buttons/ButtonFactory'
 import { createWrapper } from 'components/LogicalWrapperFactory'
 import { ModalHook } from './types'
-import { JSXProvider } from 'components/types'
 
 export interface ActionElementProps {
     children?: ReactNode

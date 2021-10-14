@@ -34,7 +34,7 @@ export function SkyAuthProvider({ children }: Props) {
     const SignupModal = useModal()
     const CreateClientModal = useModal()
     const CreateLocationModal = useModal()
-    const CreateStaffModal = useModal()
+    const StaffModal = useModal()
     const { data } = useFetch(
         '/v1/users/current',
         FetchMethods.GET,
@@ -95,7 +95,7 @@ export function SkyAuthProvider({ children }: Props) {
         tenant,
         CreateClientModal,
         CreateLocationModal,
-        CreateStaffModal,
+        StaffModal,
         LoginModal,
         SignupModal,
     }
@@ -141,7 +141,7 @@ export function SkyAuthProvider({ children }: Props) {
         LoginModal,
         SignupModal,
         CreateClientModal,
-        CreateStaffModal,
+        StaffModal,
         user, is_initialized, tenant, data])
 
     return (

@@ -11,23 +11,14 @@ import SkyContext, {
 } from 'context/AppContext'
 import { useAuth } from 'context/AuthContext'
 import SignupButton from 'components/Buttons/SignupButton'
-import {
-    DropDownList,
-    DropDownListChangeEvent,
-    DropDownListProps,
-    ListItemProps,
-} from '@progress/kendo-react-dropdowns'
+import { DropDownListChangeEvent } from '@progress/kendo-react-dropdowns'
 import LanguageSelector from 'components/LanguageSelector'
 
 const navigation = [
     {
         id: 'menu_1',
-        href: '#',
-        current: true,
-    },
-    {
-        id: 'menu_2',
-        href: '#',
+        href: '/about-us',
+        label: 'About Us',
         current: false,
     },
 ]
@@ -36,16 +27,7 @@ function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ')
 }
 
-export enum NavigationItem {
-    menu_1 = 'Industries',
-    menu_2 = 'Features',
-}
-export interface Props {
-    current?: NavigationItem
-    nav_labels: Record<string, string>
-}
-
-export default function Navbar({ current, nav_labels }: Props) {
+export default function Navbar() {
     const { user } = useAuth()
     const { lang, onLanguageChange } = useAppContext()
     const [mounted, setMounted] = useState(false)
@@ -107,7 +89,12 @@ export default function Navbar({ current, nav_labels }: Props) {
                                             <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
                                                 <div className="flex-shrink-0 flex items-center">
                                                     <div className="hidden lg:block h-12 w-auto">
-                                                        <span className="bg-contain app-logo-icon bg-left h-10 w-24 block " />
+                                                        <Link
+                                                            href="/"
+                                                            passHref
+                                                        >
+                                                            <span className="bg-contain app-logo-icon bg-left h-10 w-24 block cursor-pointer" />
+                                                        </Link>
                                                     </div>
                                                 </div>
                                                 <div className="hidden sm:block lg:flex items-center sm:ml-6">
@@ -122,24 +109,19 @@ export default function Navbar({ current, nav_labels }: Props) {
                                                                         item.href
                                                                     }
                                                                     className={classNames(
-                                                                        item.id ==
-                                                                            current
+                                                                        item.current
                                                                             ? 'bg-gray-900 text-white'
                                                                             : 'text-gray-800 hover:bg-gray-100 hover:text-black',
                                                                         'px-3 py-2 rounded-md text-sm'
                                                                     )}
                                                                     aria-current={
-                                                                        item.id ==
-                                                                        current
+                                                                        item.current
                                                                             ? 'page'
                                                                             : undefined
                                                                     }
                                                                 >
                                                                     {
-                                                                        nav_labels[
-                                                                            item
-                                                                                .id
-                                                                        ]
+                                                                        item.label
                                                                     }
                                                                 </a>
                                                             )
@@ -283,7 +265,7 @@ export default function Navbar({ current, nav_labels }: Props) {
                                                             : undefined
                                                     }
                                                 >
-                                                    {nav_labels[item.id]}
+                                                    {item.label}
                                                 </a>
                                             ))}
                                         </div>

@@ -1,10 +1,5 @@
 import StaffModal, { StaffModalOpener } from 'components/Modals/Staff'
-import {
-    Dispatch,
-    SetStateAction,
-    useEffect,
-    useState,
-} from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { classNames } from 'utils/dom-helpers'
 import Dashboard from '..'
 import Card from './card'

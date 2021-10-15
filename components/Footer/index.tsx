@@ -19,7 +19,9 @@ export default function Footer() {
                                 </a>
                             </li>
                             <li>
-                                <a href="tel:0063322312705">+63 32 233 2233</a>
+                                <a href="tel:0063322312705">
+                                    +63 32 233 2233
+                                </a>
                             </li>
                         </ul>
                     </div>
@@ -34,7 +36,9 @@ export default function Footer() {
                                 </a>
                             </li>
                             <li>
-                                <a href="tel:0063322312705">+63 32 233 2233</a>
+                                <a href="tel:0063322312705">
+                                    +63 32 233 2233
+                                </a>
                             </li>
                         </ul>
                     </div>
@@ -66,8 +70,13 @@ export default function Footer() {
                     </div>
                 </div>
                 <div className="grid grid-cols-3 gap-4 py-8 text-primary-light">
-                    <span className="col-span-2">Copyright © 2021 <strong>Always On Time</strong>. All Rights Reserved.</span>
-                    <span className="col-span-1 text-right">Privacy Policy</span>
+                    <span className="col-span-2">
+                        Copyright © 2021 <strong>Always On Time</strong>.
+                        All Rights Reserved.
+                    </span>
+                    <span className="col-span-1 text-right">
+                        Privacy Policy
+                    </span>
                 </div>
             </div>
         </footer>

@@ -2,30 +2,17 @@ import Head from 'next/head'
 import Navbar, {
     NavigationItem,
     Props as NavbarProps,
-} from '../components/Navbar'
-import Footer from '../components/Footer'
-import LandingHero, { Props as LandingHeroProps } from './Landing/hero'
+} from 'components/Navbar'
+import Footer from 'components/Footer'
 import LoginModal from 'components/Modals/Login'
 import SignupModal from 'components/Modals/Signup'
-import LandingFeaturesSection from './Landing/section-features'
-import LandingSectionTestimonials from './Landing/section-testimonials'
-import LandingPricingSection from './Landing/section-pricing'
-import LandingSectionTryCTA from './Landing/section-try-cta'
 import { FetchMethods, useFetch } from 'utils/fetch-helper'
 import { useEffect, useState } from 'react'
 import { useAppContext } from 'context/AppContext'
 import { getTranslation } from 'utils/language-helper'
 
-function Home() {
+function AboutUs() {
     const { lang } = useAppContext()
-    const hero_props: LandingHeroProps = {
-        title_left: 'always',
-        title_center: 'on',
-        title_right: 'time',
-        subtitle:
-            'Scheduling, booking and business management platform for your business.',
-        button_label: <>Try it for free</>,
-    }
     const navbar_props: NavbarProps = {
         current: NavigationItem.menu_1,
         nav_labels: {
@@ -54,9 +41,6 @@ function Home() {
     }
 
     const [translations, setTranslations] = useState(ui_text)
-
-    hero_props.subtitle = translations.hero_line_2
-    hero_props.button_label = <>{translations.main_cta_button}</>
 
     useEffect(() => {
         if (lang && translation.data?.attributes[lang]) {
@@ -113,22 +97,7 @@ function Home() {
             </Head>
             <Navbar {...navbar_props} />
 
-            <LandingHero {...hero_props} />
-
-            <main className="overflow-hidden">
-                <LandingFeaturesSection
-                    date_of_exercise={new Date().toLocaleDateString()}
-                    location_name="Taiseng"
-                    instructor_name="Muhammad Ali"
-                    left_title={translations.section_2_left_title}
-                    right_title={translations.section_2_right_title}
-                    mid_left_title={translations.section_2_mid_left_title}
-                    mid_right_title={translations.section_2_mid_right_title}
-                />
-                <LandingSectionTestimonials />
-                <LandingPricingSection {...translations} />
-                <LandingSectionTryCTA />
-            </main>
+            <main className="overflow-hidden">WIP</main>
 
             <Footer />
             <LoginModal />
@@ -137,4 +106,4 @@ function Home() {
     )
 }
 
-export default Home
+export default AboutUs

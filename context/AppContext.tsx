@@ -1,7 +1,8 @@
 import { Context, createContext, ReactNode, useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import { i18n_options, Language, LanguageI18n, LanguageOption } from 'components/LanguageSelector'
+import { isValidLocale, Language, LanguageOption, languages } from 'components/LanguageSelector'
 import { FetchMethods, useFetch } from 'utils/fetch-helper'
+import { betterPathname } from 'utils/string-helper'
 
 export type Tier = {
     id: string
@@ -35,8 +36,15 @@ export function useAppContext() {
 export function SkyAppDataProvider({ children }: Props) {
     const [tiers, setTiers] = useState([] as Tier[])
     const router = useRouter()
-    const initial_locale = router.locale as LanguageI18n
-    const [lang, setLanguage] = useState(i18n_options[initial_locale])
+    const [locale] = betterPathname(location.pathname)
+    let initial_locale = languages[0].code
+    if (isValidLocale(locale)) {
+        const [x] = languages.filter((language: LanguageOption) => {
+            return locale.toUpperCase() == language.text
+        })
+        if (x) initial_locale = x.code
+    }
+    const [lang, setLanguage] = useState(initial_locale)
 
     const {
         data,
@@ -48,8 +56,22 @@ export function SkyAppDataProvider({ children }: Props) {
     )
 
     function onLanguageChange(v: LanguageOption) {
-        setLanguage(v)
-        router.push(router.pathname, router.pathname, { locale: v.i18n })
+        if (lang != v.code) {
+            const { pathname, href, origin } = location
+            if (pathname.substr(0, 3).toUpperCase() != v.text) {
+                const current_lang_uri = href.substr(origin.length + 1, 2)
+                if (lang == languages[0].code) {
+                    location.href = `/${v.text.toLowerCase()}${pathname}`
+                } else if (v.text.toLowerCase()) {
+                    location.href = pathname.substr(3)
+                } else {
+                    location.href = `/${v.text.toLowerCase()}${pathname.substr(3)}`
+                }
+                // location.href = location.href.split(`/${lang}/`, 1).join(`/${v.code}/`)
+            }
+        }
+        // setLanguage(v.code)
+        // router.push(router.pathname, router.pathname, { locale: lang })
     }
 
     useEffect(() => {

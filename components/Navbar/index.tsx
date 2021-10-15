@@ -1,8 +1,4 @@
-import {
-    Fragment,
-    useEffect,
-    useState,
-} from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import Cookies from 'js-cookie'
 import Link from 'next/link'
 import { Disclosure, Menu, Transition } from '@headlessui/react'

@@ -1,7 +1,5 @@
 import {
-    cloneElement,
     Fragment,
-    ReactElement,
     useEffect,
     useState,
 } from 'react'
@@ -67,7 +65,7 @@ export default function Navbar({ current, nav_labels }: Props) {
     }
 
     function handleLanguageChange(e: DropDownListChangeEvent) {
-        onLanguageChange(e.value.code)
+        onLanguageChange(e.value)
     }
 
     useEffect(() => {
@@ -112,20 +110,12 @@ export default function Navbar({ current, nav_labels }: Props) {
                                             </div>
                                             <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
                                                 <div className="flex-shrink-0 flex items-center">
-                                                    <div className="hidden lg:block h-10 w-auto">
-                                                        <span className="logo-icon navbar-logo" />
-                                                    </div>
-                                                    <div className="block lg:hidden h-8 w-auto">
-                                                        <img
-                                                            src="https://tailwindui.com/img/logos/workflow-logo-indigo-500-mark-white-text.svg"
-                                                            alt="Workflow"
-                                                            height="24"
-                                                            width="24"
-                                                        />
+                                                    <div className="hidden lg:block h-12 w-auto">
+                                                        <span className="bg-contain app-logo-icon bg-left h-10 w-24 block " />
                                                     </div>
                                                 </div>
-                                                <div className="hidden sm:block sm:ml-6">
-                                                    <div className="flex space-x-4">
+                                                <div className="hidden sm:block lg:flex items-center sm:ml-6">
+                                                    <div className="space-x-4">
                                                         {navigation.map(
                                                             (item) => (
                                                                 <a

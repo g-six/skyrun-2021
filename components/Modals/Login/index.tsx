@@ -71,27 +71,27 @@ function LoginModal() {
     )
 
     useEffect(() => {
-        if (lang && translation.data?.attributes[lang]) {
+        if (lang && translation.data?.attributes[lang.code]) {
             setTranslations({
                 login_button: getTranslation(
                     'login_button',
-                    translation.data?.attributes[lang]
+                    translation.data?.attributes[lang.code]
                 ),
                 login_title: getTranslation(
                     'login_title',
-                    translation.data?.attributes[lang]
+                    translation.data?.attributes[lang.code]
                 ),
                 email_address_label: getTranslation(
                     'email_address_label',
-                    translation.data?.attributes[lang]
+                    translation.data?.attributes[lang.code]
                 ),
                 password_label: getTranslation(
                     'password_label',
-                    translation.data?.attributes[lang]
+                    translation.data?.attributes[lang.code]
                 ),
                 forgot_password_link: getTranslation(
                     'forgot_password_link',
-                    translation.data?.attributes[lang]
+                    translation.data?.attributes[lang.code]
                 ),
             })
         }

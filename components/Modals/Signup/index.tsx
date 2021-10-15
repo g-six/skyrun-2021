@@ -72,39 +72,39 @@ function SignupModal() {
     )
 
     useEffect(() => {
-        if (lang && translation.data?.attributes[lang]) {
+        if (lang && translation.data?.attributes[lang.code]) {
             setTranslations({
                 title_bar: getTranslation(
                     'title_bar',
-                    translation.data?.attributes[lang]
+                    translation.data?.attributes[lang.code]
                 ),
                 promotional_header: getTranslation(
                     'promotional_header',
-                    translation.data?.attributes[lang]
+                    translation.data?.attributes[lang.code]
                 ),
                 signup_button: getTranslation(
                     'signup_button',
-                    translation.data?.attributes[lang]
+                    translation.data?.attributes[lang.code]
                 ),
                 first_name_label: getTranslation(
                     'first_name_label',
-                    translation.data?.attributes[lang]
+                    translation.data?.attributes[lang.code]
                 ),
                 last_name_label: getTranslation(
                     'last_name_label',
-                    translation.data?.attributes[lang]
+                    translation.data?.attributes[lang.code]
                 ),
                 email_address_label: getTranslation(
                     'email_address_label',
-                    translation.data?.attributes[lang]
+                    translation.data?.attributes[lang.code]
                 ),
                 password_label: getTranslation(
                     'password_label',
-                    translation.data?.attributes[lang]
+                    translation.data?.attributes[lang.code]
                 ),
                 business_name_label: getTranslation(
                     'business_name_label',
-                    translation.data?.attributes[lang]
+                    translation.data?.attributes[lang.code]
                 ),
             })
         }

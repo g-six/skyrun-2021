@@ -214,7 +214,7 @@ function AboutUs() {
                 </section>
 
                 <section
-                    className="flex items-center justify-center bg-contain bg-right bg-no-repeat w-full mt-16"
+                    className="flex items-center justify-center bg-contain bg-center bg-no-repeat w-full mt-16"
                     style={{
                         backgroundImage:
                             'url(//static.aot.plus/images/about-us/midsection-1-min.png)',

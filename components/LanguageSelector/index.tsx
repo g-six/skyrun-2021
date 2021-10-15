@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router'
 import {
     DropDownList,
     DropDownListProps,
@@ -45,9 +44,6 @@ export function renderLanguageOptions(
                     languages[index].icon
                 )}
             />
-            <span className="self-center ml-2">
-                {languages[index].text}
-            </span>
         </div>
     )
 
@@ -63,7 +59,6 @@ function renderSelectedLanguage(
     const children = (
         <div className="flex leading-loose justify-center">
             <i className={value.icon} />
-            <span className="self-center ml-2">{value.text}</span>
         </div>
     )
 
@@ -76,7 +71,6 @@ export function isValidLocale(locale: string = '') {
 
 export function LanguageSelector(props: DropDownListProps) {
     const { className } = props
-    const { push } = useRouter()
     let default_locale = languages[0]
     const [locale] = betterPathname(location.pathname)
     if (locale && isValidLocale(locale)) {
@@ -89,6 +83,9 @@ export function LanguageSelector(props: DropDownListProps) {
             defaultItem={default_locale}
             itemRender={renderLanguageOptions}
             className={className || 'country-selector'}
+            popupSettings={{
+                className: 'country-selector shadow-2xl w-24 text-center'
+            }}
             data={languages}
             textField="text"
             valueMap={(value) => value && value.code}

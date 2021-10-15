@@ -1,8 +1,5 @@
 import Head from 'next/head'
-import Navbar, {
-    NavigationItem,
-    Props as NavbarProps,
-} from '../components/Navbar'
+import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import LandingHero, { Props as LandingHeroProps } from './Landing/hero'
 import LoginModal from 'components/Modals/Login'
@@ -25,13 +22,6 @@ function Home() {
         subtitle:
             'Scheduling, booking and business management platform for your business.',
         button_label: <>Try it for free</>,
-    }
-    const navbar_props: NavbarProps = {
-        current: NavigationItem.menu_1,
-        nav_labels: {
-            menu_1: 'Industries',
-            menu_2: 'Features',
-        },
     }
 
     const { data: translation } = useFetch(
@@ -111,7 +101,7 @@ function Home() {
                     type="text/css"
                 />
             </Head>
-            <Navbar {...navbar_props} />
+            <Navbar />
 
             <LandingHero {...hero_props} />
 

@@ -5,3 +5,12 @@ export function toTitleCase(text: string) {
 
     return words.join(' ')
 }
+
+export function betterPathname(pathname: string) {
+    const words: string[] = []
+    pathname.split('/').forEach((word: string) => {
+        if (word.length > 0) words.push(word)
+    })
+
+    return words
+}

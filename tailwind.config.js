@@ -17,6 +17,7 @@ module.exports = {
     },
     fontFamily: {
       'sans': ['Proxima\\ Nova', 'ui-sans-serif', 'system-ui'],
+      'display': ['Circular', 'Poppins', 'ui-sans-serif', 'system-ui'],
       'mono': ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation\\ Mono', 'Courier\\ New', 'monospace'],
     },
     extend: {
@@ -30,6 +31,7 @@ module.exports = {
           lighter: '#CFE2F5',
           light: '#5E9FBD',
           dark: '#00273F',
+          '150': '#86C5E0',
         },
         secondary: {
           DEFAULT: '#F15D22',

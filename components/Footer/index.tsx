@@ -2,7 +2,7 @@ import styles from '../../styles/Footer.module.scss'
 
 export default function Footer() {
     return (
-        <footer className="container mx-auto pb-8 lg:pb-12">
+        <footer className="container mx-auto pt-20 pb-8 lg:pb-12">
             <div className="flex flex-col divide-y gap-12">
                 <div className="grid grid-cols-4 gap-2">
                     <div className="col-span-1">
@@ -69,7 +69,7 @@ export default function Footer() {
                         </div>
                     </div>
                 </div>
-                <div className="grid grid-cols-3 gap-4 py-8 text-primary-light">
+                <div className="grid grid-cols-3 gap-4 py-8 text-gray-400">
                     <span className="col-span-2">
                         Copyright © 2021 <strong>Always On Time</strong>.
                         All Rights Reserved.

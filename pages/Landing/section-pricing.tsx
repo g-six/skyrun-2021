@@ -109,7 +109,7 @@ export default function LandingPricingSection(props: SectionProps) {
                     </ButtonGroup>
                 </div>
 
-                <div className="lg:grid grid-cols-3 gap-8 lg:px-40 mt-12">
+                <div className="grid lg:grid-cols-3 gap-6 xl:gap-8 xl:max-w-7xl mx-auto mt-12">
                     <div className="bg-white rounded-2xl shadow-2xl w-full py-10 px-8">
                         <figure className="w-60 text-center m-auto mt-2 text-primary-light">
                             <span className="rounded-lg p-0.5 pt-1 w-8 inline-block border-2 border-primary-light">

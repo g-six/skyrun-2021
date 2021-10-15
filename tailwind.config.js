@@ -24,7 +24,7 @@ module.exports = {
         'hero-pattern': 'contain',
       }),
       colors: {
-        'regal-blue': '#160364',
+        'sec-blue-gray': '#496175',
         primary: {
           DEFAULT: '#23476B',
           lighter: '#CFE2F5',

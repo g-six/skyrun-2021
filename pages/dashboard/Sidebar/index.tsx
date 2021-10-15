@@ -25,7 +25,7 @@ const items: SidebarItem[] = [
     { text: 'Home', icon: 'feather-sidebar', route: '/dashboard' },
     {
         text: 'Calendar',
-        icon: 'k-i-calendar',
+        icon: 'feather-calendar',
         route: '/dashboard/calendar',
     },
     {
@@ -51,7 +51,7 @@ const items: SidebarItem[] = [
     },
     {
         text: 'Resources',
-        icon: 'k-i-star-outline',
+        icon: 'feather-folder',
         route: '/dashboard/resources',
     },
     {
@@ -88,7 +88,7 @@ const CustomItem = (props: DrawerItemProps) => {
 
 function Sidebar({ children }: Props) {
     const router = useRouter()
-    const [expanded, setExpanded] = useState(false)
+    const [expanded, setExpanded] = useState(true)
     const ctx = useAuth()
     const handleClick = (e: MouseEvent) => {
         e.preventDefault()
@@ -119,9 +119,9 @@ function Sidebar({ children }: Props) {
             items={
                 ctx.user?.uuid
                     ? items.map((item) => ({
-                            ...item,
-                            selected: item.text === selected,
-                        }))
+                          ...item,
+                          selected: item.text === selected,
+                      }))
                     : []
             }
             item={CustomItem}
@@ -130,11 +130,11 @@ function Sidebar({ children }: Props) {
                 {children}
                 <button
                     className={classNames(
-                        'absolute bottom-28 bg-white text-indigo-900 w-9 h-9 transition-all duration-300',
+                        'absolute bottom-28 bg-primary text-white w-9 h-9 transition-all duration-300',
                         expanded
-                            ? 'left-56 shadow-xl border-r border-indigo-50 hover:text-indigo-700 rounded-full'
-                            : 'left-2 hover:bg-indigo-900 hover:bg-opacity-10 rounded-lg',
-                        'duration-400 ease-linear transition-all'
+                            ? 'left-56 shadow-xl border-r border-indigo-50'
+                            : 'left-2 hover:bg-opacity-30 bg-opacity-70',
+                        'duration-400 ease-linear transition-all rounded-full'
                     )}
                     id="BtnExpandSidebar"
                     onClick={handleClick}

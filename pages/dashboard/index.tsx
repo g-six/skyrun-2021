@@ -37,23 +37,22 @@ function Dashboard({
                 />
             </Head>
             <Authenticated>
-            <AppBar
-                    className="flex items-stretched h-24 bg-primary-lighter bg-opacity-50 px-2 py-0"
+                <AppBar
+                    className="flex items-stretched h-20 bg-white shadow-lg px-2 py-2"
                     themeColor="inherit"
                 >
-                    <AppBarSection className="bg-red-500 h-12 w-32 logo-icon" />
+                    <AppBarSection className="h-12 w-32 app-logo-icon mb-2" />
                     <AppBarSection className="flex-grow">
                         {user?.first_name ? (
-                            <h1 className="text-2xl text-gray-700">
-                                {router.pathname.substr(1) ===
-                                'dashboard'
+                            <h1 className="text-2xl font-medium text-primary-dark">
+                                {router.pathname.substr(1) === 'dashboard'
                                     ? `Welcome, ${user.first_name}!`
                                     : toTitleCase(
-                                            router.pathname.split('/')[
-                                                router.pathname.split('/')
-                                                    .length - 1
-                                            ]
-                                        )}
+                                          router.pathname.split('/')[
+                                              router.pathname.split('/')
+                                                  .length - 1
+                                          ]
+                                      )}
                             </h1>
                         ) : (
                             ''
@@ -66,9 +65,7 @@ function Dashboard({
                         {user?.uuid ? <span>{user.uuid}</span> : ''}
                     </AppBarSection>
                 </AppBar>
-                <Sidebar>
-                    {children}
-                </Sidebar>
+                <Sidebar>{children}</Sidebar>
             </Authenticated>
             <NotAuthenticated>
                 <LoginModal />

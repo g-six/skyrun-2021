@@ -6,6 +6,7 @@ import {
 } from '@progress/kendo-react-dropdowns'
 import { cloneElement, ReactElement } from 'react'
 import { betterPathname } from 'utils/string-helper'
+import { classNames } from 'utils/dom-helpers'
 
 export enum Language {
     EN = 'field_en_us',
@@ -37,9 +38,14 @@ export function renderLanguageOptions(
 ) {
     const index = item_props.index
     const children = (
-        <div className="country-selector-item flex">
-            <i className={languages[index].icon} />
-            <span className="inline-block ml-2 leading-loose">
+        <div className="flex leading-loose justify-center">
+            <i
+                className={classNames(
+                    'rounded-full w-8 h-8',
+                    languages[index].icon
+                )}
+            />
+            <span className="self-center ml-2">
                 {languages[index].text}
             </span>
         </div>
@@ -70,7 +76,7 @@ export function isValidLocale(locale: string = '') {
 
 export function LanguageSelector(props: DropDownListProps) {
     const { className } = props
-    const { push  } = useRouter()
+    const { push } = useRouter()
     let default_locale = languages[0]
     const [locale] = betterPathname(location.pathname)
     if (locale && isValidLocale(locale)) {

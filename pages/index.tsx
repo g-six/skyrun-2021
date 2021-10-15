@@ -59,35 +59,35 @@ function Home() {
     hero_props.button_label = <>{translations.main_cta_button}</>
 
     useEffect(() => {
-        if (lang && translation.data?.attributes[lang]) {
+        if (lang && translation.data?.attributes[lang.code]) {
             setTranslations({
                 hero_line_2: getTranslation(
                     'hero_line_2',
-                    translation.data?.attributes[lang]
+                    translation.data?.attributes[lang.code]
                 ),
                 main_cta_button: getTranslation(
                     'main_cta_button',
-                    translation.data?.attributes[lang]
+                    translation.data?.attributes[lang.code]
                 ),
                 section_2_left_title: getTranslation(
                     'section_2_left_title',
-                    translation.data?.attributes[lang]
+                    translation.data?.attributes[lang.code]
                 ),
                 section_2_right_title: getTranslation(
                     'section_2_right_title',
-                    translation.data?.attributes[lang]
+                    translation.data?.attributes[lang.code]
                 ),
                 section_2_mid_left_title: getTranslation(
                     'section_2_mid_left_title',
-                    translation.data?.attributes[lang]
+                    translation.data?.attributes[lang.code]
                 ),
                 section_2_mid_right_title: getTranslation(
                     'section_2_mid_right_title',
-                    translation.data?.attributes[lang]
+                    translation.data?.attributes[lang.code]
                 ),
                 pricing_plans_title: getTranslation(
                     'pricing_plans_title',
-                    translation.data?.attributes[lang]
+                    translation.data?.attributes[lang.code]
                 ),
             })
         }

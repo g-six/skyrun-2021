@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router'
 import {
     DropDownList,
     DropDownListProps,
@@ -10,21 +11,44 @@ export enum Language {
     ZH = 'field_zh_cn',
 }
 
+export enum LanguageI18n {
+    'en-US' = 'en-US',
+    'zh-CN' = 'zh-CN'
+}
+
+export const i18n_options: Record<LanguageI18n, LanguageOption> = {
+    'en-US': {
+        code: Language.EN,
+        text: 'EN',
+        i18n: LanguageI18n['en-US'],
+        icon: 'flag-icon flag-icon-us flag-icon-squared',
+    },
+    'zh-CN': {
+        code: Language.ZH,
+        text: 'ZH',
+        i18n: LanguageI18n['zh-CN'],
+        icon: 'flag-icon flag-icon-cn flag-icon-squared',
+    }
+}
+
 export interface LanguageOption {
     text: string
     icon: string
     code: Language
+    i18n: LanguageI18n
 }
 
 export const languages: LanguageOption[] = [
     {
         text: 'EN',
         code: Language.EN,
+        i18n: LanguageI18n['en-US'],
         icon: 'flag-icon flag-icon-us flag-icon-squared',
     },
     {
         text: 'ZH',
         code: Language.ZH,
+        i18n: LanguageI18n['zh-CN'],
         icon: 'flag-icon flag-icon-cn flag-icon-squared',
     },
 ]
@@ -52,9 +76,9 @@ function renderSelectedLanguage(
 ) {
     if (!value) return element
     const children = (
-        <div className="flex leading-loose">
+        <div className="flex leading-loose justify-center">
             <i className={value.icon} />
-            <span className="inline-block ml-2">{value.text}</span>
+            <span className="self-center ml-2">{value.text}</span>
         </div>
     )
 
@@ -63,14 +87,19 @@ function renderSelectedLanguage(
 
 export function LanguageSelector(props: DropDownListProps) {
     const { className } = props
+    const { locale, locales } = useRouter()
+    let default_locale = languages[0]
+    if (locale) {
+        default_locale = i18n_options[locale as LanguageI18n]
+    }
     return (
         <DropDownList
-            defaultItem={languages[0]}
+            defaultItem={default_locale}
             itemRender={renderLanguageOptions}
             className={className || 'country-selector'}
             data={languages}
             textField="text"
-            valueMap={(value) => value && value.code}
+            valueMap={(value) => value && value.i18n}
             valueRender={renderSelectedLanguage}
             {...props}
         />

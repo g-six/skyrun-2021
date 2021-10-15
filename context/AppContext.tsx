@@ -1,5 +1,6 @@
-import { Language } from 'components/LanguageSelector'
 import { Context, createContext, ReactNode, useContext, useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
+import { i18n_options, Language, LanguageI18n, LanguageOption } from 'components/LanguageSelector'
 import { FetchMethods, useFetch } from 'utils/fetch-helper'
 
 export type Tier = {
@@ -33,10 +34,11 @@ export function useAppContext() {
 
 export function SkyAppDataProvider({ children }: Props) {
     const [tiers, setTiers] = useState([] as Tier[])
-    const [lang, setLanguage] = useState(Language.EN)
+    const router = useRouter()
+    const initial_locale = router.locale as LanguageI18n
+    const [lang, setLanguage] = useState(i18n_options[initial_locale])
 
     const {
-        is_loading,
         data,
      } = useFetch(
         '/v1/tiers',
@@ -45,8 +47,9 @@ export function SkyAppDataProvider({ children }: Props) {
         true,
     )
 
-    function onLanguageChange(v: Language) {
+    function onLanguageChange(v: LanguageOption) {
         setLanguage(v)
+        router.push(router.pathname, router.pathname, { locale: v.i18n })
     }
 
     useEffect(() => {

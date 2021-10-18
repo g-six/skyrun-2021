@@ -10,6 +10,7 @@ import profile from 'services/profile'
 import signUp from 'services/UserPool'
 import { AuthContextType, SkyUser, TenantInfo } from './types'
 import { FetchMethods, useFetch } from 'utils/fetch-helper'
+import { Tier } from './AppContext'
 
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 
@@ -28,6 +29,7 @@ export const NotAuthenticated = createWrapper(AuthContext, ctx => !ctx.user?.uui
 export function SkyAuthProvider({ children }: Props) {
     const [user, setUser] = useState<SkyUser>({} as unknown as SkyUser)
     const [tenant, setTenant] = useState<TenantInfo>({} as unknown as TenantInfo)
+    const [tenants, setTenants] = useState<TenantInfo[]>([] as unknown as TenantInfo[])
     const [is_initialized, setInit] = useState(true)
 
     const LoginModal = useModal()
@@ -93,6 +95,8 @@ export function SkyAuthProvider({ children }: Props) {
             return output || false
         },
         tenant,
+        tenants,
+        setTenant,
         CreateClientModal,
         CreateLocationModal,
         StaffModal,
@@ -125,6 +129,12 @@ export function SkyAuthProvider({ children }: Props) {
 
 
         if (data.tenants && data.tenants[0] && !tenant.business_name) {
+            setTenants(data.tenants.map((t: Record<string, string | Tier>): TenantInfo => ({
+                id: t.id as string,
+                business_name: t.name as string,
+                tier: t.tier as Tier,
+            })))
+
             setTenant({
                 id: data.tenants[0].id,
                 business_name: data.tenants[0].name,

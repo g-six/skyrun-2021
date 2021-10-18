@@ -1,5 +1,6 @@
 import { AuthenticationResultType, ConfirmForgotPasswordCommandOutput, SignUpCommandOutput } from '@aws-sdk/client-cognito-identity-provider'
 import { ModalHook } from 'components/Modals/types'
+import { Dispatch, SetStateAction } from 'react'
 import { UserModel } from 'services/profile'
 
 type Tier = {
@@ -37,6 +38,8 @@ export interface TenantInfo {
 export type AuthContextType = {
     user?: SkyUser
     tenant?: TenantInfo
+    tenants?: TenantInfo[]
+    setTenant: Dispatch<SetStateAction<TenantInfo>>
     LoginModal: ModalHook
     SignupModal: ModalHook
     CreateClientModal: ModalHook

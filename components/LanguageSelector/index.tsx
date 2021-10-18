@@ -3,7 +3,13 @@ import {
     DropDownListProps,
     ListItemProps,
 } from '@progress/kendo-react-dropdowns'
-import { cloneElement, ReactElement } from 'react'
+import {
+    cloneElement,
+    Dispatch,
+    ReactElement,
+    SetStateAction,
+    useState,
+} from 'react'
 import { betterPathname } from 'utils/string-helper'
 import { classNames } from 'utils/dom-helpers'
 
@@ -32,37 +38,72 @@ export const languages: LanguageOption[] = [
 ]
 
 export function renderLanguageOptions(
-    li: ReactElement<HTMLLIElement>,
-    item_props: ListItemProps
+    setOpen: Dispatch<SetStateAction<boolean>>
 ) {
-    const index = item_props.index
-    const children = (
-        <div className="flex leading-loose justify-center">
-            <i
-                className={classNames(
-                    'rounded-full w-8 h-8',
-                    languages[index].icon
-                )}
-            />
-        </div>
-    )
+    return (li: ReactElement<HTMLLIElement>, item_props: ListItemProps) => {
+        const index = item_props.index
+        const [first_segment] = betterPathname(location.pathname)
+        function onHover() {
+            setOpen(true)
+        }
 
-    return cloneElement(li, li.props, children)
+        function onLeave() {
+            setOpen(false)
+        }
+
+        const children = (
+            <div
+                className={classNames(
+                    isValidLocale(first_segment) &&
+                        languages[index].text.toLocaleLowerCase() ==
+                            first_segment
+                        ? 'is-selected'
+                        : '',
+                    'flex rounded-full leading-loose justify-center'
+                )}
+                onMouseEnter={onHover}
+                onMouseLeave={onLeave}
+            >
+                <i
+                    className={classNames(
+                        isValidLocale(first_segment) &&
+                            languages[index].text.toLocaleLowerCase() ==
+                                first_segment
+                            ? 'shadow-2xl opacity-90'
+                            : 'opacity-40',
+                        'rounded-full w-10 h-10 my-1 hover:opacity-100',
+                        languages[index].icon
+                    )}
+                />
+            </div>
+        )
+
+        return cloneElement(li, li.props, children)
+    }
 }
 
 function renderSelectedLanguage(
-    element: ReactElement<HTMLSpanElement>,
-    value: LanguageOption
+    openMenu: () => void,
+    closeMenu: () => void
 ) {
-    if (!value) return element
+    return (
+        element: ReactElement<HTMLSpanElement>,
+        value: LanguageOption
+    ) => {
+        if (!value) return element
 
-    const children = (
-        <div className="flex leading-loose justify-center">
-            <i className={value.icon} />
-        </div>
-    )
+        const children = (
+            <div
+                className="flex leading-loose justify-center"
+                onMouseEnter={openMenu}
+                onMouseLeave={closeMenu}
+            >
+                <i className={value.icon} />
+            </div>
+        )
 
-    return cloneElement(element, element.props, children)
+        return cloneElement(element, element.props, children)
+    }
 }
 
 export function isValidLocale(locale: string = '') {
@@ -73,24 +114,39 @@ export function LanguageSelector(props: DropDownListProps) {
     const { className } = props
     let default_locale = languages[0]
     const [locale] = betterPathname(location.pathname)
+    const [opened, setOpen] = useState(false)
+    const [child_hovered, setChildHovered] = useState(false)
     if (locale && isValidLocale(locale)) {
         default_locale = languages.filter((l: LanguageOption) => {
             return l.text.toLowerCase() == locale
         })[0]
     }
+
+    function openMenu() {
+        setOpen(true)
+    }
+
+    function closeMenu() {
+        setOpen(false)
+    }
+
     return (
         <DropDownList
             defaultItem={default_locale}
-            itemRender={renderLanguageOptions}
-            className={className || 'country-selector'}
+            itemRender={renderLanguageOptions(setChildHovered)}
+            className={
+                className || 'country-selector bg-transparent shadow-none'
+            }
             popupSettings={{
-                className: 'country-selector shadow-2xl w-24 text-center'
+                className:
+                    'bg-transparent country-selector w-12 p-0 shadow-none',
             }}
             data={languages}
             textField="text"
             valueMap={(value) => value && value.code}
-            valueRender={renderSelectedLanguage}
+            valueRender={renderSelectedLanguage(openMenu, closeMenu)}
             {...props}
+            opened={opened || child_hovered}
         />
     )
 }

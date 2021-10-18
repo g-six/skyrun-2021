@@ -12,7 +12,8 @@ import SkyContext, {
 import { useAuth } from 'context/AuthContext'
 import SignupButton from 'components/Buttons/SignupButton'
 import { DropDownListChangeEvent } from '@progress/kendo-react-dropdowns'
-import LanguageSelector from 'components/LanguageSelector'
+import LanguageSelector, { Language } from 'components/LanguageSelector'
+import { betterPathname } from 'utils/string-helper'
 
 const navigation = [
     {
@@ -44,6 +45,16 @@ export default function Navbar() {
 
     function handleLanguageChange(e: DropDownListChangeEvent) {
         onLanguageChange(e.value)
+    }
+
+    const [first_part] = betterPathname(location.pathname)
+    let locale = ''
+
+    if (
+        first_part &&
+        Object.keys(Language).indexOf(first_part.toUpperCase()) > 0
+    ) {
+        locale = `/${first_part.toLowerCase()}`
     }
 
     useEffect(() => {
@@ -89,12 +100,10 @@ export default function Navbar() {
                                             <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
                                                 <div className="flex-shrink-0 flex items-center">
                                                     <div className="hidden lg:block h-12 w-auto">
-                                                        <Link
-                                                            href="/"
-                                                            passHref
-                                                        >
-                                                            <span className="bg-contain app-logo-icon bg-left h-10 w-24 block cursor-pointer" />
-                                                        </Link>
+                                                        <a
+                                                            className="bg-contain app-logo-icon bg-left h-10 w-24 block cursor-pointer"
+                                                            href={locale}
+                                                        />
                                                     </div>
                                                 </div>
                                                 <div className="hidden sm:block lg:flex items-center sm:ml-6">
@@ -105,9 +114,7 @@ export default function Navbar() {
                                                                     key={
                                                                         item.id
                                                                     }
-                                                                    href={
-                                                                        item.href
-                                                                    }
+                                                                    href={`${locale}${item.href}`}
                                                                     className={classNames(
                                                                         item.current
                                                                             ? 'bg-gray-900 text-white'
@@ -129,14 +136,7 @@ export default function Navbar() {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="absolute inset-y-0  right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                                                <LanguageSelector
-                                                    className="country-selector flex"
-                                                    onChange={
-                                                        handleLanguageChange
-                                                    }
-                                                />
-
+                                            <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0 gap-4">
                                                 <a
                                                     href="/pricing"
                                                     className={classNames(
@@ -179,22 +179,18 @@ export default function Navbar() {
                                                                     {({
                                                                         active,
                                                                     }) => (
-                                                                        <Link
-                                                                            href="/dashboard"
-                                                                            passHref
+                                                                        <a
+                                                                            href={`${locale}/dashboard`}
+                                                                            className={classNames(
+                                                                                active
+                                                                                    ? 'bg-gray-200'
+                                                                                    : '',
+                                                                                'block px-4 py-2 text-sm text-black'
+                                                                            )}
                                                                         >
-                                                                            <a
-                                                                                className={classNames(
-                                                                                    active
-                                                                                        ? 'bg-gray-200'
-                                                                                        : '',
-                                                                                    'block px-4 py-2 text-sm text-black'
-                                                                                )}
-                                                                            >
-                                                                                Your
-                                                                                Profile
-                                                                            </a>
-                                                                        </Link>
+                                                                            Your
+                                                                            Profile
+                                                                        </a>
                                                                     )}
                                                                 </Menu.Item>
                                                                 <Menu.Item>
@@ -202,7 +198,7 @@ export default function Navbar() {
                                                                         active,
                                                                     }) => (
                                                                         <a
-                                                                            href="#"
+                                                                            href={`${locale}/dashboard/settings`}
                                                                             className={classNames(
                                                                                 active
                                                                                     ? 'bg-gray-200'
@@ -243,6 +239,13 @@ export default function Navbar() {
                                                         <SignupButton className="button primary inline-block px-5 p-2" />
                                                     </>
                                                 )}
+
+                                                <LanguageSelector
+                                                    className="country-selector flex"
+                                                    onChange={
+                                                        handleLanguageChange
+                                                    }
+                                                />
                                             </div>
                                         </div>
                                     </div>

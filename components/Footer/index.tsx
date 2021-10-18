@@ -47,24 +47,24 @@ export default function Footer() {
 
                         <div className="flex gap-3 mt-3">
                             <a
-                                href="https://linkedin.com/aot-plus"
-                                className="w-8 h-8 text-center leading-loose inline-block bg-primary-lighter rounded-full"
+                                href="https://twitter.com/aotplus"
+                                className="w-8 h-8 flex items-center justify-center text-center bg-primary-lighter rounded-full"
                             >
-                                <i className="k-icon k-i-linkedin" />
+                                <i className="k-icon k-i-twitter" />
                             </a>
 
                             <a
-                                href="https://linkedin.com/aot-plus"
-                                className="w-8 h-8 text-center leading-loose inline-block bg-primary-lighter rounded-full"
+                                href="https://www.facebook.com/aotplus.software"
+                                className="w-8 h-8 flex items-center justify-center text-center bg-primary-lighter rounded-full"
                             >
                                 <i className="k-icon k-i-facebook " />
                             </a>
 
                             <a
-                                href="https://linkedin.com/aot-plus"
-                                className="w-8 h-8 text-center leading-loose inline-block bg-primary-lighter rounded-full"
+                                href="https://www.instagram.com/aotplus.software/"
+                                className="flex items-center justify-center w-8 h-8 text-center inline-block bg-primary-lighter rounded-full"
                             >
-                                <i className="k-icon k-i-twitter " />
+                                <i className="feather-instagram font-bold" />
                             </a>
                         </div>
                     </div>

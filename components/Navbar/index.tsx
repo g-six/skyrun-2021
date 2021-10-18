@@ -18,6 +18,18 @@ import { betterPathname } from 'utils/string-helper'
 const navigation = [
     {
         id: 'menu_1',
+        href: '/#features',
+        label: 'Features',
+        current: false,
+    },
+    {
+        id: 'menu_2',
+        href: '/#pricing',
+        label: 'Pricing',
+        current: false,
+    },
+    {
+        id: 'menu_3',
         href: '/about-us',
         label: 'About Us',
         current: false,
@@ -137,15 +149,6 @@ export default function Navbar() {
                                                 </div>
                                             </div>
                                             <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0 gap-4">
-                                                <a
-                                                    href="/pricing"
-                                                    className={classNames(
-                                                        'text-gray-800 hover:bg-gray-100 hover:text-black',
-                                                        'px-3 py-2 rounded-md text-sm lg:mr-2'
-                                                    )}
-                                                >
-                                                    Pricing
-                                                </a>
                                                 {/* Profile dropdown */}
                                                 {user?.first_name ? (
                                                     <Menu

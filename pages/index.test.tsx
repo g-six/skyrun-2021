@@ -53,10 +53,10 @@ describe('Home', () => {
     })
 
     describe('landing', () => {
-          it('should have a landing hero', async () => {
-               const hero = screen.getByTestId('LandingHero')
-               expect(hero).toBeDefined()
-          })
+        it('should have a landing hero', async () => {
+            const hero = screen.getByTestId('LandingHero')
+            expect(hero).toBeDefined()
+        })
 
         it('should have a landing features section', async () => {
             const features = screen.getByTestId('LandingFeaturesSection')

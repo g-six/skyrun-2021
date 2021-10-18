@@ -299,30 +299,68 @@ function AboutUs() {
                             <div className="text-primary mb-4 text-5xl font-light tracking-tight font-display">
                                 {translations.section_3_title}
                             </div>
-                            <p>
-                                {translations.section_3_subtitle}
-                            </p>
+                            <p>{translations.section_3_subtitle}</p>
                         </div>
                         <div className="md:grid md:grid-cols-2 gap-10 xl:grid-cols-4 mt-10 max-w-7xl mx-auto">
                             <div className="bg-white px-8 py-10 rounded-3xl shadow-2xl h-80">
-                                <i className="bg-no-repeat bg-contain h-12 w-12 mb-6 inline-block" style={{ backgroundImage: 'url(//static.aot.plus/images/about-us/magnify.svg)' }} />
-                                <h4 className="font-display text-primary-dark text-xl mb-2">{translations.section_3_item_1_title}</h4>
-                                <p className="leading-loose text-gray-400">{translations.section_3_item_1_body}</p>
+                                <i
+                                    className="bg-no-repeat bg-contain h-12 w-12 mb-6 inline-block"
+                                    style={{
+                                        backgroundImage:
+                                            'url(//static.aot.plus/images/about-us/magnify.svg)',
+                                    }}
+                                />
+                                <h4 className="font-display text-primary-dark text-xl mb-2">
+                                    {translations.section_3_item_1_title}
+                                </h4>
+                                <p className="leading-loose text-gray-400">
+                                    {translations.section_3_item_1_body}
+                                </p>
                             </div>
                             <div className="bg-white px-8 py-10 rounded-3xl shadow-2xl h-80">
-                                <i className="bg-no-repeat bg-contain h-12 w-12 mb-6 inline-block" style={{ backgroundImage: 'url(//static.aot.plus/images/about-us/heart.svg)' }} />
-                                <h4 className="font-display text-primary-dark text-xl mb-2">{translations.section_3_item_2_title}</h4>
-                                <p className="leading-loose text-gray-400">{translations.section_3_item_2_body}</p>
+                                <i
+                                    className="bg-no-repeat bg-contain h-12 w-12 mb-6 inline-block"
+                                    style={{
+                                        backgroundImage:
+                                            'url(//static.aot.plus/images/about-us/heart.svg)',
+                                    }}
+                                />
+                                <h4 className="font-display text-primary-dark text-xl mb-2">
+                                    {translations.section_3_item_2_title}
+                                </h4>
+                                <p className="leading-loose text-gray-400">
+                                    {translations.section_3_item_2_body}
+                                </p>
                             </div>
                             <div className="bg-white px-8 py-10 rounded-3xl shadow-2xl h-80">
-                                <i className="bg-no-repeat bg-contain h-12 w-12 mb-6 inline-block" style={{ backgroundImage: 'url(//static.aot.plus/images/about-us/bullseye.svg)' }} />
-                                <h4 className="font-display text-primary-dark text-xl mb-2">{translations.section_3_item_3_title}</h4>
-                                <p className="leading-loose text-gray-400">{translations.section_3_item_3_body}</p>
+                                <i
+                                    className="bg-no-repeat bg-contain h-12 w-12 mb-6 inline-block"
+                                    style={{
+                                        backgroundImage:
+                                            'url(//static.aot.plus/images/about-us/bullseye.svg)',
+                                    }}
+                                />
+                                <h4 className="font-display text-primary-dark text-xl mb-2">
+                                    {translations.section_3_item_3_title}
+                                </h4>
+                                <p className="leading-loose text-gray-400">
+                                    {translations.section_3_item_3_body}
+                                </p>
                             </div>
                             <div className="bg-white px-8 py-10 rounded-3xl shadow-2xl h-80">
-                                <i className="bg-no-repeat bg-contain h-12 w-12 mb-6 inline-block" style={{ backgroundImage: 'url(//static.aot.plus/images/about-us/thumbsup.svg)' }} />
-                                <h4 className="font-display text-primary-dark text-xl mb-2">{translations.section_3_item_4_title}</h4>
-                                <p className="leading-loose text-gray-400">{translations.section_3_item_4_body}</p>
+                                <i
+                                    className="bg-no-repeat bg-contain h-12 w-12 mb-6 inline-block"
+                                    style={{
+                                        backgroundImage:
+                                            'url(//static.aot.plus/images/about-us/thumbsup.svg)',
+                                    }}
+                                />
+                                <h4 className="font-display text-primary-dark text-xl mb-2">
+                                    {translations.section_3_item_4_title}
+                                </h4>
+                                <p className="leading-loose text-gray-400">
+                                    {translations.section_3_item_4_body}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -331,12 +369,22 @@ function AboutUs() {
                 <section
                     className="text-white font-display py-20 text-center"
                     style={{
-                        background: 'linear-gradient(104.86deg, #86C5E0 39.52%, #86C5E0 81.67%)'
+                        background:
+                            'linear-gradient(104.86deg, #86C5E0 39.52%, #86C5E0 81.67%)',
                     }}
                 >
-                    <h4 className="text-5xl font-thin mx-auto max-w-2xl mb-3">{translations.section_4_title}</h4>
-                    <h5 className="text-3xl font-thin mb-8">{translations.section_4_subtitle}</h5>
-                    <button className="bg-secondary text-white text-lg font-display rounded-full py-5 px-12" type="button">{translations.join_cta_button}</button>
+                    <h4 className="text-5xl font-thin mx-auto max-w-2xl mb-3">
+                        {translations.section_4_title}
+                    </h4>
+                    <h5 className="text-3xl font-thin mb-8">
+                        {translations.section_4_subtitle}
+                    </h5>
+                    <button
+                        className="bg-secondary text-white text-lg font-display rounded-full py-5 px-12"
+                        type="button"
+                    >
+                        {translations.join_cta_button}
+                    </button>
                 </section>
             </main>
 

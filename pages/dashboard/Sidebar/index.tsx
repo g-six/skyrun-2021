@@ -10,6 +10,9 @@ import {
 import { classNames } from 'utils/dom-helpers'
 import { UserModel } from 'services/profile'
 import { useAuth } from 'context/AuthContext'
+import { betterPathname } from 'utils/string-helper'
+import { Language } from 'components/LanguageSelector'
+import TenantSelector from './TenantSelector'
 
 type SidebarItem = {
     text?: string
@@ -22,6 +25,8 @@ interface Props {
     children?: ReactElement | ReactElement[] | string
 }
 const items: SidebarItem[] = [
+    { route: '/' },
+    {},
     { text: 'Home', icon: 'feather-sidebar', route: '/dashboard' },
     {
         text: 'Calendar',
@@ -76,13 +81,54 @@ const items: SidebarItem[] = [
 ]
 
 const CustomItem = (props: DrawerItemProps) => {
-    return (
-        <DrawerItem {...props} title={props.text}>
-            <span className={`k-icon ${props.icon}`}></span>
+    const [locale] = betterPathname(location.pathname)
+    const { tenant, tenants } = useAuth()
+    function getHomePath() {
+        if (Object.keys(Language).indexOf(locale.toUpperCase()) > 0) {
+            return ['', locale, 'dashboard/'].join('/')
+        }
+        return '/dashboard/'
+    }
+
+    if (!props.icon && !props.route && !props.separator) {
+        return (
+            <div className="bg-white px-6 pb-6 mb-2">
+                <TenantSelector tenant={tenant} tenants={tenants} />
+            </div>
+        )
+    }
+
+    return props.route != '/' ? (
+        <DrawerItem
+            {...props}
+            className="flex items-center text-gray-600"
+            title={props.text}
+        >
+            <span
+                className={classNames(
+                    props.selected ? 'text-primary' : 'text-gray-400',
+                    `k-icon text-2xl ${props.icon}`
+                )}
+            ></span>
             <div className="item-descr-wrap ml-2 w-full" title={props.text}>
-                <div>{props.text}</div>
+                <div
+                    className={classNames(
+                        props.selected ? 'text-primary' : 'text-gray-700'
+                    )}
+                >
+                    {props.text}
+                </div>
             </div>
         </DrawerItem>
+    ) : (
+        <a
+            href={getHomePath()}
+            className="block bg-white cursor-pointer pb-6"
+        >
+            <span className="block pb-6 shadow-xl">
+                <i className="h-10 w-30 block bg-contain bg-center app-logo-icon mt-4" />
+            </span>
+        </a>
     )
 }
 
@@ -96,7 +142,6 @@ function Sidebar({ children }: Props) {
     }
     const onSelect = (e: DrawerSelectEvent) => {
         router.push(e.itemTarget.props.route)
-        setExpanded(!expanded)
     }
     const setSelectedItem = (path_name: string) => {
         const current_path = items.find(

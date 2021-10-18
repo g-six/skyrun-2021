@@ -8,6 +8,7 @@ import {
     Dispatch,
     ReactElement,
     SetStateAction,
+    useEffect,
     useState,
 } from 'react'
 import { betterPathname } from 'utils/string-helper'
@@ -41,7 +42,7 @@ export function renderLanguageOptions(
     setOpen: Dispatch<SetStateAction<boolean>>
 ) {
     return (li: ReactElement<HTMLLIElement>, item_props: ListItemProps) => {
-        const index = item_props.index
+        const { dataItem } = item_props
         const [first_segment] = betterPathname(location.pathname)
         function onHover() {
             setOpen(true)
@@ -55,7 +56,7 @@ export function renderLanguageOptions(
             <div
                 className={classNames(
                     isValidLocale(first_segment) &&
-                        languages[index].text.toLocaleLowerCase() ==
+                        dataItem.text.toLocaleLowerCase() ==
                             first_segment
                         ? 'is-selected'
                         : '',
@@ -67,12 +68,12 @@ export function renderLanguageOptions(
                 <i
                     className={classNames(
                         isValidLocale(first_segment) &&
-                            languages[index].text.toLocaleLowerCase() ==
+                        dataItem.text.toLocaleLowerCase() ==
                                 first_segment
                             ? 'shadow-2xl opacity-90'
                             : 'opacity-40',
                         'rounded-full w-10 h-10 my-1 hover:opacity-100',
-                        languages[index].icon
+                        dataItem.icon
                     )}
                 />
             </div>
@@ -116,11 +117,15 @@ export function LanguageSelector(props: DropDownListProps) {
     const [locale] = betterPathname(location.pathname)
     const [opened, setOpen] = useState(false)
     const [child_hovered, setChildHovered] = useState(false)
+
     if (locale && isValidLocale(locale)) {
         default_locale = languages.filter((l: LanguageOption) => {
             return l.text.toLowerCase() == locale
         })[0]
     }
+    const lang_options = languages.filter((l: LanguageOption) => {
+        return l.text != default_locale.text
+    })
 
     function openMenu() {
         setOpen(true)
@@ -141,7 +146,7 @@ export function LanguageSelector(props: DropDownListProps) {
                 className:
                     'bg-transparent country-selector w-12 p-0 shadow-none',
             }}
-            data={languages}
+            data={lang_options}
             textField="text"
             valueMap={(value) => value && value.code}
             valueRender={renderSelectedLanguage(openMenu, closeMenu)}

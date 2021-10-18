@@ -16,7 +16,7 @@ export default function LandingSectionTestimonials() {
                     have to say
                 </h3>
                 <div className="grid relative lg:grid-cols-2 gap-8 lg:px-40 z-0">
-                    <figure className="rounded-3xl bg-white h-32 w-full pt-12 px-8 shadow-2xl">
+                    <figure className="rounded-3xl bg-white min-h-32 w-full pt-12 px-8 shadow-2xl">
                         <blockquote className="text-justify leading-relaxed text-gray-400">
                             Always on time just seemed so user-friendly for
                             clients and staff. Everything from managing the
@@ -37,7 +37,7 @@ export default function LandingSectionTestimonials() {
                             </figcaption>
                         </blockquote>
                     </figure>
-                    <figure className="rounded-3xl bg-white h-32 w-full pt-12 px-8 shadow-2xl">
+                    <figure className="rounded-3xl bg-white min-h-32 w-full pt-12 px-8 shadow-2xl">
                         <blockquote className="text-justify leading-relaxed text-gray-400">
                             Always on time just seemed so user-friendly for
                             clients and staff. Everything from managing the

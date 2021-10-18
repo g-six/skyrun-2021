@@ -9,12 +9,17 @@ import LandingSectionTestimonials from './Landing/section-testimonials'
 import LandingPricingSection from './Landing/section-pricing'
 import LandingSectionTryCTA from './Landing/section-try-cta'
 import { FetchMethods, useFetch } from 'utils/fetch-helper'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useAppContext } from 'context/AppContext'
 import { getTranslation } from 'utils/language-helper'
 
 function Home() {
     const { lang } = useAppContext()
+    const refs = {
+        features: useRef(null),
+        testimonials: useRef(null),
+        pricing: useRef(null),
+    }
     const hero_props: LandingHeroProps = {
         title_left: 'always',
         title_center: 'on',
@@ -40,6 +45,9 @@ function Home() {
         section_2_right_title: 'System',
         section_2_mid_left_title: 'Scheduling & Booking',
         section_2_mid_right_title: 'System',
+        section_2_checklist: '...',
+        section_3_title: '...',
+        section_3_body: '...',
         pricing_plans_title: 'Pricing',
     }
 
@@ -48,6 +56,17 @@ function Home() {
     hero_props.subtitle = translations.hero_line_2
     hero_props.button_label = <>{translations.main_cta_button}</>
 
+    const executeScroll = () => {
+        if (location.hash && location.hash.substr(1) === 'features' && refs.pricing.current) {
+            (refs.pricing.current as HTMLDivElement).scrollIntoView()
+        }
+        if (location.hash.substr(1) === 'testimonials' && refs.testimonials.current) {
+            (refs.testimonials.current as HTMLDivElement).scrollIntoView()
+        }
+        if (location.hash.substr(1) === 'features' && refs.features.current) {
+            (refs.features.current as HTMLDivElement).scrollIntoView()
+        }
+    }
     useEffect(() => {
         if (lang && translation.data?.attributes[lang]) {
             setTranslations({
@@ -75,6 +94,18 @@ function Home() {
                     'section_2_mid_right_title',
                     translation.data?.attributes[lang]
                 ),
+                section_2_checklist: getTranslation(
+                    'section_2_checklist',
+                    translation.data?.attributes[lang]
+                ),
+                section_3_title: getTranslation(
+                    'section_3_title',
+                    translation.data?.attributes[lang],
+                ),
+                section_3_body: getTranslation(
+                    'section_3_body',
+                    translation.data?.attributes[lang],
+                ),
                 pricing_plans_title: getTranslation(
                     'pricing_plans_title',
                     translation.data?.attributes[lang]
@@ -82,6 +113,9 @@ function Home() {
             })
         }
     }, [translation, lang])
+
+
+    executeScroll()
 
     return (
         <div>
@@ -106,6 +140,7 @@ function Home() {
             <LandingHero {...hero_props} />
 
             <main className="overflow-hidden">
+                <div ref={refs.features} id="features" />
                 <LandingFeaturesSection
                     date_of_exercise={new Date().toLocaleDateString()}
                     location_name="Taiseng"
@@ -114,8 +149,13 @@ function Home() {
                     right_title={translations.section_2_right_title}
                     mid_left_title={translations.section_2_mid_left_title}
                     mid_right_title={translations.section_2_mid_right_title}
+                    section_2_checklist={translations.section_2_checklist}
+                    section_3_title={translations.section_3_title}
+                    section_3_body={translations.section_3_body}
                 />
+                <div ref={refs.testimonials} id="testimonials" />
                 <LandingSectionTestimonials />
+                <div ref={refs.pricing} id="pricing" />
                 <LandingPricingSection {...translations} />
                 <LandingSectionTryCTA />
             </main>

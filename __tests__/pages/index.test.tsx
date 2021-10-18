@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 import { act, render, screen, waitFor } from '@testing-library/react'
-import Home from '.'
+import Home from '../../pages'
 
 jest.mock('components/Modals/Login', () => () => (
     <div data-testid="LoginModal" />
@@ -12,21 +12,21 @@ jest.mock('components/Modals/Signup', () => () => (
 
 jest.mock('components/Navbar', () => () => <div data-testid="Navbar" />)
 
-jest.mock('./Landing/hero', () => () => <div data-testid="LandingHero" />)
+jest.mock('../../pages/Landing/hero', () => () => <div data-testid="LandingHero" />)
 
-jest.mock('./Landing/section-features', () => () => (
+jest.mock('../../pages/Landing/section-features', () => () => (
     <div data-testid="LandingFeaturesSection" />
 ))
 
-jest.mock('./Landing/section-pricing', () => () => (
+jest.mock('../../pages/Landing/section-pricing', () => () => (
     <div data-testid="LandingPricingSection" />
 ))
 
-jest.mock('./Landing/section-testimonials', () => () => (
+jest.mock('../../pages/Landing/section-testimonials', () => () => (
     <div data-testid="LandingSectionTestimonials" />
 ))
 
-jest.mock('./Landing/section-try-cta', () => () => (
+jest.mock('../../pages/Landing/section-try-cta', () => () => (
     <div data-testid="LandingSectionTryCTA" />
 ))
 

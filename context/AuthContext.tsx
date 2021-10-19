@@ -34,6 +34,7 @@ export function SkyAuthProvider({ children }: Props) {
 
     const LoginModal = useModal()
     const SignupModal = useModal()
+    const TenantModal = useModal()
     const CreateClientModal = useModal()
     const CreateLocationModal = useModal()
     const StaffModal = useModal()
@@ -99,9 +100,10 @@ export function SkyAuthProvider({ children }: Props) {
         setTenant,
         CreateClientModal,
         CreateLocationModal,
-        StaffModal,
         LoginModal,
+        StaffModal,
         SignupModal,
+        TenantModal,
     }
 
     useEffect(() => {
@@ -143,6 +145,7 @@ export function SkyAuthProvider({ children }: Props) {
             setUser({
                 ...user,
                 email: data.userInfo.email,
+                cognito_id: data.userInfo.cognitoId,
             })
         }
 
@@ -150,6 +153,7 @@ export function SkyAuthProvider({ children }: Props) {
     }, [
         LoginModal,
         SignupModal,
+        TenantModal,
         CreateClientModal,
         StaffModal,
         user, is_initialized, tenant, data])

@@ -4,6 +4,7 @@ import { ChevronDownIcon } from '@heroicons/react/solid'
 import { classNames } from 'utils/dom-helpers'
 import { TenantInfo } from 'context/types'
 import { useAuth } from 'context/AuthContext'
+import { Tier } from 'context/AppContext'
 
 interface TenantSelectorProps {
     tenant?: TenantInfo
@@ -11,7 +12,7 @@ interface TenantSelectorProps {
 }
 
 export function TenantSelector({ tenant, tenants }: TenantSelectorProps) {
-    const { setTenant } = useAuth()
+    const { setTenant, TenantModal } = useAuth()
 
     function switchTenant(e: MouseEvent<HTMLButtonElement>) {
         if (tenants) {
@@ -19,24 +20,31 @@ export function TenantSelector({ tenant, tenants }: TenantSelectorProps) {
         }
     }
 
+    function handleSignup() {
+        TenantModal.setAttributes({ tier: tenant?.tier as Tier })
+        TenantModal.open()
+    }
+
     return (
         <div className="flex gap-4">
-            <div className="rounded-md bg-primary-light h-10 w-10 inline-block" />
+            <div className="rounded-md bg-primary-light h-9 w-9 inline-block" />
             <Menu
                 as="div"
                 className="relative inline-block text-left w-32 z-20"
             >
                 <div className="w-full">
                     <Menu.Button className="w-full inline-flex justify-between bg-white text-sm font-medium text-gray-700 hover:text-primary focus:outline-none focus:text-primary-dark">
-                        {tenant?.business_name}
+                        <div className="flex-grow text-left">
+                            <div>{tenant?.business_name}</div>
+                            <div className="text-xs text-gray-300">
+                                Business category
+                            </div>
+                        </div>
                         <ChevronDownIcon
                             className="-mr-1 ml-2 h-5 w-5"
                             aria-hidden="true"
                         />
                     </Menu.Button>
-                    <span className="text-sm text-gray-300">
-                        Business category
-                    </span>
                 </div>
 
                 <Transition
@@ -63,6 +71,7 @@ export function TenantSelector({ tenant, tenants }: TenantSelectorProps) {
                                                         : 'text-gray-700',
                                                     'block px-4 py-2 text-sm w-full text-left'
                                                 )}
+                                                title={t.business_name}
                                             >
                                                 {t.business_name}
                                             </button>
@@ -71,23 +80,24 @@ export function TenantSelector({ tenant, tenants }: TenantSelectorProps) {
                                 )
                             })}
 
-                            <form method="POST" action="#">
-                                <Menu.Item>
-                                    {({ active }) => (
-                                        <button
-                                            type="submit"
-                                            className={classNames(
-                                                active
-                                                    ? 'bg-gray-100 text-gray-900'
-                                                    : 'text-gray-700',
-                                                'block w-full text-left px-4 py-2 text-sm'
-                                            )}
-                                        >
-                                            Sign out
-                                        </button>
-                                    )}
-                                </Menu.Item>
-                            </form>
+                            <Menu.Item>
+                                {({ active }) => (
+                                    
+                                    <button
+                                        type="button"
+                                        onClick={handleSignup}
+                                        className={classNames(
+                                            active
+                                                ? 'bg-gray-100 text-gray-900'
+                                                : 'text-gray-700',
+                                            'block w-full text-left px-4 py-2 text-sm'
+                                        )}
+                                        title="Sign up"
+                                    >
+                                        Sign up
+                                    </button>
+                                )}
+                            </Menu.Item>
                         </div>
                     </Menu.Items>
                 </Transition>

@@ -16,6 +16,7 @@ export interface CognitoProps {
 export interface SkyUser {
     first_name: string
     last_name: string
+    cognito_id?: string
     uuid: string
     email?: string
     city?: string
@@ -42,6 +43,7 @@ export type AuthContextType = {
     setTenant: Dispatch<SetStateAction<TenantInfo>>
     LoginModal: ModalHook
     SignupModal: ModalHook
+    TenantModal: ModalHook
     CreateClientModal: ModalHook
     CreateLocationModal: ModalHook
     StaffModal: ModalHook

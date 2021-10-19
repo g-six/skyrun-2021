@@ -85,13 +85,9 @@ function Dashboard({
                     </>
                 </Sidebar>
                 <TenantModal />
-            </Authenticated>
-            <NotAuthenticated>
                 <LoginModal />
-                <div className="flex justify-center vertical-center">
-                    <LoginButton className="button primary text-2xl inline-block p-4 flex-1" />
-                </div>
-            </NotAuthenticated>
+            </Authenticated>
+            <NotAuthenticated>Relogin</NotAuthenticated>
         </>
     )
 }

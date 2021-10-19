@@ -93,9 +93,12 @@ const CustomItem = (props: DrawerItemProps) => {
 
     if (!props.icon && !props.route && !props.separator) {
         return (
-            <div className={
-                classNames(props.className || '', 'bg-white pb-6 mb-2 px-3')
-            }>
+            <div
+                className={classNames(
+                    props.className || '',
+                    'bg-white pb-5 mb-3 px-3'
+                )}
+            >
                 <TenantSelector tenant={tenant} tenants={tenants} />
             </div>
         )
@@ -129,14 +132,18 @@ const CustomItem = (props: DrawerItemProps) => {
             className="block bg-white cursor-pointer pb-6"
         >
             <span className="block pb-6 shadow-xl">
-                <i 
-                    className={
-                        classNames(
-                            props.expanded ? 'bg-center w-30 bg-contain' : 'bg-cover bg-clip-content w-12',
-                            'h-10 block app-logo-icon mt-4'
-                        )
+                <i
+                    className={classNames(
+                        props.expanded
+                            ? 'bg-center w-30 bg-contain'
+                            : 'bg-cover bg-clip-content w-12',
+                        'h-10 block app-logo-icon mt-4'
+                    )}
+                    style={
+                        props.expanded
+                            ? {}
+                            : { backgroundPosition: 'left 1.1rem center' }
                     }
-                    style={ props.expanded ? {  } : { backgroundPosition: 'left 1.1rem center' }}
                 />
             </span>
         </a>

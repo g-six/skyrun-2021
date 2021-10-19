@@ -27,13 +27,15 @@ export function TenantSelector({ tenant, tenants }: TenantSelectorProps) {
 
     return (
         <div className="flex gap-4">
-            <div className="rounded-md bg-primary-light h-9 w-9 inline-block" />
             <Menu
                 as="div"
-                className="relative inline-block text-left w-32 z-20"
+                className="relative inline-block text-left w-56 z-20"
             >
                 <div className="w-full">
-                    <Menu.Button className="w-full inline-flex justify-between bg-white text-sm font-medium text-gray-700 hover:text-primary focus:outline-none focus:text-primary-dark">
+                    <Menu.Button className="w-full inline-flex justify-between bg-white text-sm font-medium text-gray-700 hover:text-primary focus:outline-none focus:text-primary-dark gap-3">
+                        <div>
+                            <div className="rounded-md bg-primary-light h-9 w-9 inline-block" />
+                        </div>
                         <div className="flex-grow text-left">
                             <div>{tenant?.business_name}</div>
                             <div className="text-xs text-gray-300">
@@ -56,7 +58,7 @@ export function TenantSelector({ tenant, tenants }: TenantSelectorProps) {
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
                 >
-                    <Menu.Items className="origin-top-right absolute right-0 w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <Menu.Items className="origin-top-right absolute right-0 w-44 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                         <div className="py-1">
                             {tenants?.map((t: TenantInfo, idx: number) => {
                                 return (
@@ -82,7 +84,6 @@ export function TenantSelector({ tenant, tenants }: TenantSelectorProps) {
 
                             <Menu.Item>
                                 {({ active }) => (
-                                    
                                     <button
                                         type="button"
                                         onClick={handleSignup}

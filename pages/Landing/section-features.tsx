@@ -10,10 +10,18 @@ export default function LandingFeaturesSection(props: SectionProps) {
     const section_2_checklist: ReactElement[] = []
     props.section_2_checklist.split('<li>').forEach((i: string, idx) => {
         if (idx > 0) {
-            section_2_checklist.push(<li key={idx} className="flex center-items leading-8 gap-2 text-gray-400 mb-2"><i className="feather leading-0 text-primary-light text-2xl feather-check-square mr-2" />{i.split('</li')[0]}</li>)
+            section_2_checklist.push(
+                <li
+                    key={idx}
+                    className="flex center-items leading-8 gap-2 text-gray-400 mb-2"
+                >
+                    <i className="feather leading-0 text-primary-light text-2xl feather-check-square mr-2" />
+                    {i.split('</li')[0]}
+                </li>
+            )
         }
     })
-    
+
     return (
         <section className="py-20 container max-w-7xl mx-auto">
             <div className="grid md:grid-cols-2 gap-8">

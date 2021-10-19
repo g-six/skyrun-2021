@@ -56,8 +56,7 @@ export function renderLanguageOptions(
             <div
                 className={classNames(
                     isValidLocale(first_segment) &&
-                        dataItem.text.toLocaleLowerCase() ==
-                            first_segment
+                        dataItem.text.toLocaleLowerCase() == first_segment
                         ? 'is-selected'
                         : '',
                     'flex rounded-full leading-loose justify-center'
@@ -68,7 +67,7 @@ export function renderLanguageOptions(
                 <i
                     className={classNames(
                         isValidLocale(first_segment) &&
-                        dataItem.text.toLocaleLowerCase() ==
+                            dataItem.text.toLocaleLowerCase() ==
                                 first_segment
                             ? 'shadow-2xl opacity-90'
                             : 'opacity-40',

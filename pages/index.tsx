@@ -57,14 +57,24 @@ function Home() {
     hero_props.button_label = <>{translations.main_cta_button}</>
 
     const executeScroll = () => {
-        if (location.hash && location.hash.substr(1) === 'features' && refs.pricing.current) {
-            (refs.pricing.current as HTMLDivElement).scrollIntoView()
+        if (
+            location.hash &&
+            location.hash.substr(1) === 'features' &&
+            refs.pricing.current
+        ) {
+            ;(refs.pricing.current as HTMLDivElement).scrollIntoView()
         }
-        if (location.hash.substr(1) === 'testimonials' && refs.testimonials.current) {
-            (refs.testimonials.current as HTMLDivElement).scrollIntoView()
+        if (
+            location.hash.substr(1) === 'testimonials' &&
+            refs.testimonials.current
+        ) {
+            ;(refs.testimonials.current as HTMLDivElement).scrollIntoView()
         }
-        if (location.hash.substr(1) === 'features' && refs.features.current) {
-            (refs.features.current as HTMLDivElement).scrollIntoView()
+        if (
+            location.hash.substr(1) === 'features' &&
+            refs.features.current
+        ) {
+            ;(refs.features.current as HTMLDivElement).scrollIntoView()
         }
     }
     useEffect(() => {
@@ -100,11 +110,11 @@ function Home() {
                 ),
                 section_3_title: getTranslation(
                     'section_3_title',
-                    translation.data?.attributes[lang],
+                    translation.data?.attributes[lang]
                 ),
                 section_3_body: getTranslation(
                     'section_3_body',
-                    translation.data?.attributes[lang],
+                    translation.data?.attributes[lang]
                 ),
                 pricing_plans_title: getTranslation(
                     'pricing_plans_title',
@@ -113,7 +123,6 @@ function Home() {
             })
         }
     }, [translation, lang])
-
 
     executeScroll()
 

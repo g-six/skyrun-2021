@@ -111,8 +111,9 @@ function DashboardStaff() {
             }
         }
 
-        if (!staff && !!tenant?.id && !is_loading) {
+        if (!staff) {
             setStaff([])
+        } else if (!!tenant?.id && !is_loading) {
             fetchData()
         } else if (staff && (staff as Staff[]).length == 0 && staff_list) {
             setStaff(staff_list)

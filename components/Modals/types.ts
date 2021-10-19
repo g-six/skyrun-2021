@@ -1,3 +1,4 @@
+import { Tier } from 'context/AppContext'
 import { CognitoErrorTypes } from 'services/CognitoErrorTypes'
 
 export interface ModalHook {
@@ -6,12 +7,12 @@ export interface ModalHook {
     close(): void
     attributes?: Record<
         string,
-        number | string | Record<string, string | number>[]
+        number | string | Tier | Record<string, string | number>[]
     >
     setAttributes(
         attributes: Record<
             string,
-            string | number | Record<string, string | number>[]
+            string | number | Tier | Record<string, string | number>[]
         >
     ): void
 }

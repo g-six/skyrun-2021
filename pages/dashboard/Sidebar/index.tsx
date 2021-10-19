@@ -19,7 +19,8 @@ type SidebarItem = {
     separator?: boolean
     icon?: string
     selected?: boolean
-    expanded?: boolean
+    logo_class?: string
+    logo_style?: Record<string, string>
     route?: string
 }
 interface Props {
@@ -81,7 +82,7 @@ const items: SidebarItem[] = [
     },
 ]
 
-const CustomItem = (props: DrawerItemProps) => {
+const CustomItem = (props: DrawerItemProps & SidebarItem) => {
     const [locale] = betterPathname(location.pathname)
     const { tenant, tenants } = useAuth()
     function getHomePath() {
@@ -133,17 +134,8 @@ const CustomItem = (props: DrawerItemProps) => {
         >
             <span className="block pb-6 shadow-xl">
                 <i
-                    className={classNames(
-                        props.expanded
-                            ? 'bg-center w-30 bg-contain'
-                            : 'bg-cover bg-clip-content w-12',
-                        'h-10 block app-logo-icon mt-4'
-                    )}
-                    style={
-                        props.expanded
-                            ? {}
-                            : { backgroundPosition: 'left 1.1rem center' }
-                    }
+                    className={props.logo_class}
+                    style={props.logo_style}
                 />
             </span>
         </a>
@@ -181,13 +173,19 @@ function Sidebar({ children }: Props) {
             onSelect={onSelect}
             position={'start'}
             items={
-                ctx.user?.uuid
+                (ctx.user?.uuid
                     ? items.map((item) => ({
                           ...item,
                           selected: item.text === selected,
-                          expanded,
+                          logo_style: expanded ? {} : { backgroundPosition: 'left 1.1rem center' },
+                            logo_class: classNames(
+                                expanded
+                                    ? 'bg-center w-30 bg-contain'
+                                    : 'bg-cover bg-clip-content w-12',
+                                'h-10 block app-logo-icon mt-4'
+                            ),
                       }))
-                    : []
+                    : [])
             }
             item={CustomItem}
         >

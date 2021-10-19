@@ -5,6 +5,7 @@ export interface ModalHook {
     is_open: boolean
     open(): void
     close(): void
+    callback?(): void
     attributes?: Record<
         string,
         number | string | Tier | Record<string, string | number>[]
@@ -19,6 +20,7 @@ export interface ModalHook {
 
 export type UserModel = {
     id?: string
+    uuid?: string
     firstName: string
     lastName: string
     email: string

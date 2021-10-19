@@ -1,23 +1,26 @@
+import { Tier } from 'context/AppContext'
 import { CognitoErrorTypes } from 'services/CognitoErrorTypes'
 
 export interface ModalHook {
     is_open: boolean
     open(): void
     close(): void
+    callback?(): void
     attributes?: Record<
         string,
-        number | string | Record<string, string | number>[]
+        number | string | Tier | Record<string, string | number>[]
     >
     setAttributes(
         attributes: Record<
             string,
-            string | number | Record<string, string | number>[]
+            string | number | Tier | Record<string, string | number>[]
         >
     ): void
 }
 
 export type UserModel = {
     id?: string
+    uuid?: string
     firstName: string
     lastName: string
     email: string

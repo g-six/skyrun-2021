@@ -14,6 +14,38 @@ function fetchPath(path: string) {
     return (API_ENDPOINT || '/api') + path
 }
 
+export async function getApiRequest(
+    path: string,
+    headers: Record<string, string> = {},
+) {
+
+    let req_init: RequestInit = {
+        method: FetchMethods.GET,
+        mode: 'cors',
+        headers: {
+            ...headers,
+            'Content-Type': 'application/json',
+        },
+    }
+
+    if (Cookies.get('id_token')) {
+        (req_init.headers as Record<string, string>)['Authorization'] = `Bearer ${Cookies.get('id_token')}`
+    }
+
+    try {
+        const response = await fetch(fetchPath(path), req_init)
+
+        try {
+            return await response.json()
+        } catch (e) {
+            return { error: 'API error' }
+        }
+
+    } catch (e) {
+        console.error('doFetch:', (e as unknown as Error).message)
+    }
+}
+
 
 export function useFetch<Body = any, Result = any>(
     path: string,

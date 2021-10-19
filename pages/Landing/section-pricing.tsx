@@ -40,7 +40,7 @@ const currencies: Currency[] = [
         iso: CurrencyIso.PHP,
         rate: 37.8,
         symbol: '₱',
-    }
+    },
 ]
 export default function LandingPricingSection(props: SectionProps) {
     const { tiers } = useAppContext()
@@ -111,16 +111,20 @@ export default function LandingPricingSection(props: SectionProps) {
                 <div className="flex justify-center items-center w-auto mt-8">
                     <div className="pr-6 circular">Pricing in</div>
                     <ButtonGroup className="bg-primary-light circular-light">
-                        {currencies.map(({ iso, symbol }: Currency, idx) => (
-                            <Button
-                                key={iso}
-                                togglable={true}
-                                selected={currency.iso === iso}
-                                onClick={() => handleCurrencySelection(idx)}
-                            >
-                                {iso}
-                            </Button>
-                        ))}
+                        {currencies.map(
+                            ({ iso, symbol }: Currency, idx) => (
+                                <Button
+                                    key={iso}
+                                    togglable={true}
+                                    selected={currency.iso === iso}
+                                    onClick={() =>
+                                        handleCurrencySelection(idx)
+                                    }
+                                >
+                                    {iso}
+                                </Button>
+                            )
+                        )}
                     </ButtonGroup>
                 </div>
 
@@ -206,7 +210,8 @@ export default function LandingPricingSection(props: SectionProps) {
                             </span>
                         </figure>
                         <div className="text-6xl block text-center text-primary-dark circular-light mt-5">
-                            {currency.symbol}{Math.ceil((49 * discount) * currency.rate)}
+                            {currency.symbol}
+                            {Math.ceil(49 * discount * currency.rate)}
                         </div>
                         <div className="block text-center text-gray-400 circular-light">
                             / month
@@ -249,10 +254,20 @@ export default function LandingPricingSection(props: SectionProps) {
                                 Bring your business online
                             </span>
                             <ul className="list-disc ml-6 leading-loose text-sm mt-2 h-28">
-                                <li>{currency.symbol}{Math.ceil(20 * currency.rate)} per additional location</li>
-                                <li>{currency.symbol}{Math.ceil(5 * currency.rate)} per additional staff</li>
                                 <li>
-                                    {currency.symbol}{Math.ceil(5 * currency.rate)} per additional 1,000 appointments
+                                    {currency.symbol}
+                                    {Math.ceil(20 * currency.rate)} per
+                                    additional location
+                                </li>
+                                <li>
+                                    {currency.symbol}
+                                    {Math.ceil(5 * currency.rate)} per
+                                    additional staff
+                                </li>
+                                <li>
+                                    {currency.symbol}
+                                    {Math.ceil(5 * currency.rate)} per
+                                    additional 1,000 appointments
                                 </li>
                             </ul>
                         </div>
@@ -275,7 +290,8 @@ export default function LandingPricingSection(props: SectionProps) {
                             </span>
                         </figure>
                         <div className="text-6xl block text-center text-primary circular-light mt-5">
-                            {currency.symbol}{Math.ceil((89 * discount) * currency.rate)}
+                            {currency.symbol}
+                            {Math.ceil(89 * discount * currency.rate)}
                         </div>
                         <div className="block text-center text-gray-400 circular-light">
                             / month
@@ -318,8 +334,16 @@ export default function LandingPricingSection(props: SectionProps) {
                                 Everything you will need
                             </span>
                             <ul className="list-disc ml-6 leading-loose text-sm mt-2 h-28">
-                                <li>{currency.symbol}{Math.ceil(20 * currency.rate)} per additional location</li>
-                                <li>{currency.symbol}{Math.ceil(5 * currency.rate)} per additional staff</li>
+                                <li>
+                                    {currency.symbol}
+                                    {Math.ceil(20 * currency.rate)} per
+                                    additional location
+                                </li>
+                                <li>
+                                    {currency.symbol}
+                                    {Math.ceil(5 * currency.rate)} per
+                                    additional staff
+                                </li>
                                 <li>Unlimited appointments</li>
                             </ul>
                         </div>

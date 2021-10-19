@@ -9,8 +9,9 @@ import logout from 'services/logout'
 import profile from 'services/profile'
 import signUp from 'services/UserPool'
 import { AuthContextType, SkyUser, TenantInfo } from './types'
-import { FetchMethods, useFetch } from 'utils/fetch-helper'
+import { getApiRequest } from 'utils/fetch-helper'
 import { Tier } from './AppContext'
+import { UserModel } from 'components/Modals/types'
 
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 
@@ -22,6 +23,24 @@ type Props= {
     children: ReactNode
 }
 
+type UserProfileRecord = {
+    user?: UserModel,
+    roles?: string[],
+    tenants?: TenantInfo[],
+}
+
+type ApiTenant = {
+    id: string
+    name: string
+    tier: Tier
+}
+
+type ApiUser = {
+    userInfo: UserModel,
+    roles: string[],
+    tenants: ApiTenant[],
+}
+
 export const Authenticated = createWrapper(AuthContext, ctx => !!ctx.user?.uuid)
 export const Activated = createWrapper(AuthContext, ctx => !!ctx.user?.phone)
 export const NotAuthenticated = createWrapper(AuthContext, ctx => !ctx.user?.uuid)
@@ -30,19 +49,16 @@ export function SkyAuthProvider({ children }: Props) {
     const [user, setUser] = useState<SkyUser>({} as unknown as SkyUser)
     const [tenant, setTenant] = useState<TenantInfo>({} as unknown as TenantInfo)
     const [tenants, setTenants] = useState<TenantInfo[]>([] as unknown as TenantInfo[])
+    const [already_set, setRecordsRetrievalStatus] = useState<Record<string, boolean>>({})
     const [is_initialized, setInit] = useState(true)
+    const [data, setData] = useState<UserProfileRecord>({})
 
     const LoginModal = useModal()
     const SignupModal = useModal()
+    const TenantModal = useModal()
     const CreateClientModal = useModal()
     const CreateLocationModal = useModal()
     const StaffModal = useModal()
-    const { data } = useFetch(
-        '/v1/users/current',
-        FetchMethods.GET,
-        true,
-        true
-    )
 
     const value = {
         user,
@@ -69,6 +85,17 @@ export function SkyAuthProvider({ children }: Props) {
                         Cookies.set('refresh_token', RefreshToken, { path: '/' })
                     }
                     setInit(true)
+
+                    const auth_data = await profile()
+                    if (auth_data) {
+                        setUser({
+                            first_name: auth_data.given_name,
+                            last_name: auth_data.family_name,
+                            uuid: auth_data.uuid,
+                        })
+                        const res: ApiUser = await getApiRequest('/v1/users/current')
+                        console.log(res)
+                    }
                 }
             }
             return AuthenticationResult || false
@@ -99,60 +126,76 @@ export function SkyAuthProvider({ children }: Props) {
         setTenant,
         CreateClientModal,
         CreateLocationModal,
-        StaffModal,
         LoginModal,
+        StaffModal,
         SignupModal,
+        TenantModal,
     }
 
+    const { all_tenants, active_tenant } = already_set
+
     useEffect(() => {
+        const { user: api_user, roles: api_roles, tenants: api_tenants } = data
+
         async function getProfile() {
             const auth_data = await profile()
-            if (auth_data) {
+            if (auth_data && auth_data.uuid) {
                 setUser({
                     first_name: auth_data.given_name,
                     last_name: auth_data.family_name,
                     uuid: auth_data.uuid,
                 })
+
+                
+                const res: ApiUser = await getApiRequest('/v1/users/current')
+                const user_record: UserProfileRecord = {
+                    user: res.userInfo,
+                    roles: res.roles,
+                    tenants: [],
+                }
+
+                res.tenants.forEach((t: ApiTenant) => {
+                    user_record.tenants?.push({
+                        id: t.id,
+                        business_name: t.name,
+                        tier: t.tier as unknown as Tier,
+                    })
+                })
+
+                setData(user_record)
             }
         }
-        
-        if (is_initialized) {
-            if (!user?.uuid) {
-                getProfile()
-            }
-        }
 
-        if (user?.uuid) {
-            LoginModal.close()
-            SignupModal.close()
-        }
+        if (data.user && !all_tenants && !active_tenant) {
+            const records: TenantInfo[] = []
+            api_tenants?.forEach((t: TenantInfo) => {
+                records.push(t)
+                if (!active_tenant) {
+                    if (t.id == Cookies.get('tenant_id')) {
+                        setTenant(t)
+                        setRecordsRetrievalStatus({
+                            ...already_set,
+                            active_tenant: true,
+                        })
+                    }
+                }
 
-
-        if (data.tenants && data.tenants[0] && !tenant.business_name) {
-            setTenants(data.tenants.map((t: Record<string, string | Tier>): TenantInfo => ({
-                id: t.id as string,
-                business_name: t.name as string,
-                tier: t.tier as Tier,
-            })))
-
-            setTenant({
-                id: data.tenants[0].id,
-                business_name: data.tenants[0].name,
-                tier: data.tenants[0].tier,
+                if (api_tenants && records.length >= api_tenants.length && !all_tenants) {
+                    setTenants(records)
+                    setRecordsRetrievalStatus({
+                        ...already_set,
+                        all_tenants: true,
+                    })
+                    if (!active_tenant) {
+                        setTenant(records[0])
+                    }
+                }
             })
-            setUser({
-                ...user,
-                email: data.userInfo.email,
-            })
+        } else if (!user || !user?.uuid) {
+            getProfile()
         }
+    }, [user, all_tenants, active_tenant, already_set, data])
 
-        setInit(false)
-    }, [
-        LoginModal,
-        SignupModal,
-        CreateClientModal,
-        StaffModal,
-        user, is_initialized, tenant, data])
 
     return (
         <AuthContext.Provider value={value}>

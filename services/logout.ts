@@ -23,6 +23,7 @@ async function logout() {
         Cookies.remove('refresh_token')
         Cookies.remove('id_token')
         Cookies.remove('email')
+        Cookies.remove('tenant_id')
         
     } catch (e) {
         console.error(e)

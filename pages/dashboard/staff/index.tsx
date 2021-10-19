@@ -1,4 +1,4 @@
-import StaffModal, { StaffModalOpener } from 'components/Modals/Staff'
+import StaffModal from 'components/Modals/Staff'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { classNames } from 'utils/dom-helpers'
 import Dashboard from '..'
@@ -69,60 +69,65 @@ function HeaderActions(props: HeaderProps) {
     return (
         <>
             <SearchInputGroup />
-            <StaffModalOpener className="bg-primary text-white px-8 py-2 text-lg font-light rounded-lg" />
         </>
     )
 }
 
 function DashboardStaff() {
-    const { tenant, StaffModal: ModalContext } = useAuth()
+    const { tenant, StaffModal: Modal } = useAuth()
     const [selected_search_category, setSearchCategory] = useState('')
-    const [staff, setStaff] = useState<Staff[] | boolean>(false)
-    const { is_loading, data, status, doFetch } = useFetch(
+    const [staff, setStaff] = useState<Staff[]>([])
+    const [api_started, startApi] = useState<boolean>(false)
+
+    const { data, doFetch } = useFetch(
         `/v1/staff/?tenantId=${tenant?.id}`,
         FetchMethods.GET,
-        false
+        !!tenant?.id
     )
-    const staff_list: Staff[] =
-        data &&
-        data.content &&
-        data.content.map((s: StaffResponseItem) => {
-            const {
-                id: user_id,
-                email,
-                firstName: first_name,
-                lastName: last_name,
-                phone,
-            } = s.user
-            return {
-                id: s.id,
-                user_id,
-                email,
-                first_name,
-                last_name,
-                phone,
-            }
-        })
 
     useEffect(() => {
-        async function fetchData() {
-            if (!staff && !!tenant?.id && !is_loading) {
-                await doFetch()
-            }
-        }
+        // doFetch()
+        const staff_list: Staff[] =
+            data &&
+            data.content &&
+            data.content.map((s: StaffResponseItem) => {
+                const {
+                    id: user_id,
+                    email,
+                    firstName: first_name,
+                    lastName: last_name,
+                    phone,
+                } = s.user
+                return {
+                    id: s.id,
+                    user_id,
+                    email,
+                    first_name,
+                    last_name,
+                    phone,
+                }
+            })
+        setStaff(staff_list)
+    }, [setStaff, data, doFetch])
+    // useEffect(() => {
+    //     async function fetchData() {
+    //         if (!api_started) {
+    //             startApi(true)
+    //             await doFetch()
+    //         }
+    //     }
 
-        if (!staff && !!tenant?.id && !is_loading) {
-            setStaff([])
-            fetchData()
-        } else if (staff && (staff as Staff[]).length == 0 && staff_list) {
-            setStaff(staff_list)
-        }
-    }, [tenant, staff, doFetch, is_loading, staff_list])
-
+    //     if (!api_started) {
+    //         fetchData()
+    //     } else if (staff_list) {
+    //         setStaff(staff_list)
+    //     }
+    // }, [doFetch, api_started, staff_list])
+    if (!tenant?.id) return <></>
     return (
         <Dashboard actions={<HeaderActions onSearch={setSearchCategory} />}>
             <div className="grid w-80 sm:w-auto lg:grid-cols-2 xl:grid-cols-3 xl:max-w-5xl md:max-w-sm lg:max-w-2xl mx-auto p-8 gap-6">
-                {staff
+                {staff && staff.length > 0
                     ? ((staff as Staff[]) || []).map(
                           (record: Staff, idx) => (
                               <Card
@@ -135,9 +140,12 @@ function DashboardStaff() {
                       )
                     : ''}
                 <div
+                    onClick={() => {
+                        Modal.open()
+                    }}
                     className={classNames(
                         'p-8 rounded-xl text-center flex flex-col content-center justify-center',
-                        'border-2 border-dashed border-gray-150'
+                        'border-2 border-dashed border-gray-150 cursor-pointer'
                     )}
                 >
                     <i className="block mx-auto mb-4 feather feather-plus font-back text-2xl block w-10 h-10 leading-relaxed px-2 rounded-xl bg-primary-lighter text-primary-light" />

@@ -19,6 +19,9 @@ type SidebarItem = {
     separator?: boolean
     icon?: string
     selected?: boolean
+    logo_class?: string
+    logo_style?: Record<string, string>
+    onClickCapture?(): void
     route?: string
 }
 interface Props {
@@ -80,7 +83,7 @@ const items: SidebarItem[] = [
     },
 ]
 
-const CustomItem = (props: DrawerItemProps) => {
+const CustomItem = (props: DrawerItemProps & SidebarItem) => {
     const [locale] = betterPathname(location.pathname)
     const { tenant, tenants } = useAuth()
     function getHomePath() {
@@ -92,7 +95,13 @@ const CustomItem = (props: DrawerItemProps) => {
 
     if (!props.icon && !props.route && !props.separator) {
         return (
-            <div className="bg-white px-6 pb-6 mb-2">
+            <div
+                className={classNames(
+                    props.className || '',
+                    'bg-white pb-5 mb-3 px-3'
+                )}
+                onClickCapture={props.onClickCapture}
+            >
                 <TenantSelector tenant={tenant} tenants={tenants} />
             </div>
         )
@@ -126,7 +135,7 @@ const CustomItem = (props: DrawerItemProps) => {
             className="block bg-white cursor-pointer pb-6"
         >
             <span className="block pb-6 shadow-xl">
-                <i className="h-10 w-30 block bg-contain bg-center app-logo-icon mt-4" />
+                <i className={props.logo_class} style={props.logo_style} />
             </span>
         </a>
     )
@@ -134,7 +143,7 @@ const CustomItem = (props: DrawerItemProps) => {
 
 function Sidebar({ children }: Props) {
     const router = useRouter()
-    const [expanded, setExpanded] = useState(true)
+    const [expanded, setExpanded] = useState(false)
     const ctx = useAuth()
     const handleClick = (e: MouseEvent) => {
         e.preventDefault()
@@ -159,14 +168,48 @@ function Sidebar({ children }: Props) {
             expanded={expanded}
             mode={'push'}
             mini={true}
+            miniWidth={60}
             onSelect={onSelect}
             position={'start'}
             items={
                 ctx.user?.uuid
-                    ? items.map((item) => ({
-                          ...item,
-                          selected: item.text === selected,
-                      }))
+                    ? items.map((item) => {
+                          if (item.route == '/') {
+                              return {
+                                  ...item,
+                                  selected: item.text === selected,
+                                  logo_style: expanded
+                                      ? {}
+                                      : {
+                                            backgroundPosition:
+                                                'left 1.1rem center',
+                                        },
+                                  logo_class: classNames(
+                                      expanded
+                                          ? 'bg-center w-30 bg-contain'
+                                          : 'bg-cover bg-clip-content w-12',
+                                      'h-10 block app-logo-icon mt-4'
+                                  ),
+                              }
+                          }
+                          if (
+                              !item.icon &&
+                              !item.route &&
+                              !item.separator
+                          ) {
+                              return {
+                                  ...item,
+                                  selected: item.text === selected,
+                                  onClickCapture: () => {
+                                      setExpanded(true)
+                                  },
+                              }
+                          }
+                          return {
+                              ...item,
+                              selected: item.text === selected,
+                          }
+                      })
                     : []
             }
             item={CustomItem}
@@ -178,7 +221,7 @@ function Sidebar({ children }: Props) {
                         'absolute bottom-28 bg-primary text-white w-9 h-9 transition-all duration-300',
                         expanded
                             ? 'left-56 shadow-xl border-r border-indigo-50'
-                            : 'left-2 hover:bg-opacity-30 bg-opacity-70',
+                            : 'left-3 hover:bg-opacity-30 bg-opacity-70',
                         'duration-400 ease-linear transition-all rounded-full'
                     )}
                     id="BtnExpandSidebar"
@@ -194,7 +237,7 @@ function Sidebar({ children }: Props) {
                 </button>
                 <button
                     className={classNames(
-                        'btn-logout absolute bottom-16 left-2 w-9 h-9 rounded-lg',
+                        'btn-logout absolute bottom-16 left-3 w-9 h-9 rounded-lg',
                         'duration-400 ease-linear transition-all',
                         'hover:bg-indigo-900 hover:bg-opacity-10'
                     )}

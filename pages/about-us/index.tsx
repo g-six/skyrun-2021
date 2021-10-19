@@ -2,7 +2,6 @@ import Head from 'next/head'
 import Navbar from 'components/Navbar'
 import Footer from 'components/Footer'
 import LoginModal from 'components/Modals/Login'
-import SignupModal from 'components/Modals/Signup'
 import { FetchMethods, useFetch } from 'utils/fetch-helper'
 import { useEffect, useState } from 'react'
 import { useAppContext } from 'context/AppContext'
@@ -390,7 +389,6 @@ function AboutUs() {
 
             <Footer />
             <LoginModal />
-            <SignupModal />
         </div>
     )
 }

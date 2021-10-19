@@ -137,11 +137,25 @@ export function SkyAuthProvider({ children }: Props) {
                 tier: t.tier as Tier,
             })))
 
-            setTenant({
+            let active_tenant: TenantInfo = {
                 id: data.tenants[0].id,
                 business_name: data.tenants[0].name,
                 tier: data.tenants[0].tier,
-            })
+            }
+
+            if (Cookies.get('tenant_id')) {
+                data.tenants.forEach((t: TenantInfo & Record<string, string>) => {
+                    if (t.id == Cookies.get('tenant_id')) {
+                        active_tenant = {
+                            ...t,
+                            business_name: t.name,
+                        }
+                    }
+                })
+            }
+
+            setTenant(active_tenant)
+
             setUser({
                 ...user,
                 email: data.userInfo.email,

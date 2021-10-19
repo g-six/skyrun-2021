@@ -5,6 +5,7 @@ import { classNames } from 'utils/dom-helpers'
 import { TenantInfo } from 'context/types'
 import { useAuth } from 'context/AuthContext'
 import { Tier } from 'context/AppContext'
+import Cookies from 'js-cookie'
 
 interface TenantSelectorProps {
     tenant?: TenantInfo
@@ -16,7 +17,9 @@ export function TenantSelector({ tenant, tenants }: TenantSelectorProps) {
 
     function switchTenant(e: MouseEvent<HTMLButtonElement>) {
         if (tenants) {
-            setTenant(tenants[e.currentTarget.value as unknown as number])
+            const t = tenants[e.currentTarget.value as unknown as number]
+            Cookies.set('tenant_id', t.id)
+            setTenant(t)
         }
     }
 

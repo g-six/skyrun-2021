@@ -14,6 +14,7 @@ import { toTitleCase } from 'utils/string-helper'
 import LanguageSelector from 'components/LanguageSelector'
 import { useAppContext } from 'context/AppContext'
 import { DropDownListChangeEvent } from '@progress/kendo-react-dropdowns'
+import TenantModal from 'components/Modals/Tenant'
 
 const Sidebar = dynamic(() => import('./Sidebar'), { ssr: false })
 
@@ -83,6 +84,7 @@ function Dashboard({
                         {children}
                     </>
                 </Sidebar>
+                <TenantModal />
             </Authenticated>
             <NotAuthenticated>
                 <LoginModal />

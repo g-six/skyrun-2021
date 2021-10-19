@@ -21,6 +21,7 @@ type SidebarItem = {
     selected?: boolean
     logo_class?: string
     logo_style?: Record<string, string>
+    onClickCapture?(): void
     route?: string
 }
 interface Props {
@@ -99,6 +100,7 @@ const CustomItem = (props: DrawerItemProps & SidebarItem) => {
                     props.className || '',
                     'bg-white pb-5 mb-3 px-3'
                 )}
+                onClickCapture={props.onClickCapture}
             >
                 <TenantSelector tenant={tenant} tenants={tenants} />
             </div>
@@ -133,10 +135,7 @@ const CustomItem = (props: DrawerItemProps & SidebarItem) => {
             className="block bg-white cursor-pointer pb-6"
         >
             <span className="block pb-6 shadow-xl">
-                <i
-                    className={props.logo_class}
-                    style={props.logo_style}
-                />
+                <i className={props.logo_class} style={props.logo_style} />
             </span>
         </a>
     )
@@ -173,19 +172,45 @@ function Sidebar({ children }: Props) {
             onSelect={onSelect}
             position={'start'}
             items={
-                (ctx.user?.uuid
-                    ? items.map((item) => ({
-                          ...item,
-                          selected: item.text === selected,
-                          logo_style: expanded ? {} : { backgroundPosition: 'left 1.1rem center' },
-                            logo_class: classNames(
-                                expanded
-                                    ? 'bg-center w-30 bg-contain'
-                                    : 'bg-cover bg-clip-content w-12',
-                                'h-10 block app-logo-icon mt-4'
-                            ),
-                      }))
-                    : [])
+                ctx.user?.uuid
+                    ? items.map((item) => {
+                          if (item.route == '/') {
+                              return {
+                                  ...item,
+                                  selected: item.text === selected,
+                                  logo_style: expanded
+                                      ? {}
+                                      : {
+                                            backgroundPosition:
+                                                'left 1.1rem center',
+                                        },
+                                  logo_class: classNames(
+                                      expanded
+                                          ? 'bg-center w-30 bg-contain'
+                                          : 'bg-cover bg-clip-content w-12',
+                                      'h-10 block app-logo-icon mt-4'
+                                  ),
+                              }
+                          }
+                          if (
+                              !item.icon &&
+                              !item.route &&
+                              !item.separator
+                          ) {
+                              return {
+                                  ...item,
+                                  selected: item.text === selected,
+                                  onClickCapture: () => {
+                                      setExpanded(true)
+                                  },
+                              }
+                          }
+                          return {
+                              ...item,
+                              selected: item.text === selected,
+                          }
+                      })
+                    : []
             }
             item={CustomItem}
         >

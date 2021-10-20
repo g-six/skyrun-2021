@@ -77,7 +77,6 @@ function DashboardStaff() {
     const { tenant, StaffModal: Modal } = useAuth()
     const [selected_search_category, setSearchCategory] = useState('')
     const [staff, setStaff] = useState<Staff[]>([])
-    const [api_started, startApi] = useState<boolean>(false)
 
     const { data, doFetch } = useFetch(
         `/v1/staff/?tenantId=${tenant?.id}`,
@@ -86,7 +85,6 @@ function DashboardStaff() {
     )
 
     useEffect(() => {
-        // doFetch()
         const staff_list: Staff[] =
             data &&
             data.content &&
@@ -109,20 +107,7 @@ function DashboardStaff() {
             })
         setStaff(staff_list)
     }, [setStaff, data, doFetch])
-    // useEffect(() => {
-    //     async function fetchData() {
-    //         if (!api_started) {
-    //             startApi(true)
-    //             await doFetch()
-    //         }
-    //     }
 
-    //     if (!api_started) {
-    //         fetchData()
-    //     } else if (staff_list) {
-    //         setStaff(staff_list)
-    //     }
-    // }, [doFetch, api_started, staff_list])
     if (!tenant?.id) return <></>
     return (
         <Dashboard actions={<HeaderActions onSearch={setSearchCategory} />}>

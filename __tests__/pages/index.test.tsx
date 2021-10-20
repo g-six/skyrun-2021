@@ -12,7 +12,9 @@ jest.mock('components/Modals/Signup', () => () => (
 
 jest.mock('components/Navbar', () => () => <div data-testid="Navbar" />)
 
-jest.mock('../../pages/Landing/hero', () => () => <div data-testid="LandingHero" />)
+jest.mock('../../pages/Landing/hero', () => () => (
+    <div data-testid="LandingHero" />
+))
 
 jest.mock('../../pages/Landing/section-features', () => () => (
     <div data-testid="LandingFeaturesSection" />

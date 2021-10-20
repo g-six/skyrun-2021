@@ -1,9 +1,9 @@
-import { FormEvent, useState } from 'react'
+import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { classNames } from 'utils/dom-helpers'
 import { AuthContext, useAuth } from 'context/AuthContext'
 import { CognitoErrorTypes } from 'services/CognitoErrorTypes'
-import { SubmitError } from '../types'
+import { SubmitError, UserModel } from '../types'
 import { GeneralFormValues } from './types'
 import { createModal } from '../ModalFactory'
 import { FetchMethods, useFetch } from 'utils/fetch-helper'
@@ -26,6 +26,7 @@ const ModalProvider = createModal(
 
 function GeneralForm() {
     const ctx = useAuth()
+    const { attributes, setAttributes } = ctx.CreateClientModal
     const [loading, toggleLoading] = useState(false)
     const [success, setSuccess] = useState(false)
 
@@ -39,7 +40,11 @@ function GeneralForm() {
         mode: 'onSubmit',
     })
 
-    const api_fetch = useFetch('/v1/clients', FetchMethods.POST, false)
+    const api_fetch = useFetch(
+        attributes?.id ? `/v1/clients/${attributes?.id}` : '/v1/clients',
+        attributes?.id ? FetchMethods.PUT : FetchMethods.POST,
+        false
+    )
 
     const onSubmit: SubmitHandler<GeneralFormValues> = async (
         values: Record<string, string>
@@ -48,21 +53,63 @@ function GeneralForm() {
         try {
             const { email, notes, phone, first_name, last_name } = values
             const { tenant } = ctx
+            const user: UserModel = {
+                firstName: first_name,
+                lastName: last_name,
+                email,
+                phone,
+            }
+
+            if (attributes && attributes.id) {
+                user.id = attributes.user_id as string
+            }
 
             const res = await api_fetch.doFetch({
                 tenant,
-                user: {
-                    firstName: first_name,
-                    lastName: last_name,
-                    email,
-                    phone,
-                },
+                user,
                 notes,
             })
 
             if (res) {
+                let list: Record<string, string | number>[] = []
+                if (attributes && attributes.list) {
+                    list = attributes.list as unknown as Record<
+                        string,
+                        string | number
+                    >[]
+                    if (attributes.idx) {
+                        list[attributes.idx as unknown as number] = {
+                            ...list[attributes.idx as unknown as number],
+                            first_name,
+                            last_name,
+                            email,
+                            phone,
+                            notes,
+                        }
+                    } else {
+                        list.push({
+                            id: api_fetch.data.id,
+                            first_name,
+                            last_name,
+                            email,
+                            phone,
+                            notes,
+                        })
+                    }
+                }
+
+                ctx.CreateClientModal.setAttributes({
+                    ...attributes,
+                    first_name,
+                    last_name,
+                    email,
+                    phone,
+                    notes,
+                    list,
+                })
                 reset()
                 setSuccess(true)
+                ctx.CreateClientModal.close()
             }
         } catch (e: unknown) {
             const { name, message } = e as SubmitError
@@ -101,6 +148,7 @@ function GeneralForm() {
                         )}
                         {...register('first_name', {
                             required: true,
+                            value: (attributes?.first_name as string) || '',
                         })}
                     />
                     {errors.first_name?.type === 'required' && (
@@ -131,6 +179,7 @@ function GeneralForm() {
                         )}
                         {...register('last_name', {
                             required: true,
+                            value: (attributes?.last_name as string) || '',
                         })}
                     />
                     {errors.last_name?.type === 'required' && (
@@ -164,6 +213,7 @@ function GeneralForm() {
                         )}
                         {...register('email', {
                             required: true,
+                            value: (attributes?.email as string) || '',
                             pattern:
                                 /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
                         })}
@@ -205,7 +255,9 @@ function GeneralForm() {
                                 ? 'border-red-300 bg-red-100'
                                 : ''
                         )}
-                        {...register('phone')}
+                        {...register('phone', {
+                            value: (attributes?.phone as string) || '',
+                        })}
                     />
                     {errors.phone?.type === 'pattern' && (
                         <span className="text-sm text-red-700">
@@ -236,6 +288,7 @@ function GeneralForm() {
                     placeholder="Private notes about client"
                     {...register('notes', {
                         required: false,
+                        value: (attributes?.notes as string) || '',
                     })}
                 />
                 {errors.notes?.type === 'length' && (

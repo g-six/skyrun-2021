@@ -9,9 +9,10 @@ function Card(
     const record: Staff = props.list[props.idx]
     function handleEdit(e: MouseEvent<HTMLButtonElement>) {
         ctx.StaffModal.setAttributes({
-            ...record,
+            ...record.user,
+            user_id: record.user.id,
+            id: record.id,
             idx: props.idx,
-            list: props.list as Record<string, string>[],
         })
         ctx.StaffModal.open()
     }
@@ -20,15 +21,15 @@ function Card(
         <div className="shadow-2xl p-8 rounded-xl border border-t-0 border-l-0  border-r-0 border-gray-150 text-center">
             <div className="flex flex-wrap text-center content-center rounded-full bg-primary-lighter w-36 h-36 block mx-auto mb-4 overflow-hidden">
                 <div className="flex-1 font-black text-primary text-2xl">
-                    {[record.first_name[0], record.last_name[0]].join('.')}.
+                    {[record.user.first_name[0], record.user.last_name[0]].join('.')}.
                 </div>
             </div>
             <div className="text-base font-bold text-gray-600 block my-1">
-                {[record.first_name, record.last_name].join(' ')}
+                {[record.user.first_name, record.user.last_name].join(' ')}
             </div>
-            <div className="text-sm block my-1">{record.email}</div>
+            <div className="text-sm block my-1">{record.user.email}</div>
             <div className="text-sm block my-1">
-                {record.phone || 'None Specified'}
+                {record.user.phone || 'None Specified'}
             </div>
             <button
                 className="button bg-primary md:w-40 w-56 rounded-lg text-white py-3 my-2"

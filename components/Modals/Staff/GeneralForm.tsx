@@ -29,7 +29,6 @@ function GeneralForm() {
     const { attributes, setAttributes } = StaffModal
     const [loading, toggleLoading] = useState(false)
     const [success, setSuccess] = useState(false)
-
     const {
         register,
         handleSubmit,
@@ -45,6 +44,12 @@ function GeneralForm() {
         attributes?.id ? FetchMethods.PUT : FetchMethods.POST,
         false
     )
+
+    function updateList() {
+        StaffModal.setAttributes({
+            has_updates: true,
+        })
+    }
 
     const onSubmit: SubmitHandler<GeneralFormValues> = async (
         values: Record<string, string>
@@ -64,47 +69,14 @@ function GeneralForm() {
             }
 
             const res = await api_fetch.doFetch({
+                id: attributes?.id as string,
                 tenant,
                 user,
                 notes,
             })
 
             if (res) {
-                let list: Record<string, string | number>[] = []
-                if (attributes && attributes.list) {
-                    list = attributes.list as Record<
-                        string,
-                        string | number
-                    >[]
-                    if (attributes.idx) {
-                        list[attributes.idx as number] = {
-                            ...list[attributes.idx as number],
-                            first_name,
-                            last_name,
-                            email,
-                            phone,
-                            notes,
-                        }
-                    } else {
-                        list.push({
-                            id: api_fetch.data.id,
-                            first_name,
-                            last_name,
-                            email,
-                            phone,
-                            notes,
-                        })
-                    }
-                }
-
-                StaffModal.setAttributes({
-                    ...StaffModal.attributes,
-                    first_name,
-                    last_name,
-                    email,
-                    phone,
-                    notes,
-                })
+                updateList()
                 reset()
                 setSuccess(true)
                 StaffModal.close()

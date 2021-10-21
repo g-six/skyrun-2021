@@ -114,7 +114,6 @@ function DashboardClient() {
 
         if (ModalContext.attributes?.has_updates) {
             ModalContext.setAttributes({
-                ...ModalContext.setAttributes,
                 has_updates: false,
             })
             doFetch()

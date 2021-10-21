@@ -98,20 +98,29 @@ function DashboardStaff() {
                 } = s.user
                 return {
                     id: s.id,
-                    user_id,
-                    email,
-                    first_name,
-                    last_name,
-                    phone,
+                    user: {
+                        id: user_id,
+                        email,
+                        first_name,
+                        last_name,
+                        phone,
+                    },
                 }
-            })
+        })
         setStaff(staff_list)
-    }, [setStaff, data, doFetch])
+
+        if (Modal.attributes?.has_updates) {
+            Modal.setAttributes({
+                has_updates: false,
+            })
+            doFetch()
+        }
+    }, [setStaff, data, doFetch, Modal.is_open])
 
     if (!tenant?.id) return <></>
     return (
         <Dashboard actions={<HeaderActions onSearch={setSearchCategory} />}>
-            <div className="grid w-80 sm:w-auto lg:grid-cols-2 xl:grid-cols-3 xl:max-w-5xl md:max-w-sm lg:max-w-2xl mx-auto p-8 gap-6">
+            <div className="grid w-80 sm:w-auto lg:grid-cols-2 xl:grid-cols-3 xl:max-w-5xl md:max-w-sm lg:max-w-2xl mx-auto lg:mx-0 p-8 gap-6">
                 {staff && staff.length > 0
                     ? ((staff as Staff[]) || []).map(
                           (record: Staff, idx) => (

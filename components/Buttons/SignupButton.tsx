@@ -1,10 +1,21 @@
+import { createModal } from 'components/Modals/ModalFactory'
 import { SignupModalOpener } from 'components/Modals/Signup'
 import { withClass } from 'components/types'
+import { useAppContext } from 'context/AppContext'
+import { AuthContext } from 'context/AuthContext'
 import { classNames } from 'utils/dom-helpers'
 
 function SignupButton({ className = '' }: withClass) {
+    const { tiers } = useAppContext()
+    const FreePlanModalProvider = createModal(
+        AuthContext,
+        'SignupModal',
+        () => <span>Try it for free</span>,
+        () => <span>Cancel</span>,
+        { tier: tiers[0] }
+    )
     return (
-        <SignupModalOpener
+        <FreePlanModalProvider.Opener
             className={
                 className ||
                 classNames(

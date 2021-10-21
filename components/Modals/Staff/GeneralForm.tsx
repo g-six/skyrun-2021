@@ -104,7 +104,6 @@ function GeneralForm() {
                     email,
                     phone,
                     notes,
-                    list,
                 })
                 reset()
                 setSuccess(true)

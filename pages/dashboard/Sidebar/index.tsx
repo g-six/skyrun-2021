@@ -1,5 +1,3 @@
-import { ReactElement, MouseEvent, useState } from 'react'
-import { useRouter } from 'next/router'
 import {
     Drawer,
     DrawerContent,
@@ -7,11 +5,12 @@ import {
     DrawerItemProps,
     DrawerSelectEvent,
 } from '@progress/kendo-react-layout'
-import { classNames } from 'utils/dom-helpers'
-import { UserModel } from 'services/profile'
-import { useAuth } from 'context/AuthContext'
-import { betterPathname } from 'utils/string-helper'
 import { Language } from 'components/LanguageSelector'
+import { useAuth } from 'context/AuthContext'
+import { useRouter } from 'next/router'
+import { MouseEvent, ReactElement, useState } from 'react'
+import { classNames } from 'utils/dom-helpers'
+import { betterPathname } from 'utils/string-helper'
 import TenantSelector from './TenantSelector'
 
 type SidebarItem = {
@@ -80,6 +79,11 @@ const items: SidebarItem[] = [
         text: 'Integrations',
         icon: 'k-i-html',
         route: '/dashboard/integrations',
+    },
+    {
+        text: 'Notifications',
+        icon: 'feather-bell',
+        route: '/dashboard/notifications',
     },
 ]
 

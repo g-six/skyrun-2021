@@ -2,7 +2,7 @@ import { Fragment, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/solid'
 import { classNames } from '@progress/kendo-react-common'
-import { DropPosition, SelectorProps } from '../common'
+import { SelectorProps } from '../common'
 import SearchBox from 'components/SearchBox'
 
 export function FilterSelector(props: SelectorProps) {
@@ -64,10 +64,13 @@ export function FilterSelector(props: SelectorProps) {
                         openMenu(!is_opened)
                     }}
                 >
-                    <i className="feather-filter text-lg mr-2" />
+                    <i
+                        className="feather-filter text-lg mr-2"
+                        aria-hidden="true"
+                    />
                     <span>Filter</span>
-                    <ChevronDownIcon
-                        className="-mr-1 ml-2 h-5 w-5 text-primary-light"
+                    <i
+                        className="feather-chevron-down -mr-1 ml-2 h-5 w-5 text-primary-light"
                         aria-hidden="true"
                     />
                 </Menu.Button>

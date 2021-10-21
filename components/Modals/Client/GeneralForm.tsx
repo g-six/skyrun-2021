@@ -4,7 +4,7 @@ import { classNames } from 'utils/dom-helpers'
 import { AuthContext, useAuth } from 'context/AuthContext'
 import { CognitoErrorTypes } from 'services/CognitoErrorTypes'
 import { SubmitError, UserModel } from '../types'
-import { GeneralFormValues } from './types'
+import { ClientItem, GeneralFormValues } from './types'
 import { createModal } from '../ModalFactory'
 import { FetchMethods, useFetch } from 'utils/fetch-helper'
 
@@ -46,6 +46,17 @@ function GeneralForm() {
         false
     )
 
+    function updateList(user?: Record<string, string>) {
+        ctx.CreateClientModal.setAttributes({
+            has_updates: true,
+        })
+    }
+
+    async function handleClose() {
+        reset()
+        ctx.CreateClientModal.close()
+    }
+
     const onSubmit: SubmitHandler<GeneralFormValues> = async (
         values: Record<string, string>
     ) => {
@@ -71,41 +82,12 @@ function GeneralForm() {
             })
 
             if (res) {
-                let list: Record<string, string | number>[] = []
-                if (attributes && attributes.list) {
-                    list = attributes.list as unknown as Record<
-                        string,
-                        string | number
-                    >[]
-                    if (attributes.idx) {
-                        list[attributes.idx as unknown as number] = {
-                            ...list[attributes.idx as unknown as number],
-                            first_name,
-                            last_name,
-                            email,
-                            phone,
-                            notes,
-                        }
-                    } else {
-                        list.push({
-                            id: api_fetch.data.id,
-                            first_name,
-                            last_name,
-                            email,
-                            phone,
-                            notes,
-                        })
-                    }
-                }
-
-                ctx.CreateClientModal.setAttributes({
-                    ...attributes,
+                updateList({
                     first_name,
                     last_name,
                     email,
                     phone,
                     notes,
-                    list,
                 })
                 reset()
                 setSuccess(true)
@@ -313,8 +295,16 @@ function GeneralForm() {
                     ''
                 )}
 
-                <div className="flex justify-end">
-                    <ModalProvider.Closer />
+                <div className="flex justify-end gap-3">
+                    <button
+                        type="reset"
+                        onClick={() => {
+                            handleClose()
+                        }}
+                        className="border-gray-200 rounded-lg border px-6"
+                    >
+                        Cancel
+                    </button>
                     <button
                         type="submit"
                         className={classNames(

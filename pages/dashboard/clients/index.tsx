@@ -6,6 +6,8 @@ import { useAuth } from 'context/AuthContext'
 import CreateClientModal from 'components/Modals/Client'
 import LocationSelector from 'components/DropdownSelectors/LocationSelector'
 import FilterSelector from 'components/DropdownSelectors/FilterSelector'
+import DataTable from 'components/DataTable'
+import { ClientItem } from 'components/Modals/Client/types'
 
 function SearchInputGroup({ selected_idx = 0 }) {
     return (
@@ -57,18 +59,6 @@ type ApiResponse = {
     user: Record<string, string>
 }
 
-type UserRecord = {
-    email: string
-    first_name: string
-    last_name: string
-    phone?: string
-    notes?: string
-}
-type ClientItem = {
-    id: string
-    user: UserRecord
-}
-
 function HeaderActions(props: HeaderProps) {
     return (
         <>
@@ -80,6 +70,8 @@ function HeaderActions(props: HeaderProps) {
 function DashboardClient() {
     const { tenant, CreateClientModal: ModalContext } = useAuth()
     const [selected_search_category, setSearchCategory] = useState('')
+    const [selected_items, selectItems] = useState<number[]>([])
+    const [all_selected, selectAll] = useState<boolean>(false)
     const [clients, setClients] = useState<ClientItem[]>([])
     const { data, doFetch } = useFetch(
         `/v1/clients/tenant-id/${tenant?.id}`,
@@ -102,7 +94,7 @@ function DashboardClient() {
                 return {
                     id: s.id,
                     user: {
-                        user_id,
+                        id: user_id,
                         email,
                         first_name,
                         last_name,
@@ -111,103 +103,112 @@ function DashboardClient() {
                 }
             })
         setClients(list)
-    }, [doFetch, data, setClients])
+
+        let update_selection: number[] = []
+        if (all_selected) {
+            clients.forEach((x, idx) => {
+                update_selection.push(idx)
+            })
+        }
+        selectItems(update_selection)
+
+        if (ModalContext.attributes?.has_updates) {
+            ModalContext.setAttributes({
+                ...ModalContext.setAttributes,
+                has_updates: false,
+            })
+            doFetch()
+        }
+    }, [doFetch, data, setClients, all_selected, ModalContext.is_open])
 
     function handleEdit(idx: number) {
         return () => {
             ModalContext.setAttributes({
                 id: clients[idx].id,
+                user_id: clients[idx].user.id || '',
                 email: clients[idx].user.email,
                 first_name: clients[idx].user.first_name,
                 last_name: clients[idx].user.last_name,
                 phone: clients[idx].user.phone || '',
+                idx,
+                list: clients as unknown as Record<
+                    string,
+                    string | Record<string, string | number>
+                >[],
             })
+
             ModalContext.open()
         }
     }
 
-    function Table() {
-        return (
-            <table className="min-w-full divide-y divide-gray-200">
-                <thead>
-                    <tr>
-                        <th
-                            scope="col"
-                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
-                            Name
-                        </th>
-                        <th
-                            scope="col"
-                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
-                            Email
-                        </th>
-                        <th
-                            scope="col"
-                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
-                            Phone
-                        </th>
-                        <th
-                            scope="col"
-                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
-                            Membership Status
-                        </th>
-                        <th scope="col" className="relative px-6 py-3">
-                            <span className="sr-only">Edit</span>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                    {((clients as ClientItem[]) || []).map(
-                        ({ id, user }: ClientItem, idx) => (
-                            <tr
-                                key={id}
-                                className={
-                                    idx % 2
-                                        ? 'bg-primary-lighter bg-opacity-30'
-                                        : ''
-                                }
-                            >
-                                <td className="px-6 py-4 whitespace-nowrap">
-                                    <div className="text-sm font-medium text-gray-900">
-                                        {[
-                                            user.first_name,
-                                            user.last_name,
-                                        ].join(' ')}
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap">
-                                    <div className="text-sm text-gray-900">
-                                        {user.email}
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {user.phone || 'None Specified'}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap">
-                                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 uppercase">
-                                        Current member
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <button
-                                        type="button"
-                                        onClick={handleEdit(idx)}
-                                        className="text-indigo-600 hover:text-indigo-900"
-                                    >
-                                        Edit
-                                    </button>
-                                </td>
-                            </tr>
-                        )
-                    )}
-                </tbody>
-            </table>
-        )
+    function toggleAll() {
+        selectAll(!all_selected)
     }
+
+    const rows: HTMLTableRowElement[] = (clients || []).map(
+        ({ id, user }: ClientItem, idx) =>
+            (
+                <tr
+                    key={id}
+                    className={classNames(
+                        idx % 2 ? 'bg-primary-lighter bg-opacity-30' : '',
+                        'hover:bg-secondary hover:bg-opacity-10'
+                    )}
+                >
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <input
+                            type="checkbox"
+                            name="selected_items[]"
+                            className="h-4 w-4 mr-2 border-gray-300 rounded text-primary focus:ring-primary-light"
+                            value={idx}
+                            checked={selected_items.indexOf(idx) >= 0}
+                            onChange={() => {
+                                const updated_selection = [
+                                    ...selected_items,
+                                ]
+                                if (updated_selection.indexOf(idx) >= 0) {
+                                    updated_selection.splice(idx, 1)
+                                    selectItems(updated_selection)
+                                } else {
+                                    updated_selection.push(idx)
+                                    selectItems(updated_selection)
+                                }
+                            }}
+                        />
+                    </td>
+                    <td
+                        className="px-6 py-4 whitespace-nowrap"
+                        onClick={handleEdit(idx)}
+                    >
+                        <div className="text-sm font-medium text-gray-900">
+                            {[user.first_name, user.last_name].join(' ')}
+                        </div>
+                    </td>
+                    <td
+                        className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                        onClick={handleEdit(idx)}
+                    >
+                        {user.phone || 'None Specified'}
+                    </td>
+                    <td
+                        className="px-6 py-4 whitespace-nowrap"
+                        onClick={handleEdit(idx)}
+                    >
+                        <div className="text-sm text-gray-900">
+                            {user.email}
+                        </div>
+                    </td>
+                    <td
+                        className="px-6 py-4 whitespace-nowrap"
+                        onClick={handleEdit(idx)}
+                    >
+                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 uppercase">
+                            Current member
+                        </span>
+                    </td>
+                </tr>
+            ) as unknown as HTMLTableRowElement
+    )
 
     return (
         <Dashboard actions={<HeaderActions onSearch={setSearchCategory} />}>
@@ -236,7 +237,36 @@ function DashboardClient() {
                         </button>
                     </div>
                     <div className="overflow-hidden mt-4">
-                        {clients && clients.length > 0 ? <Table /> : ''}
+                        <DataTable
+                            rows={rows}
+                            columns={[
+                                {
+                                    checkAll: toggleAll,
+                                    classNames:
+                                        'pl-6 pr-1 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-4',
+                                },
+                                {
+                                    label: 'Name',
+                                    classNames:
+                                        'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
+                                },
+                                {
+                                    label: 'Phone',
+                                    classNames:
+                                        'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
+                                },
+                                {
+                                    label: 'Email',
+                                    classNames:
+                                        'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
+                                },
+                                {
+                                    label: 'Membership status',
+                                    classNames:
+                                        'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
+                                },
+                            ]}
+                        />
                     </div>
                 </div>
             </div>

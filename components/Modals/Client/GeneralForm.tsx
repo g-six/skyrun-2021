@@ -46,7 +46,7 @@ function GeneralForm() {
         false
     )
 
-    function updateList(user?: Record<string, string>) {
+    function updateList() {
         ctx.CreateClientModal.setAttributes({
             has_updates: true,
         })
@@ -82,13 +82,7 @@ function GeneralForm() {
             })
 
             if (res) {
-                updateList({
-                    first_name,
-                    last_name,
-                    email,
-                    phone,
-                    notes,
-                })
+                updateList()
                 reset()
                 setSuccess(true)
                 ctx.CreateClientModal.close()

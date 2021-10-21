@@ -104,7 +104,7 @@ function DashboardClient() {
             })
         setClients(list)
 
-        let update_selection: number[] = []
+        const update_selection: number[] = []
         if (all_selected) {
             clients.forEach((x, idx) => {
                 update_selection.push(idx)
@@ -114,7 +114,6 @@ function DashboardClient() {
 
         if (ModalContext.attributes?.has_updates) {
             ModalContext.setAttributes({
-                ...ModalContext.setAttributes,
                 has_updates: false,
             })
             doFetch()
@@ -131,10 +130,6 @@ function DashboardClient() {
                 last_name: clients[idx].user.last_name,
                 phone: clients[idx].user.phone || '',
                 idx,
-                list: clients as unknown as Record<
-                    string,
-                    string | Record<string, string | number>
-                >[],
             })
 
             ModalContext.open()
@@ -238,6 +233,7 @@ function DashboardClient() {
                     </div>
                     <div className="overflow-hidden mt-4">
                         <DataTable
+                            all_selected={all_selected}
                             rows={rows}
                             columns={[
                                 {

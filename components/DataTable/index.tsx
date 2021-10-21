@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 export type DataTableColumnProps = {
     label?: string
     checkAll?(): void
@@ -7,8 +9,13 @@ export type DataTableColumnProps = {
 export type DataTableProps = {
     columns: DataTableColumnProps[]
     rows: HTMLTableRowElement[]
+    all_selected?: boolean
 }
-export function DataTable({ columns, rows }: DataTableProps) {
+export function DataTable({
+    columns,
+    rows,
+    all_selected = false,
+}: DataTableProps) {
     return (
         <table className="min-w-full divide-y divide-gray-200">
             <thead>
@@ -28,6 +35,7 @@ export function DataTable({ columns, rows }: DataTableProps) {
                                     type="checkbox"
                                     className="h-4 w-4 mr-2 border-gray-300 rounded text-primary focus:ring-primary-light"
                                     onChange={col.checkAll}
+                                    checked={all_selected}
                                 />
                             ) : (
                                 ''

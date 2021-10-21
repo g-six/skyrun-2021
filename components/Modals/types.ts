@@ -5,15 +5,22 @@ export interface ModalHook {
     is_open: boolean
     open(): void
     close(): void
-    callback?(): void
     attributes?: Record<
         string,
-        number | string | Tier | Record<string, string | number>[]
+        | number
+        | boolean
+        | string
+        | Tier
+        | Record<string, string | Record<string, string | number>>[]
     >
     setAttributes(
         attributes: Record<
             string,
-            string | number | Tier | Record<string, string | number>[]
+            | string
+            | number
+            | boolean
+            | Tier
+            | Record<string, string | Record<string, string | number>>[]
         >
     ): void
 }

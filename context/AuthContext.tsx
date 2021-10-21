@@ -50,7 +50,7 @@ export function SkyAuthProvider({ children }: Props) {
     const [tenant, setTenant] = useState<TenantInfo>({} as unknown as TenantInfo)
     const [tenants, setTenants] = useState<TenantInfo[]>([] as unknown as TenantInfo[])
     const [already_set, setRecordsRetrievalStatus] = useState<Record<string, boolean>>({})
-    const [is_initialized, setInit] = useState(true)
+
     const [data, setData] = useState<UserProfileRecord>({})
 
     const LoginModal = useModal()
@@ -84,7 +84,6 @@ export function SkyAuthProvider({ children }: Props) {
                     if (RefreshToken) {
                         Cookies.set('refresh_token', RefreshToken, { path: '/' })
                     }
-                    setInit(true)
 
                     const auth_data = await profile()
                     if (auth_data) {
@@ -94,7 +93,7 @@ export function SkyAuthProvider({ children }: Props) {
                             uuid: auth_data.uuid,
                         })
                         const res: ApiUser = await getApiRequest('/v1/users/current')
-                        console.log(res)
+                        initUserProfile(res)
                     }
                 }
             }
@@ -115,10 +114,6 @@ export function SkyAuthProvider({ children }: Props) {
         signup: async (email: string, password: string, given_name: string, family_name: string): Promise<SignUpCommandOutput | boolean> => {
             const output: SignUpCommandOutput = await signUp({ email, password, given_name, family_name })
 
-            if (output.UserSub) {
-                setInit(true)
-            }
-
             return output || false
         },
         tenant,
@@ -134,6 +129,32 @@ export function SkyAuthProvider({ children }: Props) {
 
     const { all_tenants, active_tenant } = already_set
 
+    function initUserProfile(res: ApiUser) {
+        const user_record: UserProfileRecord = {
+            user: res.userInfo,
+            roles: res.roles,
+            tenants: [],
+        }
+
+        res.tenants.forEach((t: ApiTenant, idx) => {
+            const clean_tenant = {
+                id: t.id,
+                business_name: t.name,
+                tier: t.tier as unknown as Tier,
+            }
+            user_record.tenants?.push(clean_tenant)
+
+            if (Cookies.get('tenant_id') && clean_tenant.id == Cookies.get('tenant_id')) {
+                setTenant(clean_tenant)
+            } else if (idx == 0) {
+                setTenant(clean_tenant)
+                Cookies.set('tenant_id', clean_tenant.id)
+            }
+        })
+
+        setData(user_record)
+    }
+
     useEffect(() => {
         const { user: api_user, roles: api_roles, tenants: api_tenants } = data
 
@@ -148,22 +169,12 @@ export function SkyAuthProvider({ children }: Props) {
 
                 
                 const res: ApiUser = await getApiRequest('/v1/users/current')
-                const user_record: UserProfileRecord = {
-                    user: res.userInfo,
-                    roles: res.roles,
-                    tenants: [],
-                }
-
-                res.tenants.forEach((t: ApiTenant) => {
-                    user_record.tenants?.push({
-                        id: t.id,
-                        business_name: t.name,
-                        tier: t.tier as unknown as Tier,
-                    })
-                })
-
-                setData(user_record)
+                initUserProfile(res)
             }
+        }
+
+        if (LoginModal.is_open && user.uuid && Cookies.get('id_token')) {
+            LoginModal.close()
         }
 
         if (data.user && !all_tenants && !active_tenant) {
@@ -191,6 +202,9 @@ export function SkyAuthProvider({ children }: Props) {
                     }
                 }
             })
+            if (LoginModal.is_open) {
+                LoginModal.close()
+            }
         } else if (!user || !user?.uuid) {
             getProfile()
         }

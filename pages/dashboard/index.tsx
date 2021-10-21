@@ -15,6 +15,7 @@ import LanguageSelector from 'components/LanguageSelector'
 import { useAppContext } from 'context/AppContext'
 import { DropDownListChangeEvent } from '@progress/kendo-react-dropdowns'
 import TenantModal from 'components/Modals/Tenant'
+import Cookies from 'js-cookie'
 
 const Sidebar = dynamic(() => import('./Sidebar'), { ssr: false })
 
@@ -30,6 +31,10 @@ function Dashboard({
 
     function handleLanguageChange(e: DropDownListChangeEvent) {
         onLanguageChange(e.value)
+    }
+
+    if (!user?.uuid && !Cookies.get('id_token')) {
+        auth.LoginModal.open()
     }
 
     return (
@@ -82,7 +87,11 @@ function Dashboard({
                 <TenantModal />
                 <LoginModal />
             </Authenticated>
-            <NotAuthenticated>Relogging you in</NotAuthenticated>
+
+            <NotAuthenticated>
+                <span>Relogging you in</span>
+                <LoginModal />
+            </NotAuthenticated>
         </>
     )
 }

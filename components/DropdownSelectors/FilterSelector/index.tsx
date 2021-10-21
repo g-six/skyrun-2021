@@ -64,7 +64,10 @@ export function FilterSelector(props: SelectorProps) {
                         openMenu(!is_opened)
                     }}
                 >
-                    <i className="feather-filter text-lg mr-2" aria-hidden="true" />
+                    <i
+                        className="feather-filter text-lg mr-2"
+                        aria-hidden="true"
+                    />
                     <span>Filter</span>
                     <i
                         className="feather-chevron-down -mr-1 ml-2 h-5 w-5 text-primary-light"

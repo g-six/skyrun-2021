@@ -24,10 +24,9 @@ type SidebarItem = {
     route?: string
 }
 interface Props {
-    children?: ReactElement | ReactElement[] | string
+    children?: ReactElement
 }
 const items: SidebarItem[] = [
-    { route: '/' },
     {},
     { text: 'Home', icon: 'feather-sidebar', route: '/dashboard' },
     {
@@ -102,7 +101,7 @@ const CustomItem = (props: DrawerItemProps & SidebarItem) => {
             <div
                 className={classNames(
                     props.className || '',
-                    'bg-white pb-5 mb-3 px-3'
+                    'bg-white mt-6 mb-3 px-3'
                 )}
                 onClickCapture={props.onClickCapture}
             >
@@ -168,7 +167,7 @@ function Sidebar({ children }: Props) {
     const selected = setSelectedItem(router.pathname)
     return (
         <Drawer
-            className="h-screen"
+            className="h-screen relative z-0"
             expanded={expanded}
             mode={'push'}
             mini={true}

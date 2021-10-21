@@ -237,7 +237,7 @@ function NotificationsPage() {
                                 ></path>
                             </svg>
                         ) : (
-                            <i className="feather-send font-bold"/>
+                            <i className="feather-send font-bold" />
                         )}
                     </span>
                     Send Email

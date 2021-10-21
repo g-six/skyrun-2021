@@ -47,22 +47,7 @@ function GeneralForm() {
     )
 
     function updateList(user?: Record<string, string>) {
-        const list: Record<string, string | Record<string, string | number>>[] = (attributes && attributes.list as Record<string, string | Record<string, string | number>>[]) || []
-        if (user && attributes && attributes.list) {
-            if (attributes.idx) {
-                list[attributes.idx as unknown as number] = {
-                    ...list[attributes.idx as unknown as number],
-                    user,
-                }
-            } else {
-                list.push({
-                    id: api_fetch.data.id,
-                    user
-                })
-            }
-        }
         ctx.CreateClientModal.setAttributes({
-            list,
             has_updates: true,
         })
     }
@@ -313,7 +298,9 @@ function GeneralForm() {
                 <div className="flex justify-end gap-3">
                     <button
                         type="reset"
-                        onClick={() => { handleClose() }}
+                        onClick={() => {
+                            handleClose()
+                        }}
                         className="border-gray-200 rounded-lg border px-6"
                     >
                         Cancel

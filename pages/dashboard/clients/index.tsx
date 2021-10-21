@@ -131,7 +131,10 @@ function DashboardClient() {
                 last_name: clients[idx].user.last_name,
                 phone: clients[idx].user.phone || '',
                 idx,
-                list: clients as unknown as Record<string, string | Record<string, string | number>>[]
+                list: clients as unknown as Record<
+                    string,
+                    string | Record<string, string | number>
+                >[],
             })
 
             ModalContext.open()
@@ -142,18 +145,15 @@ function DashboardClient() {
         selectAll(!all_selected)
     }
 
-    const rows: HTMLTableRowElement[] = (clients || [])
-        .map(
-            ({ id, user }: ClientItem, idx) => (
+    const rows: HTMLTableRowElement[] = (clients || []).map(
+        ({ id, user }: ClientItem, idx) =>
+            (
                 <tr
                     key={id}
-                    className={
-                        classNames(idx % 2
-                            ? 'bg-primary-lighter bg-opacity-30'
-                            : '',
-                            'hover:bg-secondary hover:bg-opacity-10'
-                        )
-                    }
+                    className={classNames(
+                        idx % 2 ? 'bg-primary-lighter bg-opacity-30' : '',
+                        'hover:bg-secondary hover:bg-opacity-10'
+                    )}
                 >
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <input
@@ -163,7 +163,9 @@ function DashboardClient() {
                             value={idx}
                             checked={selected_items.indexOf(idx) >= 0}
                             onChange={() => {
-                                const updated_selection = [...selected_items]
+                                const updated_selection = [
+                                    ...selected_items,
+                                ]
                                 if (updated_selection.indexOf(idx) >= 0) {
                                     updated_selection.splice(idx, 1)
                                     selectItems(updated_selection)
@@ -174,32 +176,39 @@ function DashboardClient() {
                             }}
                         />
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap" onClick={handleEdit(idx)}>
-                        <div
-                            className="text-sm font-medium text-gray-900"
-                        >
-                            {[
-                                user.first_name,
-                                user.last_name,
-                            ].join(' ')}
+                    <td
+                        className="px-6 py-4 whitespace-nowrap"
+                        onClick={handleEdit(idx)}
+                    >
+                        <div className="text-sm font-medium text-gray-900">
+                            {[user.first_name, user.last_name].join(' ')}
                         </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500" onClick={handleEdit(idx)}>
+                    <td
+                        className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                        onClick={handleEdit(idx)}
+                    >
                         {user.phone || 'None Specified'}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap" onClick={handleEdit(idx)}>
+                    <td
+                        className="px-6 py-4 whitespace-nowrap"
+                        onClick={handleEdit(idx)}
+                    >
                         <div className="text-sm text-gray-900">
                             {user.email}
                         </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap" onClick={handleEdit(idx)}>
+                    <td
+                        className="px-6 py-4 whitespace-nowrap"
+                        onClick={handleEdit(idx)}
+                    >
                         <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 uppercase">
                             Current member
                         </span>
                     </td>
                 </tr>
             ) as unknown as HTMLTableRowElement
-        )
+    )
 
     return (
         <Dashboard actions={<HeaderActions onSearch={setSearchCategory} />}>
@@ -231,11 +240,31 @@ function DashboardClient() {
                         <DataTable
                             rows={rows}
                             columns={[
-                                { checkAll: toggleAll , classNames: 'pl-6 pr-1 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-4' },
-                                { label: 'Name', classNames: 'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider' },
-                                { label: 'Phone', classNames: 'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider' },
-                                { label: 'Email', classNames: 'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider' },
-                                { label: 'Membership status', classNames: 'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider' },
+                                {
+                                    checkAll: toggleAll,
+                                    classNames:
+                                        'pl-6 pr-1 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-4',
+                                },
+                                {
+                                    label: 'Name',
+                                    classNames:
+                                        'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
+                                },
+                                {
+                                    label: 'Phone',
+                                    classNames:
+                                        'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
+                                },
+                                {
+                                    label: 'Email',
+                                    classNames:
+                                        'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
+                                },
+                                {
+                                    label: 'Membership status',
+                                    classNames:
+                                        'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
+                                },
                             ]}
                         />
                     </div>

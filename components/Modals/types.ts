@@ -7,12 +7,20 @@ export interface ModalHook {
     close(): void
     attributes?: Record<
         string,
-        number | boolean | string | Tier | Record<string, string | Record<string, string | number>>[]
+        | number
+        | boolean
+        | string
+        | Tier
+        | Record<string, string | Record<string, string | number>>[]
     >
     setAttributes(
         attributes: Record<
             string,
-            string | number | boolean | Tier | Record<string, string | Record<string, string | number>>[]
+            | string
+            | number
+            | boolean
+            | Tier
+            | Record<string, string | Record<string, string | number>>[]
         >
     ): void
 }

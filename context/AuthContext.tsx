@@ -93,6 +93,7 @@ export function SkyAuthProvider({ children }: Props) {
                             uuid: auth_data.uuid,
                         })
                         const res: ApiUser = await getApiRequest('/v1/users/current')
+                        initUserProfile(res)
                     }
                 }
             }
@@ -128,6 +129,32 @@ export function SkyAuthProvider({ children }: Props) {
 
     const { all_tenants, active_tenant } = already_set
 
+    function initUserProfile(res: ApiUser) {
+        const user_record: UserProfileRecord = {
+            user: res.userInfo,
+            roles: res.roles,
+            tenants: [],
+        }
+
+        res.tenants.forEach((t: ApiTenant, idx) => {
+            const clean_tenant = {
+                id: t.id,
+                business_name: t.name,
+                tier: t.tier as unknown as Tier,
+            }
+            user_record.tenants?.push(clean_tenant)
+
+            if (Cookies.get('tenant_id') && clean_tenant.id == Cookies.get('tenant_id')) {
+                setTenant(clean_tenant)
+            } else if (idx == 0) {
+                setTenant(clean_tenant)
+                Cookies.set('tenant_id', clean_tenant.id)
+            }
+        })
+
+        setData(user_record)
+    }
+
     useEffect(() => {
         const { user: api_user, roles: api_roles, tenants: api_tenants } = data
 
@@ -142,21 +169,7 @@ export function SkyAuthProvider({ children }: Props) {
 
                 
                 const res: ApiUser = await getApiRequest('/v1/users/current')
-                const user_record: UserProfileRecord = {
-                    user: res.userInfo,
-                    roles: res.roles,
-                    tenants: [],
-                }
-
-                res.tenants.forEach((t: ApiTenant) => {
-                    user_record.tenants?.push({
-                        id: t.id,
-                        business_name: t.name,
-                        tier: t.tier as unknown as Tier,
-                    })
-                })
-
-                setData(user_record)
+                initUserProfile(res)
             }
         }
 

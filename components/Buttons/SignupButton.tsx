@@ -1,5 +1,4 @@
 import { createModal } from 'components/Modals/ModalFactory'
-import { SignupModalOpener } from 'components/Modals/Signup'
 import { withClass } from 'components/types'
 import { useAppContext } from 'context/AppContext'
 import { AuthContext } from 'context/AuthContext'

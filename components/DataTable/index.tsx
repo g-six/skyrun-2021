@@ -1,5 +1,6 @@
 export type DataTableColumnProps = {
-    label: string
+    label?: string
+    checkAll?(): void
     classNames: string
 }
 
@@ -22,6 +23,7 @@ export function DataTable({ columns, rows }: DataTableProps) {
                                 }
                             >
                                 { col.label }
+                                { col.checkAll ? <input type="checkbox" className="h-4 w-4 mr-2 border-gray-300 rounded text-primary focus:ring-primary-light" onChange={col.checkAll} /> : '' }
                             </th>)
                         )
                     }

@@ -3,7 +3,7 @@ import {
     DrawerContent,
     DrawerItem,
     DrawerItemProps,
-    DrawerSelectEvent
+    DrawerSelectEvent,
 } from '@progress/kendo-react-layout'
 import { Language } from 'components/LanguageSelector'
 import { useAuth } from 'context/AuthContext'
@@ -82,7 +82,7 @@ const items: SidebarItem[] = [
     },
     {
         text: 'Notifications',
-        icon: 'k-i-notification',
+        icon: 'feather-bell',
         route: '/dashboard/notifications',
     },
 ]

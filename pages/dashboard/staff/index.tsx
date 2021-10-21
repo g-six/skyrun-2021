@@ -146,6 +146,41 @@ function DashboardStaff() {
         selectAll(!all_selected)
     }
 
+    function TableView() {
+        return <div className="flex flex-col mt-4">
+            <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                <div className="overflow-hidden mt-4">
+                    <DataTable
+                        all_selected={all_selected}
+                        rows={rows}
+                        columns={[
+                            {
+                                checkAll: toggleAll,
+                                classNames:
+                                    'pl-6 pr-1 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-4',
+                            },
+                            {
+                                label: 'Name',
+                                classNames:
+                                    'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
+                            },
+                            {
+                                label: 'Phone',
+                                classNames:
+                                    'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
+                            },
+                            {
+                                label: 'Email',
+                                classNames:
+                                    'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
+                            },
+                        ]}
+                    />
+                </div>
+            </div>
+        </div>
+    }
+
     if (!tenant?.id) return <></>
 
     function CardView() {
@@ -237,40 +272,6 @@ function DashboardStaff() {
                 </tr>
             ) as unknown as HTMLTableRowElement
     )
-
-    function TableView() {
-        return <div className="flex flex-col mt-4">
-            <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                <div className="overflow-hidden mt-4">
-                    <DataTable
-                        rows={rows}
-                        columns={[
-                            {
-                                checkAll: toggleAll,
-                                classNames:
-                                    'pl-6 pr-1 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-4',
-                            },
-                            {
-                                label: 'Name',
-                                classNames:
-                                    'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
-                            },
-                            {
-                                label: 'Phone',
-                                classNames:
-                                    'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
-                            },
-                            {
-                                label: 'Email',
-                                classNames:
-                                    'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
-                            },
-                        ]}
-                    />
-                </div>
-            </div>
-        </div>
-    }
 
     return (
         <Dashboard actions={<HeaderActions onSearch={setSearchCategory} />}>

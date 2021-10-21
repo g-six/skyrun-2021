@@ -81,6 +81,8 @@ function HeaderActions(props: HeaderProps) {
 function DashboardClient() {
     const { tenant, CreateClientModal: ModalContext } = useAuth()
     const [selected_search_category, setSearchCategory] = useState('')
+    const [selected_items, selectItems] = useState<number[]>([])
+    const [all_selected, selectAll] = useState<boolean>(false)
     const [clients, setClients] = useState<ClientItem[]>([])
     const { data, doFetch } = useFetch(
         `/v1/clients/tenant-id/${tenant?.id}`,
@@ -112,7 +114,15 @@ function DashboardClient() {
                 }
             })
         setClients(list)
-    }, [doFetch, data, setClients])
+
+        let update_selection: number[] = []
+        if (all_selected) {
+            clients.forEach((x, idx) => {
+                update_selection.push(idx)
+            })
+        }
+        selectItems(update_selection)
+    }, [doFetch, data, setClients, all_selected])
 
     function handleEdit(idx: number) {
         return () => {
@@ -125,6 +135,10 @@ function DashboardClient() {
             })
             ModalContext.open()
         }
+    }
+
+    function toggleAll() {
+        selectAll(!all_selected)
     }
 
     const rows: HTMLTableRowElement[] = (clients || [])
@@ -146,6 +160,17 @@ function DashboardClient() {
                             name="selected_items[]"
                             className="h-4 w-4 mr-2 border-gray-300 rounded text-primary focus:ring-primary-light"
                             value={idx}
+                            checked={selected_items.indexOf(idx) >= 0}
+                            onChange={() => {
+                                const updated_selection = [...selected_items]
+                                if (updated_selection.indexOf(idx) >= 0) {
+                                    updated_selection.splice(idx, 1)
+                                    selectItems(updated_selection)
+                                } else {
+                                    updated_selection.push(idx)
+                                    selectItems(updated_selection)
+                                }
+                            }}
                         />
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap" onClick={handleEdit(idx)}>
@@ -205,7 +230,7 @@ function DashboardClient() {
                         <DataTable
                             rows={rows}
                             columns={[
-                                { label: '', classNames: 'pl-6 pr-1 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-4' },
+                                { checkAll: toggleAll , classNames: 'pl-6 pr-1 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-4' },
                                 { label: 'Name', classNames: 'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider' },
                                 { label: 'Phone', classNames: 'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider' },
                                 { label: 'Email', classNames: 'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider' },

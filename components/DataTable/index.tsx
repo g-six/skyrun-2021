@@ -11,8 +11,11 @@ export type DataTableProps = {
     rows: HTMLTableRowElement[]
     all_selected?: boolean
 }
-export function DataTable({ columns, rows, all_selected = false }: DataTableProps) {
-
+export function DataTable({
+    columns,
+    rows,
+    all_selected = false,
+}: DataTableProps) {
     return (
         <table className="min-w-full divide-y divide-gray-200">
             <thead>

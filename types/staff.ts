@@ -1,6 +1,9 @@
 export type Staff = {
     id: string
     idx?: number
+    hourly_rate: string
+    monthly_rate: string
+    overtime_rate: string
     user: {
         id: string
         email: string

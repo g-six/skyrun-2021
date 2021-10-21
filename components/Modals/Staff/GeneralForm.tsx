@@ -7,6 +7,8 @@ import { SubmitError, UserModel } from '../types'
 import { GeneralFormValues } from './types'
 import { createModal } from '../ModalFactory'
 import { FetchMethods, useFetch } from 'utils/fetch-helper'
+import DatePickerInput from 'components/DateInput'
+import MoneyInput from 'components/MoneyInput'
 
 const ModalProvider = createModal(
     AuthContext,
@@ -29,6 +31,8 @@ function GeneralForm() {
     const { attributes, setAttributes } = StaffModal
     const [loading, toggleLoading] = useState(false)
     const [success, setSuccess] = useState(false)
+    const [date_joined, setDateJoined] = useState<Date>(new Date())
+
     const {
         register,
         handleSubmit,
@@ -71,6 +75,9 @@ function GeneralForm() {
             const res = await api_fetch.doFetch({
                 id: attributes?.id as string,
                 tenant,
+                hourlyWage: attributes?.hourly_rate as string,
+                monthlyWage: attributes?.monthly_rate as string,
+                overtimeRate: attributes?.overtime_rate as string,
                 user,
                 notes,
             })
@@ -100,8 +107,8 @@ function GeneralForm() {
 
     return (
         <form method="POST" onSubmit={handleSubmit(onSubmit)}>
-            <div className="pb-6 lg:flex">
-                <fieldset className="pb-6 lg:pb-0 lg:w-1/2 lg:pr-4">
+            <div className="pb-6 lg:flex gap-8">
+                <fieldset className="pb-6 lg:pb-0 lg:w-1/2">
                     <label
                         htmlFor="first-name"
                         className={classNames(
@@ -114,7 +121,6 @@ function GeneralForm() {
                     <input
                         type="text"
                         id="first-name"
-                        autoComplete="first_name"
                         className={classNames(
                             'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
                             errors.first_name?.type
@@ -123,8 +129,8 @@ function GeneralForm() {
                         )}
                         {...register('first_name', {
                             required: true,
-                            value: (attributes?.first_name as string) || '',
                         })}
+                        defaultValue={(attributes?.first_name as string) || ''}
                     />
                     {errors.first_name?.type === 'required' && (
                         <span className="text-sm text-red-700">
@@ -132,7 +138,7 @@ function GeneralForm() {
                         </span>
                     )}
                 </fieldset>
-                <fieldset className="lg:w-1/2 lg:pl-4">
+                <fieldset className="lg:w-1/2">
                     <label
                         htmlFor="last-name"
                         className={classNames(
@@ -145,7 +151,6 @@ function GeneralForm() {
                     <input
                         type="text"
                         id="last-name"
-                        autoComplete="last_name"
                         className={classNames(
                             'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
                             errors.last_name?.type
@@ -154,8 +159,8 @@ function GeneralForm() {
                         )}
                         {...register('last_name', {
                             required: true,
-                            value: (attributes?.last_name as string) || '',
                         })}
+                        defaultValue={attributes?.last_name as string}
                     />
                     {errors.last_name?.type === 'required' && (
                         <span className="text-sm text-red-700">
@@ -165,8 +170,39 @@ function GeneralForm() {
                 </fieldset>
             </div>
 
-            <div className="pb-6 lg:flex">
-                <fieldset className="lg:w-1/2 lg:pr-4">
+            <div className="pb-6 lg:flex gap-8">
+                <fieldset className="pb-6 lg:pb-0 lg:w-1/2">
+                    <label
+                        htmlFor="phone"
+                        className={classNames(
+                            'block text-lg',
+                            errors.phone?.type ? 'text-red-700' : ''
+                        )}
+                    >
+                        Phone
+                    </label>
+                    <input
+                        type="text"
+                        id="phone"
+                        className={classNames(
+                            'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
+                            errors.phone?.type
+                                ? 'border-red-300 bg-red-100'
+                                : ''
+                        )}
+                        {...register('phone', {
+                            required: false,
+                        })}
+                        defaultValue={attributes?.phone as string}
+                    />
+                    {errors.phone?.type === 'pattern' && (
+                        <span className="text-sm text-red-700">
+                            A valid phone is required
+                        </span>
+                    )}
+                </fieldset>
+
+                <fieldset className="lg:w-1/2">
                     <label
                         htmlFor="email-address"
                         className={classNames(
@@ -179,7 +215,6 @@ function GeneralForm() {
                     <input
                         type="text"
                         id="email-address"
-                        autoComplete="email"
                         className={classNames(
                             'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
                             errors.email?.type
@@ -188,10 +223,10 @@ function GeneralForm() {
                         )}
                         {...register('email', {
                             required: true,
-                            value: (attributes?.email as string) || '',
                             pattern:
                                 /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
                         })}
+                        defaultValue={attributes?.email as string}
                     />
                     {errors.email?.type === 'required' && (
                         <span className="text-sm text-red-700">
@@ -210,36 +245,131 @@ function GeneralForm() {
                         </span>
                     )}
                 </fieldset>
-                <fieldset className="pb-6 lg:pb-0 lg:w-1/2 lg:pl-4">
+            </div>
+
+            <div className="pb-6 lg:flex gap-8">
+                <fieldset className="pb-6 lg:pb-0 lg:w-1/2">
                     <label
-                        htmlFor="phone"
+                        htmlFor="date-joined"
                         className={classNames(
                             'block text-lg',
-                            errors.phone?.type ? 'text-red-700' : ''
+                            errors.date_joined?.type ? 'text-red-700' : ''
                         )}
                     >
-                        Phone
+                        Date Joined
                     </label>
-                    <input
-                        type="text"
-                        id="phone"
-                        autoComplete="phone"
-                        className={classNames(
-                            'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
-                            errors.phone?.type
-                                ? 'border-red-300 bg-red-100'
-                                : ''
-                        )}
-                        {...register('phone', {
-                            value: (attributes?.phone as string) || '',
-                        })}
+                    <DatePickerInput
+                        className="px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md calendar"
+                        selected={date_joined}
+                        onChange={(v: Date) => { setDateJoined(v) }}
                     />
-                    {errors.phone?.type === 'pattern' && (
+                    {errors.date_joined?.type === 'pattern' && (
                         <span className="text-sm text-red-700">
-                            A valid phone is required
+                            A valid date is required
                         </span>
                     )}
                 </fieldset>
+
+                <div className="pb-6 lg:pb-0 lg:w-1/2 lg:flex gap-2">
+                    <fieldset>
+                        <label
+                            htmlFor="hourly-rate"
+                            className={classNames(
+                                'block text-lg',
+                                errors.hourly_rate?.type ? 'text-red-700' : ''
+                            )}
+                        >
+                            Hourly rate
+                        </label>
+                        <MoneyInput
+                            id="hourly-rate"
+                            className={classNames(
+                                'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
+                                errors.hourly_rate?.type
+                                    ? 'border-red-300 bg-red-100'
+                                    : ''
+                            )}
+                            value={attributes?.hourly_rate as string || ''}
+                            onChange={(v: string) => {
+                                setAttributes({
+                                    ...attributes,
+                                    hourly_rate: v,
+                                })
+                            }}
+                        />
+                        {errors.hourly_rate?.type === 'required' && (
+                            <span className="text-sm text-red-700">
+                                Hourly rate is required
+                            </span>
+                        )}
+                    </fieldset>
+
+                    <fieldset>
+                        <label
+                            htmlFor="monthly-rate"
+                            className={classNames(
+                                'block text-lg',
+                                errors.monthly_rate?.type ? 'text-red-700' : ''
+                            )}
+                        >
+                            Monthly rate
+                        </label>
+                        <MoneyInput
+                            id="monthly-rate"
+                            className={classNames(
+                                'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
+                                errors.monthly_rate?.type
+                                    ? 'border-red-300 bg-red-100'
+                                    : ''
+                            )}
+                            value={attributes?.monthly_rate as string || ''}
+                            onChange={(v: string) => {
+                                setAttributes({
+                                    ...attributes,
+                                    monthly_rate: v,
+                                })
+                            }}
+                        />
+                        {errors.monthly_rate?.type === 'required' && (
+                            <span className="text-sm text-red-700">
+                                Monthly rate is required
+                            </span>
+                        )}
+                    </fieldset>
+
+                    <fieldset>
+                        <label
+                            htmlFor="overtime-rate"
+                            className={classNames(
+                                'block text-lg',
+                                errors.overtime_rate?.type ? 'text-red-700' : ''
+                            )}
+                        >
+                            Overtime rate
+                        </label>
+                        <MoneyInput
+                            id="overtime-rate"
+                            className={classNames(
+                                'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
+                                errors.overtime_rate?.type
+                                    ? 'border-red-300 bg-red-100'
+                                    : ''
+                            )}
+                            value={attributes?.overtime_rate as string || ''}
+                            onChange={(v: string) => {
+                                setAttributes({
+                                    ...attributes,
+                                    overtime_rate: v,
+                                })
+                            }}
+                        />
+                        {errors.overtime_rate?.type === 'required' && (
+                            <span className="text-sm text-red-700">
+                                Overtime rate is required
+                            </span>
+                        )}
+                    </fieldset>
+                </div>
             </div>
 
             <fieldset className="pb-6">

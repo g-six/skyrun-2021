@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { classNames } from 'utils/dom-helpers'
 import Dashboard from '..'
 import Card from './card'
-import { FetchMethods, useFetch } from 'utils/fetch-helper'
+import { deleteApiRequest, FetchMethods, useFetch } from 'utils/fetch-helper'
 import { useAuth } from 'context/AuthContext'
 import { Staff } from 'types/staff'
 import DataTable from 'components/DataTable'
@@ -60,6 +60,9 @@ type HeaderProps = {
 
 type StaffResponseItem = {
     id: string
+    hourlyWage: string
+    monthlyWage: string
+    overtimeRate: string
     user: Record<string, string>
 }
 
@@ -85,6 +88,7 @@ function DashboardStaff() {
         !!tenant?.id
     )
 
+
     useEffect(() => {
         const staff_list: Staff[] =
             data &&
@@ -99,6 +103,9 @@ function DashboardStaff() {
                 } = s.user
                 return {
                     id: s.id,
+                    hourly_rate: s.hourlyWage,
+                    monthly_rate: s.monthlyWage,
+                    overtime_rate: s.overtimeRate,
                     user: {
                         id: user_id,
                         email,
@@ -135,9 +142,11 @@ function DashboardStaff() {
                 first_name: staff[idx].user.first_name,
                 last_name: staff[idx].user.last_name,
                 phone: staff[idx].user.phone || '',
+                hourly_rate: staff[idx].hourly_rate,
+                monthly_rate: staff[idx].monthly_rate,
+                overtime_rate: staff[idx].overtime_rate,
                 idx,
             })
-
             Modal.open()
         }
     }
@@ -147,38 +156,40 @@ function DashboardStaff() {
     }
 
     function TableView() {
-        return <div className="flex flex-col mt-4">
-            <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                <div className="overflow-hidden mt-4">
-                    <DataTable
-                        all_selected={all_selected}
-                        rows={rows}
-                        columns={[
-                            {
-                                checkAll: toggleAll,
-                                classNames:
-                                    'pl-6 pr-1 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-4',
-                            },
-                            {
-                                label: 'Name',
-                                classNames:
-                                    'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
-                            },
-                            {
-                                label: 'Phone',
-                                classNames:
-                                    'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
-                            },
-                            {
-                                label: 'Email',
-                                classNames:
-                                    'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
-                            },
-                        ]}
-                    />
+        return (
+            <div className="flex flex-col mt-4">
+                <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                    <div className="overflow-hidden mt-4">
+                        <DataTable
+                            all_selected={all_selected}
+                            rows={rows}
+                            columns={[
+                                {
+                                    checkAll: toggleAll,
+                                    classNames:
+                                        'pl-6 pr-1 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-4',
+                                },
+                                {
+                                    label: 'Name',
+                                    classNames:
+                                        'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
+                                },
+                                {
+                                    label: 'Phone',
+                                    classNames:
+                                        'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
+                                },
+                                {
+                                    label: 'Email',
+                                    classNames:
+                                        'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
+                                },
+                            ]}
+                        />
+                    </div>
                 </div>
             </div>
-        </div>
+        )
     }
 
     if (!tenant?.id) return <></>
@@ -193,7 +204,10 @@ function DashboardStaff() {
                                   key={idx}
                                   list={staff as Staff[]}
                                   idx={idx}
-                                  archiveItem={console.log}
+                                  archiveItem={async (rec: Staff) => {
+                                      await deleteApiRequest(`/v1/staff/${record.id}`)
+                                      doFetch()
+                                  }}
                               />
                           )
                       )
@@ -281,12 +295,12 @@ function DashboardStaff() {
                         onClick={() => {
                             setViewMode(ViewMode.GRID)
                         }}
-                        className={
-                            classNames(
-                                view_mode == ViewMode.GRID ? 'text-primary' : 'text-gray-300',
-                                'flex items-center hover:text-primary-dark font-thin rounded-lg w-10'
-                            )
-                        }
+                        className={classNames(
+                            view_mode == ViewMode.GRID
+                                ? 'text-primary'
+                                : 'text-gray-300',
+                            'flex items-center hover:text-primary-dark font-thin rounded-lg w-10'
+                        )}
                     >
                         <i className="feather-grid text-3xl mx-auto" />
                     </button>
@@ -294,15 +308,15 @@ function DashboardStaff() {
                         onClick={() => {
                             setViewMode(ViewMode.LIST)
                         }}
-                        className={
-                            classNames(
-                                view_mode == ViewMode.LIST ? 'text-primary' : 'text-gray-300',
-                                'flex items-center hover:text-primary-dark font-thin rounded-lg w-10'
-                            )
-                        }
+                        className={classNames(
+                            view_mode == ViewMode.LIST
+                                ? 'text-primary'
+                                : 'text-gray-300',
+                            'flex items-center hover:text-primary-dark font-thin rounded-lg w-10'
+                        )}
                     >
                         <i className="feather-list text-3xl mx-auto" />
-                    </button>    
+                    </button>
                 </div>
                 <button
                     onClick={() => {
@@ -315,7 +329,7 @@ function DashboardStaff() {
                 </button>
             </div>
 
-            { view_mode == ViewMode.GRID ? <CardView /> : <TableView /> }
+            {view_mode == ViewMode.GRID ? <CardView /> : <TableView />}
 
             <StaffModal />
         </Dashboard>

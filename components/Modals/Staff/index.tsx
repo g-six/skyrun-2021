@@ -39,7 +39,7 @@ function StaffModal() {
     return (
         <ModalProvider.Visible>
             <ModalWrapper>
-                <div className="bg-white shadow-2xl overflow-hidden sm:rounded-md w-11/12 sm:w-2/3 xl:w-1/2 mx-auto my-4 relative border-2 border-gray-100">
+                <div className="bg-white shadow-2xl overflow-hidden sm:rounded-md w-full lg:w-3/4 xl:w-2/3 mx-auto my-4 relative border-2 border-gray-100">
                     <div className="flex px-4 text-gray-500 z-10 w-full pt-4 bg-opacity-30 pb-3 bg-primary-lighter">
                         <div>
                             <ul className="ml-6 text-xs flex gap-1 breadcrumbs text-gray-400">

@@ -21,7 +21,11 @@ function Card(
         <div className="shadow-2xl p-8 rounded-xl border border-t-0 border-l-0  border-r-0 border-gray-150 text-center">
             <div className="flex flex-wrap text-center content-center rounded-full bg-primary-lighter w-36 h-36 block mx-auto mb-4 overflow-hidden">
                 <div className="flex-1 font-black text-primary text-2xl">
-                    {[record.user.first_name[0], record.user.last_name[0]].join('.')}.
+                    {[
+                        record.user.first_name[0],
+                        record.user.last_name[0],
+                    ].join('.')}
+                    .
                 </div>
             </div>
             <div className="text-base font-bold text-gray-600 block my-1">

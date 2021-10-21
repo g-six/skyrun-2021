@@ -6,6 +6,12 @@ import Card from './card'
 import { FetchMethods, useFetch } from 'utils/fetch-helper'
 import { useAuth } from 'context/AuthContext'
 import { Staff } from 'types/staff'
+import DataTable from 'components/DataTable'
+
+enum ViewMode {
+    GRID,
+    LIST,
+}
 
 function SearchInputGroup({ selected_idx = 0 }) {
     return (
@@ -56,14 +62,6 @@ type StaffResponseItem = {
     id: string
     user: Record<string, string>
 }
-type StaffResponseList = {
-    [key: string]:
-        | string
-        | boolean
-        | number
-        | Record<string, string>
-        | StaffResponseItem[]
-}
 
 function HeaderActions(props: HeaderProps) {
     return (
@@ -75,7 +73,10 @@ function HeaderActions(props: HeaderProps) {
 
 function DashboardStaff() {
     const { tenant, StaffModal: Modal } = useAuth()
+    const [view_mode, setViewMode] = useState<ViewMode>(ViewMode.GRID)
     const [selected_search_category, setSearchCategory] = useState('')
+    const [selected_items, selectItems] = useState<number[]>([])
+    const [all_selected, selectAll] = useState<boolean>(false)
     const [staff, setStaff] = useState<Staff[]>([])
 
     const { data, doFetch } = useFetch(
@@ -106,8 +107,16 @@ function DashboardStaff() {
                         phone,
                     },
                 }
-        })
+            })
         setStaff(staff_list)
+
+        const update_selection: number[] = []
+        if (all_selected) {
+            staff.forEach((x, idx) => {
+                update_selection.push(idx)
+            })
+        }
+        selectItems(update_selection)
 
         if (Modal.attributes?.has_updates) {
             Modal.setAttributes({
@@ -115,11 +124,32 @@ function DashboardStaff() {
             })
             doFetch()
         }
-    }, [setStaff, data, doFetch, Modal.is_open])
+    }, [setStaff, data, doFetch, all_selected, Modal.is_open])
+
+    function handleEdit(idx: number) {
+        return () => {
+            Modal.setAttributes({
+                id: staff[idx].id,
+                user_id: staff[idx].user.id || '',
+                email: staff[idx].user.email,
+                first_name: staff[idx].user.first_name,
+                last_name: staff[idx].user.last_name,
+                phone: staff[idx].user.phone || '',
+                idx,
+            })
+
+            Modal.open()
+        }
+    }
+
+    function toggleAll() {
+        selectAll(!all_selected)
+    }
 
     if (!tenant?.id) return <></>
-    return (
-        <Dashboard actions={<HeaderActions onSearch={setSearchCategory} />}>
+
+    function CardView() {
+        return (
             <div className="grid w-80 sm:w-auto lg:grid-cols-2 xl:grid-cols-3 xl:max-w-5xl md:max-w-sm lg:max-w-2xl mx-auto lg:mx-0 p-8 gap-6">
                 {staff && staff.length > 0
                     ? ((staff as Staff[]) || []).map(
@@ -148,6 +178,143 @@ function DashboardStaff() {
                     </span>
                 </div>
             </div>
+        )
+    }
+
+    const rows: HTMLTableRowElement[] = (staff || []).map(
+        ({ id, user }: Staff, idx) =>
+            (
+                <tr
+                    key={id}
+                    className={classNames(
+                        idx % 2 ? 'bg-primary-lighter bg-opacity-30' : '',
+                        'hover:bg-secondary hover:bg-opacity-10'
+                    )}
+                >
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <input
+                            type="checkbox"
+                            name="selected_items[]"
+                            className="h-4 w-4 mr-2 border-gray-300 rounded text-primary focus:ring-primary-light"
+                            value={idx}
+                            checked={selected_items.indexOf(idx) >= 0}
+                            onChange={() => {
+                                const updated_selection = [
+                                    ...selected_items,
+                                ]
+                                if (updated_selection.indexOf(idx) >= 0) {
+                                    updated_selection.splice(idx, 1)
+                                    selectItems(updated_selection)
+                                } else {
+                                    updated_selection.push(idx)
+                                    selectItems(updated_selection)
+                                }
+                            }}
+                        />
+                    </td>
+                    <td
+                        className="px-6 py-4 whitespace-nowrap"
+                        onClick={handleEdit(idx)}
+                    >
+                        <div className="text-sm font-medium text-gray-900">
+                            {[user.first_name, user.last_name].join(' ')}
+                        </div>
+                    </td>
+                    <td
+                        className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                        onClick={handleEdit(idx)}
+                    >
+                        {user.phone || 'None Specified'}
+                    </td>
+                    <td
+                        className="px-6 py-4 whitespace-nowrap"
+                        onClick={handleEdit(idx)}
+                    >
+                        <div className="text-sm text-gray-900">
+                            {user.email}
+                        </div>
+                    </td>
+                </tr>
+            ) as unknown as HTMLTableRowElement
+    )
+
+    function TableView() {
+        return <div className="flex flex-col mt-4">
+            <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                <div className="overflow-hidden mt-4">
+                    <DataTable
+                        rows={rows}
+                        columns={[
+                            {
+                                checkAll: toggleAll,
+                                classNames:
+                                    'pl-6 pr-1 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-4',
+                            },
+                            {
+                                label: 'Name',
+                                classNames:
+                                    'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
+                            },
+                            {
+                                label: 'Phone',
+                                classNames:
+                                    'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
+                            },
+                            {
+                                label: 'Email',
+                                classNames:
+                                    'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider',
+                            },
+                        ]}
+                    />
+                </div>
+            </div>
+        </div>
+    }
+
+    return (
+        <Dashboard actions={<HeaderActions onSearch={setSearchCategory} />}>
+            <div className="flex justify-between center-items py-2 sm:px-6 lg:px-8 mt-4">
+                <div className="gap-2 flex pb-3">
+                    <button
+                        onClick={() => {
+                            setViewMode(ViewMode.GRID)
+                        }}
+                        className={
+                            classNames(
+                                view_mode == ViewMode.GRID ? 'text-primary' : 'text-gray-300',
+                                'flex items-center hover:text-primary-dark font-thin rounded-lg w-10'
+                            )
+                        }
+                    >
+                        <i className="feather-grid text-3xl mx-auto" />
+                    </button>
+                    <button
+                        onClick={() => {
+                            setViewMode(ViewMode.LIST)
+                        }}
+                        className={
+                            classNames(
+                                view_mode == ViewMode.LIST ? 'text-primary' : 'text-gray-300',
+                                'flex items-center hover:text-primary-dark font-thin rounded-lg w-10'
+                            )
+                        }
+                    >
+                        <i className="feather-list text-3xl mx-auto" />
+                    </button>    
+                </div>
+                <button
+                    onClick={() => {
+                        Modal.open()
+                    }}
+                    className="flex items-center bg-primary-lighter text-primary px-8 py-2 font-thin rounded-lg mb-3"
+                >
+                    <i className="feather-plus text-xl mr-2" />
+                    Add New
+                </button>
+            </div>
+
+            { view_mode == ViewMode.GRID ? <CardView /> : <TableView /> }
 
             <StaffModal />
         </Dashboard>

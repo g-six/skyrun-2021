@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Dispatch, useState } from 'react'
 import { ModalHook } from './types'
 
 export default function useModal(): ModalHook {

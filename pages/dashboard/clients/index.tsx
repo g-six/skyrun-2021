@@ -7,6 +7,7 @@ import CreateClientModal from 'components/Modals/Client'
 import LocationSelector from 'components/DropdownSelectors/LocationSelector'
 import FilterSelector from 'components/DropdownSelectors/FilterSelector'
 import DataTable from 'components/DataTable'
+import { ClientItem } from 'components/Modals/Client/types'
 
 function SearchInputGroup({ selected_idx = 0 }) {
     return (
@@ -58,18 +59,6 @@ type ApiResponse = {
     user: Record<string, string>
 }
 
-type UserRecord = {
-    email: string
-    first_name: string
-    last_name: string
-    phone?: string
-    notes?: string
-}
-type ClientItem = {
-    id: string
-    user: UserRecord
-}
-
 function HeaderActions(props: HeaderProps) {
     return (
         <>
@@ -105,7 +94,7 @@ function DashboardClient() {
                 return {
                     id: s.id,
                     user: {
-                        user_id,
+                        id: user_id,
                         email,
                         first_name,
                         last_name,
@@ -122,17 +111,29 @@ function DashboardClient() {
             })
         }
         selectItems(update_selection)
-    }, [doFetch, data, setClients, all_selected])
+
+        if (ModalContext.attributes?.has_updates) {
+            ModalContext.setAttributes({
+                ...ModalContext.setAttributes,
+                has_updates: false,
+            })
+            doFetch()
+        }
+    }, [doFetch, data, setClients, all_selected, ModalContext.is_open])
 
     function handleEdit(idx: number) {
         return () => {
             ModalContext.setAttributes({
                 id: clients[idx].id,
+                user_id: clients[idx].user.id || '',
                 email: clients[idx].user.email,
                 first_name: clients[idx].user.first_name,
                 last_name: clients[idx].user.last_name,
                 phone: clients[idx].user.phone || '',
+                idx,
+                list: clients as unknown as Record<string, string | Record<string, string | number>>[]
             })
+
             ModalContext.open()
         }
     }

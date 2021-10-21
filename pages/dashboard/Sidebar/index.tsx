@@ -18,8 +18,6 @@ type SidebarItem = {
     separator?: boolean
     icon?: string
     selected?: boolean
-    logo_class?: string
-    logo_style?: Record<string, string>
     onClickCapture?(): void
     route?: string
 }
@@ -110,7 +108,7 @@ const CustomItem = (props: DrawerItemProps & SidebarItem) => {
         )
     }
 
-    return props.route != '/' ? (
+    return (
         <DrawerItem
             {...props}
             className="flex items-center text-gray-600"
@@ -132,25 +130,15 @@ const CustomItem = (props: DrawerItemProps & SidebarItem) => {
                 </div>
             </div>
         </DrawerItem>
-    ) : (
-        <a
-            href={getHomePath()}
-            className="block bg-white cursor-pointer pb-6"
-        >
-            <span className="block pb-6 shadow-xl">
-                <i className={props.logo_class} style={props.logo_style} />
-            </span>
-        </a>
     )
 }
 
 function Sidebar({ children }: Props) {
     const router = useRouter()
-    const [expanded, setExpanded] = useState(false)
     const ctx = useAuth()
     const handleClick = (e: MouseEvent) => {
         e.preventDefault()
-        setExpanded(!expanded)
+        ctx.toggleDrawerSize(!ctx.is_drawer_expanded)
     }
     const onSelect = (e: DrawerSelectEvent) => {
         router.push(e.itemTarget.props.route)
@@ -165,15 +153,18 @@ function Sidebar({ children }: Props) {
         }
     }
     const selected = setSelectedItem(router.pathname)
+
+    const nav_height = '80px'
     return (
         <Drawer
-            className="h-screen relative z-0"
-            expanded={expanded}
+            className="relative z-0"
+            expanded={ctx.is_drawer_expanded}
             mode={'push'}
             mini={true}
             miniWidth={60}
             onSelect={onSelect}
             position={'start'}
+            style={{ height: `calc(100vh - ${nav_height}` }}
             items={
                 ctx.user?.uuid
                     ? items.map((item) => {
@@ -181,18 +172,6 @@ function Sidebar({ children }: Props) {
                               return {
                                   ...item,
                                   selected: item.text === selected,
-                                  logo_style: expanded
-                                      ? {}
-                                      : {
-                                            backgroundPosition:
-                                                'left 1.1rem center',
-                                        },
-                                  logo_class: classNames(
-                                      expanded
-                                          ? 'bg-center w-30 bg-contain'
-                                          : 'bg-cover bg-clip-content w-12',
-                                      'h-10 block app-logo-icon mt-4'
-                                  ),
                               }
                           }
                           if (
@@ -204,7 +183,9 @@ function Sidebar({ children }: Props) {
                                   ...item,
                                   selected: item.text === selected,
                                   onClickCapture: () => {
-                                      setExpanded(true)
+                                      ctx.toggleDrawerSize(
+                                          !ctx.is_drawer_expanded
+                                      )
                                   },
                               }
                           }
@@ -222,7 +203,7 @@ function Sidebar({ children }: Props) {
                 <button
                     className={classNames(
                         'absolute bottom-28 bg-primary text-white w-9 h-9 transition-all duration-300',
-                        expanded
+                        ctx.is_drawer_expanded
                             ? 'left-56 shadow-xl border-r border-indigo-50'
                             : 'left-3 hover:bg-opacity-30 bg-opacity-70',
                         'duration-400 ease-linear transition-all rounded-full'
@@ -232,7 +213,7 @@ function Sidebar({ children }: Props) {
                 >
                     <span
                         className={classNames(
-                            expanded
+                            ctx.is_drawer_expanded
                                 ? 'feather-chevron-left'
                                 : 'feather-chevron-right'
                         )}

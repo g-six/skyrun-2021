@@ -8,6 +8,7 @@ import { sortBy } from 'utils/array-helper'
 
 export interface CountrySelectProps {
     id: string
+    defaultValue?: string
     onChange: (t: Country) => void
     error?: string
 }
@@ -18,6 +19,17 @@ function CountrySelector(props: CountrySelectProps & withClass) {
     function handleChange(value: Country) {
         props.onChange(value)
         setSelected(value)
+    }
+
+    if (
+        !selected?.name &&
+        props.defaultValue &&
+        selected?.name != props.defaultValue
+    ) {
+        const [selected_country] = countries.filter((c: Country) => {
+            return props.defaultValue == c.name
+        })
+        setSelected(selected_country)
     }
 
     return (

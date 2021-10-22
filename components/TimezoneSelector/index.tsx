@@ -8,6 +8,7 @@ import { sortBy } from 'utils/array-helper'
 
 export interface TimezoneSelectProps {
     id: string
+    defaultValue?: string
     onChange: (t: Timezone) => void
     error?: string
 }
@@ -18,6 +19,17 @@ function TimezoneSelector(props: TimezoneSelectProps & withClass) {
     function handleChange(value: Timezone) {
         props.onChange(value)
         setSelected(value)
+    }
+
+    if (
+        !selected?.text &&
+        props.defaultValue &&
+        selected?.text != props.defaultValue
+    ) {
+        const [selected_timezone] = timezones.filter((c: Timezone) => {
+            return props.defaultValue == c.text
+        })
+        setSelected(selected_timezone)
     }
 
     return (

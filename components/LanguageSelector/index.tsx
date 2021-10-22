@@ -122,9 +122,11 @@ export function LanguageSelector(props: DropDownListProps) {
             return l.text.toLowerCase() == locale
         })[0]
     }
-    const lang_options = languages.filter((l: LanguageOption) => {
-        return l.text != default_locale.text
-    })
+    const lang_options = props.defaultItem
+        ? languages
+        : languages.filter((l: LanguageOption) => {
+              return l.text != default_locale.text
+          })
 
     function openMenu() {
         setOpen(true)
@@ -136,7 +138,6 @@ export function LanguageSelector(props: DropDownListProps) {
 
     return (
         <DropDownList
-            defaultItem={default_locale}
             itemRender={renderLanguageOptions(setChildHovered)}
             className={
                 className || 'country-selector bg-transparent shadow-none'
@@ -150,6 +151,7 @@ export function LanguageSelector(props: DropDownListProps) {
             valueMap={(value) => value && value.code}
             valueRender={renderSelectedLanguage(openMenu, closeMenu)}
             {...props}
+            defaultItem={props.defaultItem || default_locale}
             opened={opened || child_hovered}
         />
     )

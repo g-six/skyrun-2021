@@ -1,4 +1,10 @@
-import React, { Dispatch, Fragment, SetStateAction, useState } from 'react'
+import React, {
+    Dispatch,
+    Fragment,
+    SetStateAction,
+    useEffect,
+    useState,
+} from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid'
 import { classNames } from 'utils/dom-helpers'
@@ -7,13 +13,14 @@ import { sortBy } from 'utils/array-helper'
 
 export interface SelectProps {
     id: string
+    defaultValue?: Record<string, string>
     onChange: (t: Record<string, string>) => void
     data: Record<string, string>[]
     error?: string
 }
 
 function StaffSelector(props: SelectProps & withClass) {
-    const [selected, setSelected] = useState<Record<string, string>>()
+    const [selected, setSelected] = useState<Record<string, string>>({})
     function handleChange(value: Record<string, string>) {
         props.onChange(value)
         setSelected(value)
@@ -24,6 +31,25 @@ function StaffSelector(props: SelectProps & withClass) {
             ? [selected.first_name, selected.last_name].join(' ')
             : ''
     }
+
+    useEffect(() => {
+        if (props.defaultValue && props.defaultValue.id) {
+            const [selected_staff] = props.data.filter(
+                (c: Record<string, string>) => {
+                    return (
+                        props.defaultValue && props.defaultValue.id == c.id
+                    )
+                }
+            )
+            if (
+                selected &&
+                selected_staff &&
+                selected.id != selected_staff.id
+            ) {
+                setSelected(selected_staff)
+            }
+        }
+    }, [setSelected, props.defaultValue, props.data])
 
     return (
         <Listbox value={selected} onChange={handleChange}>

@@ -28,11 +28,17 @@ export function LocationListItem({
                     </div>
 
                     <address className="text-base leading-snug text-black not-italic">
-                        <span>{record.street_1}</span>{record.street_2 ? ', ' : ' '}
+                        <span>{record.street_1}</span>
+                        {record.street_2 ? ', ' : ' '}
                         <span>{record.street_2}</span>
                         <span className="block">
-                            {record.city}{record.city && record.state ? ', ' : ' '}{record.state}{record.city || record.state ? ', ' : ' '}
-                            {record.zip}{record.zip && record.country ? ', ' : ' '}{record.country}
+                            {record.city}
+                            {record.city && record.state ? ', ' : ' '}
+                            {record.state}
+                            {record.city || record.state ? ', ' : ' '}
+                            {record.zip}
+                            {record.zip && record.country ? ', ' : ' '}
+                            {record.country}
                         </span>
                     </address>
                 </div>

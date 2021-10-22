@@ -75,7 +75,8 @@ export function LocationCard({
 
                         <button
                             className="border-gray-400 border rounded-lg text-lg font-sans flex-1 py-2"
-                            onClick={editItem}>
+                            onClick={editItem}
+                        >
                             See Details
                         </button>
 

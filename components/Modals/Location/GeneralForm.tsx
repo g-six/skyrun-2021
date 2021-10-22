@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, MouseEvent } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Switch } from '@headlessui/react'
 import { DropDownListChangeEvent } from '@progress/kendo-react-dropdowns'
@@ -8,7 +8,7 @@ import { CognitoErrorTypes } from 'services/CognitoErrorTypes'
 import { SubmitError } from '../types'
 import { GeneralFormValues } from './types'
 import { createModal } from '../ModalFactory'
-import { FetchMethods, useFetch } from 'utils/fetch-helper'
+import { FetchMethods, getApiRequest, useFetch } from 'utils/fetch-helper'
 import LanguageSelector from 'components/LanguageSelector'
 import TimezoneSelector from 'components/TimezoneSelector'
 import { Timezone } from 'components/TimezoneSelector/zones'
@@ -34,10 +34,11 @@ const ModalProvider = createModal(
 
 function GeneralForm() {
     const ctx = useAuth()
+    const { attributes, setAttributes, close } = ctx.LocationModal
     const [loading, toggleLoading] = useState(false)
     const [online, toggleOnline] = useState(false)
     const [success, setSuccess] = useState(false)
-    const [staff, setStaff] = useState([])
+    const [staff, setStaff] = useState()
 
     const {
         register,
@@ -54,16 +55,33 @@ function GeneralForm() {
     register('country', { required: true })
     register('timezone', { required: true })
 
-    const api_fetch = useFetch('/v1/locations', FetchMethods.POST, false)
-    const { data: staff_api_response } = useFetch(
-        `/v1/staff/?tenantId=${ctx.tenant?.id}`,
-        FetchMethods.GET
+    if (attributes?.manager)
+        setValue(
+            'manager',
+            (attributes?.manager as Record<string, string>).id as string
+        )
+    if (attributes?.country)
+        setValue('country', attributes?.country as string)
+    if (attributes?.timezone)
+        setValue('timezone', attributes?.timezone as string)
+
+    const api_fetch = useFetch(
+        attributes?.id
+            ? `/v1/locations/${attributes?.id}`
+            : '/v1/locations',
+        attributes?.id ? FetchMethods.PUT : FetchMethods.POST,
+        false
     )
 
     function updateList() {
         ctx.LocationModal.setAttributes({
             has_updates: true,
         })
+    }
+
+    function handleCloseModal(e: MouseEvent<HTMLButtonElement>) {
+        setAttributes({})
+        close()
     }
 
     function handleOnline(val: boolean) {
@@ -142,17 +160,26 @@ function GeneralForm() {
     }
 
     useEffect(() => {
-        const staff = staff_api_response.content
-        if (staff) {
-            setStaff(
-                staff.map((st: Record<string, Record<string, string>>) => ({
-                    id: st.id,
-                    first_name: st.user.firstName,
-                    last_name: st.user.lastName,
-                }))
+        async function retrieveStaffList() {
+            const { content } = await getApiRequest(
+                `/v1/staff/?tenantId=${ctx.tenant?.id}`
             )
+            if (content) {
+                setStaff(
+                    content.map(
+                        (st: Record<string, Record<string, string>>) => ({
+                            id: st.id,
+                            first_name: st.user.firstName,
+                            last_name: st.user.lastName,
+                        })
+                    )
+                )
+            }
         }
-    }, [staff_api_response])
+        if (!staff && ctx.tenant?.id) {
+            retrieveStaffList()
+        }
+    }, [staff])
 
     return (
         <form method="POST" onSubmit={handleSubmit(onSubmit)}>
@@ -180,6 +207,7 @@ function GeneralForm() {
                         {...register('name', {
                             required: true,
                         })}
+                        defaultValue={(attributes?.name as string) || ''}
                     />
                     {errors.name?.type === 'required' && (
                         <span className="text-sm text-red-700">
@@ -200,6 +228,7 @@ function GeneralForm() {
                     <LanguageSelector
                         className="country-selector form-country-selector"
                         onChange={handleLanguageChange}
+                        defaultItem={0}
                     />
                 </fieldset>
             </div>
@@ -226,6 +255,9 @@ function GeneralForm() {
                         {...register('street_1', {
                             required: true,
                         })}
+                        defaultValue={
+                            (attributes?.street_1 as string) || ''
+                        }
                     />
                     {errors.street_1?.type === 'required' && (
                         <span className="text-sm text-red-700 absolute">
@@ -253,6 +285,9 @@ function GeneralForm() {
                                 : ''
                         )}
                         {...register('street_2', { required: false })}
+                        defaultValue={
+                            (attributes?.street_2 as string) || ''
+                        }
                     />
                     {errors.street_2?.type && (
                         <span className="text-sm absolute text-red-700">
@@ -282,6 +317,7 @@ function GeneralForm() {
                                 : ''
                         )}
                         {...register('city', { required: !online })}
+                        defaultValue={(attributes?.city as string) || ''}
                     />
                     {errors.city?.type && (
                         <span className="text-sm absolute text-red-700">
@@ -309,6 +345,7 @@ function GeneralForm() {
                                 : ''
                         )}
                         {...register('zip', { required: !online })}
+                        defaultValue={(attributes?.zip as string) || ''}
                     />
                     {errors.zip?.type && (
                         <span className="text-sm text-red-700 absolute">
@@ -336,6 +373,7 @@ function GeneralForm() {
                                 : ''
                         )}
                         {...register('state', { required: !online })}
+                        defaultValue={(attributes?.state as string) || ''}
                     />
                     {errors.state?.type && (
                         <span className="text-sm absolute text-red-700">
@@ -359,6 +397,7 @@ function GeneralForm() {
                         id="country"
                         onChange={handleCountryChange}
                         error={errors.country?.type}
+                        defaultValue={attributes?.country as string}
                     />
 
                     {errors.country?.type === 'required' && (
@@ -381,6 +420,7 @@ function GeneralForm() {
                         id="timezone"
                         onChange={handleTimezoneChange}
                         error={errors.timezone?.type}
+                        defaultValue={attributes?.timezone as string}
                     />
                     {errors.timezone?.type === 'required' && (
                         <span className="text-sm text-red-700 relative">
@@ -402,9 +442,12 @@ function GeneralForm() {
                     </label>
                     <StaffSelector
                         id="manager"
-                        data={staff}
+                        data={staff || []}
                         onChange={handleManagerChange}
                         error={errors.manager?.type}
+                        defaultValue={
+                            attributes?.manager as Record<string, string>
+                        }
                     />
 
                     {errors.manager?.type === 'required' && (
@@ -433,6 +476,7 @@ function GeneralForm() {
                                 : ''
                         )}
                         {...register('phone', { required: true })}
+                        defaultValue={attributes?.phone as string}
                     />
                     {errors.phone?.type && (
                         <span className="text-sm text-red-700">
@@ -502,7 +546,13 @@ function GeneralForm() {
 
             <div>
                 <div className="flex justify-end">
-                    <ModalProvider.Closer />
+                    <button
+                        type="button"
+                        className="border border-gray-300 rounded-lg py-3 inline-block mr-3 px-10"
+                        onClick={handleCloseModal}
+                    >
+                        Cancel
+                    </button>
                     <button
                         type="submit"
                         className={classNames(

@@ -59,7 +59,9 @@ function Dashboard({
                 >
                     <AppBarSection
                         className={classNames(
-                            is_drawer_expanded ? 'w-44 mr-14 bg-center' : 'w-32 bg-top-left',
+                            is_drawer_expanded
+                                ? 'w-44 mr-14 bg-center'
+                                : 'w-32 bg-top-left',
                             'bg-contain h-10 block app-logo-icon mb-2'
                         )}
                     />

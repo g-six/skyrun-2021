@@ -1,135 +1,80 @@
-import CreateLocationModal, {
-    CreateLocationModalOpener,
-} from 'components/Modals/Location'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { classNames } from 'utils/dom-helpers'
+import { useEffect, useState } from 'react'
+import LocationModal from 'components/Modals/Location'
+import { GeneralFormValues as LocationItem } from 'components/Modals/Location/types'
 import Dashboard from '..'
-import { FetchMethods, useFetch } from 'utils/fetch-helper'
+import {
+    deleteApiRequest,
+    FetchMethods,
+    useFetch,
+} from 'utils/fetch-helper'
 import { useAuth } from 'context/AuthContext'
 import { Language } from 'components/LanguageSelector'
-
-function SearchInputGroup({ selected_idx = 0 }) {
-    return (
-        <div className="relative rounded-md shadow-sm mx-4 divide-x divide-gray-200">
-            <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
-                <span className="feather feather-search text-gray-500 text-lg" />
-            </div>
-            <input
-                type="text"
-                name="keyword"
-                id="keyword"
-                className={classNames(
-                    'focus:ring-primary-dark focus:border-primary-dark rounded-md',
-                    'block w-full py-2 pl-12 pr-28',
-                    'border-gray-300 text-gray-500 placeholder-gray-300'
-                )}
-                placeholder="Search..."
-            />
-            <div className="absolute inset-y-0 right-0 flex items-center">
-                <label htmlFor="Category" className="sr-only">
-                    Category
-                </label>
-                <select
-                    id="category"
-                    name="category"
-                    className={classNames(
-                        'h-full py-0 pl-2 pr-8 bg-transparent',
-                        'focus:ring-primary-dark focus:border-primary-dark ',
-                        'border-transparent rounded-r-md',
-                        selected_idx > 0 ? 'text-gray-500' : 'text-gray-300'
-                    )}
-                    defaultValue="Categpry"
-                >
-                    <option disabled>Category</option>
-                    <option>Location</option>
-                    <option>Package</option>
-                </select>
-            </div>
-        </div>
-    )
-}
-
-type HeaderProps = {
-    onSearch: Dispatch<SetStateAction<string>>
-}
-
-type LocationItem = {
-    id: string
-    name: string
-    city: string
-    country: string
-    phone: string
-    street_1: string
-    street_2: string
-    language: Language
-    timezone: string
-    manager: Record<string, string>
-}
-type LocationListResponse = {
-    [key: string]:
-        | string
-        | boolean
-        | number
-        | Record<string, string>
-        | LocationItem[]
-}
-
-function HeaderActions(props: HeaderProps) {
-    return (
-        <>
-            <SearchInputGroup />
-            <CreateLocationModalOpener className="bg-primary text-white px-8 py-2 text-lg font-light rounded-lg" />
-        </>
-    )
-}
-
-function ListHeader() {
-    return (
-        <thead className="bg-gray-50">
-            <tr>
-                <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                    Name
-                </th>
-                <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                    Title
-                </th>
-                <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                    Status
-                </th>
-                <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                    Role
-                </th>
-                <th scope="col" className="relative px-6 py-3">
-                    <span className="sr-only">Edit</span>
-                </th>
-            </tr>
-        </thead>
-    )
-}
+import LocationCard from './LocationCard'
+import { classNames } from 'utils/dom-helpers'
 
 function DashboardLocations() {
     const ctx = useAuth()
-    const [selected_search_category, setSearchCategory] = useState('')
-    const [locations, setLocations] = useState<LocationItem[] | boolean>(
-        false
-    )
-    const { is_loading, data, doFetch } = useFetch(
+    const [api_locations, setLocations] = useState<
+        Record<string, string>[]
+    >([])
+    const [map_pin_location, setPinLocation] = useState<Coords>({
+        lat: 10.328218864962848,
+        lng: 123.90642211578692,
+    })
+    const [map_center, setMapCenter] = useState<Coords>({
+        lat: 10.328218864962848,
+        lng: 123.90642211578692,
+    })
+    const { data, doFetch } = useFetch(
         `/v1/locations/tenant-id/?tenantId=${ctx.tenant?.id}`,
         FetchMethods.GET,
-        false
+        !!ctx.tenant?.id
     )
+
+    const locations: LocationItem[] = api_locations.map(
+        ({
+            id,
+            name,
+            city,
+            country,
+            language,
+            manager,
+            online,
+            phone,
+            timezone,
+            zip,
+            streetAddress1,
+            streetAddress2,
+        }) => ({
+            id,
+            name,
+            city,
+            country,
+            language: language as Language,
+            manager,
+            online: online as unknown as boolean,
+            phone,
+            timezone,
+            zip,
+            street_1: streetAddress1,
+            street_2: streetAddress2,
+        })
+    )
+
+    function handleEdit(idx: number) {
+        return () => {
+            const location = locations[idx]
+            ctx.LocationModal.setAttributes({
+                ...(location as unknown as Record<
+                    string,
+                    string | Language | boolean
+                >),
+                idx,
+            })
+
+            ctx.LocationModal.open()
+        }
+    }
 
     useEffect(() => {
         async function fetchData() {
@@ -144,39 +89,74 @@ function DashboardLocations() {
         } else if (data.content) {
             setLocations(data.content)
         }
-    }, [ctx.tenant, data, data.content, locations, doFetch])
+        if (ctx.LocationModal.attributes?.has_updates) {
+            doFetch()
+        }
+    }, [
+        ctx.tenant,
+        data,
+        data.content,
+        locations,
+        doFetch,
+        ctx.LocationModal,
+    ])
 
     return (
-        <Dashboard actions={<HeaderActions onSearch={setSearchCategory} />}>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-8">
-                {((locations as LocationItem[]) || []).map(
-                    (record: LocationItem) => (
-                        <div
-                            key={record.id}
-                            className="shadow-2xl p-8 rounded-xl border-t border-l border-gray-50 h-96 text-center"
+        <Dashboard>
+            <div className="flex flex-col mt-4">
+                <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                    <div className="flex justify-between">
+                        <div className="flex gap-3"></div>
+                        <button
+                            onClick={() => {
+                                ctx.LocationModal.open()
+                            }}
+                            className="flex items-center bg-primary-lighter text-primary px-8 py-2 font-thin rounded-lg mb-3"
                         >
-                            <div className="text-sm font-medium text-gray-900">
-                                {record.name}
-                            </div>
-                            <div className="text-sm text-gray-900">
-                                {record.language}
-                            </div>
-                            {record.phone || 'None Specified'}
-                            <div className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 uppercase">
-                                Current member
-                            </div>
-                            <a
-                                href="#"
-                                className="text-indigo-600 hover:text-indigo-900"
-                            >
-                                Edit
-                            </a>
+                            <i className="feather-plus text-xl mr-2" />
+                            Add New
+                        </button>
+                    </div>
+                </div>
+                <div className="overflow-hidden xl:max-w-5xl">
+                    <div className="grid lg:grid-cols-2 px-8 pb-12 gap-8">
+                        {((locations as LocationItem[]) || []).map(
+                            (record: LocationItem) => (
+                                <LocationCard
+                                    key={record.id}
+                                    record={record}
+                                    map_pin_location={map_pin_location}
+                                    map_center={map_center}
+                                    archiveItem={async (
+                                        rec: LocationItem
+                                    ) => {
+                                        await deleteApiRequest(
+                                            `/v1/locations/${record.id}`
+                                        )
+                                    }}
+                                />
+                            )
+                        )}
+
+                        <div
+                            onClick={() => {
+                                ctx.LocationModal.open()
+                            }}
+                            className={classNames(
+                                'p-8 rounded-xl text-center flex flex-col content-center justify-center',
+                                'border-2 border-dashed border-gray-150 cursor-pointer'
+                            )}
+                        >
+                            <i className="block mx-auto mb-4 feather feather-plus font-back text-2xl block w-10 h-10 leading-relaxed px-2 rounded-xl bg-primary-lighter text-primary-light" />
+                            <span className="text-xl mx-auto block w-36">
+                                Add a new location
+                            </span>
                         </div>
-                    )
-                )}
+                    </div>
+                </div>
             </div>
 
-            <CreateLocationModal />
+            <LocationModal />
         </Dashboard>
     )
 }

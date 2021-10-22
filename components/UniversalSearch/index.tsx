@@ -4,7 +4,7 @@ type HeaderProps = {
     onSearch: Dispatch<SetStateAction<string>>
 }
 
-export function SearchInputGroup({ selected_idx = 0 }) {
+export function UniversalSearch({ selected_idx = 0 }) {
     return (
         <div className="relative rounded-md shadow-sm mx-4 divide-x divide-gray-200">
             <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
@@ -44,3 +44,5 @@ export function SearchInputGroup({ selected_idx = 0 }) {
         </div>
     )
 }
+
+export default UniversalSearch

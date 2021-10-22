@@ -18,7 +18,7 @@ import { Country } from 'components/CountrySelector/countries'
 
 const ModalProvider = createModal(
     AuthContext,
-    'CreateLocationModal',
+    'LocationModal',
     () => (
         <>
             <i className="feather feather-plus mr-4" />
@@ -60,6 +60,12 @@ function GeneralForm() {
         FetchMethods.GET
     )
 
+    function updateList() {
+        ctx.LocationModal.setAttributes({
+            has_updates: true,
+        })
+    }
+
     function handleOnline(val: boolean) {
         toggleOnline(val)
     }
@@ -85,25 +91,43 @@ function GeneralForm() {
     ) => {
         toggleLoading(true)
         try {
-            const { name, notes, timezone, phone, country } = values
+            const {
+                name,
+                notes,
+                timezone,
+                phone,
+                street_1,
+                street_2,
+                zip,
+                city,
+                state,
+                country,
+            } = values
             const { tenant } = ctx
 
             const res = await api_fetch.doFetch({
                 country,
+                state,
                 tenant,
                 timezone,
                 name,
                 manager: {
                     id: values.manager,
                 },
+                streetAddress1: street_1,
+                streetAddress2: street_2,
+                city,
+                zip,
                 online,
                 phone,
                 notes,
             })
-            console.log(res)
+
             if (res?.ok) {
+                updateList()
                 reset()
                 setSuccess(true)
+                ctx.LocationModal.close()
             }
         } catch (e: unknown) {
             const { name, message } = e as SubmitError
@@ -179,8 +203,8 @@ function GeneralForm() {
                     />
                 </fieldset>
             </div>
-            <div className="pb-6 md:flex flex-wrap">
-                <fieldset className="pb-6 md:w-2/3 md:pr-4">
+            <div className="flex gap-6 mb-6">
+                <fieldset className="lg:w-1/2 relative">
                     <label
                         htmlFor="street-1"
                         className={classNames(
@@ -204,33 +228,12 @@ function GeneralForm() {
                         })}
                     />
                     {errors.street_1?.type === 'required' && (
-                        <span className="text-sm text-red-700">
+                        <span className="text-sm text-red-700 absolute">
                             Street address is required
                         </span>
                     )}
                 </fieldset>
-                <fieldset className="pb-6 md:w-1/3">
-                    <label
-                        htmlFor="timezone"
-                        className={classNames(
-                            'block text-lg',
-                            errors.timezone?.type ? 'text-red-700' : ''
-                        )}
-                    >
-                        Timezone
-                    </label>
-                    <TimezoneSelector
-                        id="timezone"
-                        onChange={handleTimezoneChange}
-                        error={errors.timezone?.type}
-                    />
-                    {errors.timezone?.type === 'required' && (
-                        <span className="text-sm text-red-700">
-                            Timezone is required
-                        </span>
-                    )}
-                </fieldset>
-                <fieldset className="md:w-2/3 lg:w-1/2 md:pr-4">
+                <fieldset className="lg:w-1/2 relative">
                     <label
                         htmlFor="street-2"
                         className={classNames(
@@ -252,12 +255,97 @@ function GeneralForm() {
                         {...register('street_2', { required: false })}
                     />
                     {errors.street_2?.type && (
-                        <span className="text-sm text-red-700">
+                        <span className="text-sm absolute text-red-700">
                             Street 2 is required
                         </span>
                     )}
                 </fieldset>
-                <fieldset className="md:w-2/3 lg:w-1/2 lg:pr-0">
+            </div>
+            <div className="flex gap-6 mb-6">
+                <fieldset className="lg:w-1/2 relative">
+                    <label
+                        htmlFor="city"
+                        className={classNames(
+                            'block text-lg',
+                            errors.city?.type ? 'text-red-700' : ''
+                        )}
+                    >
+                        City
+                    </label>
+                    <input
+                        type="text"
+                        id="city"
+                        className={classNames(
+                            'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
+                            errors.city?.type
+                                ? 'border-red-300 bg-red-100'
+                                : ''
+                        )}
+                        {...register('city', { required: !online })}
+                    />
+                    {errors.city?.type && (
+                        <span className="text-sm absolute text-red-700">
+                            City is required
+                        </span>
+                    )}
+                </fieldset>
+                <fieldset className="lg:w-1/4 xl:w-1/6 relative">
+                    <label
+                        htmlFor="zip"
+                        className={classNames(
+                            'block text-lg',
+                            errors.zip?.type ? 'text-red-700' : ''
+                        )}
+                    >
+                        Zip
+                    </label>
+                    <input
+                        type="text"
+                        id="zip"
+                        className={classNames(
+                            'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
+                            errors.zip?.type
+                                ? 'border-red-300 bg-red-100'
+                                : ''
+                        )}
+                        {...register('zip', { required: !online })}
+                    />
+                    {errors.zip?.type && (
+                        <span className="text-sm text-red-700 absolute">
+                            Zip is required
+                        </span>
+                    )}
+                </fieldset>
+                <fieldset className="lg:w-1/4 xl:w-1/3 relative">
+                    <label
+                        htmlFor="state"
+                        className={classNames(
+                            'block text-lg',
+                            errors.state?.type ? 'text-red-700' : ''
+                        )}
+                    >
+                        State
+                    </label>
+                    <input
+                        type="text"
+                        id="state"
+                        className={classNames(
+                            'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
+                            errors.state?.type
+                                ? 'border-red-300 bg-red-100'
+                                : ''
+                        )}
+                        {...register('state', { required: !online })}
+                    />
+                    {errors.state?.type && (
+                        <span className="text-sm absolute text-red-700">
+                            State is required
+                        </span>
+                    )}
+                </fieldset>
+            </div>
+            <div className="flex gap-6 mb-6">
+                <fieldset className="flex-1 relative">
                     <label
                         htmlFor="country"
                         className={classNames(
@@ -274,8 +362,29 @@ function GeneralForm() {
                     />
 
                     {errors.country?.type === 'required' && (
-                        <span className="text-sm text-red-700">
+                        <span className="text-sm absolute text-red-700">
                             Country is required
+                        </span>
+                    )}
+                </fieldset>
+                <fieldset className="relative lg:w-1/3">
+                    <label
+                        htmlFor="timezone"
+                        className={classNames(
+                            'block text-lg',
+                            errors.timezone?.type ? 'text-red-700' : ''
+                        )}
+                    >
+                        Timezone
+                    </label>
+                    <TimezoneSelector
+                        id="timezone"
+                        onChange={handleTimezoneChange}
+                        error={errors.timezone?.type}
+                    />
+                    {errors.timezone?.type === 'required' && (
+                        <span className="text-sm text-red-700 relative">
+                            Timezone is required
                         </span>
                     )}
                 </fieldset>

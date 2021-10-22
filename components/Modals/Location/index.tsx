@@ -12,7 +12,7 @@ import Appointments from './Appointments'
 
 const ModalProvider = createModal(
     AuthContext,
-    'CreateLocationModal',
+    'LocationModal',
     () => (
         <>
             <i className="feather feather-plus mr-4" />
@@ -26,10 +26,10 @@ const ModalProvider = createModal(
     )
 )
 
-export const CreateLocationModalOpener = ModalProvider.Opener
-export const CreateLocationModalCloser = ModalProvider.Closer
+export const LocationModalOpener = ModalProvider.Opener
+export const LocationModalCloser = ModalProvider.Closer
 
-function CreateLocationModal() {
+function LocationModal() {
     const [selected, setSelected] = useState<number>(0)
     const handleSelect = (e: TabStripSelectEventArguments) => {
         setSelected(e.selected)
@@ -46,7 +46,7 @@ function CreateLocationModal() {
                                 <li>Location</li>
                             </ul>
                             <span className="inline-block self-center text-lg text-primary-dark">
-                                <CreateLocationModalCloser className="self-center" />
+                                <LocationModalCloser className="self-center" />
                                 <span className="circular">
                                     New Location
                                 </span>
@@ -78,4 +78,4 @@ function CreateLocationModal() {
     )
 }
 
-export default CreateLocationModal
+export default LocationModal

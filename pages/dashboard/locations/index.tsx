@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Coords } from 'google-map-react'
 import LocationModal from 'components/Modals/Location'
 import { GeneralFormValues as LocationItem } from 'components/Modals/Location/types'
 import Dashboard from '..'

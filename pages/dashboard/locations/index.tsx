@@ -12,9 +12,12 @@ import { useAuth } from 'context/AuthContext'
 import { Language } from 'components/LanguageSelector'
 import LocationCard from './LocationCard'
 import { classNames } from 'utils/dom-helpers'
+import { ViewMode } from 'types'
+import LocationListItem from './LocationListItem'
 
 function DashboardLocations() {
     const ctx = useAuth()
+    const [view_mode, setViewMode] = useState<ViewMode>(ViewMode.GRID)
     const [api_locations, setLocations] = useState<
         Record<string, string>[]
     >([])
@@ -43,6 +46,7 @@ function DashboardLocations() {
             online,
             phone,
             timezone,
+            state,
             zip,
             streetAddress1,
             streetAddress2,
@@ -50,6 +54,7 @@ function DashboardLocations() {
             id,
             name,
             city,
+            state,
             country,
             language: language as Language,
             manager,
@@ -92,6 +97,7 @@ function DashboardLocations() {
         }
         if (ctx.LocationModal.attributes?.has_updates) {
             doFetch()
+            ctx.LocationModal.setAttributes({})
         }
     }, [
         ctx.tenant,
@@ -107,7 +113,34 @@ function DashboardLocations() {
             <div className="flex flex-col mt-4">
                 <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                     <div className="flex justify-between">
-                        <div className="flex gap-3"></div>
+                        <div className="gap-2 flex pb-3">
+                            <button
+                                onClick={() => {
+                                    setViewMode(ViewMode.GRID)
+                                }}
+                                className={classNames(
+                                    view_mode == ViewMode.GRID
+                                        ? 'text-primary'
+                                        : 'text-gray-300',
+                                    'flex items-center hover:text-primary-dark font-thin rounded-lg w-10'
+                                )}
+                            >
+                                <i className="feather-grid text-3xl mx-auto" />
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setViewMode(ViewMode.LIST)
+                                }}
+                                className={classNames(
+                                    view_mode == ViewMode.LIST
+                                        ? 'text-primary'
+                                        : 'text-gray-300',
+                                    'flex items-center hover:text-primary-dark font-thin rounded-lg w-10'
+                                )}
+                            >
+                                <i className="feather-list text-3xl mx-auto" />
+                            </button>
+                        </div>
                         <button
                             onClick={() => {
                                 ctx.LocationModal.open()
@@ -119,24 +152,51 @@ function DashboardLocations() {
                         </button>
                     </div>
                 </div>
-                <div className="overflow-hidden xl:max-w-5xl">
-                    <div className="grid lg:grid-cols-2 px-8 pb-12 gap-8">
+                <div
+                    className={classNames(
+                        view_mode == ViewMode.GRID
+                            ? 'overflow-hidden xl:max-w-5xl'
+                            : ''
+                    )}
+                >
+                    <div
+                        className={classNames(
+                            view_mode == ViewMode.GRID
+                                ? 'grid lg:grid-cols-2 px-8 pb-12 gap-8'
+                                : 'flex flex-col p-8'
+                        )}
+                    >
                         {((locations as LocationItem[]) || []).map(
-                            (record: LocationItem) => (
-                                <LocationCard
-                                    key={record.id}
-                                    record={record}
-                                    map_pin_location={map_pin_location}
-                                    map_center={map_center}
-                                    archiveItem={async (
-                                        rec: LocationItem
-                                    ) => {
-                                        await deleteApiRequest(
-                                            `/v1/locations/${record.id}`
-                                        )
-                                    }}
-                                />
-                            )
+                            (record: LocationItem, idx) =>
+                                view_mode == ViewMode.GRID ? (
+                                    <LocationCard
+                                        key={record.id}
+                                        record={record}
+                                        map_pin_location={map_pin_location}
+                                        map_center={map_center}
+                                        editItem={handleEdit(idx)}
+                                        archiveItem={async (
+                                            rec: LocationItem
+                                        ) => {
+                                            await deleteApiRequest(
+                                                `/v1/locations/${record.id}`
+                                            )
+                                        }}
+                                    />
+                                ) : (
+                                    <LocationListItem
+                                        key={record.id}
+                                        record={record}
+                                        editItem={handleEdit(idx)}
+                                        archiveItem={async (
+                                            rec: LocationItem
+                                        ) => {
+                                            await deleteApiRequest(
+                                                `/v1/locations/${record.id}`
+                                            )
+                                        }}
+                                    />
+                                )
                         )}
 
                         <div

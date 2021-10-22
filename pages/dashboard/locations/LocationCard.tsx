@@ -10,11 +10,13 @@ export function LocationCard({
     map_center,
     map_pin_location,
     archiveItem,
+    editItem,
 }: {
     record: LocationItem
     map_pin_location: Coords
     map_center: Coords
     archiveItem(l: LocationItem): void
+    editItem(): void
 }) {
     return (
         <div
@@ -71,7 +73,9 @@ export function LocationCard({
                             Calendar
                         </button>
 
-                        <button className="border-gray-400 border rounded-lg text-lg font-sans flex-1 py-2">
+                        <button
+                            className="border-gray-400 border rounded-lg text-lg font-sans flex-1 py-2"
+                            onClick={editItem}>
                             See Details
                         </button>
 

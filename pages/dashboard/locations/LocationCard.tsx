@@ -8,7 +8,16 @@ import { useAuth } from 'context/AuthContext'
 import { getStaticUrl, Marker } from 'components/Map'
 
 const Map = dynamic(() => import('components/Map'), { ssr: false })
-
+type PlaceDetail = {
+    geometry: {
+        location: {
+            lat(): number
+            lng(): number
+        }
+    }
+    name: string
+    utc_offset_minutes: number
+}
 export function LocationCard({
     record,
     apiKey,
@@ -42,7 +51,7 @@ export function LocationCard({
                 {
                     placeId: places[0].place_id,
                 },
-                (details) => {
+                (details: PlaceDetail) => {
                     if (details) {
                         if (details?.utc_offset_minutes) {
                             const minutes = details.utc_offset_minutes % 60

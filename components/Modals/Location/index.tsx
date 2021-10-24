@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { RefObject, useState } from 'react'
 import { createModal } from '../ModalFactory'
 import { AuthContext } from 'context/AuthContext'
 import { ModalWrapper } from '../ModalWrapper'

@@ -1,13 +1,13 @@
-import { useEffect, useState, MouseEvent } from 'react'
+import { useEffect, useState, MouseEvent, RefObject } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
+
 import { Switch } from '@headlessui/react'
 import { DropDownListChangeEvent } from '@progress/kendo-react-dropdowns'
 import { classNames } from 'utils/dom-helpers'
-import { AuthContext, useAuth } from 'context/AuthContext'
+import { useAuth } from 'context/AuthContext'
 import { CognitoErrorTypes } from 'services/CognitoErrorTypes'
 import { SubmitError } from '../types'
 import { GeneralFormValues } from './types'
-import { createModal } from '../ModalFactory'
 import { FetchMethods, getApiRequest, useFetch } from 'utils/fetch-helper'
 import LanguageSelector from 'components/LanguageSelector'
 import TimezoneSelector from 'components/TimezoneSelector'
@@ -15,22 +15,6 @@ import { Timezone } from 'components/TimezoneSelector/zones'
 import StaffSelector from 'components/StaffSelector'
 import CountrySelector from 'components/CountrySelector'
 import { Country } from 'components/CountrySelector/countries'
-
-const ModalProvider = createModal(
-    AuthContext,
-    'LocationModal',
-    () => (
-        <>
-            <i className="feather feather-plus mr-4" />
-            <span className="circular">Create</span>
-        </>
-    ),
-    () => (
-        <span className="border border-gray-300 rounded-lg py-3 inline-block mr-3 px-10">
-            Cancel
-        </span>
-    )
-)
 
 function GeneralForm() {
     const ctx = useAuth()
@@ -179,7 +163,7 @@ function GeneralForm() {
         if (!staff && ctx.tenant?.id) {
             retrieveStaffList()
         }
-    }, [staff])
+    }, [staff, attributes])
 
     return (
         <form method="POST" onSubmit={handleSubmit(onSubmit)}>
@@ -247,18 +231,22 @@ function GeneralForm() {
                         type="text"
                         id="street-1"
                         className={classNames(
-                            'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
                             errors.street_1?.type
                                 ? 'border-red-300 bg-red-100'
-                                : ''
+                                : '',
+                            'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light shadow-sm border-gray-300 rounded-md w-full'
                         )}
-                        {...register('street_1', {
-                            required: true,
-                        })}
+                        {...register('street_1', { required: !online })}
                         defaultValue={
                             (attributes?.street_1 as string) || ''
                         }
                     />
+                    {/* <PlacesInput
+                        defaultValue={attributes?.street_1 as string}
+                        attributes={attributes as Record<string, string>}
+                        setAttributes={setAttributes as (p: Record<string, string>) => {}}
+                        id="street-1"
+                    /> */}
                     {errors.street_1?.type === 'required' && (
                         <span className="text-sm text-red-700 absolute">
                             Street address is required
@@ -393,12 +381,14 @@ function GeneralForm() {
                     >
                         Country
                     </label>
-                    <CountrySelector
-                        id="country"
-                        onChange={handleCountryChange}
-                        error={errors.country?.type}
-                        defaultValue={attributes?.country as string}
-                    />
+                    <div key={attributes?.country as string}>
+                        <CountrySelector
+                            id="country"
+                            onChange={handleCountryChange}
+                            error={errors.country?.type}
+                            defaultValue={attributes?.country as string}
+                        />
+                    </div>
 
                     {errors.country?.type === 'required' && (
                         <span className="text-sm absolute text-red-700">

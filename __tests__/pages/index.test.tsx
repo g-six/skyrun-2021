@@ -41,14 +41,6 @@ describe('Home', () => {
         })
     })
 
-    it.skip('should have a header title', async () => {
-        await waitFor(() =>
-            expect(document.title).toEqual(
-                'Nerubia | Your Software as a Solution development partner'
-            )
-        )
-    })
-
     it('should have a navigation bar', async () => {
         const navbar = screen.getByTestId('Navbar')
         expect(navbar).toBeDefined()

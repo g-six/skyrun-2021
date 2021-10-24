@@ -1,4 +1,4 @@
-import React, { Dispatch, Fragment, useState, SetStateAction } from 'react'
+import React, { Dispatch, Fragment, useState, SetStateAction, useEffect } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid'
 import countries, { Country } from './countries'
@@ -21,16 +21,19 @@ function CountrySelector(props: CountrySelectProps & withClass) {
         setSelected(value)
     }
 
-    if (
-        !selected?.name &&
-        props.defaultValue &&
-        selected?.name != props.defaultValue
-    ) {
-        const [selected_country] = countries.filter((c: Country) => {
-            return props.defaultValue == c.name
-        })
-        setSelected(selected_country)
-    }
+    useEffect(() => {
+        if (
+            !selected?.name &&
+            props.defaultValue &&
+            selected?.name != props.defaultValue
+        ) {
+            const [selected_country] = countries.filter((c: Country) => {
+                return props.defaultValue == c.name
+            })
+            setSelected(selected_country)
+        }
+    }, [props.defaultValue, selected])
+
 
     return (
         <Listbox value={selected} onChange={handleChange}>

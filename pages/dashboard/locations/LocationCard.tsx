@@ -6,18 +6,10 @@ import { GeneralFormValues as LocationItem } from 'components/Modals/Location/ty
 import { useEffect, useState } from 'react'
 import { useAuth } from 'context/AuthContext'
 import { getStaticUrl, Marker } from 'components/Map'
+import { PlaceDetail } from './types'
 
 const Map = dynamic(() => import('components/Map'), { ssr: false })
-type PlaceDetail = {
-    geometry: {
-        location: {
-            lat(): number
-            lng(): number
-        }
-    }
-    name: string
-    utc_offset_minutes: number
-}
+
 export function LocationCard({
     record,
     apiKey,

@@ -4,6 +4,7 @@ import { classNames } from 'utils/dom-helpers'
 import { GeneralFormValues as LocationItem } from 'components/Modals/Location/types'
 import { useEffect, useState } from 'react'
 import { useAuth } from 'context/AuthContext'
+import { PlaceDetail } from './types'
 
 export function LocationListItem({
     record,
@@ -34,7 +35,7 @@ export function LocationListItem({
                 {
                     placeId: places[0].place_id,
                 },
-                (details: google.maps.places.PlaceResult) => {
+                (details: PlaceDetail) => {
                     if (details) {
                         if (details?.utc_offset_minutes) {
                             const minutes = details.utc_offset_minutes % 60

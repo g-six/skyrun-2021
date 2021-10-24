@@ -1,5 +1,5 @@
 import { Context, createContext, ReactNode, useContext, useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
+import getConfig from 'next/config'
 import { isValidLocale, Language, LanguageOption, languages } from 'components/LanguageSelector'
 import { FetchMethods, useFetch } from 'utils/fetch-helper'
 import { betterPathname } from 'utils/string-helper'
@@ -12,6 +12,7 @@ export type Tier = {
 export interface SkyContextProps {
     tiers: Tier[]
     lang: Language
+    GOOGLE_API_KEY?: string
     onLanguageChange(v: unknown): unknown
 }
 
@@ -35,8 +36,9 @@ export function useAppContext() {
 
 export function SkyAppDataProvider({ children }: Props) {
     const [tiers, setTiers] = useState([] as Tier[])
-    const router = useRouter()
     const [locale] = betterPathname(location.pathname)
+    const { GOOGLE_API_KEY } = getConfig().publicRuntimeConfig
+
     let initial_locale = languages[0].code
     if (isValidLocale(locale)) {
         const [x] = languages.filter((language: LanguageOption) => {
@@ -78,10 +80,10 @@ export function SkyAppDataProvider({ children }: Props) {
         if (data.length && tiers.length == 0) {
             setTiers(data)
         }
-    }, [data, tiers, lang])
+    }, [data, tiers, GOOGLE_API_KEY, lang])
 
     return <SkyContext.Provider value={
-        { ...ctx, tiers, lang, onLanguageChange }
+        { ...ctx, tiers, GOOGLE_API_KEY, lang, onLanguageChange }
     }>
         {children}
     </SkyContext.Provider>

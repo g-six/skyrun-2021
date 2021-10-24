@@ -1,10 +1,4 @@
-import {
-    cloneElement,
-    Fragment,
-    ReactElement,
-    useEffect,
-    useState,
-} from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import Cookies from 'js-cookie'
 import Link from 'next/link'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
@@ -12,27 +6,32 @@ import { MenuIcon, XIcon } from '@heroicons/react/outline'
 import logout from 'services/logout'
 import LoginButton from 'components/Buttons/LoginButton'
 import SkyContext, {
-    Language,
     SkyContextProps,
     useAppContext,
 } from 'context/AppContext'
 import { useAuth } from 'context/AuthContext'
 import SignupButton from 'components/Buttons/SignupButton'
-import {
-    DropDownList,
-    DropDownListChangeEvent,
-    ListItemProps,
-} from '@progress/kendo-react-dropdowns'
+import { DropDownListChangeEvent } from '@progress/kendo-react-dropdowns'
+import LanguageSelector, { Language } from 'components/LanguageSelector'
+import { betterPathname } from 'utils/string-helper'
 
 const navigation = [
     {
         id: 'menu_1',
-        href: '#',
-        current: true,
+        href: '/#features',
+        label: 'Features',
+        current: false,
     },
     {
         id: 'menu_2',
-        href: '#',
+        href: '/#pricing',
+        label: 'Pricing',
+        current: false,
+    },
+    {
+        id: 'menu_3',
+        href: '/about-us',
+        label: 'About Us',
         current: false,
     },
 ]
@@ -41,38 +40,11 @@ function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ')
 }
 
-export enum NavigationItem {
-    menu_1 = 'Industries',
-    menu_2 = 'Features',
-}
-export interface Props {
-    current?: NavigationItem
-    nav_labels: Record<string, string>
-}
-
-interface Item {
-    text: string
-    icon: string
-    code: Language
-}
-
-export default function Navbar({ current, nav_labels }: Props) {
+export default function Navbar() {
     const { user } = useAuth()
     const { lang, onLanguageChange } = useAppContext()
     const [mounted, setMounted] = useState(false)
     const [username, setUsername] = useState(Cookies.get('email'))
-    const languages: Item[] = [
-        {
-            text: 'EN',
-            code: Language.EN,
-            icon: 'flag-icon flag-icon-us flag-icon-squared',
-        },
-        {
-            text: 'ZH',
-            code: Language.ZH,
-            icon: 'flag-icon flag-icon-cn flag-icon-squared',
-        },
-    ]
 
     async function killSession() {
         try {
@@ -84,39 +56,17 @@ export default function Navbar({ current, nav_labels }: Props) {
     }
 
     function handleLanguageChange(e: DropDownListChangeEvent) {
-        onLanguageChange(e.value.code)
+        onLanguageChange(e.value)
     }
 
-    function renderLanguageOptions(
-        li: ReactElement<HTMLLIElement>,
-        item_props: ListItemProps
+    const [first_part] = betterPathname(location.pathname)
+    let locale = ''
+
+    if (
+        first_part &&
+        Object.keys(Language).indexOf(first_part.toUpperCase()) > 0
     ) {
-        const index = item_props.index
-        const children = (
-            <>
-                <i className={languages[index].icon} />
-                <span className="inline-block ml-2">
-                    {languages[index].text}
-                </span>
-            </>
-        )
-
-        return cloneElement(li, li.props, children)
-    }
-
-    function renderSelectedLanguage(
-        element: ReactElement<HTMLSpanElement>,
-        value: Item
-    ) {
-        if (!value) return element
-        const children = (
-            <>
-                <i className={value.icon} />
-                <span className="inline-block ml-2">{value.text}</span>
-            </>
-        )
-
-        return cloneElement(element, element.props, children)
+        locale = `/${first_part.toLowerCase()}`
     }
 
     useEffect(() => {
@@ -161,48 +111,36 @@ export default function Navbar({ current, nav_labels }: Props) {
                                             </div>
                                             <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
                                                 <div className="flex-shrink-0 flex items-center">
-                                                    <div className="hidden lg:block h-10 w-auto">
-                                                        <span className="logo-icon navbar-logo" />
-                                                    </div>
-                                                    <div className="block lg:hidden h-8 w-auto">
-                                                        <img
-                                                            src="https://tailwindui.com/img/logos/workflow-logo-indigo-500-mark-white-text.svg"
-                                                            alt="Workflow"
-                                                            height="24"
-                                                            width="24"
+                                                    <div className="hidden lg:block h-12 w-auto">
+                                                        <a
+                                                            className="bg-contain app-logo-icon bg-left h-10 w-24 block cursor-pointer"
+                                                            href={locale}
                                                         />
                                                     </div>
                                                 </div>
-                                                <div className="hidden sm:block sm:ml-6">
-                                                    <div className="flex space-x-4">
+                                                <div className="hidden sm:block lg:flex items-center sm:ml-6">
+                                                    <div className="space-x-4">
                                                         {navigation.map(
                                                             (item) => (
                                                                 <a
                                                                     key={
                                                                         item.id
                                                                     }
-                                                                    href={
-                                                                        item.href
-                                                                    }
+                                                                    href={`${locale}${item.href}`}
                                                                     className={classNames(
-                                                                        item.id ==
-                                                                            current
+                                                                        item.current
                                                                             ? 'bg-gray-900 text-white'
                                                                             : 'text-gray-800 hover:bg-gray-100 hover:text-black',
                                                                         'px-3 py-2 rounded-md text-sm'
                                                                     )}
                                                                     aria-current={
-                                                                        item.id ==
-                                                                        current
+                                                                        item.current
                                                                             ? 'page'
                                                                             : undefined
                                                                     }
                                                                 >
                                                                     {
-                                                                        nav_labels[
-                                                                            item
-                                                                                .id
-                                                                        ]
+                                                                        item.label
                                                                     }
                                                                 </a>
                                                             )
@@ -210,38 +148,7 @@ export default function Navbar({ current, nav_labels }: Props) {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="absolute inset-y-0  right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                                                <DropDownList
-                                                    className="country-selector"
-                                                    data={languages}
-                                                    defaultItem={
-                                                        languages &&
-                                                        languages[0]
-                                                    }
-                                                    onChange={
-                                                        handleLanguageChange
-                                                    }
-                                                    textField="text"
-                                                    itemRender={
-                                                        renderLanguageOptions
-                                                    }
-                                                    valueRender={
-                                                        renderSelectedLanguage
-                                                    }
-                                                    valueMap={(value) =>
-                                                        value && value.code
-                                                    }
-                                                />
-
-                                                <a
-                                                    href="/pricing"
-                                                    className={classNames(
-                                                        'text-gray-800 hover:bg-gray-100 hover:text-black',
-                                                        'px-3 py-2 rounded-md text-sm lg:mr-2'
-                                                    )}
-                                                >
-                                                    Pricing
-                                                </a>
+                                            <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0 gap-4">
                                                 {/* Profile dropdown */}
                                                 {user?.first_name ? (
                                                     <Menu
@@ -275,22 +182,18 @@ export default function Navbar({ current, nav_labels }: Props) {
                                                                     {({
                                                                         active,
                                                                     }) => (
-                                                                        <Link
-                                                                            href="/dashboard"
-                                                                            passHref
+                                                                        <a
+                                                                            href={`${locale}/dashboard`}
+                                                                            className={classNames(
+                                                                                active
+                                                                                    ? 'bg-gray-200'
+                                                                                    : '',
+                                                                                'block px-4 py-2 text-sm text-black'
+                                                                            )}
                                                                         >
-                                                                            <a
-                                                                                className={classNames(
-                                                                                    active
-                                                                                        ? 'bg-gray-200'
-                                                                                        : '',
-                                                                                    'block px-4 py-2 text-sm text-black'
-                                                                                )}
-                                                                            >
-                                                                                Your
-                                                                                Profile
-                                                                            </a>
-                                                                        </Link>
+                                                                            Your
+                                                                            Profile
+                                                                        </a>
                                                                     )}
                                                                 </Menu.Item>
                                                                 <Menu.Item>
@@ -298,7 +201,7 @@ export default function Navbar({ current, nav_labels }: Props) {
                                                                         active,
                                                                     }) => (
                                                                         <a
-                                                                            href="#"
+                                                                            href={`${locale}/dashboard/settings`}
                                                                             className={classNames(
                                                                                 active
                                                                                     ? 'bg-gray-200'
@@ -339,6 +242,13 @@ export default function Navbar({ current, nav_labels }: Props) {
                                                         <SignupButton className="button primary inline-block px-5 p-2" />
                                                     </>
                                                 )}
+
+                                                <LanguageSelector
+                                                    className="country-selector flex"
+                                                    onChange={
+                                                        handleLanguageChange
+                                                    }
+                                                />
                                             </div>
                                         </div>
                                     </div>
@@ -361,7 +271,7 @@ export default function Navbar({ current, nav_labels }: Props) {
                                                             : undefined
                                                     }
                                                 >
-                                                    {nav_labels[item.id]}
+                                                    {item.label}
                                                 </a>
                                             ))}
                                         </div>

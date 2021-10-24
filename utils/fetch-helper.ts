@@ -14,6 +14,70 @@ function fetchPath(path: string) {
     return (API_ENDPOINT || '/api') + path
 }
 
+export async function getApiRequest(
+    path: string,
+    headers: Record<string, string> = {},
+) {
+
+    let req_init: RequestInit = {
+        method: FetchMethods.GET,
+        mode: 'cors',
+        headers: {
+            ...headers,
+            'Content-Type': 'application/json',
+        },
+    }
+
+    if (Cookies.get('id_token')) {
+        (req_init.headers as Record<string, string>)['Authorization'] = `Bearer ${Cookies.get('id_token')}`
+    }
+
+    try {
+        const response = await fetch(fetchPath(path), req_init)
+
+        try {
+            return await response.json()
+        } catch (e) {
+            return { error: 'API error' }
+        }
+
+    } catch (e) {
+        console.error('doFetch:', (e as unknown as Error).message)
+    }
+}
+
+export async function deleteApiRequest(
+    path: string,
+    headers: Record<string, string> = {},
+) {
+
+    let req_init: RequestInit = {
+        method: FetchMethods.DELETE,
+        mode: 'cors',
+        headers: {
+            ...headers,
+            'Content-Type': 'application/json',
+        },
+    }
+
+    if (Cookies.get('id_token')) {
+        (req_init.headers as Record<string, string>)['Authorization'] = `Bearer ${Cookies.get('id_token')}`
+    }
+
+    try {
+        const response = await fetch(fetchPath(path), req_init)
+
+        try {
+            return await response.json()
+        } catch (e) {
+            return { error: 'API error' }
+        }
+
+    } catch (e) {
+        console.error('doFetch:', (e as unknown as Error).message)
+    }
+}
+
 
 export function useFetch<Body = any, Result = any>(
     path: string,
@@ -44,20 +108,25 @@ export function useFetch<Body = any, Result = any>(
             }
 
             setLoading(true)
-            const response = await fetch(fetchPath(path) + query, req_init)
 
-            if (expects_json) {
-                try {
-                    setData((await response.json()) as Result)
-                } catch (e) {
-                    setData({ error: 'API error' } as unknown as 
-                    Result)
+            try {
+                const response = await fetch(fetchPath(path) + query, req_init)
+    
+                if (expects_json) {
+                    try {
+                        setData((await response.json()) as Result)
+                    } catch (e) {
+                        setData({ error: 'API error' } as unknown as 
+                        Result)
+                    }
                 }
+    
+                setLoading(false)
+                setStatus(response.status)
+                return response
+            } catch (e) {
+                console.error('doFetch:', (e as unknown as Error).message)
             }
-
-            setLoading(false)
-            setStatus(response.status)
-            return response
         },
         [method, path, expects_json]
     )

@@ -9,10 +9,43 @@ type SectionProps = {
     [key: string]: string
 }
 
+enum CurrencyIso {
+    SGD = 'SGD',
+    USD = 'USD',
+    MYR = 'MYR',
+    PHP = 'PHP',
+}
+type Currency = {
+    iso: CurrencyIso
+    rate: number
+    symbol: string
+}
+const currencies: Currency[] = [
+    {
+        iso: CurrencyIso.SGD,
+        rate: 1.0,
+        symbol: '$',
+    },
+    {
+        iso: CurrencyIso.USD,
+        rate: 0.75,
+        symbol: '$',
+    },
+    {
+        iso: CurrencyIso.MYR,
+        rate: 3.09,
+        symbol: 'RM',
+    },
+    {
+        iso: CurrencyIso.PHP,
+        rate: 37.8,
+        symbol: '₱',
+    },
+]
 export default function LandingPricingSection(props: SectionProps) {
     const { tiers } = useAppContext()
-    const [checked, setChecked] = useState<boolean>(true)
-    const [currency, setCurrency] = useState<string>('SGD')
+    const [currency, setCurrency] = useState<Currency>(currencies[0])
+    const [discount, setDiscount] = useState(1)
 
     const FreePlanModalProvider = createModal(
         AuthContext,
@@ -39,11 +72,11 @@ export default function LandingPricingSection(props: SectionProps) {
     )
 
     const handleToggleSwitch = () => {
-        setChecked(!checked)
+        setDiscount(discount == 1 ? 0.8 : 1)
     }
 
-    const handleCurrencySelection = (chosen_currency: string) => {
-        setCurrency(chosen_currency)
+    const handleCurrencySelection = (idx: number) => {
+        setCurrency(currencies[idx])
     }
 
     return (
@@ -67,7 +100,7 @@ export default function LandingPricingSection(props: SectionProps) {
                         onLabel={''}
                         offLabel={''}
                         onChange={handleToggleSwitch}
-                        checked={checked}
+                        checked={discount != 1}
                     />
 
                     <span className="ml-3 mr-2">Yearly</span>
@@ -78,38 +111,24 @@ export default function LandingPricingSection(props: SectionProps) {
                 <div className="flex justify-center items-center w-auto mt-8">
                     <div className="pr-6 circular">Pricing in</div>
                     <ButtonGroup className="bg-primary-light circular-light">
-                        <Button
-                            togglable={true}
-                            selected={currency === 'USD'}
-                            onClick={() => handleCurrencySelection('USD')}
-                        >
-                            USD
-                        </Button>
-                        <Button
-                            togglable={true}
-                            selected={currency === 'SGD'}
-                            onClick={() => handleCurrencySelection('SGD')}
-                        >
-                            SGD
-                        </Button>
-                        <Button
-                            togglable={true}
-                            selected={currency === 'PHP'}
-                            onClick={() => handleCurrencySelection('PHP')}
-                        >
-                            PHP
-                        </Button>
-                        <Button
-                            togglable={true}
-                            selected={currency === 'MYR'}
-                            onClick={() => handleCurrencySelection('MYR')}
-                        >
-                            MYR
-                        </Button>
+                        {currencies.map(
+                            ({ iso, symbol }: Currency, idx) => (
+                                <Button
+                                    key={iso}
+                                    togglable={true}
+                                    selected={currency.iso === iso}
+                                    onClick={() =>
+                                        handleCurrencySelection(idx)
+                                    }
+                                >
+                                    {iso}
+                                </Button>
+                            )
+                        )}
                     </ButtonGroup>
                 </div>
 
-                <div className="lg:grid grid-cols-3 gap-8 lg:px-40 mt-12">
+                <div className="grid lg:grid-cols-3 gap-6 xl:gap-8 xl:max-w-7xl mx-auto mt-12">
                     <div className="bg-white rounded-2xl shadow-2xl w-full py-10 px-8">
                         <figure className="w-60 text-center m-auto mt-2 text-primary-light">
                             <span className="rounded-lg p-0.5 pt-1 w-8 inline-block border-2 border-primary-light">
@@ -191,7 +210,8 @@ export default function LandingPricingSection(props: SectionProps) {
                             </span>
                         </figure>
                         <div className="text-6xl block text-center text-primary-dark circular-light mt-5">
-                            $49
+                            {currency.symbol}
+                            {Math.ceil(49 * discount * currency.rate)}
                         </div>
                         <div className="block text-center text-gray-400 circular-light">
                             / month
@@ -234,10 +254,20 @@ export default function LandingPricingSection(props: SectionProps) {
                                 Bring your business online
                             </span>
                             <ul className="list-disc ml-6 leading-loose text-sm mt-2 h-28">
-                                <li>$20 per additional location</li>
-                                <li>$5 per additional staff</li>
                                 <li>
-                                    $5 per additional 1,000 appointments
+                                    {currency.symbol}
+                                    {Math.ceil(20 * currency.rate)} per
+                                    additional location
+                                </li>
+                                <li>
+                                    {currency.symbol}
+                                    {Math.ceil(5 * currency.rate)} per
+                                    additional staff
+                                </li>
+                                <li>
+                                    {currency.symbol}
+                                    {Math.ceil(5 * currency.rate)} per
+                                    additional 1,000 appointments
                                 </li>
                             </ul>
                         </div>
@@ -260,7 +290,8 @@ export default function LandingPricingSection(props: SectionProps) {
                             </span>
                         </figure>
                         <div className="text-6xl block text-center text-primary circular-light mt-5">
-                            $89
+                            {currency.symbol}
+                            {Math.ceil(89 * discount * currency.rate)}
                         </div>
                         <div className="block text-center text-gray-400 circular-light">
                             / month
@@ -303,8 +334,16 @@ export default function LandingPricingSection(props: SectionProps) {
                                 Everything you will need
                             </span>
                             <ul className="list-disc ml-6 leading-loose text-sm mt-2 h-28">
-                                <li>$20 per additional location</li>
-                                <li>$5 per additional staff</li>
+                                <li>
+                                    {currency.symbol}
+                                    {Math.ceil(20 * currency.rate)} per
+                                    additional location
+                                </li>
+                                <li>
+                                    {currency.symbol}
+                                    {Math.ceil(5 * currency.rate)} per
+                                    additional staff
+                                </li>
                                 <li>Unlimited appointments</li>
                             </ul>
                         </div>

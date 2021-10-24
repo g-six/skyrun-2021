@@ -1,5 +1,3 @@
-import { ReactElement, MouseEvent, useState } from 'react'
-import { useRouter } from 'next/router'
 import {
     Drawer,
     DrawerContent,
@@ -7,26 +5,31 @@ import {
     DrawerItemProps,
     DrawerSelectEvent,
 } from '@progress/kendo-react-layout'
-import { classNames } from 'utils/dom-helpers'
-import { UserModel } from 'services/profile'
+import { Language } from 'components/LanguageSelector'
 import { useAuth } from 'context/AuthContext'
+import { useRouter } from 'next/router'
+import { MouseEvent, ReactElement, useState } from 'react'
+import { classNames } from 'utils/dom-helpers'
+import { betterPathname } from 'utils/string-helper'
+import TenantSelector from './TenantSelector'
 
 type SidebarItem = {
     text?: string
     separator?: boolean
     icon?: string
     selected?: boolean
+    onClickCapture?(): void
     route?: string
 }
 interface Props {
-    children?: ReactElement[] | string
-    user?: UserModel
+    children?: ReactElement
 }
 const items: SidebarItem[] = [
+    {},
     { text: 'Home', icon: 'feather-sidebar', route: '/dashboard' },
     {
         text: 'Calendar',
-        icon: 'k-i-calendar',
+        icon: 'feather-calendar',
         route: '/dashboard/calendar',
     },
     {
@@ -52,7 +55,7 @@ const items: SidebarItem[] = [
     },
     {
         text: 'Resources',
-        icon: 'k-i-star-outline',
+        icon: 'feather-folder',
         route: '/dashboard/resources',
     },
     {
@@ -74,30 +77,71 @@ const items: SidebarItem[] = [
         icon: 'k-i-html',
         route: '/dashboard/integrations',
     },
+    {
+        text: 'Notifications',
+        icon: 'feather-bell',
+        route: '/dashboard/notifications',
+    },
 ]
 
-const CustomItem = (props: DrawerItemProps) => {
+const CustomItem = (props: DrawerItemProps & SidebarItem) => {
+    const [locale] = betterPathname(location.pathname)
+    const { tenant, tenants } = useAuth()
+    function getHomePath() {
+        if (Object.keys(Language).indexOf(locale.toUpperCase()) > 0) {
+            return ['', locale, 'dashboard/'].join('/')
+        }
+        return '/dashboard/'
+    }
+
+    if (!props.icon && !props.route && !props.separator) {
+        return (
+            <div
+                className={classNames(
+                    props.className || '',
+                    'bg-white mt-6 mb-3 px-3'
+                )}
+                onClickCapture={props.onClickCapture}
+            >
+                <TenantSelector tenant={tenant} tenants={tenants} />
+            </div>
+        )
+    }
+
     return (
-        <DrawerItem {...props} title={props.text}>
-            <span className={`k-icon ${props.icon}`}></span>
+        <DrawerItem
+            {...props}
+            className="flex items-center text-gray-600"
+            title={props.text}
+        >
+            <span
+                className={classNames(
+                    props.selected ? 'text-primary' : 'text-gray-400',
+                    `k-icon text-2xl ${props.icon}`
+                )}
+            ></span>
             <div className="item-descr-wrap ml-2 w-full" title={props.text}>
-                <div>{props.text}</div>
+                <div
+                    className={classNames(
+                        props.selected ? 'text-primary' : 'text-gray-700'
+                    )}
+                >
+                    {props.text}
+                </div>
             </div>
         </DrawerItem>
     )
 }
 
-function Sidebar({ children, user }: Props) {
+function Sidebar({ children }: Props) {
     const router = useRouter()
-    const [expanded, setExpanded] = useState(false)
     const ctx = useAuth()
     const handleClick = (e: MouseEvent) => {
         e.preventDefault()
-        setExpanded(!expanded)
+        ctx.toggleDrawerSize(!ctx.is_drawer_expanded)
     }
     const onSelect = (e: DrawerSelectEvent) => {
         router.push(e.itemTarget.props.route)
-        setExpanded(!expanded)
     }
     const setSelectedItem = (path_name: string) => {
         const current_path = items.find(
@@ -109,59 +153,84 @@ function Sidebar({ children, user }: Props) {
         }
     }
     const selected = setSelectedItem(router.pathname)
+
+    const nav_height = '80px'
     return (
-        <>
-            <Drawer
-                className="h-screen"
-                expanded={expanded}
-                mode={'push'}
-                mini={true}
-                onSelect={onSelect}
-                position={'start'}
-                items={
-                    ctx.user?.uuid
-                        ? items.map((item) => ({
+        <Drawer
+            className="relative z-0"
+            expanded={ctx.is_drawer_expanded}
+            mode={'push'}
+            mini={true}
+            miniWidth={60}
+            onSelect={onSelect}
+            position={'start'}
+            style={{ height: `calc(100vh - ${nav_height}` }}
+            items={
+                ctx.user?.uuid
+                    ? items.map((item) => {
+                          if (item.route == '/') {
+                              return {
+                                  ...item,
+                                  selected: item.text === selected,
+                              }
+                          }
+                          if (
+                              !item.icon &&
+                              !item.route &&
+                              !item.separator
+                          ) {
+                              return {
+                                  ...item,
+                                  selected: item.text === selected,
+                                  onClickCapture: () => {
+                                      ctx.toggleDrawerSize(
+                                          !ctx.is_drawer_expanded
+                                      )
+                                  },
+                              }
+                          }
+                          return {
                               ...item,
                               selected: item.text === selected,
-                          }))
-                        : []
-                }
-                item={CustomItem}
-            >
-                <DrawerContent>
-                    {children}
-                    <button
+                          }
+                      })
+                    : []
+            }
+            item={CustomItem}
+        >
+            <DrawerContent>
+                {children}
+                <button
+                    className={classNames(
+                        'absolute bottom-28 bg-primary text-white w-9 h-9 transition-all duration-300',
+                        ctx.is_drawer_expanded
+                            ? 'left-56 shadow-xl border-r border-indigo-50'
+                            : 'left-3 hover:bg-opacity-30 bg-opacity-70',
+                        'duration-400 ease-linear transition-all rounded-full'
+                    )}
+                    id="BtnExpandSidebar"
+                    onClick={handleClick}
+                >
+                    <span
                         className={classNames(
-                            'absolute bottom-28 bg-white text-indigo-900 w-9 h-9 transition-all duration-300',
-                            expanded
-                                ? 'left-56 shadow-xl border-r border-indigo-50 hover:text-indigo-700 rounded-full'
-                                : 'left-2 hover:bg-indigo-900 hover:bg-opacity-10 rounded-lg',
-                            'duration-400 ease-linear transition-all'
+                            ctx.is_drawer_expanded
+                                ? 'feather-chevron-left'
+                                : 'feather-chevron-right'
                         )}
-                        id="BtnExpandSidebar"
-                        onClick={handleClick}
-                    >
-                        <span
-                            className={classNames(
-                                expanded
-                                    ? 'feather-chevron-left'
-                                    : 'feather-chevron-right'
-                            )}
-                        ></span>
-                    </button>
-                    <button
-                        className={classNames(
-                            'btn-logout absolute bottom-16 left-2 w-9 h-9 rounded-lg',
-                            'duration-400 ease-linear transition-all',
-                            'hover:bg-indigo-900 hover:bg-opacity-10'
-                        )}
-                        onClick={ctx.logout}
-                    >
-                        <span className="feather-unlock"></span>
-                    </button>
-                </DrawerContent>
-            </Drawer>
-        </>
+                    ></span>
+                </button>
+                <button
+                    className={classNames(
+                        'btn-logout absolute bottom-16 left-3 w-9 h-9 rounded-lg',
+                        'duration-400 ease-linear transition-all',
+                        'hover:bg-indigo-900 hover:bg-opacity-10'
+                    )}
+                    onClick={ctx.logout}
+                >
+                    <span className="feather-unlock"></span>
+                </button>
+            </DrawerContent>
+        </Drawer>
     )
 }
 

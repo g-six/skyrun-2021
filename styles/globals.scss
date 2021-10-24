@@ -47,15 +47,16 @@ a {
 * {
   box-sizing: border-box;
 }
-
+.app-logo-icon {
+  background-image: url(https://static.aot.plus/images/aot-logo-sm.png);
+  background-repeat: no-repeat;
+}
 .logo-icon,
 .logo-icon.k-icon {
-  background-image: url(https://static.aot.plus/images/logo.svg);
-  background-size: contain;
+  background-image: url(https://static.aot.plus/images/aot-logo.svg);
   background-repeat: no-repeat;
   display: block;
   margin: 0 4px;
-  padding-top: 3px;
   width: 12rem;
   height: 42px;
   + .k-item-text {
@@ -73,6 +74,8 @@ a {
     margin: 0 auto;
   }
 }
+
+.country-selector .k-list-optionlabel.k-state-selected { display: none; }
 
 .testimonials figure {
   height: 340px;

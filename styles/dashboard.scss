@@ -1,9 +1,5 @@
 .k-drawer {
-    background-image: url(https://static.aot.plus/images/logo.svg);
-    background-size: 106px auto;
-    background-repeat: no-repeat;
-    background-position: 14px 6px;
-    padding-top: 56px;
+    box-shadow: 1px 0px 18px rgba(65, 113, 165, 0.1);
 
     .k-drawer-item[role="option"] {
         border-left: 4px solid transparent;
@@ -34,5 +30,4 @@
 
 .k-appbar {
     box-shadow: none;
-    padding: 33px 44px;
 }

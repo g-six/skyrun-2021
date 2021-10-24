@@ -1,3 +1,4 @@
+import { ReactElement } from 'react'
 import { classNames } from 'utils/dom-helpers'
 import styles from '../../styles/Landing/section-features.module.scss'
 
@@ -6,6 +7,21 @@ export type SectionProps = {
 }
 
 export default function LandingFeaturesSection(props: SectionProps) {
+    const section_2_checklist: ReactElement[] = []
+    props.section_2_checklist.split('<li>').forEach((i: string, idx) => {
+        if (idx > 0) {
+            section_2_checklist.push(
+                <li
+                    key={idx}
+                    className="flex center-items leading-8 gap-2 text-gray-400 mb-2"
+                >
+                    <i className="feather leading-0 text-primary-light text-2xl feather-check-square mr-2" />
+                    {i.split('</li')[0]}
+                </li>
+            )
+        }
+    })
+
     return (
         <section className="py-20 container max-w-7xl mx-auto">
             <div className="grid md:grid-cols-2 gap-8">
@@ -53,7 +69,7 @@ export default function LandingFeaturesSection(props: SectionProps) {
                         <span className="text-primary-dark">
                             {props.left_title}
                         </span>
-                        <span className="text-primary-light">
+                        <span className="text-primary-dark">
                             {props.right_title}
                         </span>
                     </h1>
@@ -112,20 +128,14 @@ export default function LandingFeaturesSection(props: SectionProps) {
                         <span className="text-primary-dark">
                             {props.mid_left_title}{' '}
                         </span>
-                        <span className="text-primary-light">
+                        <span className="text-gray-600 text-3xl block font-light">
                             {props.mid_right_title}
                         </span>
                     </h1>
 
-                    <p className="text-gray-500 leading-relaxed">
-                        Qui irure qui lorem cupidatat commodo. <br />
-                        Anim aute id magna aliqua ad ad non deserunt sunt.{' '}
-                        <br />
-                        Elit sunt amet fugiat veniam occaecat fugiat aliqua.
-                        <br />
-                        Qui irure qui lorem cupidatat commodo. <br />
-                        Elit sunt amet fugiat veniam occaecat fugiat
-                    </p>
+                    <ul className="text-gray-500 leading-relaxed">
+                        {section_2_checklist}
+                    </ul>
                 </div>
                 <div className={styles.spriteTools} />
             </div>
@@ -165,20 +175,13 @@ export default function LandingFeaturesSection(props: SectionProps) {
                         )}
                     />
                     <h1 className="mt-20 mb-10 lg:mb-5 text-5xl circular leading-none tracking-wide">
-                        <span className="text-primary-light">
-                            Increase{' '}
-                        </span>
                         <span className="text-primary-dark">
-                            your <br />
-                            online booking
+                            {props.section_3_title}
                         </span>
                     </h1>
 
                     <p className="text-gray-500 leading-relaxed">
-                        Anim aute id magna aliqua ad ad non deserunt sunt.{' '}
-                        <br />
-                        Qui irure qui lorem cupidatat commodo. <br />
-                        Elit sunt amet fugiat veniam occaecat fugiat aliqua.
+                        {props.section_3_body}
                     </p>
                 </div>
             </div>

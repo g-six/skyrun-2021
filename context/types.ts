@@ -1,5 +1,6 @@
 import { AuthenticationResultType, ConfirmForgotPasswordCommandOutput, SignUpCommandOutput } from '@aws-sdk/client-cognito-identity-provider'
 import { ModalHook } from 'components/Modals/types'
+import { Dispatch, SetStateAction } from 'react'
 import { UserModel } from 'services/profile'
 
 type Tier = {
@@ -15,6 +16,7 @@ export interface CognitoProps {
 export interface SkyUser {
     first_name: string
     last_name: string
+    cognito_id?: string
     uuid: string
     email?: string
     city?: string
@@ -37,9 +39,16 @@ export interface TenantInfo {
 export type AuthContextType = {
     user?: SkyUser
     tenant?: TenantInfo
+    tenants?: TenantInfo[]
+    setTenant: Dispatch<SetStateAction<TenantInfo>>
     LoginModal: ModalHook
     SignupModal: ModalHook
+    TenantModal: ModalHook
     CreateClientModal: ModalHook
+    LocationModal: ModalHook
+    StaffModal: ModalHook
+    is_drawer_expanded: boolean,
+    toggleDrawerSize: Dispatch<SetStateAction<boolean>>,
     confirmForgotPassword(email: string, new_password: string, code: string): Promise<ConfirmForgotPasswordCommandOutput>
     forgotPassword(email: string): Promise<void>
     login(email: string, password: string): Promise<AuthenticationResultType | boolean>

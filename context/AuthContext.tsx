@@ -50,7 +50,7 @@ export function SkyAuthProvider({ children }: Props) {
     const [tenant, setTenant] = useState<TenantInfo>({} as unknown as TenantInfo)
     const [tenants, setTenants] = useState<TenantInfo[]>([] as unknown as TenantInfo[])
     const [already_set, setRecordsRetrievalStatus] = useState<Record<string, boolean>>({})
-
+    const [is_drawer_expanded, toggleDrawerSize] = useState<boolean>(false)
     const [data, setData] = useState<UserProfileRecord>({})
 
     const LoginModal = useModal()
@@ -62,6 +62,8 @@ export function SkyAuthProvider({ children }: Props) {
 
     const value = {
         user,
+        is_drawer_expanded,
+        toggleDrawerSize,
         login: async (email: string, password: string): Promise<AuthenticationResultType | boolean> => {
             const {
                 AuthenticationResult,                

@@ -130,7 +130,9 @@ function GeneralForm() {
                         {...register('first_name', {
                             required: true,
                         })}
-                        defaultValue={(attributes?.first_name as string) || ''}
+                        defaultValue={
+                            (attributes?.first_name as string) || ''
+                        }
                     />
                     {errors.first_name?.type === 'required' && (
                         <span className="text-sm text-red-700">
@@ -261,7 +263,9 @@ function GeneralForm() {
                     <DatePickerInput
                         className="px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md calendar"
                         selected={date_joined}
-                        onChange={(v: Date) => { setDateJoined(v) }}
+                        onChange={(v: Date) => {
+                            setDateJoined(v)
+                        }}
                     />
                     {errors.date_joined?.type === 'pattern' && (
                         <span className="text-sm text-red-700">
@@ -276,7 +280,9 @@ function GeneralForm() {
                             htmlFor="hourly-rate"
                             className={classNames(
                                 'block text-lg',
-                                errors.hourly_rate?.type ? 'text-red-700' : ''
+                                errors.hourly_rate?.type
+                                    ? 'text-red-700'
+                                    : ''
                             )}
                         >
                             Hourly rate
@@ -289,7 +295,9 @@ function GeneralForm() {
                                     ? 'border-red-300 bg-red-100'
                                     : ''
                             )}
-                            value={attributes?.hourly_rate as string || ''}
+                            value={
+                                (attributes?.hourly_rate as string) || ''
+                            }
                             onChange={(v: string) => {
                                 setAttributes({
                                     ...attributes,
@@ -309,7 +317,9 @@ function GeneralForm() {
                             htmlFor="monthly-rate"
                             className={classNames(
                                 'block text-lg',
-                                errors.monthly_rate?.type ? 'text-red-700' : ''
+                                errors.monthly_rate?.type
+                                    ? 'text-red-700'
+                                    : ''
                             )}
                         >
                             Monthly rate
@@ -322,7 +332,9 @@ function GeneralForm() {
                                     ? 'border-red-300 bg-red-100'
                                     : ''
                             )}
-                            value={attributes?.monthly_rate as string || ''}
+                            value={
+                                (attributes?.monthly_rate as string) || ''
+                            }
                             onChange={(v: string) => {
                                 setAttributes({
                                     ...attributes,
@@ -342,7 +354,9 @@ function GeneralForm() {
                             htmlFor="overtime-rate"
                             className={classNames(
                                 'block text-lg',
-                                errors.overtime_rate?.type ? 'text-red-700' : ''
+                                errors.overtime_rate?.type
+                                    ? 'text-red-700'
+                                    : ''
                             )}
                         >
                             Overtime rate
@@ -355,7 +369,9 @@ function GeneralForm() {
                                     ? 'border-red-300 bg-red-100'
                                     : ''
                             )}
-                            value={attributes?.overtime_rate as string || ''}
+                            value={
+                                (attributes?.overtime_rate as string) || ''
+                            }
                             onChange={(v: string) => {
                                 setAttributes({
                                     ...attributes,

@@ -47,6 +47,8 @@ export type AuthContextType = {
     CreateClientModal: ModalHook
     CreateLocationModal: ModalHook
     StaffModal: ModalHook
+    is_drawer_expanded: boolean,
+    toggleDrawerSize: Dispatch<SetStateAction<boolean>>,
     confirmForgotPassword(email: string, new_password: string, code: string): Promise<ConfirmForgotPasswordCommandOutput>
     forgotPassword(email: string): Promise<void>
     login(email: string, password: string): Promise<AuthenticationResultType | boolean>

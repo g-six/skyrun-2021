@@ -3,7 +3,11 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { classNames } from 'utils/dom-helpers'
 import Dashboard from '..'
 import Card from './card'
-import { deleteApiRequest, FetchMethods, useFetch } from 'utils/fetch-helper'
+import {
+    deleteApiRequest,
+    FetchMethods,
+    useFetch,
+} from 'utils/fetch-helper'
 import { useAuth } from 'context/AuthContext'
 import { Staff } from 'types/staff'
 import DataTable from 'components/DataTable'
@@ -87,7 +91,6 @@ function DashboardStaff() {
         FetchMethods.GET,
         !!tenant?.id
     )
-
 
     useEffect(() => {
         const staff_list: Staff[] =
@@ -205,7 +208,9 @@ function DashboardStaff() {
                                   list={staff as Staff[]}
                                   idx={idx}
                                   archiveItem={async (rec: Staff) => {
-                                      await deleteApiRequest(`/v1/staff/${record.id}`)
+                                      await deleteApiRequest(
+                                          `/v1/staff/${record.id}`
+                                      )
                                       doFetch()
                                   }}
                               />

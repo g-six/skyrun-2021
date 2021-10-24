@@ -7,12 +7,14 @@ function Card(
 ) {
     const ctx = useAuth()
     const record: Staff = props.list[props.idx]
-    
+
     function handleEdit(e: MouseEvent<HTMLButtonElement>) {
         const { hourly_rate, monthly_rate, overtime_rate } = record
         ctx.StaffModal.setAttributes({
             ...record.user,
-            hourly_rate, monthly_rate, overtime_rate,
+            hourly_rate,
+            monthly_rate,
+            overtime_rate,
             user_id: record.user.id,
             id: record.id,
             idx: props.idx,
@@ -22,7 +24,13 @@ function Card(
 
     return (
         <div className="shadow-2xl p-8 pt-12 rounded-xl border border-t-0 border-l-0  border-r-0 border-gray-150 text-center relative">
-            <button type="button" onClick={() => { props.archiveItem(record) }} className="absolute bg-red-100 rounded-lg flex items-center w-10 h-10 text-red-600 right-4 top-4">
+            <button
+                type="button"
+                onClick={() => {
+                    props.archiveItem(record)
+                }}
+                className="absolute bg-red-100 rounded-lg flex items-center w-10 h-10 text-red-600 right-4 top-4"
+            >
                 <i className="feather-archive m-auto" />
             </button>
             <div className="flex flex-wrap text-center content-center rounded-full bg-primary-lighter w-36 h-36 block mx-auto mb-4 overflow-hidden">

@@ -1,36 +1,117 @@
 import { Coords } from 'google-map-react'
 import dynamic from 'next/dynamic'
+import usePlacesService from 'react-google-autocomplete/lib/usePlacesAutocompleteService'
 import { classNames } from 'utils/dom-helpers'
 import { GeneralFormValues as LocationItem } from 'components/Modals/Location/types'
+import { useEffect, useState } from 'react'
+import { useAuth } from 'context/AuthContext'
+import { getStaticUrl, Marker } from 'components/Map'
 
 const Map = dynamic(() => import('components/Map'), { ssr: false })
 
 export function LocationCard({
     record,
-    map_center,
-    map_pin_location,
+    apiKey,
     archiveItem,
     editItem,
 }: {
     record: LocationItem
-    map_pin_location: Coords
-    map_center: Coords
+    apiKey: string
     archiveItem(l: LocationItem): void
     editItem(): void
 }) {
+    const { LocationModal } = useAuth()
+    const {
+        placesService: place_svc,
+        placePredictions: places,
+        getPlacePredictions,
+        isPlacePredictionsLoading: is_predicting,
+    } = usePlacesService({
+        apiKey,
+    })
+    const [poi_name, setPoiName] = useState<string>('')
+    const [map_pin_location, setPinLocation] = useState<Coords>()
+
+    function handleEdit() {
+        editItem()
+    }
+
+    useEffect(() => {
+        function getDetails(place_id: string) {
+            place_svc?.getDetails(
+                {
+                    placeId: places[0].place_id,
+                },
+                (details) => {
+                    if (details) {
+                        if (details?.utc_offset_minutes) {
+                            const minutes = details.utc_offset_minutes % 60
+                            const hours =
+                                (details.utc_offset_minutes - minutes) / 60
+                            console.log(hours, minutes)
+                        }
+                        const place_pin = {
+                            lat: details?.geometry?.location?.lat(),
+                            lng: details?.geometry?.location?.lng(),
+                        } as Coords
+
+                        if (!map_pin_location) {
+                            setPinLocation(place_pin)
+                        }
+                        if (details.name) {
+                            setPoiName(details.name)
+                        }
+                    } else {
+                        setTimeout(() => {
+                            getDetails(place_id)
+                        }, 100)
+                    }
+                }
+            )
+        }
+        if (!places.length && !is_predicting && !LocationModal.is_open) {
+            const input = [
+                record.street_1,
+                record.street_2,
+                record.zip,
+                record.city,
+                record.state,
+                record.country,
+            ].join(' ')
+            getPlacePredictions({ input })
+        }
+        if (places.length && !is_predicting && !LocationModal.is_open) {
+            getDetails(places[0].place_id)
+        }
+    }, [
+        places,
+        map_pin_location,
+        is_predicting,
+        places,
+        record,
+        record.street_1,
+        poi_name,
+    ])
+
     return (
         <div
             key={record.id}
             className="shadow-lg rounded-xl border-t border-l border-gray-50 overflow-hidden flex flex-col"
             style={{ minHeight: '520px' }}
         >
-            <div className="overflow-hidden -mt-6 -mx-8 h-64 block">
-                <Map
-                    center={map_center}
-                    zoom={16}
-                    lat={map_pin_location.lat}
-                    lng={map_pin_location.lng}
-                />
+            <div className="overflow-hidden h-64 block">
+                {map_pin_location ? (
+                    <img
+                        src={getStaticUrl({
+                            center: map_pin_location as unknown as Marker,
+                            markers: [
+                                map_pin_location as unknown as Marker,
+                            ],
+                        })}
+                    />
+                ) : (
+                    ''
+                )}
             </div>
             <div className="p-6 flex flex-col justify-between flex-1">
                 <div>
@@ -47,8 +128,15 @@ export function LocationCard({
                         </div>
                     </div>
                     <div className="flex items-center justify-between">
-                        <div className="text-lg font-medium text-gray-900">
+                        <div className="text-lg font-semibold font-sans text-primary">
                             {record.name}
+                            {poi_name ? (
+                                <div className="font-sans text-sm text-primary">
+                                    {poi_name}
+                                </div>
+                            ) : (
+                                ''
+                            )}
                         </div>
 
                         <div className="text-sm text-gray-700 text-right">
@@ -56,14 +144,16 @@ export function LocationCard({
                         </div>
                     </div>
 
-                    <address className="text-base leading-snug text-black not-italic">
+                    <address className="text-base leading-snug text-gray-500 not-italic">
                         <span className="block">{record.street_1}</span>
-                        <span className="block">{record.street_2}</span>
                         <span className="block">
-                            {record.city} {record.state}
+                            {record.street_2
+                                ? [record.street_2, record.city].join(', ')
+                                : record.city}{' '}
+                            {record.zip}
                         </span>
                         <span className="block">
-                            {record.zip} {record.country}
+                            {[record.state, record.country].join(', ')}
                         </span>
                     </address>
                 </div>
@@ -75,7 +165,7 @@ export function LocationCard({
 
                         <button
                             className="border-gray-400 border rounded-lg text-lg font-sans flex-1 py-2"
-                            onClick={editItem}
+                            onClick={handleEdit}
                         >
                             See Details
                         </button>

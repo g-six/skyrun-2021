@@ -1,15 +1,89 @@
+import { Coords } from 'google-map-react'
 import { classNames } from 'utils/dom-helpers'
 import { GeneralFormValues as LocationItem } from 'components/Modals/Location/types'
+import { useEffect, useState } from 'react'
+import { useAuth } from 'context/AuthContext'
 
 export function LocationListItem({
     record,
+    apiKey,
     editItem,
     archiveItem,
 }: {
     record: LocationItem
+    apiKey: string
     archiveItem(l: LocationItem): void
     editItem(): void
 }) {
+    const { LocationModal } = useAuth()
+    const {
+        placesService: place_svc,
+        placePredictions: places,
+        getPlacePredictions,
+        isPlacePredictionsLoading: is_predicting,
+    } = usePlacesService({
+        apiKey,
+    })
+    const [poi_name, setPoiName] = useState<string>('')
+    const [map_pin_location, setPinLocation] = useState<Coords>()
+
+    useEffect(() => {
+        function getDetails(place_id: string) {
+            place_svc?.getDetails(
+                {
+                    placeId: places[0].place_id,
+                },
+                (details: google.maps.places.PlaceResult) => {
+                    if (details) {
+                        if (details?.utc_offset_minutes) {
+                            const minutes = details.utc_offset_minutes % 60
+                            const hours =
+                                (details.utc_offset_minutes - minutes) / 60
+                            console.log(hours, minutes)
+                        }
+                        const place_pin = {
+                            lat: details?.geometry?.location?.lat(),
+                            lng: details?.geometry?.location?.lng(),
+                        } as Coords
+
+                        if (!map_pin_location) {
+                            setPinLocation(place_pin)
+                        }
+                        if (details.name) {
+                            setPoiName(details.name)
+                        }
+                    } else {
+                        setTimeout(() => {
+                            getDetails(place_id)
+                        }, 100)
+                    }
+                }
+            )
+        }
+        if (!places.length && !is_predicting && !LocationModal.is_open) {
+            const input = [
+                record.street_1,
+                record.street_2,
+                record.zip,
+                record.city,
+                record.state,
+                record.country,
+            ].join(' ')
+            getPlacePredictions({ input })
+        }
+        if (places.length && !is_predicting && !LocationModal.is_open) {
+            getDetails(places[0].place_id)
+        }
+    }, [
+        places,
+        map_pin_location,
+        is_predicting,
+        places,
+        record,
+        record.street_1,
+        poi_name,
+    ])
+
     return (
         <div
             key={record.id}

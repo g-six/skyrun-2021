@@ -14,21 +14,16 @@ import LocationCard from './LocationCard'
 import { classNames } from 'utils/dom-helpers'
 import { ViewMode } from 'types'
 import LocationListItem from './LocationListItem'
+import { useAppContext } from 'context/AppContext'
 
 function DashboardLocations() {
     const ctx = useAuth()
+    const { GOOGLE_API_KEY } = useAppContext()
     const [view_mode, setViewMode] = useState<ViewMode>(ViewMode.GRID)
     const [api_locations, setLocations] = useState<
         Record<string, string>[]
     >([])
-    const [map_pin_location, setPinLocation] = useState<Coords>({
-        lat: 10.328218864962848,
-        lng: 123.90642211578692,
-    })
-    const [map_center, setMapCenter] = useState<Coords>({
-        lat: 10.328218864962848,
-        lng: 123.90642211578692,
-    })
+
     const { data, doFetch } = useFetch(
         `/v1/locations/tenant-id/?tenantId=${ctx.tenant?.id}`,
         FetchMethods.GET,
@@ -88,7 +83,6 @@ function DashboardLocations() {
                 await doFetch()
             }
         }
-
         if (!locations && !!ctx.tenant?.id) {
             setLocations([])
             fetchData()
@@ -170,10 +164,9 @@ function DashboardLocations() {
                             (record: LocationItem, idx) =>
                                 view_mode == ViewMode.GRID ? (
                                     <LocationCard
+                                        apiKey={GOOGLE_API_KEY}
                                         key={record.id}
                                         record={record}
-                                        map_pin_location={map_pin_location}
-                                        map_center={map_center}
                                         editItem={handleEdit(idx)}
                                         archiveItem={async (
                                             rec: LocationItem
@@ -186,6 +179,7 @@ function DashboardLocations() {
                                 ) : (
                                     <LocationListItem
                                         key={record.id}
+                                        apiKey={GOOGLE_API_KEY}
                                         record={record}
                                         editItem={handleEdit(idx)}
                                         archiveItem={async (

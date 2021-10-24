@@ -96,6 +96,8 @@ export function SkyAuthProvider({ children }: Props) {
                         })
                         const res: ApiUser = await getApiRequest('/v1/users/current')
                         initUserProfile(res)
+                    } else {
+                        console.log(auth_data)
                     }
                 }
             }

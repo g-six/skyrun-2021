@@ -31,7 +31,7 @@ export enum GMapType {
     ROADMAP = 'roadmap',
     SATELLITE = 'satellite',
     HYBRID = 'hybrid',
-    TERRAIN = 'terrain'
+    TERRAIN = 'terrain',
 }
 export type GMapOptions = {
     zoom?: number
@@ -47,16 +47,28 @@ export type GMapOptions = {
 export function getStaticUrl(options: GMapOptions) {
     const { GOOGLE_API_KEY, MAP_PIN_ICON } = getConfig().publicRuntimeConfig
     const uri_segments: string[] = [
-        `center=${[options.center.lat,options.center.lng].join(',')}`,
+        `center=${[options.center.lat, options.center.lng].join(',')}`,
         `zoom=${options.zoom || 15}`,
-        `size=${options.dimensions ? [options.dimensions.width, options.dimensions.height].join('x') : '463x256'}`,
+        `size=${
+            options.dimensions
+                ? [
+                      options.dimensions.width,
+                      options.dimensions.height,
+                  ].join('x')
+                : '463x256'
+        }`,
         `maptype=${options.maptype || GMapType.ROADMAP}`,
         `key=${GOOGLE_API_KEY}`,
-        `map_id=${options.map_id || '2e1a40c8e7e14e7c'}`
+        `map_id=${options.map_id || '2e1a40c8e7e14e7c'}`,
     ]
-    options.markers && options.markers.forEach((m: Marker) => {
-        uri_segments.push(`markers=icon:${m.icon || MAP_PIN_ICON}%7C${m.lat},${m.lng}${m.label ? '%7Clabel:' : ''}${m.label || ''}`)
-    })
+    options.markers &&
+        options.markers.forEach((m: Marker) => {
+            uri_segments.push(
+                `markers=icon:${m.icon || MAP_PIN_ICON}%7C${m.lat},${
+                    m.lng
+                }${m.label ? '%7Clabel:' : ''}${m.label || ''}`
+            )
+        })
     return [
         'https://maps.googleapis.com/maps/api/staticmap',
         uri_segments.join('&'),

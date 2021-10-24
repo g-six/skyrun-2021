@@ -117,16 +117,13 @@ export function LocationCard({
             <div className="p-6 flex flex-col justify-between flex-1">
                 <div>
                     <div className="flex-grow">
-                        <div
-                            className={classNames(
-                                record.online
-                                    ? 'bg-yellow-100 text-yellow-800'
-                                    : 'bg-green-100 text-green-800',
-                                'px-2 inline-flex text-xs leading-5 font-semibold rounded-full uppercase mb-4'
-                            )}
-                        >
-                            {record.online ? 'Online' : 'Physical'}
-                        </div>
+                        {record.online ? (
+                            <div className="bg-yellow-100 text-yellow-800 px-2 inline-flex text-xs leading-5 font-semibold rounded-full uppercase mb-4">
+                                Online
+                            </div>
+                        ) : (
+                            ''
+                        )}
                     </div>
                     <div className="flex items-center justify-between">
                         <div className="text-lg font-semibold font-sans text-primary">

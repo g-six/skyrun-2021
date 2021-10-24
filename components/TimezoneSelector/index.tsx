@@ -67,7 +67,7 @@ function TimezoneSelector(props: TimezoneSelectProps & withClass) {
                     leaveTo="opacity-0"
                 >
                     <Listbox.Options className="absolute z-10 mt-1 w-full bg-white shadow-2xl max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
-                        {timezones.sort(sortBy('city')).map((tz) => (
+                        {timezones.sort(sortBy('offset')).map((tz) => (
                             <Listbox.Option
                                 key={[tz.region, tz.city].join('/')}
                                 className={({ active }) =>
@@ -82,7 +82,7 @@ function TimezoneSelector(props: TimezoneSelectProps & withClass) {
                             >
                                 {({ selected, active }) => (
                                     <>
-                                        <div className="flex items-center">
+                                        <div className="flex items-center justify-between">
                                             <span
                                                 className={classNames(
                                                     selected
@@ -91,11 +91,9 @@ function TimezoneSelector(props: TimezoneSelectProps & withClass) {
                                                     'ml-3 block truncate text-base'
                                                 )}
                                             >
-                                                <span className="text-sm text-gray-500 mr-2 font-mono">
-                                                    {tz.offset}
-                                                </span>{' '}
                                                 {tz.city}
                                             </span>
+                                            {tz.offset}
                                         </div>
 
                                         {selected ? (

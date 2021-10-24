@@ -1,4 +1,5 @@
 import { Coords } from 'google-map-react'
+import usePlacesService from 'react-google-autocomplete/lib/usePlacesAutocompleteService'
 import { classNames } from 'utils/dom-helpers'
 import { GeneralFormValues as LocationItem } from 'components/Modals/Location/types'
 import { useEffect, useState } from 'react'

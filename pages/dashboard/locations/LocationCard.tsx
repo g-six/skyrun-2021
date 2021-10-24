@@ -1,12 +1,11 @@
 import { Coords } from 'google-map-react'
 import dynamic from 'next/dynamic'
 import usePlacesService from 'react-google-autocomplete/lib/usePlacesAutocompleteService'
-import { classNames } from 'utils/dom-helpers'
 import { GeneralFormValues as LocationItem } from 'components/Modals/Location/types'
 import { useEffect, useState } from 'react'
 import { useAuth } from 'context/AuthContext'
 import { getStaticUrl, Marker } from 'components/Map'
-import { PlaceDetail } from './types'
+import { PlaceDetail } from '../../../types/location'
 
 const Map = dynamic(() => import('components/Map'), { ssr: false })
 

@@ -141,12 +141,13 @@ export function LocationListItem({
                         </button>
                     </div>
                     <div className="flex-grow mt-3 text-right">
-                        {
-                            record.online
-                            ? <div
-                                className="bg-yellow-100 text-yellow-800 px-2 inline-flex text-xs leading-5 font-semibold rounded-full uppercase mb-4"
-                            >Online</div> : ''
-                        }
+                        {record.online ? (
+                            <div className="bg-yellow-100 text-yellow-800 px-2 inline-flex text-xs leading-5 font-semibold rounded-full uppercase mb-4">
+                                Online
+                            </div>
+                        ) : (
+                            ''
+                        )}
                     </div>
                 </div>
             </div>

@@ -83,15 +83,6 @@ export function PlacesInput(props: Props) {
                     street_2: street_name,
                 })
             }
-            if (!street_number && !street_name) {
-                // const street_1 = []
-                // if (address.sublocality_level)
-                // props.setAttributes({
-                //     ...props.attributes,
-                //     street_1:
-                // })
-                // console.log(address)
-            }
             if (city && props.attributes.city != city) {
                 props.setAttributes({
                     ...props.attributes,
@@ -228,7 +219,7 @@ export function PlacesInput(props: Props) {
                                 address_components[types[0]] = long_name
                             }
                         )
-                        console.log(place)
+
                         if (place.geometry?.location?.lat()) {
                             setCoordinates([
                                 place.geometry?.location?.lat(),

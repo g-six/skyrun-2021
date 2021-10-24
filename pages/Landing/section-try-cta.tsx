@@ -18,8 +18,6 @@ export default function LandingSectionTryCTA() {
         }
     }, [tiers])
 
-    console.log(SignupModal.attributes)
-
     return (
         <section
             className={classNames(

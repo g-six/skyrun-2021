@@ -41,7 +41,6 @@ export function LocationListItem({
                             const minutes = details.utc_offset_minutes % 60
                             const hours =
                                 (details.utc_offset_minutes - minutes) / 60
-                            console.log(hours, minutes)
                         }
                         const place_pin = {
                             lat: details?.geometry?.location?.lat(),

@@ -73,7 +73,7 @@ function GeneralForm() {
     }
 
     function handleLanguageChange(e: DropDownListChangeEvent) {
-        console.log(e.target.value)
+        console.log('WIP handleLanguageChange')
     }
 
     function handleCountryChange(v: Country) {

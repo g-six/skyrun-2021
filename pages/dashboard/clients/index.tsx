@@ -69,7 +69,6 @@ function HeaderActions(props: HeaderProps) {
 
 function DashboardClient() {
     const { tenant, CreateClientModal: ModalContext } = useAuth()
-    const [selected_search_category, setSearchCategory] = useState('')
     const [selected_items, selectItems] = useState<number[]>([])
     const [all_selected, selectAll] = useState<boolean>(false)
     const [clients, setClients] = useState<ClientItem[]>([])
@@ -206,7 +205,7 @@ function DashboardClient() {
     )
 
     return (
-        <Dashboard actions={<HeaderActions onSearch={setSearchCategory} />}>
+        <Dashboard>
             <div className="flex flex-col mt-4">
                 <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                     <div className="flex justify-between">

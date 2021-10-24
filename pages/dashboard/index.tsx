@@ -9,7 +9,6 @@ import {
 } from 'context/AuthContext'
 import { Wrapper } from 'components/types'
 import LoginModal from 'components/Modals/Login'
-import LoginButton from 'components/Buttons/LoginButton'
 import { toTitleCase } from 'utils/string-helper'
 import LanguageSelector from 'components/LanguageSelector'
 import { useAppContext } from 'context/AppContext'
@@ -17,11 +16,11 @@ import { DropDownListChangeEvent } from '@progress/kendo-react-dropdowns'
 import TenantModal from 'components/Modals/Tenant'
 import Cookies from 'js-cookie'
 import { classNames } from 'utils/dom-helpers'
+import UniversalSearch from 'components/UniversalSearch'
 
 const Sidebar = dynamic(() => import('./Sidebar'), { ssr: false })
 
 function Dashboard({
-    actions = [],
     redirect = '/',
     children,
 }: { redirect?: string } & Wrapper) {
@@ -59,7 +58,9 @@ function Dashboard({
                 >
                     <AppBarSection
                         className={classNames(
-                            is_drawer_expanded ? 'w-44 mr-14 bg-center' : 'w-32 bg-top-left',
+                            is_drawer_expanded
+                                ? 'w-44 mr-14 bg-center'
+                                : 'w-32 bg-top-left',
                             'bg-contain h-10 block app-logo-icon mb-2'
                         )}
                     />
@@ -80,7 +81,7 @@ function Dashboard({
                         )}
                     </AppBarSection>
                     <AppBarSection className="page-actions">
-                        {actions}
+                        <UniversalSearch />
                     </AppBarSection>
 
                     <AppBarSection>

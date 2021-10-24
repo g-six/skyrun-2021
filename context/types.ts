@@ -45,7 +45,7 @@ export type AuthContextType = {
     SignupModal: ModalHook
     TenantModal: ModalHook
     CreateClientModal: ModalHook
-    CreateLocationModal: ModalHook
+    LocationModal: ModalHook
     StaffModal: ModalHook
     is_drawer_expanded: boolean,
     toggleDrawerSize: Dispatch<SetStateAction<boolean>>,

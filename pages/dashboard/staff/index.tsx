@@ -11,11 +11,7 @@ import {
 import { useAuth } from 'context/AuthContext'
 import { Staff } from 'types/staff'
 import DataTable from 'components/DataTable'
-
-enum ViewMode {
-    GRID,
-    LIST,
-}
+import { ViewMode } from 'types'
 
 function SearchInputGroup({ selected_idx = 0 }) {
     return (

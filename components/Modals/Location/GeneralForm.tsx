@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, MouseEvent, RefObject } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
+
 import { Switch } from '@headlessui/react'
 import { DropDownListChangeEvent } from '@progress/kendo-react-dropdowns'
 import { classNames } from 'utils/dom-helpers'
-import { AuthContext, useAuth } from 'context/AuthContext'
+import { useAuth } from 'context/AuthContext'
 import { CognitoErrorTypes } from 'services/CognitoErrorTypes'
 import { SubmitError } from '../types'
 import { GeneralFormValues } from './types'
-import { createModal } from '../ModalFactory'
-import { FetchMethods, useFetch } from 'utils/fetch-helper'
+import { FetchMethods, getApiRequest, useFetch } from 'utils/fetch-helper'
 import LanguageSelector from 'components/LanguageSelector'
 import TimezoneSelector from 'components/TimezoneSelector'
 import { Timezone } from 'components/TimezoneSelector/zones'
@@ -16,28 +16,13 @@ import StaffSelector from 'components/StaffSelector'
 import CountrySelector from 'components/CountrySelector'
 import { Country } from 'components/CountrySelector/countries'
 
-const ModalProvider = createModal(
-    AuthContext,
-    'CreateLocationModal',
-    () => (
-        <>
-            <i className="feather feather-plus mr-4" />
-            <span className="circular">Create</span>
-        </>
-    ),
-    () => (
-        <span className="border border-gray-300 rounded-lg py-3 inline-block mr-3 px-10">
-            Cancel
-        </span>
-    )
-)
-
 function GeneralForm() {
     const ctx = useAuth()
+    const { attributes, setAttributes, close } = ctx.LocationModal
     const [loading, toggleLoading] = useState(false)
     const [online, toggleOnline] = useState(false)
     const [success, setSuccess] = useState(false)
-    const [staff, setStaff] = useState([])
+    const [staff, setStaff] = useState()
 
     const {
         register,
@@ -54,11 +39,34 @@ function GeneralForm() {
     register('country', { required: true })
     register('timezone', { required: true })
 
-    const api_fetch = useFetch('/v1/locations', FetchMethods.POST, false)
-    const { data: staff_api_response } = useFetch(
-        `/v1/staff/?tenantId=${ctx.tenant?.id}`,
-        FetchMethods.GET
+    if (attributes?.manager)
+        setValue(
+            'manager',
+            (attributes?.manager as Record<string, string>).id as string
+        )
+    if (attributes?.country)
+        setValue('country', attributes?.country as string)
+    if (attributes?.timezone)
+        setValue('timezone', attributes?.timezone as string)
+
+    const api_fetch = useFetch(
+        attributes?.id
+            ? `/v1/locations/${attributes?.id}`
+            : '/v1/locations',
+        attributes?.id ? FetchMethods.PUT : FetchMethods.POST,
+        false
     )
+
+    function updateList() {
+        ctx.LocationModal.setAttributes({
+            has_updates: true,
+        })
+    }
+
+    function handleCloseModal(e: MouseEvent<HTMLButtonElement>) {
+        setAttributes({})
+        close()
+    }
 
     function handleOnline(val: boolean) {
         toggleOnline(val)
@@ -85,25 +93,43 @@ function GeneralForm() {
     ) => {
         toggleLoading(true)
         try {
-            const { name, notes, timezone, phone, country } = values
+            const {
+                name,
+                notes,
+                timezone,
+                phone,
+                street_1,
+                street_2,
+                zip,
+                city,
+                state,
+                country,
+            } = values
             const { tenant } = ctx
 
             const res = await api_fetch.doFetch({
                 country,
+                state,
                 tenant,
                 timezone,
                 name,
                 manager: {
                     id: values.manager,
                 },
+                streetAddress1: street_1,
+                streetAddress2: street_2,
+                city,
+                zip,
                 online,
                 phone,
                 notes,
             })
-            console.log(res)
+
             if (res?.ok) {
+                updateList()
                 reset()
                 setSuccess(true)
+                ctx.LocationModal.close()
             }
         } catch (e: unknown) {
             const { name, message } = e as SubmitError
@@ -118,17 +144,26 @@ function GeneralForm() {
     }
 
     useEffect(() => {
-        const staff = staff_api_response.content
-        if (staff) {
-            setStaff(
-                staff.map((st: Record<string, Record<string, string>>) => ({
-                    id: st.id,
-                    first_name: st.user.firstName,
-                    last_name: st.user.lastName,
-                }))
+        async function retrieveStaffList() {
+            const { content } = await getApiRequest(
+                `/v1/staff/?tenantId=${ctx.tenant?.id}`
             )
+            if (content) {
+                setStaff(
+                    content.map(
+                        (st: Record<string, Record<string, string>>) => ({
+                            id: st.id,
+                            first_name: st.user.firstName,
+                            last_name: st.user.lastName,
+                        })
+                    )
+                )
+            }
         }
-    }, [staff_api_response])
+        if (!staff && ctx.tenant?.id) {
+            retrieveStaffList()
+        }
+    }, [staff, attributes])
 
     return (
         <form method="POST" onSubmit={handleSubmit(onSubmit)}>
@@ -156,6 +191,7 @@ function GeneralForm() {
                         {...register('name', {
                             required: true,
                         })}
+                        defaultValue={(attributes?.name as string) || ''}
                     />
                     {errors.name?.type === 'required' && (
                         <span className="text-sm text-red-700">
@@ -176,11 +212,12 @@ function GeneralForm() {
                     <LanguageSelector
                         className="country-selector form-country-selector"
                         onChange={handleLanguageChange}
+                        defaultItem={0}
                     />
                 </fieldset>
             </div>
-            <div className="pb-6 md:flex flex-wrap">
-                <fieldset className="pb-6 md:w-2/3 md:pr-4">
+            <div className="flex gap-6 mb-6">
+                <fieldset className="lg:w-1/2 relative">
                     <label
                         htmlFor="street-1"
                         className={classNames(
@@ -194,43 +231,29 @@ function GeneralForm() {
                         type="text"
                         id="street-1"
                         className={classNames(
-                            'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
                             errors.street_1?.type
                                 ? 'border-red-300 bg-red-100'
-                                : ''
+                                : '',
+                            'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light shadow-sm border-gray-300 rounded-md w-full'
                         )}
-                        {...register('street_1', {
-                            required: true,
-                        })}
+                        {...register('street_1', { required: !online })}
+                        defaultValue={
+                            (attributes?.street_1 as string) || ''
+                        }
                     />
+                    {/* <PlacesInput
+                        defaultValue={attributes?.street_1 as string}
+                        attributes={attributes as Record<string, string>}
+                        setAttributes={setAttributes as (p: Record<string, string>) => {}}
+                        id="street-1"
+                    /> */}
                     {errors.street_1?.type === 'required' && (
-                        <span className="text-sm text-red-700">
+                        <span className="text-sm text-red-700 absolute">
                             Street address is required
                         </span>
                     )}
                 </fieldset>
-                <fieldset className="pb-6 md:w-1/3">
-                    <label
-                        htmlFor="timezone"
-                        className={classNames(
-                            'block text-lg',
-                            errors.timezone?.type ? 'text-red-700' : ''
-                        )}
-                    >
-                        Timezone
-                    </label>
-                    <TimezoneSelector
-                        id="timezone"
-                        onChange={handleTimezoneChange}
-                        error={errors.timezone?.type}
-                    />
-                    {errors.timezone?.type === 'required' && (
-                        <span className="text-sm text-red-700">
-                            Timezone is required
-                        </span>
-                    )}
-                </fieldset>
-                <fieldset className="md:w-2/3 lg:w-1/2 md:pr-4">
+                <fieldset className="lg:w-1/2 relative">
                     <label
                         htmlFor="street-2"
                         className={classNames(
@@ -250,14 +273,105 @@ function GeneralForm() {
                                 : ''
                         )}
                         {...register('street_2', { required: false })}
+                        defaultValue={
+                            (attributes?.street_2 as string) || ''
+                        }
                     />
                     {errors.street_2?.type && (
-                        <span className="text-sm text-red-700">
+                        <span className="text-sm absolute text-red-700">
                             Street 2 is required
                         </span>
                     )}
                 </fieldset>
-                <fieldset className="md:w-2/3 lg:w-1/2 lg:pr-0">
+            </div>
+            <div className="flex gap-6 mb-6">
+                <fieldset className="lg:w-1/2 relative">
+                    <label
+                        htmlFor="city"
+                        className={classNames(
+                            'block text-lg',
+                            errors.city?.type ? 'text-red-700' : ''
+                        )}
+                    >
+                        City
+                    </label>
+                    <input
+                        type="text"
+                        id="city"
+                        className={classNames(
+                            'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
+                            errors.city?.type
+                                ? 'border-red-300 bg-red-100'
+                                : ''
+                        )}
+                        {...register('city', { required: !online })}
+                        defaultValue={(attributes?.city as string) || ''}
+                    />
+                    {errors.city?.type && (
+                        <span className="text-sm absolute text-red-700">
+                            City is required
+                        </span>
+                    )}
+                </fieldset>
+                <fieldset className="lg:w-1/4 xl:w-1/6 relative">
+                    <label
+                        htmlFor="zip"
+                        className={classNames(
+                            'block text-lg',
+                            errors.zip?.type ? 'text-red-700' : ''
+                        )}
+                    >
+                        Zip
+                    </label>
+                    <input
+                        type="text"
+                        id="zip"
+                        className={classNames(
+                            'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
+                            errors.zip?.type
+                                ? 'border-red-300 bg-red-100'
+                                : ''
+                        )}
+                        {...register('zip', { required: !online })}
+                        defaultValue={(attributes?.zip as string) || ''}
+                    />
+                    {errors.zip?.type && (
+                        <span className="text-sm text-red-700 absolute">
+                            Zip is required
+                        </span>
+                    )}
+                </fieldset>
+                <fieldset className="lg:w-1/4 xl:w-1/3 relative">
+                    <label
+                        htmlFor="state"
+                        className={classNames(
+                            'block text-lg',
+                            errors.state?.type ? 'text-red-700' : ''
+                        )}
+                    >
+                        State
+                    </label>
+                    <input
+                        type="text"
+                        id="state"
+                        className={classNames(
+                            'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
+                            errors.state?.type
+                                ? 'border-red-300 bg-red-100'
+                                : ''
+                        )}
+                        {...register('state', { required: !online })}
+                        defaultValue={(attributes?.state as string) || ''}
+                    />
+                    {errors.state?.type && (
+                        <span className="text-sm absolute text-red-700">
+                            State is required
+                        </span>
+                    )}
+                </fieldset>
+            </div>
+            <div className="flex gap-6 mb-6">
+                <fieldset className="flex-1 relative">
                     <label
                         htmlFor="country"
                         className={classNames(
@@ -267,15 +381,40 @@ function GeneralForm() {
                     >
                         Country
                     </label>
-                    <CountrySelector
-                        id="country"
-                        onChange={handleCountryChange}
-                        error={errors.country?.type}
-                    />
+                    <div key={attributes?.country as string}>
+                        <CountrySelector
+                            id="country"
+                            onChange={handleCountryChange}
+                            error={errors.country?.type}
+                            defaultValue={attributes?.country as string}
+                        />
+                    </div>
 
                     {errors.country?.type === 'required' && (
-                        <span className="text-sm text-red-700">
+                        <span className="text-sm absolute text-red-700">
                             Country is required
+                        </span>
+                    )}
+                </fieldset>
+                <fieldset className="relative lg:w-1/3">
+                    <label
+                        htmlFor="timezone"
+                        className={classNames(
+                            'block text-lg',
+                            errors.timezone?.type ? 'text-red-700' : ''
+                        )}
+                    >
+                        Timezone
+                    </label>
+                    <TimezoneSelector
+                        id="timezone"
+                        onChange={handleTimezoneChange}
+                        error={errors.timezone?.type}
+                        defaultValue={attributes?.timezone as string}
+                    />
+                    {errors.timezone?.type === 'required' && (
+                        <span className="text-sm text-red-700 relative">
+                            Timezone is required
                         </span>
                     )}
                 </fieldset>
@@ -293,9 +432,12 @@ function GeneralForm() {
                     </label>
                     <StaffSelector
                         id="manager"
-                        data={staff}
+                        data={staff || []}
                         onChange={handleManagerChange}
                         error={errors.manager?.type}
+                        defaultValue={
+                            attributes?.manager as Record<string, string>
+                        }
                     />
 
                     {errors.manager?.type === 'required' && (
@@ -324,6 +466,7 @@ function GeneralForm() {
                                 : ''
                         )}
                         {...register('phone', { required: true })}
+                        defaultValue={attributes?.phone as string}
                     />
                     {errors.phone?.type && (
                         <span className="text-sm text-red-700">
@@ -393,7 +536,13 @@ function GeneralForm() {
 
             <div>
                 <div className="flex justify-end">
-                    <ModalProvider.Closer />
+                    <button
+                        type="button"
+                        className="border border-gray-300 rounded-lg py-3 inline-block mr-3 px-10"
+                        onClick={handleCloseModal}
+                    >
+                        Cancel
+                    </button>
                     <button
                         type="submit"
                         className={classNames(

@@ -7,7 +7,7 @@ module.exports = {
       sm: '0 1px 2px 0 rgba(76, 90, 105, 0.1)',
       DEFAULT: '0 1px 3px 0 rgba(76, 90, 105, 0.1), 0 1px 2px 0 rgba(76, 90, 105, 0.11)',
       md: '0 4px 6px -1px rgba(76, 90, 105, 0.1), 0 2px 4px -1px rgba(76, 90, 105, 0.11)',
-      lg: '0px 16px 24px rgba(76, 90, 105, 0.1)',
+      lg: '0px 0px 16px rgba(76, 90, 105, 0.1)',
       'right-lg': '0px 16px 24px rgba(76, 90, 105, 0.1)',
       xl: '0 20px 25px -5px rgba(76, 90, 105, 0.1), 0 10px 10px -5px rgba(76, 90, 105, 0.07)',
       '2xl': '0 25px 50px -12px rgba(76, 90, 105, 0.15)',

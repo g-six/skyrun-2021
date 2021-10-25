@@ -154,7 +154,7 @@ export function LocationCard({
                             {record.zip}
                         </span>
                         <span className="block">
-                            {[record.state, record.country].join(', ')}
+                            {record.state ? [record.state, record.country].join(', ') : record.country}
                         </span>
                     </address>
                 </div>
@@ -168,7 +168,7 @@ export function LocationCard({
                             className="border-gray-400 border rounded-lg text-lg font-sans flex-1 py-2"
                             onClick={handleEdit}
                         >
-                            See Details
+                            Edit
                         </button>
 
                         <button

@@ -91,7 +91,7 @@ export function LocationListItem({
             className="border-t border-b border-gray-100 border-b-gray-150 overflow-hidden flex flex-col"
         >
             <div className="p-6 flex justify-between">
-                <div>
+                <div className="w-96">
                     <div className="flex items-center justify-between">
                         <div className="text-lg font-medium text-gray-900">
                             {record.name}
@@ -127,7 +127,7 @@ export function LocationListItem({
                             className="bg-gray-100 rounded-lg text-2xl flex items-center w-12 h-12"
                             onClick={editItem}
                         >
-                            <i className="feather-info m-auto" />
+                            <i className="feather-edit m-auto" />
                         </button>
 
                         <button

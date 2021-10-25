@@ -203,7 +203,7 @@ function DashboardLocations() {
                             )}
                         >
                             <i className="block mx-auto mb-4 feather feather-plus font-back text-2xl block w-10 h-10 leading-relaxed px-2 rounded-xl bg-primary-lighter text-primary-light" />
-                            <span className="text-xl mx-auto block w-36">
+                            <span className="text-xl mx-auto block w-64">
                                 Add a new location
                             </span>
                         </div>

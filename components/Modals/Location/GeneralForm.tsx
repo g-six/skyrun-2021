@@ -216,74 +216,101 @@ function GeneralForm() {
                     />
                 </fieldset>
             </div>
-            <div className="flex gap-6 mb-6">
-                <fieldset className="lg:w-1/2 relative">
-                    <label
-                        htmlFor="street-1"
-                        className={classNames(
-                            'block text-lg',
-                            errors.street_1?.type ? 'text-red-700' : ''
-                        )}
-                    >
-                        Street Address 1
-                    </label>
-                    <input
-                        type="text"
-                        id="street-1"
-                        className={classNames(
-                            errors.street_1?.type
-                                ? 'border-red-300 bg-red-100'
-                                : '',
-                            'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light shadow-sm border-gray-300 rounded-md w-full'
-                        )}
-                        {...register('street_1', { required: !online })}
-                        defaultValue={
-                            (attributes?.street_1 as string) || ''
-                        }
-                    />
-                    {/* <PlacesInput
-                        defaultValue={attributes?.street_1 as string}
-                        attributes={attributes as Record<string, string>}
-                        setAttributes={setAttributes as (p: Record<string, string>) => {}}
-                        id="street-1"
-                    /> */}
-                    {errors.street_1?.type === 'required' && (
-                        <span className="text-sm text-red-700 absolute block">
-                            Street address is required
-                        </span>
+            <div className="mb-6">
+                <label
+                    htmlFor="online"
+                    className={classNames(
+                        'block text-lg',
+                        errors.online?.type ? 'text-red-700' : ''
                     )}
-                </fieldset>
-                <fieldset className="lg:w-1/2 relative">
-                    <label
-                        htmlFor="street-2"
-                        className={classNames(
-                            'block text-lg',
-                            errors.street_2?.type ? 'text-red-700' : ''
-                        )}
-                    >
-                        Street Address 2
-                    </label>
-                    <input
-                        type="text"
-                        id="street-2"
-                        className={classNames(
-                            'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
-                            errors.street_2?.type
-                                ? 'border-red-300 bg-red-100'
-                                : ''
-                        )}
-                        {...register('street_2', { required: false })}
-                        defaultValue={
-                            (attributes?.street_2 as string) || ''
+                >
+                    Online
+                </label>
+                <Switch
+                    name="online"
+                    id="online"
+                    checked={online}
+                    onChange={handleOnline}
+                    className={`${online ? 'bg-primary' : 'bg-gray-300'}
+        block relative inline-flex mt-2 flex-shrink-0 h-10 w-20 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
+                >
+                    <span className="sr-only">Use setting</span>
+                    <span
+                        aria-hidden="true"
+                        className={`${
+                            online ? 'translate-x-10' : 'translate-x-0'
                         }
+        pointer-events-none inline-block h-9 w-9 rounded-full bg-white shadow-lg transform ring-0 transition ease-in-out duration-200`}
                     />
-                    {errors.street_2?.type && (
-                        <span className="text-sm absolute text-red-700">
-                            Street 2 is required
-                        </span>
-                    )}
-                </fieldset>
+                </Switch>
             </div>
+            {online ? (
+                ''
+            ) : (
+                <div className="flex gap-6 mb-6">
+                    <fieldset className="lg:w-1/2 relative">
+                        <label
+                            htmlFor="street-1"
+                            className={classNames(
+                                'block text-lg',
+                                errors.street_1?.type ? 'text-red-700' : ''
+                            )}
+                        >
+                            Street Address 1
+                        </label>
+                        <input
+                            type="text"
+                            id="street-1"
+                            className={classNames(
+                                errors.street_1?.type
+                                    ? 'border-red-300 bg-red-100'
+                                    : '',
+                                'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light shadow-sm border-gray-300 rounded-md w-full'
+                            )}
+                            {...register('street_1')}
+                            defaultValue={
+                                (attributes?.street_1 as string) || ''
+                            }
+                        />
+
+                        {errors.street_1?.type === 'required' && (
+                            <span className="text-sm text-red-700 absolute block">
+                                Street address is required
+                            </span>
+                        )}
+                    </fieldset>
+                    <fieldset className="lg:w-1/2 relative">
+                        <label
+                            htmlFor="street-2"
+                            className={classNames(
+                                'block text-lg',
+                                errors.street_2?.type ? 'text-red-700' : ''
+                            )}
+                        >
+                            Street Address 2
+                        </label>
+                        <input
+                            type="text"
+                            id="street-2"
+                            className={classNames(
+                                'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
+                                errors.street_2?.type
+                                    ? 'border-red-300 bg-red-100'
+                                    : ''
+                            )}
+                            {...register('street_2')}
+                            defaultValue={
+                                (attributes?.street_2 as string) || ''
+                            }
+                        />
+                        {errors.street_2?.type && (
+                            <span className="text-sm absolute text-red-700">
+                                {errors.street_2.message}
+                            </span>
+                        )}
+                    </fieldset>
+                </div>
+            )}
             <div className="flex gap-6 mb-6">
                 <fieldset className="lg:w-1/2 relative">
                     <label
@@ -304,7 +331,7 @@ function GeneralForm() {
                                 ? 'border-red-300 bg-red-100'
                                 : ''
                         )}
-                        {...register('city', { required: !online })}
+                        {...register('city')}
                         defaultValue={(attributes?.city as string) || ''}
                     />
                     {errors.city?.type && (
@@ -313,34 +340,38 @@ function GeneralForm() {
                         </span>
                     )}
                 </fieldset>
-                <fieldset className="lg:w-1/4 xl:w-1/6 relative">
-                    <label
-                        htmlFor="zip"
-                        className={classNames(
-                            'block text-lg',
-                            errors.zip?.type ? 'text-red-700' : ''
+                {online ? (
+                    ''
+                ) : (
+                    <fieldset className="lg:w-1/4 xl:w-1/6 relative">
+                        <label
+                            htmlFor="zip"
+                            className={classNames(
+                                'block text-lg',
+                                errors.zip?.type ? 'text-red-700' : ''
+                            )}
+                        >
+                            Zip
+                        </label>
+                        <input
+                            type="text"
+                            id="zip"
+                            className={classNames(
+                                'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
+                                errors.zip?.type
+                                    ? 'border-red-300 bg-red-100'
+                                    : ''
+                            )}
+                            {...register('zip')}
+                            defaultValue={(attributes?.zip as string) || ''}
+                        />
+                        {errors.zip?.type && (
+                            <span className="text-sm text-red-700 absolute">
+                                Zip is required
+                            </span>
                         )}
-                    >
-                        Zip
-                    </label>
-                    <input
-                        type="text"
-                        id="zip"
-                        className={classNames(
-                            'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
-                            errors.zip?.type
-                                ? 'border-red-300 bg-red-100'
-                                : ''
-                        )}
-                        {...register('zip', { required: !online })}
-                        defaultValue={(attributes?.zip as string) || ''}
-                    />
-                    {errors.zip?.type && (
-                        <span className="text-sm text-red-700 absolute">
-                            Zip is required
-                        </span>
-                    )}
-                </fieldset>
+                    </fieldset>
+                )}
                 <fieldset className="lg:w-1/4 xl:w-1/3 relative">
                     <label
                         htmlFor="state"
@@ -360,7 +391,7 @@ function GeneralForm() {
                                 ? 'border-red-300 bg-red-100'
                                 : ''
                         )}
-                        {...register('state', { required: !online })}
+                        {...register('state')}
                         defaultValue={(attributes?.state as string) || ''}
                     />
                     {errors.state?.type && (
@@ -465,43 +496,15 @@ function GeneralForm() {
                                 ? 'border-red-300 bg-red-100'
                                 : ''
                         )}
-                        {...register('phone', { required: true })}
+                        {...register('phone')}
                         defaultValue={attributes?.phone as string}
                     />
                     {errors.phone?.type && (
                         <span className="text-sm text-red-700">
-                            Phone is required
+                            {errors.phone?.message}
                         </span>
                     )}
                 </fieldset>
-                <div className="md:w-1/3 lg:w-1/6">
-                    <label
-                        htmlFor="online"
-                        className={classNames(
-                            'block text-lg',
-                            errors.online?.type ? 'text-red-700' : ''
-                        )}
-                    >
-                        Online
-                    </label>
-                    <Switch
-                        name="online"
-                        id="online"
-                        checked={online}
-                        onChange={handleOnline}
-                        className={`${online ? 'bg-primary' : 'bg-gray-300'}
-          block relative inline-flex mt-2 flex-shrink-0 h-10 w-20 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
-                    >
-                        <span className="sr-only">Use setting</span>
-                        <span
-                            aria-hidden="true"
-                            className={`${
-                                online ? 'translate-x-10' : 'translate-x-0'
-                            }
-            pointer-events-none inline-block h-9 w-9 rounded-full bg-white shadow-lg transform ring-0 transition ease-in-out duration-200`}
-                        />
-                    </Switch>
-                </div>
             </div>
 
             <fieldset className="pb-6">
@@ -522,7 +525,7 @@ function GeneralForm() {
                             ? 'border-red-300 bg-red-100'
                             : ''
                     )}
-                    placeholder="Private notes about client"
+                    placeholder="Private notes about location"
                     {...register('notes', {
                         required: false,
                     })}

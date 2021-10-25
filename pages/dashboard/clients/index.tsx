@@ -5,7 +5,8 @@ import { ClientItem } from 'components/Modals/Client/types'
 import { useAuth } from 'context/AuthContext'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { classNames } from 'utils/dom-helpers'
-import { FetchMethods, useFetch } from 'utils/fetch-helper'
+import { useFetch } from 'utils/fetch-helper'
+import { FetchMethods } from 'utils/types'
 import Dashboard from '..'
 
 function SearchInputGroup({ selected_idx = 0 }) {

@@ -1,13 +1,7 @@
-import { useCallback, useEffect, useState } from 'react'
 import Cookies from 'js-cookie'
 import getConfig from 'next/config'
-
-export enum FetchMethods {
-    GET = 'GET',
-    POST = 'POST',
-    PUT = 'PUT',
-    DELETE = 'DELETE',
-}
+import { useCallback, useEffect, useState } from 'react'
+import { FetchMethods } from './types'
 
 function fetchPath(path: string) {
     const { API_ENDPOINT } = getConfig().publicRuntimeConfig
@@ -111,16 +105,16 @@ export function useFetch<Body = any, Result = any>(
 
             try {
                 const response = await fetch(fetchPath(path) + query, req_init)
-    
+
                 if (expects_json) {
                     try {
                         setData((await response.json()) as Result)
                     } catch (e) {
-                        setData({ error: 'API error' } as unknown as 
+                        setData({ error: 'API error' } as unknown as
                         Result)
                     }
                 }
-    
+
                 setLoading(false)
                 setStatus(response.status)
                 return response

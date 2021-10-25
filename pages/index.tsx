@@ -1,17 +1,17 @@
-import Head from 'next/head'
-import Navbar from '../components/Navbar'
-import Footer from '../components/Footer'
-import LandingHero, { Props as LandingHeroProps } from './Landing/hero'
 import LoginModal from 'components/Modals/Login'
 import SignupModal from 'components/Modals/Signup'
-import LandingFeaturesSection from './Landing/section-features'
-import LandingSectionTestimonials from './Landing/section-testimonials'
-import LandingPricingSection from './Landing/section-pricing'
-import LandingSectionTryCTA from './Landing/section-try-cta'
-import { FetchMethods, useFetch } from 'utils/fetch-helper'
-import { useEffect, useRef, useState } from 'react'
 import { useAppContext } from 'context/AppContext'
-import { getTranslation } from 'utils/language-helper'
+import Head from 'next/head'
+import { useEffect, useRef, useState } from 'react'
+import { useFetch } from 'utils/fetch-helper'
+import { FetchMethods } from 'utils/types'
+import Footer from '../components/Footer'
+import Navbar from '../components/Navbar'
+import LandingHero, { Props as LandingHeroProps } from './Landing/hero'
+import LandingFeaturesSection from './Landing/section-features'
+import LandingPricingSection from './Landing/section-pricing'
+import LandingSectionTestimonials from './Landing/section-testimonials'
+import LandingSectionTryCTA from './Landing/section-try-cta'
 
 function Home() {
     const { lang } = useAppContext()
@@ -79,48 +79,14 @@ function Home() {
     }
     useEffect(() => {
         if (lang && translation.data?.attributes[lang]) {
-            setTranslations({
-                hero_line_2: getTranslation(
-                    'hero_line_2',
-                    translation.data?.attributes[lang]
-                ),
-                main_cta_button: getTranslation(
-                    'main_cta_button',
-                    translation.data?.attributes[lang]
-                ),
-                section_2_left_title: getTranslation(
-                    'section_2_left_title',
-                    translation.data?.attributes[lang]
-                ),
-                section_2_right_title: getTranslation(
-                    'section_2_right_title',
-                    translation.data?.attributes[lang]
-                ),
-                section_2_mid_left_title: getTranslation(
-                    'section_2_mid_left_title',
-                    translation.data?.attributes[lang]
-                ),
-                section_2_mid_right_title: getTranslation(
-                    'section_2_mid_right_title',
-                    translation.data?.attributes[lang]
-                ),
-                section_2_checklist: getTranslation(
-                    'section_2_checklist',
-                    translation.data?.attributes[lang]
-                ),
-                section_3_title: getTranslation(
-                    'section_3_title',
-                    translation.data?.attributes[lang]
-                ),
-                section_3_body: getTranslation(
-                    'section_3_body',
-                    translation.data?.attributes[lang]
-                ),
-                pricing_plans_title: getTranslation(
-                    'pricing_plans_title',
-                    translation.data?.attributes[lang]
-                ),
-            })
+            translation.data.attributes[lang].forEach(
+                ({ key, value }: any) => {
+                    setTranslations((translations) => ({
+                        ...translations,
+                        [key]: value,
+                    }))
+                }
+            )
         }
     }, [translation, lang])
 

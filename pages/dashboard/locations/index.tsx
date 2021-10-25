@@ -1,20 +1,16 @@
-import { useEffect, useState } from 'react'
-import { Coords } from 'google-map-react'
+import { Language } from 'components/LanguageSelector'
 import LocationModal from 'components/Modals/Location'
 import { GeneralFormValues as LocationItem } from 'components/Modals/Location/types'
-import Dashboard from '..'
-import {
-    deleteApiRequest,
-    FetchMethods,
-    useFetch,
-} from 'utils/fetch-helper'
-import { useAuth } from 'context/AuthContext'
-import { Language } from 'components/LanguageSelector'
-import LocationCard from './LocationCard'
-import { classNames } from 'utils/dom-helpers'
-import { ViewMode } from 'types'
-import LocationListItem from './LocationListItem'
 import { useAppContext } from 'context/AppContext'
+import { useAuth } from 'context/AuthContext'
+import { useEffect, useState } from 'react'
+import { ViewMode } from 'types'
+import { classNames } from 'utils/dom-helpers'
+import { deleteApiRequest, useFetch } from 'utils/fetch-helper'
+import { FetchMethods } from 'utils/types'
+import Dashboard from '..'
+import LocationCard from './LocationCard'
+import LocationListItem from './LocationListItem'
 
 function DashboardLocations() {
     const ctx = useAuth()

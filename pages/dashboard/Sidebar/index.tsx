@@ -110,7 +110,10 @@ const CustomItem = (props: DrawerItemProps & SidebarItem) => {
     } else if (props.separator) {
         return (
             <div className="justify-self-stretch flex-auto px-5">
-                <div className="block border-b-gray-400 border-b h-full" style={{ height: '1px' }} />
+                <div
+                    className="block border-b-gray-400 border-b h-full"
+                    style={{ height: '1px' }}
+                />
             </div>
         )
     }

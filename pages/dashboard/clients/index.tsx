@@ -1,5 +1,6 @@
 import DataTable from 'components/DataTable'
 import FilterSelector from 'components/DropdownSelectors/FilterSelector'
+import LocationSelector from 'components/DropdownSelectors/LocationSelector'
 import CreateClientModal from 'components/Modals/Client'
 import { ClientItem } from 'components/Modals/Client/types'
 import { useAuth } from 'context/AuthContext'

@@ -2,10 +2,10 @@ import { act, fireEvent, render, screen } from '@testing-library/react'
 import LoginButton from 'components/Buttons/LoginButton'
 import { SkyAuthProvider } from 'context/AuthContext'
 import LoginModal from '.'
-import { mockGetTransalations } from './mock'
+import { mockGetLoginTranslations } from '../../../__mocks__/mock'
 
 jest.mock('utils/fetch-helper', () => ({
-    useFetch: jest.fn(() => mockGetTransalations),
+    useFetch: jest.fn(() => mockGetLoginTranslations),
 }))
 
 describe('LoginModal', () => {

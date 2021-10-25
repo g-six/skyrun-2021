@@ -107,6 +107,12 @@ const CustomItem = (props: DrawerItemProps & SidebarItem) => {
                 <TenantSelector tenant={tenant} tenants={tenants} />
             </div>
         )
+    } else if (props.separator) {
+        return (
+            <div className="justify-self-stretch flex-auto px-5">
+                <div className="block border-b-gray-400 border-b h-full" style={{ height: '1px' }} />
+            </div>
+        )
     }
 
     return (
@@ -204,11 +210,11 @@ function Sidebar({ children }: Props) {
                 {children}
                 <button
                     className={classNames(
-                        'absolute bottom-28 bg-primary text-white w-9 h-9 transition-all duration-300',
+                        'absolute bottom-28 bg-primary text-white w-9 h-9 transition-all duration-200',
                         ctx.is_drawer_expanded
                             ? 'left-56 shadow-xl border-r border-indigo-50'
-                            : 'left-3 hover:bg-opacity-30 bg-opacity-70',
-                        'duration-400 ease-linear transition-all rounded-full'
+                            : 'left-10 hover:bg-opacity-30 bg-opacity-70',
+                        'duration-200 ease-linear transition-all rounded-full'
                     )}
                     id="BtnExpandSidebar"
                     onClick={handleClick}
@@ -220,16 +226,6 @@ function Sidebar({ children }: Props) {
                                 : 'feather-chevron-right'
                         )}
                     ></span>
-                </button>
-                <button
-                    className={classNames(
-                        'btn-logout absolute bottom-16 left-3 w-9 h-9 rounded-lg',
-                        'duration-400 ease-linear transition-all',
-                        'hover:bg-indigo-900 hover:bg-opacity-10'
-                    )}
-                    onClick={ctx.logout}
-                >
-                    <span className="feather-unlock"></span>
                 </button>
             </DrawerContent>
         </Drawer>

@@ -248,7 +248,7 @@ function GeneralForm() {
                         id="street-1"
                     /> */}
                     {errors.street_1?.type === 'required' && (
-                        <span className="text-sm text-red-700 absolute">
+                        <span className="text-sm text-red-700 absolute block">
                             Street address is required
                         </span>
                     )}

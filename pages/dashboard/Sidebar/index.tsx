@@ -7,6 +7,7 @@ import {
 } from '@progress/kendo-react-layout'
 import { Language } from 'components/LanguageSelector'
 import { useAuth } from 'context/AuthContext'
+import Cookies from 'js-cookie'
 import { useRouter } from 'next/router'
 import { MouseEvent, ReactElement, useState } from 'react'
 import { classNames } from 'utils/dom-helpers'
@@ -141,6 +142,8 @@ function Sidebar({ children }: Props) {
         ctx.toggleDrawerSize(!ctx.is_drawer_expanded)
     }
     const onSelect = (e: DrawerSelectEvent) => {
+        Cookies.set('drawer', 'expanded')
+        ctx.toggleDrawerSize(true)
         router.push(e.itemTarget.props.route)
     }
     const setSelectedItem = (path_name: string) => {
@@ -183,9 +186,8 @@ function Sidebar({ children }: Props) {
                                   ...item,
                                   selected: item.text === selected,
                                   onClickCapture: () => {
-                                      ctx.toggleDrawerSize(
-                                          !ctx.is_drawer_expanded
-                                      )
+                                      Cookies.set('drawer', 'expanded')
+                                      ctx.toggleDrawerSize(true)
                                   },
                               }
                           }

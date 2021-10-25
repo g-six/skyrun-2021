@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { useAuth } from 'context/AuthContext'
 import { getStaticUrl, Marker } from 'components/Map'
 import { PlaceDetail } from '../../../types/location'
+import GridSpinner from 'components/Spinners/grid'
 
 const Map = dynamic(() => import('components/Map'), { ssr: false })
 
@@ -109,7 +110,11 @@ export function LocationCard({
                         })}
                     />
                 ) : (
-                    ''
+                    <div className="flex items-center h-full">
+                        <div className="mx-auto">
+                            <GridSpinner height={32} width={32} />
+                        </div>
+                    </div>
                 )}
             </div>
             <div className="p-6 flex flex-col justify-between flex-1">

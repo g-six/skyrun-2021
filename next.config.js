@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 
-const other_languages = ['zh']
+const languages = ['en', 'zh']
 const translated_pages = {}
 const pages = [
   '',
@@ -17,10 +17,7 @@ const pages = [
   'dashboard/settings',
 ]
 pages.forEach((page) => {
-  other_languages.forEach((language) => {
-    translated_pages[`/${page}`] = {
-      page: `/${page}`,
-    }
+  languages.forEach((language) => {
     translated_pages[`/${language}/${page}`] = {
       page: `/${page}`,
     }

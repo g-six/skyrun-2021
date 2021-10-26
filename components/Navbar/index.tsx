@@ -60,7 +60,7 @@ export default function Navbar() {
     }
 
     const [first_part] = betterPathname(location.pathname)
-    let locale = '/'
+    let locale = '/en'
 
     if (
         first_part &&

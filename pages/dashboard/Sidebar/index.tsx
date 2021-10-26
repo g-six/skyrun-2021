@@ -213,7 +213,7 @@ function Sidebar({ children }: Props) {
                 {children}
                 <button
                     className={classNames(
-                        'absolute bottom-28 bg-primary text-white w-9 h-9 transition-all duration-200',
+                        'absolute bottom-16 bg-primary text-white w-9 h-9 transition-all duration-200',
                         ctx.is_drawer_expanded
                             ? 'left-56 shadow-xl border-r border-indigo-50'
                             : 'left-10 hover:bg-opacity-30 bg-opacity-70',

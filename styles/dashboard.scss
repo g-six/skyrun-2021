@@ -3,6 +3,10 @@
     .k-drawer-wrapper,
     .k-drawer-wrapper .k-drawer-items {
         height: calc(100vh - 80px);
+
+        .k-drawer-items {
+            padding-bottom: 5rem;
+        }
     }
 
     .k-drawer-item[role="option"] {
@@ -34,4 +38,5 @@
 
 .k-appbar {
     box-shadow: none;
+    overflow: inherit;
 }

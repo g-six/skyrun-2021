@@ -71,7 +71,7 @@ export function renderLanguageOptions(
                                 first_segment
                             ? 'shadow-2xl opacity-90'
                             : 'opacity-40',
-                        'rounded-full w-10 h-10 my-1 hover:opacity-100',
+                        'rounded-full w-8 h-8 my-1 hover:opacity-100',
                         dataItem.icon
                     )}
                 />

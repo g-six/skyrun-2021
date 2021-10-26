@@ -30,7 +30,7 @@ export function UserDropdown({ locale }: Props) {
             className="ml-3 relative"
         >
             <div>
-                <Menu.Button className="bg-gray-800 items-center w-10 h-10 text-center justify-center p-1 flex v-center text-white text-md font-bold rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                <Menu.Button className="bg-gray-800 items-center w-8 h-8 text-center justify-center p-1 flex v-center text-white text-md font-bold rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                     <span className="sr-only">
                         Open
                         user

@@ -1,20 +1,16 @@
-import { useEffect, useState } from 'react'
-import { Coords } from 'google-map-react'
+import { Language } from 'components/LanguageSelector'
 import LocationModal from 'components/Modals/Location'
 import { GeneralFormValues as LocationItem } from 'components/Modals/Location/types'
-import Dashboard from '..'
-import {
-    deleteApiRequest,
-    FetchMethods,
-    useFetch,
-} from 'utils/fetch-helper'
-import { useAuth } from 'context/AuthContext'
-import { Language } from 'components/LanguageSelector'
-import LocationCard from './LocationCard'
-import { classNames } from 'utils/dom-helpers'
-import { ViewMode } from 'types'
-import LocationListItem from './LocationListItem'
 import { useAppContext } from 'context/AppContext'
+import { useAuth } from 'context/AuthContext'
+import { useEffect, useState } from 'react'
+import { ViewMode } from 'types'
+import { classNames } from 'utils/dom-helpers'
+import { deleteApiRequest, useFetch } from 'utils/fetch-helper'
+import { FetchMethods } from 'utils/types'
+import Dashboard from '..'
+import LocationCard from './LocationCard'
+import LocationListItem from './LocationListItem'
 
 function DashboardLocations() {
     const ctx = useAuth()
@@ -203,7 +199,7 @@ function DashboardLocations() {
                             )}
                         >
                             <i className="block mx-auto mb-4 feather feather-plus font-back text-2xl block w-10 h-10 leading-relaxed px-2 rounded-xl bg-primary-lighter text-primary-light" />
-                            <span className="text-xl mx-auto block w-36">
+                            <span className="text-xl mx-auto block w-64">
                                 Add a new location
                             </span>
                         </div>

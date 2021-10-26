@@ -1,17 +1,14 @@
+import DataTable from 'components/DataTable'
 import StaffModal from 'components/Modals/Staff'
+import { useAuth } from 'context/AuthContext'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { ViewMode } from 'types'
+import { Staff } from 'types/staff'
 import { classNames } from 'utils/dom-helpers'
+import { deleteApiRequest, useFetch } from 'utils/fetch-helper'
+import { FetchMethods } from 'utils/types'
 import Dashboard from '..'
 import Card from './card'
-import {
-    deleteApiRequest,
-    FetchMethods,
-    useFetch,
-} from 'utils/fetch-helper'
-import { useAuth } from 'context/AuthContext'
-import { Staff } from 'types/staff'
-import DataTable from 'components/DataTable'
-import { ViewMode } from 'types'
 
 function SearchInputGroup({ selected_idx = 0 }) {
     return (

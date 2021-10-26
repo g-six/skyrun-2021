@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { useAuth } from 'context/AuthContext'
 import { getStaticUrl, Marker } from 'components/Map'
 import { PlaceDetail } from '../../../types/location'
+import GridSpinner from 'components/Spinners/grid'
 
 const Map = dynamic(() => import('components/Map'), { ssr: false })
 
@@ -109,7 +110,11 @@ export function LocationCard({
                         })}
                     />
                 ) : (
-                    ''
+                    <div className="flex items-center h-full">
+                        <div className="mx-auto">
+                            <GridSpinner height={32} width={32} />
+                        </div>
+                    </div>
                 )}
             </div>
             <div className="p-6 flex flex-col justify-between flex-1">
@@ -149,7 +154,7 @@ export function LocationCard({
                             {record.zip}
                         </span>
                         <span className="block">
-                            {[record.state, record.country].join(', ')}
+                            {record.state ? [record.state, record.country].join(', ') : record.country}
                         </span>
                     </address>
                 </div>
@@ -163,7 +168,7 @@ export function LocationCard({
                             className="border-gray-400 border rounded-lg text-lg font-sans flex-1 py-2"
                             onClick={handleEdit}
                         >
-                            See Details
+                            Edit
                         </button>
 
                         <button

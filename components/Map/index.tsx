@@ -59,8 +59,10 @@ export function getStaticUrl(options: GMapOptions) {
         }`,
         `maptype=${options.maptype || GMapType.ROADMAP}`,
         `key=${GOOGLE_API_KEY}`,
-        `map_id=${options.map_id || '2e1a40c8e7e14e7c'}`,
     ]
+    if (options.map_id) {
+        uri_segments.push(`map_id=${options.map_id}`)
+    }
     options.markers &&
         options.markers.forEach((m: Marker) => {
             uri_segments.push(

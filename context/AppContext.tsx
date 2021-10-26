@@ -1,8 +1,9 @@
-import { Context, createContext, ReactNode, useContext, useEffect, useState } from 'react'
-import getConfig from 'next/config'
 import { isValidLocale, Language, LanguageOption, languages } from 'components/LanguageSelector'
-import { FetchMethods, useFetch } from 'utils/fetch-helper'
+import getConfig from 'next/config'
+import { Context, createContext, ReactNode, useContext, useEffect, useState } from 'react'
+import { useFetch } from 'utils/fetch-helper'
 import { betterPathname } from 'utils/string-helper'
+import { FetchMethods } from "utils/types"
 
 export type Tier = {
     id: string

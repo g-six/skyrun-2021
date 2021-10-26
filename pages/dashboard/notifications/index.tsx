@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { classNames } from 'utils/dom-helpers'
-import { FetchMethods, useFetch } from 'utils/fetch-helper'
+import { useFetch } from 'utils/fetch-helper'
+import { FetchMethods } from 'utils/types'
 import Dashboard from '..'
 
 type FormValues = {

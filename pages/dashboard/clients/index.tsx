@@ -1,13 +1,14 @@
+import DataTable from 'components/DataTable'
+import FilterSelector from 'components/DropdownSelectors/FilterSelector'
+import LocationSelector from 'components/DropdownSelectors/LocationSelector'
+import CreateClientModal from 'components/Modals/Client'
+import { ClientItem } from 'components/Modals/Client/types'
+import { useAuth } from 'context/AuthContext'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { classNames } from 'utils/dom-helpers'
+import { useFetch } from 'utils/fetch-helper'
+import { FetchMethods } from 'utils/types'
 import Dashboard from '..'
-import { FetchMethods, useFetch } from 'utils/fetch-helper'
-import { useAuth } from 'context/AuthContext'
-import CreateClientModal from 'components/Modals/Client'
-import LocationSelector from 'components/DropdownSelectors/LocationSelector'
-import FilterSelector from 'components/DropdownSelectors/FilterSelector'
-import DataTable from 'components/DataTable'
-import { ClientItem } from 'components/Modals/Client/types'
 
 function SearchInputGroup({ selected_idx = 0 }) {
     return (

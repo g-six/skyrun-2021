@@ -50,7 +50,7 @@ export function SkyAuthProvider({ children }: Props) {
     const [tenant, setTenant] = useState<TenantInfo>({} as unknown as TenantInfo)
     const [tenants, setTenants] = useState<TenantInfo[]>([] as unknown as TenantInfo[])
     const [already_set, setRecordsRetrievalStatus] = useState<Record<string, boolean>>({})
-    const [is_drawer_expanded, toggleDrawerSize] = useState<boolean>(false)
+    const [is_drawer_expanded, toggleDrawerSize] = useState<boolean>(Cookies.get('drawer') == 'expanded')
     const [data, setData] = useState<UserProfileRecord>({})
 
     const LoginModal = useModal()
@@ -59,6 +59,14 @@ export function SkyAuthProvider({ children }: Props) {
     const CreateClientModal = useModal()
     const LocationModal = useModal()
     const StaffModal = useModal()
+
+    useEffect(() => {
+        if (is_drawer_expanded) {
+            Cookies.set('drawer', 'expanded')
+        } else {
+            Cookies.set('drawer', 'mini')
+        }
+    }, [is_drawer_expanded])
 
     const value = {
         user,
@@ -94,8 +102,12 @@ export function SkyAuthProvider({ children }: Props) {
                             last_name: auth_data.family_name,
                             uuid: auth_data.uuid,
                         })
-                        const res: ApiUser = await getApiRequest('/v1/users/current')
-                        initUserProfile(res)
+                        try {
+                            const res: ApiUser = await getApiRequest('/v1/users/current')
+                            initUserProfile(res)
+                        } catch (e) {
+                            console.log(e)
+                        }
                     } else {
                         console.log('Cognito get profile failed')
                     }

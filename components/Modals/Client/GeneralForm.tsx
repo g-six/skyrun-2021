@@ -1,12 +1,13 @@
+import { AuthContext, useAuth } from 'context/AuthContext'
 import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { classNames } from 'utils/dom-helpers'
-import { AuthContext, useAuth } from 'context/AuthContext'
 import { CognitoErrorTypes } from 'services/CognitoErrorTypes'
-import { SubmitError, UserModel } from '../types'
-import { ClientItem, GeneralFormValues } from './types'
+import { classNames } from 'utils/dom-helpers'
+import { useFetch } from 'utils/fetch-helper'
+import { FetchMethods } from 'utils/types'
 import { createModal } from '../ModalFactory'
-import { FetchMethods, useFetch } from 'utils/fetch-helper'
+import { SubmitError, UserModel } from '../types'
+import { GeneralFormValues } from './types'
 
 const ModalProvider = createModal(
     AuthContext,

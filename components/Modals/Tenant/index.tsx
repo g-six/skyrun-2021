@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react'
-import { useForm, SubmitHandler } from 'react-hook-form'
-import { CognitoErrorTypes } from 'services/CognitoErrorTypes'
-import { createModal } from '../ModalFactory'
-import { AuthContext, useAuth } from 'context/AuthContext'
-import { FetchMethods, useFetch } from 'utils/fetch-helper'
-import { SubmitError } from '../types'
-import { Tier, useAppContext } from 'context/AppContext'
-import { getTranslation } from 'utils/language-helper'
-import { ModalWrapper } from '../ModalWrapper'
-import { classNames } from 'utils/dom-helpers'
 import { OfficeBuildingIcon } from '@heroicons/react/solid'
+import { Tier, useAppContext } from 'context/AppContext'
+import { AuthContext, useAuth } from 'context/AuthContext'
+import { useEffect, useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { CognitoErrorTypes } from 'services/CognitoErrorTypes'
+import { classNames } from 'utils/dom-helpers'
+import { useFetch } from 'utils/fetch-helper'
+import { FetchMethods } from 'utils/types'
+import { createModal } from '../ModalFactory'
+import { ModalWrapper } from '../ModalWrapper'
+import { SubmitError } from '../types'
 
 type FormValues = {
     email: string
@@ -69,32 +69,14 @@ function TenantModal() {
 
     useEffect(() => {
         if (lang && translation.data?.attributes[lang]) {
-            setTranslations({
-                title_bar: getTranslation(
-                    'title_bar',
-                    translation.data?.attributes[lang]
-                ),
-                signup_button: getTranslation(
-                    'signup_button',
-                    translation.data?.attributes[lang]
-                ),
-                first_name_label: getTranslation(
-                    'first_name_label',
-                    translation.data?.attributes[lang]
-                ),
-                last_name_label: getTranslation(
-                    'last_name_label',
-                    translation.data?.attributes[lang]
-                ),
-                email_address_label: getTranslation(
-                    'email_address_label',
-                    translation.data?.attributes[lang]
-                ),
-                business_name_label: getTranslation(
-                    'business_name_label',
-                    translation.data?.attributes[lang]
-                ),
-            })
+            translation.data.attributes[lang].forEach(
+                ({ key, value }: any) => {
+                    setTranslations((translations) => ({
+                        ...translations,
+                        [key]: value,
+                    }))
+                }
+            )
         }
     }, [translation, lang])
 
@@ -167,7 +149,7 @@ function TenantModal() {
                                                 : ''
                                         )}
                                     >
-                                        First name
+                                        {translations.first_name_label}
                                     </label>
                                     <input
                                         type="text"
@@ -201,7 +183,7 @@ function TenantModal() {
                                                 : ''
                                         )}
                                     >
-                                        Last name
+                                        {translations.last_name_label}
                                     </label>
                                     <input
                                         type="text"

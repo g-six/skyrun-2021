@@ -1,6 +1,11 @@
 /* eslint-disable react/display-name */
-import { act, render, screen, waitFor } from '@testing-library/react'
+import { act, render, screen } from '@testing-library/react'
 import Home from '../../pages'
+import { mockGetHomepageTranslations } from '../../__mocks__/mock'
+
+jest.mock('utils/fetch-helper', () => ({
+    useFetch: jest.fn(() => mockGetHomepageTranslations),
+}))
 
 jest.mock('components/Modals/Login', () => () => (
     <div data-testid="LoginModal" />

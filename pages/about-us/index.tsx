@@ -1,11 +1,11 @@
-import Head from 'next/head'
-import Navbar from 'components/Navbar'
 import Footer from 'components/Footer'
 import LoginModal from 'components/Modals/Login'
-import { FetchMethods, useFetch } from 'utils/fetch-helper'
-import { useEffect, useState } from 'react'
+import Navbar from 'components/Navbar'
 import { useAppContext } from 'context/AppContext'
-import { getTranslation } from 'utils/language-helper'
+import Head from 'next/head'
+import { useEffect, useState } from 'react'
+import { useFetch } from 'utils/fetch-helper'
+import { FetchMethods } from 'utils/types'
 
 function AboutUs() {
     const { lang } = useAppContext()
@@ -52,108 +52,14 @@ function AboutUs() {
 
     useEffect(() => {
         if (lang && translation.data?.attributes[lang]) {
-            setTranslations({
-                banner_title: getTranslation(
-                    'banner_title',
-                    translation.data?.attributes[lang]
-                ),
-                section_1_title: getTranslation(
-                    'section_1_title',
-                    translation.data?.attributes[lang]
-                ),
-                section_1_cofounder: getTranslation(
-                    'section_1_cofounder',
-                    translation.data?.attributes[lang]
-                ),
-                section_1_story: getTranslation(
-                    'section_1_story',
-                    translation.data?.attributes[lang]
-                ),
-                section_1_story_paragraph: getTranslation(
-                    'section_1_story_paragraph',
-                    translation.data?.attributes[lang]
-                ),
-                section_1_how_it_started: getTranslation(
-                    'section_1_how_it_started',
-                    translation.data?.attributes[lang]
-                ),
-                section_1_mission: getTranslation(
-                    'section_1_mission',
-                    translation.data?.attributes[lang]
-                ),
-                section_1_exist: getTranslation(
-                    'section_1_exist',
-                    translation.data?.attributes[lang]
-                ),
-                section_1_exist_paragraph: getTranslation(
-                    'section_1_exist_paragraph',
-                    translation.data?.attributes[lang]
-                ),
-                section_2_title_1: getTranslation(
-                    'section_2_title_1',
-                    translation.data?.attributes[lang]
-                ),
-                section_2_title_2: getTranslation(
-                    'section_2_title_2',
-                    translation.data?.attributes[lang]
-                ),
-                section_2_paragraph: getTranslation(
-                    'section_2_paragraph',
-                    translation.data?.attributes[lang]
-                ),
-                section_3_title: getTranslation(
-                    'section_3_title',
-                    translation.data?.attributes[lang]
-                ),
-                section_3_subtitle: getTranslation(
-                    'section_3_subtitle',
-                    translation.data?.attributes[lang]
-                ),
-                section_3_item_1_title: getTranslation(
-                    'section_3_item_1_title',
-                    translation.data?.attributes[lang]
-                ),
-                section_3_item_1_body: getTranslation(
-                    'section_3_item_1_body',
-                    translation.data?.attributes[lang]
-                ),
-                section_3_item_2_title: getTranslation(
-                    'section_3_item_2_title',
-                    translation.data?.attributes[lang]
-                ),
-                section_3_item_2_body: getTranslation(
-                    'section_3_item_2_body',
-                    translation.data?.attributes[lang]
-                ),
-                section_3_item_3_title: getTranslation(
-                    'section_3_item_3_title',
-                    translation.data?.attributes[lang]
-                ),
-                section_3_item_3_body: getTranslation(
-                    'section_3_item_3_body',
-                    translation.data?.attributes[lang]
-                ),
-                section_3_item_4_title: getTranslation(
-                    'section_3_item_4_title',
-                    translation.data?.attributes[lang]
-                ),
-                section_3_item_4_body: getTranslation(
-                    'section_3_item_4_body',
-                    translation.data?.attributes[lang]
-                ),
-                section_4_title: getTranslation(
-                    'section_4_title',
-                    translation.data?.attributes[lang]
-                ),
-                section_4_subtitle: getTranslation(
-                    'section_4_subtitle',
-                    translation.data?.attributes[lang]
-                ),
-                join_cta_button: getTranslation(
-                    'join_cta_button',
-                    translation.data?.attributes[lang]
-                ),
-            })
+            translation.data.attributes[lang].forEach(
+                ({ key, value }: any) => {
+                    setTranslations((translations) => ({
+                        ...translations,
+                        [key]: value,
+                    }))
+                }
+            )
         }
     }, [translation, lang])
 

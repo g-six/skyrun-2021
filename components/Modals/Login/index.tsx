@@ -1,18 +1,18 @@
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
-import styled from 'styled-components'
 import { LockClosedIcon } from '@heroicons/react/solid'
-import { useForm, SubmitHandler, ErrorOption } from 'react-hook-form'
 import { MaskedTextBox } from '@progress/kendo-react-inputs'
-import { CognitoErrorTypes } from 'services/CognitoErrorTypes'
-import { classNames } from 'utils/dom-helpers'
-import { createModal } from '../ModalFactory'
+import { useAppContext } from 'context/AppContext'
 import { AuthContext, useAuth } from 'context/AuthContext'
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { CognitoErrorTypes } from 'services/CognitoErrorTypes'
+import styled from 'styled-components'
+import { classNames } from 'utils/dom-helpers'
+import { useFetch } from 'utils/fetch-helper'
+import { FetchMethods } from 'utils/types'
+import { createModal } from '../ModalFactory'
 import { ModalWrapper } from '../ModalWrapper'
 import { SubmitError } from '../types'
-import { FetchMethods, useFetch } from 'utils/fetch-helper'
-import { getTranslation } from 'utils/language-helper'
-import { useAppContext } from 'context/AppContext'
 type FormValues = {
     email: string
     password?: string
@@ -72,28 +72,14 @@ function LoginModal() {
 
     useEffect(() => {
         if (lang && translation.data?.attributes[lang]) {
-            setTranslations({
-                login_button: getTranslation(
-                    'login_button',
-                    translation.data?.attributes[lang]
-                ),
-                login_title: getTranslation(
-                    'login_title',
-                    translation.data?.attributes[lang]
-                ),
-                email_address_label: getTranslation(
-                    'email_address_label',
-                    translation.data?.attributes[lang]
-                ),
-                password_label: getTranslation(
-                    'password_label',
-                    translation.data?.attributes[lang]
-                ),
-                forgot_password_link: getTranslation(
-                    'forgot_password_link',
-                    translation.data?.attributes[lang]
-                ),
-            })
+            translation.data.attributes[lang].forEach(
+                ({ key, value }: any) => {
+                    setTranslations((translations) => ({
+                        ...translations,
+                        [key]: value,
+                    }))
+                }
+            )
         }
     }, [translation, lang])
 

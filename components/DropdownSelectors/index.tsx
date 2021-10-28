@@ -1,13 +1,14 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { DropPosition, SelectorProps } from './common'
 import SearchBox from 'components/SearchBox'
 import { classNames } from 'utils/dom-helpers'
 
 export function DropdownComponent(props: SelectorProps) {
-    const [is_opened, openMenu] = useState(false)
+    const [is_opened, openMenu] = useState(props.is_opened)
+
     return (
-        <Menu as="div" className={'relative inline-block text-left'}>
+        <Menu as="div" className="relative inline-block text-left">
             <div>
                 <Menu.Button
                     className={
@@ -87,7 +88,20 @@ export function DropdownComponent(props: SelectorProps) {
                                 cat_idx
                             ) => {
                                 return (
-                                    <Menu.Item as="div" key={cat_idx}>
+                                    <Menu.Item
+                                        as="div"
+                                        key={cat_idx}
+                                        onClickCapture={() => {
+                                            if (
+                                                !options ||
+                                                options.length == 0
+                                            ) {
+                                                onClick &&
+                                                    (onClick as () => void)
+                                                openMenu(false)
+                                            }
+                                        }}
+                                    >
                                         {options?.length &&
                                         options.length > 0 ? (
                                             <>

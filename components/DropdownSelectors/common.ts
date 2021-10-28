@@ -1,6 +1,7 @@
 import { Dispatch, ReactElement, ReactNode, SetStateAction } from 'react'
 
 export enum DropPosition {
+    BOTTOM_RIGHT = 'origin-bottom-right bottom-14 right-0',
     TOP_LEFT = 'origin-top-left left-0',
     TOP_RIGHT = 'origin-top-right right-0',
 }
@@ -24,6 +25,7 @@ export type SelectorProps = {
     position?: DropPosition
     items: SelectorItemProps[]
     selected?: Record<string, string>
+    is_opened?: boolean
     is_search_enabled?: boolean
     label?: ReactElement
     style?: Record<string, string>

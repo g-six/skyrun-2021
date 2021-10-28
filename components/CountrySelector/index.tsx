@@ -1,8 +1,4 @@
-import React, {
-    Fragment,
-    useState,
-    useEffect,
-} from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid'
 import countries, { Country } from './countries'

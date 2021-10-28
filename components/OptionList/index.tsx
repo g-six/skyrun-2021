@@ -76,12 +76,11 @@ function OptionList(props: OptionListProps & withClass) {
                     leaveTo="opacity-0"
                 >
                     <Listbox.Options
-                        className={
-                            classNames(
-                                props.position || ListFlyFrom.TOP_LEFT,
-                                'absolute z-10 mt-1 w-full bg-white shadow-2xl max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm'
-                            )
-                        }>
+                        className={classNames(
+                            props.position || ListFlyFrom.TOP_LEFT,
+                            'absolute z-10 mt-1 w-full bg-white shadow-2xl max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm'
+                        )}
+                    >
                         {props.options.map((item) => (
                             <Listbox.Option
                                 key={item.text}

@@ -497,7 +497,7 @@ function GeneralForm() {
                                 : ''
                         )}
                         {...register('phone')}
-                        defaultValue={attributes?.phone as string || ''}
+                        defaultValue={(attributes?.phone as string) || ''}
                     />
                     {errors.phone?.type && (
                         <span className="text-sm text-red-700">

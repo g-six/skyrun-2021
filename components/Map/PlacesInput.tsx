@@ -132,6 +132,8 @@ export function PlacesInput(props: Props) {
         street_name,
         country,
         zip,
+        coordinates,
+        props,
     ])
 
     const input_ref = useRef<HTMLInputElement>(null)

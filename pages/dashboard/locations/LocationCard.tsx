@@ -87,7 +87,6 @@ export function LocationCard({
         places,
         map_pin_location,
         is_predicting,
-        places,
         record,
         record.street_1,
         poi_name,
@@ -102,6 +101,7 @@ export function LocationCard({
             <div className="overflow-hidden h-64 block">
                 {map_pin_location ? (
                     <img
+                        alt="Location on the map"
                         src={getStaticUrl({
                             center: map_pin_location as unknown as Marker,
                             markers: [
@@ -154,7 +154,9 @@ export function LocationCard({
                             {record.zip}
                         </span>
                         <span className="block">
-                            {record.state ? [record.state, record.country].join(', ') : record.country}
+                            {record.state
+                                ? [record.state, record.country].join(', ')
+                                : record.country}
                         </span>
                     </address>
                 </div>

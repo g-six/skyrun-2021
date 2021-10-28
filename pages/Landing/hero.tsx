@@ -42,11 +42,11 @@ export default function LandingHero({
                         <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
                             <div className="overflow-hidden ">
                                 <ModalProvider.Opener
-                                    className="shadow w-full flex items-center justify-center 
+                                    className="shadow w-full flex items-center justify-center
                                 px-6 py-4 text-base text-white font-bold
                                 bg-primary border rounded-full
                                 transition duration-300 ease-in-out
-                                hover:bg-transparent border-solid border-primary 
+                                hover:bg-transparent border-solid border-primary
                                 hover:text-primary
                                 md:text-xl md:px-10"
                                 />

@@ -1,16 +1,13 @@
 import { ReactElement } from 'react'
 import { classNames } from 'utils/dom-helpers'
 import styles from '../../styles/Landing/section-features.module.scss'
-
-export type SectionProps = {
-    [key: string]: string
-}
+import { SectionProps } from '../../types/landing'
 
 export default function LandingFeaturesSection(props: SectionProps) {
-    const section_2_checklist: ReactElement[] = []
-    props.section_2_checklist.split('<li>').forEach((i: string, idx) => {
+    const section_3_checklist: ReactElement[] = []
+    props.section_3_checklist.split('<li>').forEach((i: string, idx) => {
         if (idx > 0) {
-            section_2_checklist.push(
+            section_3_checklist.push(
                 <li
                     key={idx}
                     className="flex center-items leading-8 gap-2 text-gray-400 mb-2"
@@ -29,33 +26,33 @@ export default function LandingFeaturesSection(props: SectionProps) {
                     <div className="absolute bottom-0 right-3 p-4">
                         <div className="bg-white rounded-xl p-5 shadow-2xl w-44 h-50">
                             <div className="text-primary text-lg circular font-medium">
-                                Aerobics
+                                {props.section_2_item_5}
                             </div>
                             <p className="mt-2">
                                 <span className="text-primary-light text-sm">
-                                    Date:
+                                    {props.section_2_item_6}
                                 </span>
                                 <br />
                                 <span className="text-xs text-gray-500">
-                                    {props.date_of_exercise}
+                                    {props.section_2_item_7}
                                 </span>
                             </p>
                             <p className="mt-2">
                                 <span className="text-primary-light text-sm">
-                                    Location:
+                                    {props.section_2_item_8}
                                 </span>
                                 <br />
                                 <span className="text-xs text-gray-500">
-                                    {props.location_name}
+                                    {props.section_2_item_9}
                                 </span>
                             </p>
                             <p className="mt-2">
                                 <span className="text-primary-light text-sm">
-                                    Instructor:
+                                    {props.section_2_item_10}
                                 </span>
                                 <br />
                                 <span className="text-xs text-gray-500">
-                                    {props.instructor_name}
+                                    {props.section_2_item_11}
                                 </span>
                             </p>
                         </div>
@@ -67,43 +64,37 @@ export default function LandingFeaturesSection(props: SectionProps) {
                 <div className="lg:col-span-1">
                     <h1 className="mt-20 mb-10 lg:mb-5 text-5xl circular leading-none tracking-wide">
                         <span className="text-primary-dark">
-                            {props.left_title}
-                        </span>
-                        <span className="text-primary-dark">
-                            {props.right_title}
+                            {props.section_2_title}
                         </span>
                     </h1>
 
                     <p className="text-gray-400 leading-relaxed">
-                        Anim aute id magna aliqua ad ad non deserunt sunt.{' '}
-                        <br />
-                        Qui irure qui lorem cupidatat commodo. <br />
-                        Elit sunt amet fugiat veniam occaecat fugiat aliqua.
+                        {props.section_2_body}
                     </p>
 
                     <div className="grid grid-cols-2 grid-rows-2 grid-flow-col gap-4 mt-5">
                         <div>
                             <i className="inline-block align-middle feather feather-calendar text-secondary mr-4 text-2xl" />
                             <span className="inline-block align-middle">
-                                Appointment Scheduling
+                                {props.section_2_item_1}
                             </span>
                         </div>
                         <div>
                             <i className="inline-block align-middle feather feather-box text-secondary mr-4 text-2xl" />
                             <span className="inline-block align-middle">
-                                Packages &amp; Membership
+                                {props.section_2_item_2}
                             </span>
                         </div>
                         <div>
                             <i className="inline-block align-middle feather feather-user-plus text-secondary mr-4 text-2xl" />
                             <span className="inline-block align-middle">
-                                Group Booking
+                                {props.section_2_item_3}
                             </span>
                         </div>
                         <div>
                             <i className="inline-block align-middle feather feather-message-square text-secondary mr-4 text-2xl" />
                             <span className="inline-block align-middle">
-                                Multi-lingual
+                                {props.section_2_item_4}
                             </span>
                         </div>
                     </div>
@@ -126,15 +117,15 @@ export default function LandingFeaturesSection(props: SectionProps) {
                     />
                     <h1 className="mt-20 mb-10 lg:mb-5 text-5xl circular leading-none tracking-wide">
                         <span className="text-primary-dark">
-                            {props.mid_left_title}{' '}
+                            {props.section_3_title}{' '}
                         </span>
                         <span className="text-gray-600 text-3xl block font-light">
-                            {props.mid_right_title}
+                            {props.section_3_subtitle}
                         </span>
                     </h1>
 
                     <ul className="text-gray-500 leading-relaxed">
-                        {section_2_checklist}
+                        {section_3_checklist}
                     </ul>
                 </div>
                 <div className={styles.spriteTools} />
@@ -176,12 +167,12 @@ export default function LandingFeaturesSection(props: SectionProps) {
                     />
                     <h1 className="mt-20 mb-10 lg:mb-5 text-5xl circular leading-none tracking-wide">
                         <span className="text-primary-dark">
-                            {props.section_3_title}
+                            {props.section_4_title}
                         </span>
                     </h1>
 
                     <p className="text-gray-500 leading-relaxed">
-                        {props.section_3_body}
+                        {props.section_4_body}
                     </p>
                 </div>
             </div>

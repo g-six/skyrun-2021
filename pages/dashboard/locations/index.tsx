@@ -145,14 +145,14 @@ function DashboardLocations() {
                 <div
                     className={classNames(
                         view_mode == ViewMode.GRID
-                            ? 'overflow-hidden xl:max-w-5xl'
+                            ? 'overflow-hidden'
                             : ''
                     )}
                 >
                     <div
                         className={classNames(
                             view_mode == ViewMode.GRID
-                                ? 'grid lg:grid-cols-2 px-8 pb-12 gap-8'
+                                ? 'flex flex-wrap justify-begin px-8 pb-12 gap-8'
                                 : 'flex flex-col p-8'
                         )}
                     >
@@ -197,9 +197,10 @@ function DashboardLocations() {
                                 'p-8 rounded-xl text-center flex flex-col content-center justify-center',
                                 'border-2 border-dashed border-gray-150 cursor-pointer'
                             )}
+                            style={{ minHeight: '520px', minWidth: '463px' }}
                         >
                             <i className="block mx-auto mb-4 feather feather-plus font-back text-2xl block w-10 h-10 leading-relaxed px-2 rounded-xl bg-primary-lighter text-primary-light" />
-                            <span className="text-xl mx-auto block w-64">
+                            <span className="text-xl mx-auto block w-64 xl:w-96">
                                 Add a new location
                             </span>
                         </div>

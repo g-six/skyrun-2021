@@ -58,6 +58,7 @@ export function SkyAuthProvider({ children }: Props) {
     const TenantModal = useModal()
     const CreateClientModal = useModal()
     const LocationModal = useModal()
+    const ServiceModal = useModal()
     const StaffModal = useModal()
 
     useEffect(() => {
@@ -138,6 +139,7 @@ export function SkyAuthProvider({ children }: Props) {
         CreateClientModal,
         LocationModal,
         LoginModal,
+        ServiceModal,
         StaffModal,
         SignupModal,
         TenantModal,

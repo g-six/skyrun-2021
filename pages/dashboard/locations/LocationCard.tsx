@@ -154,7 +154,9 @@ export function LocationCard({
                             {record.zip}
                         </span>
                         <span className="block">
-                            {record.state ? [record.state, record.country].join(', ') : record.country}
+                            {record.state
+                                ? [record.state, record.country].join(', ')
+                                : record.country}
                         </span>
                     </address>
                 </div>

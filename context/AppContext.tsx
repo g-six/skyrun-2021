@@ -58,6 +58,121 @@ export function SkyAppDataProvider({ children }: Props) {
         true,
     )
 
+    const ui_text = {
+        actions: '',
+        add_membership: '',
+        address: '',
+        am: '',
+        amount: '',
+        amount_remaining: '',
+        appointment: '',
+        appointments: '',
+        area: '',
+        calendar: '',
+        cancel: '',
+        cancel_appointment: '',
+        category: '',
+        change: '',
+        city: '',
+        class_name: '',
+        clients: '',
+        country: '',
+        coupon: '',
+        date: '',
+        day: '',
+        delete: '',
+        discount: '',
+        edit: '',
+        eligible_services: '',
+        email: '',
+        end_date: '',
+        expired: '',
+        feedback: '',
+        filter: '',
+        first_name: '',
+        friday: '',
+        general: '',
+        helps: '',
+        home: '',
+        instructor: '',
+        integrations: '',
+        item: '',
+        last_name: '',
+        location: '',
+        locations: '',
+        membership_status: '',
+        membership_type: '',
+        memberships: '',
+        merge: '',
+        monday: '',
+        month: '',
+        monthly: '',
+        name: '',
+        next: '',
+        notes: '',
+        notifications: '',
+        online: '',
+        orders: '',
+        packages: '',
+        paid: '',
+        pay_now: '',
+        payment_information: '',
+        payment_method: '',
+        phone: '',
+        phone_number: '',
+        physical: '',
+        pm: '',
+        previous: '',
+        products: '',
+        recurrence: '',
+        recurring: '',
+        refund: '',
+        renews_on: '',
+        repeats: '',
+        reports: '',
+        reschedule: '',
+        resources: '',
+        room: '',
+        saturday: '',
+        save: '',
+        schedule: '',
+        select_membership: '',
+        services: '',
+        settings: '',
+        space: '',
+        staff: '',
+        start_date: '',
+        state: '',
+        status: '',
+        subscription: '',
+        sunday: '',
+        thursday: '',
+        time_zone: '',
+        today: '',
+        total: '',
+        total_price: '',
+        tuesday: '',
+        unpaid: '',
+        upcoming_classes: '',
+        valid: '',
+        view_payments: '',
+        wednesday: '',
+        week: '',
+        weekly: '',
+        zip_code: ''
+    }
+
+    const [common_translations, setTranslations] = useState(ui_text)
+
+    const { data: translation } = useFetch(
+        `/v1/contents?url=${encodeURI(
+            'https://cms.aot.plus/jsonapi/node/page_translation/be42cdfb-b39b-4b19-9bee-9b983024f917'
+        )}`,
+        FetchMethods.GET,
+        true,
+        true
+    )
+
     function onLanguageChange(v: LanguageOption) {
         if (lang != v.code) {
             const { pathname, href, origin } = location
@@ -83,8 +198,21 @@ export function SkyAppDataProvider({ children }: Props) {
         }
     }, [data, tiers, GOOGLE_API_KEY, lang])
 
+    useEffect(() => {
+        if (lang && translation.data?.attributes[lang]) {
+            translation.data.attributes[lang].forEach(
+                ({ key, value }: any) => {
+                    setTranslations((translations) => ({
+                        ...translations,
+                        [key]: value,
+                    }))
+                }
+            )
+        }
+    }, [translation, lang])
+
     return <SkyContext.Provider value={
-        { ...ctx, tiers, GOOGLE_API_KEY, lang, onLanguageChange }
+        { ...ctx, tiers, GOOGLE_API_KEY, lang, onLanguageChange, common_translations }
     }>
         {children}
     </SkyContext.Provider>

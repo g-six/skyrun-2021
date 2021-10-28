@@ -35,7 +35,7 @@ describe('Translation Component', () => {
         expect(results.tagName).toEqual('P')
     })
 
-    it('should enclose text with p on render_as "p"', async () => {
+    it('should enclose text with div on render_as "div"', async () => {
         render(
             <Translation
                 content_key="hello"
@@ -45,5 +45,17 @@ describe('Translation Component', () => {
         )
         const results = await screen.getByText(hello)
         expect(results.tagName).toEqual('DIV')
+    })
+
+    it('should enclose text with label on render_as "label"', async () => {
+        render(
+            <Translation
+                content_key="hello"
+                translations={{ hello }}
+                render_as="label"
+            />
+        )
+        const results = await screen.getByText(hello)
+        expect(results.tagName).toEqual('LABEL')
     })
 })

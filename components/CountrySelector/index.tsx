@@ -1,8 +1,6 @@
 import React, {
-    Dispatch,
     Fragment,
     useState,
-    SetStateAction,
     useEffect,
 } from 'react'
 import { Listbox, Transition } from '@headlessui/react'

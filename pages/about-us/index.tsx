@@ -23,29 +23,64 @@ function AboutUs() {
         banner_title: 'About Us',
         section_1_title:
             'Best-in-class Scheduling & Business Management Platform +',
+        section_1_body:
+            'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. \
+            Velit officia consequat duis enim velit mollit. Exercitation veniam consequat \
+            sunt nostrud amet. Amet minim mollit non deserunt ullamco est sit aliqua \
+            dolor do amet sint. Velit officia consequat duis enim velit mollit',
         section_1_cofounder: "Hi I'm Greg, the co-founder",
         section_1_story: 'Our story',
         section_1_how_it_started: 'How it started',
-        section_1_story_paragraph: 'Loading...',
+        section_1_story_paragraph:
+            'We have been in the market, using various market-ready scheduling software, \
+            to help with my wife and her team manage her classes. After realising that \
+            market-ready softwares not being intuitive and actually helpful, I used \
+            existing softwares as a foundation, and built so much customization, \
+            it became a nightmare to support and maintain, but at the same time \
+            it transformed the system we were using from a basic booking portal \
+            into a fully-fledged scheduling and small business management platform, \
+            and that added a ton of value for our business.',
         section_1_mission: 'Our mission',
+        section_2_mid_left_title: '',
+        section_2_mid_right_title: '120 hours saved, per business',
+        section_2_checklist:
+            'scheduling, comms distributions, bookings\
+            simple, structured, intuitive\
+            we get that business owners are busy/ no time\
+            we really put in the hours to make it easy to use, so that you can pick and go\
+            we are receptive, give us feedback and we will put it in',
         section_1_exist: 'Why We Exist',
-        section_1_exist_paragraph: '...',
-        section_2_title_1: '...',
-        section_2_title_2: '...',
-        section_2_paragraph: '...',
-        section_3_title: '...',
-        section_3_subtitle: '...',
-        section_3_item_1_title: '...',
-        section_3_item_1_body: '...',
-        section_3_item_2_title: '...',
-        section_3_item_2_body: '...',
-        section_3_item_3_title: '...',
-        section_3_item_3_body: '...',
-        section_3_item_4_title: '...',
-        section_3_item_4_body: '...',
-        section_4_title: '...',
-        section_4_subtitle: '...',
-        join_cta_button: '...',
+        section_1_exist_paragraph:
+            'Despite all the customization, the application was limited in its functions, \
+            and couldn’t meet our business needs.It was then we realise that we have \
+            the know how and knowledge to build a solution inside out, fit for the industry.',
+        section_2_title_1: '8 Months &',
+        section_2_title_2: '4 Days Later',
+        section_2_paragraph:
+            'led to the creation of AOT, a customisable\
+            integrated software that offers an all- inclusive suite, including payroll\
+            calculation and package management.It has helped us streamlined the\
+            process and helped us in franchising our dance and yoga business.',
+        section_3_title: 'Values We Live By',
+        section_3_subtitle:
+            'Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint.',
+        section_3_item_1_title: 'Detail-oriented',
+        section_3_item_1_body:
+            'Help our customers by adding the small details and finishing touches \
+            that set Always On Time apart from the crowd',
+        section_3_item_2_title: 'Genuine and Helpful',
+        section_3_item_2_body:
+            'We do the little things that help our customers be on time and run their business better',
+        section_3_item_3_title: 'Methodolical',
+        section_3_item_3_body:
+            'Take a detailed, structured, and reasoned approach to everything we do',
+        section_3_item_4_title: 'Simple and Intuitive',
+        section_3_item_4_body:
+            'Our software must be simple enough to be used intuitively by our users',
+        section_4_title:
+            'We are confident that our solution can help any studio,',
+        section_4_subtitle: 'so that you can work smart and save time.',
+        join_cta_button: 'Join as an early adopter',
     }
 
     const [translations, setTranslations] = useState(ui_text)
@@ -105,15 +140,7 @@ function AboutUs() {
                             {translations.section_1_title}
                         </div>
                         <div className="font-sans leading-relaxed xl:col-span-2">
-                            <p>
-                                Amet minim mollit non deserunt ullamco est
-                                sit aliqua dolor do amet sint. Velit officia
-                                consequat duis enim velit mollit.
-                                Exercitation veniam consequat sunt nostrud
-                                amet. Amet minim mollit non deserunt ullamco
-                                est sit aliqua dolor do amet sint. Velit
-                                officia consequat duis enim velit mollit
-                            </p>
+                            <p>{translations.section_1_body}</p>
                         </div>
                     </div>
                 </section>

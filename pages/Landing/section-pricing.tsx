@@ -1,13 +1,10 @@
-import { useState } from 'react'
-import { Switch } from '@progress/kendo-react-inputs'
 import { Button, ButtonGroup } from '@progress/kendo-react-buttons'
+import { Switch } from '@progress/kendo-react-inputs'
 import { createModal } from 'components/Modals/ModalFactory'
-import { AuthContext } from 'context/AuthContext'
 import { useAppContext } from 'context/AppContext'
-
-type SectionProps = {
-    [key: string]: string
-}
+import { AuthContext } from 'context/AuthContext'
+import { useState } from 'react'
+import { SectionProps } from '../../types/landing'
 
 enum CurrencyIso {
     SGD = 'SGD',
@@ -50,7 +47,7 @@ export default function LandingPricingSection(props: SectionProps) {
     const FreePlanModalProvider = createModal(
         AuthContext,
         'SignupModal',
-        () => <span data-plan="free">Choose plan</span>,
+        () => <span data-plan="free">{props.pricing_tier_0_cta}</span>,
         () => <span data-plan="free">Cancel</span>,
         { tier: tiers[0] }
     )
@@ -58,7 +55,7 @@ export default function LandingPricingSection(props: SectionProps) {
     const SinglePlanModalProvider = createModal(
         AuthContext,
         'SignupModal',
-        () => <span>Try it for free</span>,
+        () => <span>{props.pricing_tier_1_cta}</span>,
         undefined,
         { tier: tiers[1] }
     )
@@ -66,7 +63,7 @@ export default function LandingPricingSection(props: SectionProps) {
     const MultiLocModalProvider = createModal(
         AuthContext,
         'SignupModal',
-        () => <span>Try it for free</span>,
+        () => <span>{props.pricing_tier_2_cta}</span>,
         undefined,
         { tier: tiers[2] }
     )
@@ -83,18 +80,13 @@ export default function LandingPricingSection(props: SectionProps) {
         <section className="pt-20 pb-40 pricing-plans bg-primary bg-opacity-10">
             <div className="container m-auto">
                 <h3 className="text-center text-primary-dark drop-shadow text-5xl circular font-thin mb-8">
-                    {props.pricing_plans_title}
+                    {props.pricing_title}
                 </h3>
                 <p className="text-center leading-relaxed">
-                    Amet minim mollit non deserunt ullamco est sit aliqua
-                    dolor do amet sint.
-                    <br />
-                    Velit officia consequat duis enim velit mollit.
-                    Exercitation veniam <br />
-                    consequat sunt nostrud amet.
+                    {props.pricing_body}
                 </p>
                 <div className="flex justify-center items-center w-auto mt-8">
-                    <span className="mr-4">Monthly</span>
+                    <span className="mr-4">{props.pricing_monthly}</span>
 
                     <Switch
                         onLabel={''}
@@ -103,13 +95,17 @@ export default function LandingPricingSection(props: SectionProps) {
                         checked={discount != 1}
                     />
 
-                    <span className="ml-3 mr-2">Yearly</span>
+                    <span className="ml-3 mr-2">
+                        {props.pricing_yearly}
+                    </span>
                     <span className="text-white text-xs bg-primary-light rounded px-2 py-1">
-                        Save 20%
+                        {props.pricing_promo_tag}
                     </span>
                 </div>
                 <div className="flex justify-center items-center w-auto mt-8">
-                    <div className="pr-6 circular">Pricing in</div>
+                    <div className="pr-6 circular">
+                        {props.pricing_currency_title}
+                    </div>
                     <ButtonGroup className="bg-primary-light circular-light">
                         {currencies.map(
                             ({ iso, symbol }: Currency, idx) => (
@@ -135,18 +131,17 @@ export default function LandingPricingSection(props: SectionProps) {
                                 <i className="feather feather-user" />
                             </span>
                             <span className="ml-2 circular text-lg">
-                                Free
+                                {props.pricing_tier_0_name}
                             </span>
                         </figure>
                         <div className="text-6xl block text-center text-primary circular-light mt-5">
-                            $0
+                            {props.pricing_tier_0_price_usd}
                         </div>
                         <div className="text-sm block text-center text-gray-400 circular-light">
-                            forever
+                            {props.pricing_tier_0_subtitle_monthly}
                         </div>
                         <div className="block text-center mt-8">
-                            For individuals, small businesses, and
-                            entrepreneurs
+                            {props.pricing_tier_0_subtitle_yearly}
                         </div>
                         <div className="divide-y divide-primary-lighter">
                             <div className="h-8"></div>
@@ -180,7 +175,7 @@ export default function LandingPricingSection(props: SectionProps) {
 
                         <div className="rounded-2xl bg-primary-lighter bg-opacity-20 w-full mt-6 p-6">
                             <span className="text-primary circular text-xl">
-                                Free forever
+                                {props.pricing_tier_0_subfeature_title}
                             </span>
                             <ul className="list-disc ml-6 leading-loose text-sm mt-2 h-28">
                                 <li>No credit card required</li>
@@ -193,7 +188,7 @@ export default function LandingPricingSection(props: SectionProps) {
                         </div>
 
                         <FreePlanModalProvider.Opener
-                            className="mt-8 shadow w-full flex items-center justify-center 
+                            className="mt-8 shadow w-full flex items-center justify-center
                             px-6 py-4 text-base text-white font-bold
                             bg-primary-light rounded-full
                             transition duration-300 ease-in-out
@@ -206,18 +201,27 @@ export default function LandingPricingSection(props: SectionProps) {
                         <figure className="w-60 text-center m-auto mt-2 text-primary flex items-center justify-center">
                             <i className="text-2xl feather feather-users flex items-center justify-center" />
                             <span className="ml-2 circular text-lg flex items-center justify-center">
-                                Single Studio
+                                {props.pricing_tier_1_name}
                             </span>
                         </figure>
                         <div className="text-6xl block text-center text-primary-dark circular-light mt-5">
                             {currency.symbol}
-                            {Math.ceil(49 * discount * currency.rate)}
+                            {Math.ceil(
+                                parseInt(
+                                    props.pricing_tier_1_price_usd.substring(
+                                        1
+                                    ),
+                                    10
+                                ) *
+                                    discount *
+                                    currency.rate
+                            )}
                         </div>
                         <div className="block text-center text-gray-400 circular-light">
-                            / month
+                            {props.pricing_subtitle_monthly}
                         </div>
                         <div className="block text-center mt-8">
-                            For small businesses with one or two locations
+                            {props.pricing_tier_1_subtitle}
                         </div>
                         <div className="divide-y divide-primary-lighter">
                             <div className="h-8"></div>
@@ -251,7 +255,7 @@ export default function LandingPricingSection(props: SectionProps) {
 
                         <div className="rounded-2xl bg-primary-light bg-opacity-10 w-full mt-6 p-6">
                             <span className="text-primary circular text-xl">
-                                Bring your business online
+                                {props.pricing_tier_1_subfeature_title}
                             </span>
                             <ul className="list-disc ml-6 leading-loose text-sm mt-2 h-28">
                                 <li>
@@ -273,11 +277,11 @@ export default function LandingPricingSection(props: SectionProps) {
                         </div>
 
                         <SinglePlanModalProvider.Opener
-                            className="mt-8 shadow w-full flex items-center justify-center 
+                            className="mt-8 shadow w-full flex items-center justify-center
                             px-6 py-4 text-base text-white font-bold
                             bg-primary-dark rounded-full
                             transition duration-300 ease-in-out
-                            hover:bg-opacity-80 
+                            hover:bg-opacity-80
                             md:text-xl md:px-10"
                         />
                     </div>
@@ -286,18 +290,27 @@ export default function LandingPricingSection(props: SectionProps) {
                         <figure className="w-60 text-center m-auto mt-2 text-secondary flex items-center justify-center">
                             <i className="text-2xl feather feather-map-pin flex items-center justify-center" />
                             <span className="ml-2 circular text-lg flex items-center justify-center">
-                                Multi-location Business
+                                {props.pricing_tier_2_name}
                             </span>
                         </figure>
                         <div className="text-6xl block text-center text-primary circular-light mt-5">
                             {currency.symbol}
-                            {Math.ceil(89 * discount * currency.rate)}
+                            {Math.ceil(
+                                parseInt(
+                                    props.pricing_tier_2_price_usd.substring(
+                                        1
+                                    ),
+                                    10
+                                ) *
+                                    discount *
+                                    currency.rate
+                            )}
                         </div>
                         <div className="block text-center text-gray-400 circular-light">
-                            / month
+                            {props.pricing_subtitle_monthly}
                         </div>
                         <div className="block text-center mt-8">
-                            For growing businesses with multiple locations
+                            {props.pricing_tier_2_subtitle}
                         </div>
                         <div className="divide-y divide-primary-lighter">
                             <div className="h-8"></div>
@@ -331,7 +344,7 @@ export default function LandingPricingSection(props: SectionProps) {
 
                         <div className="rounded-2xl bg-secondary bg-opacity-10 w-full mt-6 p-6">
                             <span className="text-primary circular text-xl">
-                                Everything you will need
+                                {props.pricing_tier_2_subfeature_title}
                             </span>
                             <ul className="list-disc ml-6 leading-loose text-sm mt-2 h-28">
                                 <li>
@@ -349,11 +362,11 @@ export default function LandingPricingSection(props: SectionProps) {
                         </div>
 
                         <MultiLocModalProvider.Opener
-                            className="mt-8 shadow w-full flex items-center justify-center 
+                            className="mt-8 shadow w-full flex items-center justify-center
                             px-6 py-4 text-base text-white font-bold
                             bg-secondary rounded-full
                             transition duration-300 ease-in-out
-                            hover:bg-opacity-80 
+                            hover:bg-opacity-80
                             md:text-xl md:px-10"
                         />
                     </div>

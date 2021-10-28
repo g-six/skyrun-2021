@@ -1,11 +1,11 @@
-import { createModal } from 'components/Modals/ModalFactory'
 import { useAppContext } from 'context/AppContext'
-import { AuthContext, useAuth } from 'context/AuthContext'
+import { useAuth } from 'context/AuthContext'
 import { useEffect } from 'react'
 import { classNames } from 'utils/dom-helpers'
 import styles from '../../styles/Landing/section-try-cta.module.scss'
+import { SectionProps } from '../../types/landing'
 
-export default function LandingSectionTryCTA() {
+export default function LandingSectionTryCTA(props: SectionProps) {
     const { tiers } = useAppContext()
     const { SignupModal } = useAuth()
 
@@ -35,12 +35,12 @@ export default function LandingSectionTryCTA() {
                             21 days, absolutely free!
                         </h3>
                         <small className="text-lg text-white circular-thin">
-                            Take your business to the next leavel
+                            {props.section_6_subtitle}
                         </small>
                         <div className="flex mt-2 items-center">
                             <button
                                 type="button"
-                                className="shadow 
+                                className="shadow
                                 py-3 text-sm text-white font-bold
                                 bg-secondary rounded-full
                                 transition duration-300 ease-in-out
@@ -50,11 +50,11 @@ export default function LandingSectionTryCTA() {
                                     SignupModal.open()
                                 }}
                             >
-                                <span>Try it for free</span>
+                                <span>{props.section_6_cta}</span>
                             </button>
                             <div className="pl-6 align-middle">
                                 <span className="text-sm text-white leading-none">
-                                    No credit card required
+                                    {props.section_6_cta_note}
                                 </span>
                             </div>
                         </div>

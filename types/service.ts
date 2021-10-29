@@ -49,7 +49,8 @@ export interface ServiceFormModel extends ServiceBase {
 
 export interface ServiceItem extends ServiceBase {
     id?: string,
-    addons: string[],
-    category: Record<string, string>,
+    addons?: string[],
+    is_public: boolean,
+    category?: Record<string, string>,
 }
 

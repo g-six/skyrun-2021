@@ -12,7 +12,9 @@ export default function LandingSectionTestimonials(props: SectionProps) {
 
             <div className="container m-auto">
                 <h3 className="text-white drop-shadow text-5xl circular font-thin mb-8 mt-36">
-                    {props.section_5_title}
+                    {props.section_5_title_1}
+                    <br />
+                    {props.section_5_title_2}
                 </h3>
                 <div className="grid relative lg:grid-cols-2 gap-8 lg:px-40 z-0">
                     <figure className="rounded-3xl bg-white min-h-32 w-full pt-12 px-8 shadow-2xl">

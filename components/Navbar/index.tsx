@@ -44,7 +44,6 @@ export default function Navbar() {
     const { lang, onLanguageChange } = useAppContext()
     const [mounted, setMounted] = useState(false)
 
-
     function handleLanguageChange(e: DropDownListChangeEvent) {
         onLanguageChange(e.value)
     }
@@ -140,7 +139,9 @@ export default function Navbar() {
                                             </div>
                                             <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0 gap-4">
                                                 {/* Profile dropdown */}
-                                                <UserDropdown locale={locale} />
+                                                <UserDropdown
+                                                    locale={locale}
+                                                />
 
                                                 <LanguageSelector
                                                     className="country-selector flex"

@@ -30,9 +30,9 @@ export default function LandingSectionTryCTA(props: SectionProps) {
                 <div className="grid grid-cols-2 h-48 place-items-center">
                     <div>
                         <h3 className="text-white drop-shadow text-4xl circular">
-                            Try always on time for
+                            {props.section_6_title_1}
                             <br />
-                            21 days, absolutely free!
+                            {props.section_6_title_2}
                         </h3>
                         <small className="text-lg text-white circular-thin">
                             {props.section_6_subtitle}

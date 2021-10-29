@@ -78,7 +78,8 @@ function Home() {
             Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud \
             amet. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit \
             officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.',
-        section_5_title: 'What our members have to say',
+        section_5_title_1: 'What our members',
+        section_5_title_2: 'have to say',
         section_5_item_1:
             'Always on time just seemed so user- friendly for clients and staff.\
             Everything from managing the waitlist and doing the late cancels to inputting \
@@ -111,56 +112,51 @@ function Home() {
         pricing_tier_0_subtitle_yearly: 'forever',
         pricing_tier_0_subtitle:
             'For individuals, small businesses, and entrepreneurs',
-        pricing_tier_0_feature_list:
-            'Up to 100 appointments / mo\
-            1 location\
-            Up to 2 staff',
-        pricing_tier_0_disabled_feature_list:
-            'Open API\
-            Branded app',
+        pricing_tier_0_feature_list_1: 'Up to 100 appointments / mo',
+        pricing_tier_0_feature_list_2: '1 location',
+        pricing_tier_0_feature_list_3: 'Up to 2 staff',
+        pricing_tier_0_disabled_feature_list_1: 'Open API',
+        pricing_tier_0_disabled_feature_list_2: 'Branded app',
         pricing_tier_0_subfeature_title: 'Free forever',
-        pricing_tier_0_subfeature_checklist:
-            'No credit card required\
-            No commitment\
-            Includes free trial of our Multi- location plan for 21 days',
+        pricing_tier_0_subfeature_checklist_1: 'No credit card required',
+        pricing_tier_0_subfeature_checklist_2: 'No commitment',
+        pricing_tier_0_subfeature_checklist_3:
+            'Includes free trial of our Multi- location plan for 21 days',
         pricing_tier_0_cta: 'Choose plan',
         pricing_tier_1_name: 'Single Studio',
         pricing_tier_1_price_usd: '$49',
         pricing_tier_1_subtitle:
             'For small businesses with one or two locations',
-        pricing_tier_1_feature_list:
-            'Up to 1,000 appointments / mo\
-            1 location\
-            5 staff included',
-        pricing_tier_1_disabled_feature_list:
-            'Open API\
-            Branded app',
+        pricing_tier_1_feature_list_1: 'Up to 1, 000 appointments / mo',
+        pricing_tier_1_feature_list_2: '1 location',
+        pricing_tier_1_feature_list_3: '5 staff included',
+        pricing_tier_1_disabled_feature_list_1: 'Open API',
+        pricing_tier_1_disabled_feature_list_2: 'Branded app',
         pricing_tier_1_subfeature_title: 'Bring your business online',
-        pricing_tier_1_subfeature_checklist:
-            '$20 per additional location\
-            $5 per additional staff\
-            $5 per additional 1, 000 appointments',
+        pricing_tier_1_subfeature_checklist_1:
+            '$20 per additional location',
+        pricing_tier_1_subfeature_checklist_2: '$5 per additional staff',
+        pricing_tier_1_subfeature_checklist_3:
+            '$5 per additional 1, 000 appointments',
         pricing_tier_1_cta: 'Try it for free',
         pricing_tier_2_name: 'Multi - location Business',
         pricing_tier_2_price_usd: '$89',
         pricing_tier_2_subtitle:
             'For growing businesses with multiple locations',
-        pricing_tier_2_feature_list:
-            'Unlimited appointments\
-            3 locations included\
-            10 staff included\
-            Open API\
-            Branded app',
+        pricing_tier_2_feature_list_1: 'Unlimited appointments',
+        pricing_tier_2_feature_list_2: '3 locations included',
+        pricing_tier_2_feature_list_3: '10 staff included',
+        pricing_tier_2_feature_list_4: 'Open API',
+        pricing_tier_2_feature_list_5: 'Branded app',
         pricing_tier_2_disabled_feature_list: '',
         pricing_tier_2_subfeature_title: 'Everything you will need',
-        pricing_tier_2_subfeature_checklist:
-            '$20 per additional location\
-            $5 per additional staff\
-            Unlimited appointments',
+        pricing_tier_2_subfeature_checklist_1:
+            '$20 per additional location',
+        pricing_tier_2_subfeature_checklist_2: '$5 per additional staff',
+        pricing_tier_2_subfeature_checklist_3: 'Unlimited appointments',
         pricing_tier_2_cta: 'Try it for free',
-        section_6_title:
-            'Try always on time for\
-            21 days, absolutely free!',
+        section_6_title_1: 'Try always on time for',
+        section_6_title_2: '21 days, absolutely free!',
         section_6_subtitle: 'Take your business to the next leavel',
         section_6_cta: 'Try it for free',
         section_6_cta_note: 'No credit card required',
@@ -168,8 +164,9 @@ function Home() {
         footer_address_title: 'Office address',
         footer_address: 'AOT building, SIngapore 1234567',
         footer_follow_us: 'Follow us',
-        footer_copyright:
-            'Copyright © 2021 Always On Time.All Rights Reserved.',
+        footer_copyright_1: 'Copyright © 2021',
+        footer_copyright_2: 'Always On Time.',
+        footer_copyright_3: 'All Rights Reserved.',
         footer_privacy_policy: 'Privacy Policy',
         footer_terms: 'Terms and Conditions',
     }
@@ -247,7 +244,7 @@ function Home() {
                 <LandingSectionTestimonials {...translations} />
                 <div ref={refs.pricing} id="pricing" />
                 <LandingPricingSection {...translations} />
-                <LandingSectionTryCTA />
+                <LandingSectionTryCTA {...translations} />
             </main>
 
             <Footer {...translations} />

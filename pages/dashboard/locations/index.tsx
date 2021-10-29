@@ -144,9 +144,7 @@ function DashboardLocations() {
                 </div>
                 <div
                     className={classNames(
-                        view_mode == ViewMode.GRID
-                            ? 'overflow-hidden'
-                            : ''
+                        view_mode == ViewMode.GRID ? 'overflow-hidden' : ''
                     )}
                 >
                     <div
@@ -197,7 +195,10 @@ function DashboardLocations() {
                                 'p-8 rounded-xl text-center flex flex-col content-center justify-center',
                                 'border-2 border-dashed border-gray-150 cursor-pointer'
                             )}
-                            style={{ minHeight: '520px', minWidth: '463px' }}
+                            style={{
+                                minHeight: '520px',
+                                minWidth: '463px',
+                            }}
                         >
                             <i className="block mx-auto mb-4 feather feather-plus font-back text-2xl block w-10 h-10 leading-relaxed px-2 rounded-xl bg-primary-lighter text-primary-light" />
                             <span className="text-xl mx-auto block w-64 xl:w-96">

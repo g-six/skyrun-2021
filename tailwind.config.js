@@ -10,8 +10,9 @@ module.exports = {
       lg: '0px 0px 16px rgba(76, 90, 105, 0.1)',
       'right-lg': '0px 16px 24px rgba(76, 90, 105, 0.1)',
       xl: '0 20px 25px -5px rgba(76, 90, 105, 0.1), 0 10px 10px -5px rgba(76, 90, 105, 0.07)',
-      '2xl': '0 25px 50px -12px rgba(76, 90, 105, 0.15)',
-      '3xl': '0 35px 60px -15px rgba(76, 90, 105, 0.2)',
+      '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.15)',
+      '3xl': '0 35px 60px -15px rgba(0, 0, 0, 0.25)',
+      
       inner: 'inset 0 2px 4px 0 rgba(76, 90, 105, 0.06)',
       none: 'none',
     },

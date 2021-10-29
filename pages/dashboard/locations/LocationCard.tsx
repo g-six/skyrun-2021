@@ -96,7 +96,7 @@ export function LocationCard({
         <div
             key={record.id}
             className="shadow-lg rounded-xl border-t border-l border-gray-50 overflow-hidden flex flex-col"
-            style={{ minHeight: '520px' }}
+            style={{ minHeight: '520px', minWidth: '463px' }}
         >
             <div className="overflow-hidden h-64 block">
                 {map_pin_location ? (

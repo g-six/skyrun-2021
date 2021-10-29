@@ -11,6 +11,7 @@ export type Tier = {
 }
 
 export interface SkyContextProps {
+    translations: Record<string, string>
     tiers: Tier[]
     lang: Language
     GOOGLE_API_KEY?: string
@@ -20,6 +21,7 @@ export interface SkyContextProps {
 const ctx: SkyContextProps = {
     lang: Language.EN,
     tiers: [],
+    translations: {},
     onLanguageChange: (v: Language) => {
         ctx.lang = v
     },
@@ -58,6 +60,17 @@ export function SkyAppDataProvider({ children }: Props) {
         true,
     )
 
+    const [translations, setTranslations] = useState<Record<string, string>>({})
+
+    const { data: common_translations } = useFetch(
+        `/v1/contents?url=${encodeURI(
+            'https://cms.aot.plus/jsonapi/node/page_translation/28a7ba7c-c1cd-4308-b45b-14ab5e7604fa'
+        )}`,
+        FetchMethods.GET,
+        true,
+        true
+    )
+
     function onLanguageChange(v: LanguageOption) {
         if (lang != v.code) {
             const { pathname, href, origin } = location
@@ -73,8 +86,6 @@ export function SkyAppDataProvider({ children }: Props) {
                 // location.href = location.href.split(`/${lang}/`, 1).join(`/${v.code}/`)
             }
         }
-        // setLanguage(v.code)
-        // router.push(router.pathname, router.pathname, { locale: lang })
     }
 
     useEffect(() => {
@@ -83,8 +94,23 @@ export function SkyAppDataProvider({ children }: Props) {
         }
     }, [data, tiers, GOOGLE_API_KEY, lang])
 
+    useEffect(() => {
+        if (lang && common_translations.data?.attributes[lang]) {
+            const translations_to_add: Record<string, string> = {}
+            common_translations.data.attributes[lang].forEach(
+                ({ key, value }: any) => {
+                    translations_to_add[key] = value
+                }
+            )
+            setTranslations({
+                ...translations,
+                ...translations_to_add,
+            })
+        }
+    }, [translations, lang])
+
     return <SkyContext.Provider value={
-        { ...ctx, tiers, GOOGLE_API_KEY, lang, onLanguageChange }
+        { ...ctx, tiers, GOOGLE_API_KEY, lang, onLanguageChange, translations }
     }>
         {children}
     </SkyContext.Provider>

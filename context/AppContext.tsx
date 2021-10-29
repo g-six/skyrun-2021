@@ -11,6 +11,7 @@ export type Tier = {
 }
 
 export interface SkyContextProps {
+    translations: Record<string, string>
     tiers: Tier[]
     lang: Language
     GOOGLE_API_KEY?: string
@@ -20,6 +21,7 @@ export interface SkyContextProps {
 const ctx: SkyContextProps = {
     lang: Language.EN,
     tiers: [],
+    translations: {},
     onLanguageChange: (v: Language) => {
         ctx.lang = v
     },
@@ -58,115 +60,11 @@ export function SkyAppDataProvider({ children }: Props) {
         true,
     )
 
-    const ui_text = {
-        actions: '',
-        add_membership: '',
-        address: '',
-        am: '',
-        amount: '',
-        amount_remaining: '',
-        appointment: '',
-        appointments: '',
-        area: '',
-        calendar: '',
-        cancel: '',
-        cancel_appointment: '',
-        category: '',
-        change: '',
-        city: '',
-        class_name: '',
-        clients: '',
-        country: '',
-        coupon: '',
-        date: '',
-        day: '',
-        delete: '',
-        discount: '',
-        edit: '',
-        eligible_services: '',
-        email: '',
-        end_date: '',
-        expired: '',
-        feedback: '',
-        filter: '',
-        first_name: '',
-        friday: '',
-        general: '',
-        helps: '',
-        home: '',
-        instructor: '',
-        integrations: '',
-        item: '',
-        last_name: '',
-        location: '',
-        locations: '',
-        membership_status: '',
-        membership_type: '',
-        memberships: '',
-        merge: '',
-        monday: '',
-        month: '',
-        monthly: '',
-        name: '',
-        next: '',
-        notes: '',
-        notifications: '',
-        online: '',
-        orders: '',
-        packages: '',
-        paid: '',
-        pay_now: '',
-        payment_information: '',
-        payment_method: '',
-        phone: '',
-        phone_number: '',
-        physical: '',
-        pm: '',
-        previous: '',
-        products: '',
-        recurrence: '',
-        recurring: '',
-        refund: '',
-        renews_on: '',
-        repeats: '',
-        reports: '',
-        reschedule: '',
-        resources: '',
-        room: '',
-        saturday: '',
-        save: '',
-        schedule: '',
-        select_membership: '',
-        services: '',
-        settings: '',
-        space: '',
-        staff: '',
-        start_date: '',
-        state: '',
-        status: '',
-        subscription: '',
-        sunday: '',
-        thursday: '',
-        time_zone: '',
-        today: '',
-        total: '',
-        total_price: '',
-        tuesday: '',
-        unpaid: '',
-        upcoming_classes: '',
-        valid: '',
-        view_payments: '',
-        wednesday: '',
-        week: '',
-        weekly: '',
-        zip_code: ''
-    }
+    const [translations, setTranslations] = useState<Record<string, string>>({})
 
-    const [common_translations, setTranslations] = useState(ui_text)
-
-    const { data: translation } = useFetch(
+    const { data: common_translations } = useFetch(
         `/v1/contents?url=${encodeURI(
-            'https://cms.aot.plus/jsonapi/node/page_translation/be42cdfb-b39b-4b19-9bee-9b983024f917'
+            'https://cms.aot.plus/jsonapi/node/page_translation/28a7ba7c-c1cd-4308-b45b-14ab5e7604fa'
         )}`,
         FetchMethods.GET,
         true,
@@ -188,8 +86,6 @@ export function SkyAppDataProvider({ children }: Props) {
                 // location.href = location.href.split(`/${lang}/`, 1).join(`/${v.code}/`)
             }
         }
-        // setLanguage(v.code)
-        // router.push(router.pathname, router.pathname, { locale: lang })
     }
 
     useEffect(() => {
@@ -199,20 +95,22 @@ export function SkyAppDataProvider({ children }: Props) {
     }, [data, tiers, GOOGLE_API_KEY, lang])
 
     useEffect(() => {
-        if (lang && translation.data?.attributes[lang]) {
-            translation.data.attributes[lang].forEach(
+        if (lang && common_translations.data?.attributes[lang]) {
+            const translations_to_add: Record<string, string> = {}
+            common_translations.data.attributes[lang].forEach(
                 ({ key, value }: any) => {
-                    setTranslations((translations) => ({
-                        ...translations,
-                        [key]: value,
-                    }))
+                    translations_to_add[key] = value
                 }
             )
+            setTranslations({
+                ...translations,
+                ...translations_to_add,
+            })
         }
-    }, [translation, lang])
+    }, [translations, lang])
 
     return <SkyContext.Provider value={
-        { ...ctx, tiers, GOOGLE_API_KEY, lang, onLanguageChange, common_translations }
+        { ...ctx, tiers, GOOGLE_API_KEY, lang, onLanguageChange, translations }
     }>
         {children}
     </SkyContext.Provider>

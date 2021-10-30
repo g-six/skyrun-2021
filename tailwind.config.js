@@ -45,6 +45,16 @@ module.exports = {
           xl: ['24px', '32px'],
         },
       },
+      spacing: {
+        'wide': '64rem',
+        'wider': '76rem',
+      },
+      height: {
+        'short': '28rem',
+        'tall': '32rem',
+        'grande': '36rem',
+        'venti': '40rem',
+      }
     },
   },
   variants: {

@@ -5,12 +5,12 @@ import MoneyInput from 'components/MoneyInput'
 import { useAuth } from 'context/AuthContext'
 import { MouseEvent, useState } from 'react'
 import { HexColorInput, HexColorPicker } from 'react-colorful'
-import { SubmitHandler, useForm } from 'react-hook-form'
+import { SubmitHandler, useForm, UseFormReturn } from 'react-hook-form'
 import { classNames } from 'utils/dom-helpers'
 import { useFetch } from 'utils/fetch-helper'
 import { FetchMethods } from 'utils/types'
 import { SubmitError } from '../types'
-import { ServiceType } from './types'
+import { CategoryItem, ServiceType } from './types'
 
 import 'react-dropzone-uploader/dist/styles.css'
 import ImageFileUploader from 'components/FileUploader/Image'
@@ -22,157 +22,60 @@ import OptionList, {
 } from 'components/OptionList'
 import { TenantInfo } from 'context/types'
 
-const categories = [
-    { text: 'Please select a category', disabled: true },
-    { text: 'Private Lessons', value: 'some-id-1' },
-    { text: 'Public Lessons', value: 'some-id-2' },
-]
-const durations = [
-    { text: 'Please select duration', disabled: true },
-    { text: '5 minutes', value: 5 },
-    { text: '10 minutes', value: 10 },
-    { text: '15 minutes', value: 15 },
-    { text: '30 minutes', value: 30 },
-    { text: '60 minutes', value: 60 },
-]
-
 function GeneralForm({
     translations,
+    form,
+    handleCloseModal,
+    onSubmit,
+    onNext,
+    createCategory,
 }: {
     translations: Record<string, string>
+    form: UseFormReturn
+    handleCloseModal: (e: MouseEvent<HTMLButtonElement>) => void
+    onSubmit(): void
+    onNext(): void
+    createCategory(c: Record<string, string>): void
 }) {
     const { ServiceModal, tenant } = useAuth()
     const { attributes, setAttributes } = ServiceModal
-    const [is_duration_opened, toggleDuration] = useState<boolean>(false)
-    const [loading, toggleLoading] = useState(false)
-    const [success, setSuccess] = useState(false)
+    const api_error =
+        attributes && (attributes.api_error as Record<string, string>)
+    const categories =
+        (attributes &&
+            (attributes.categories as unknown as Record<
+                string,
+                string
+            >[])) ||
+        []
+    const loading = attributes && (attributes.loading as boolean)
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-        setError,
-        setValue,
-        reset,
-    } = useForm<ServiceFormModel>({
-        mode: 'onSubmit',
-    })
-
-    register('category', { required: true })
-    register('service_type', {
-        required: true,
-        value:
-            (attributes?.service_type as ServiceType) ||
-            ServiceType.APPOINTMENT,
-    })
-    register('duration', {
-        min: 5,
-        required: true,
-        valueAsNumber: true,
-    })
-
-    const api_fetch = useFetch(
-        attributes?.id ? `/v1/services/${attributes?.id}` : '/v1/services',
-        attributes?.id ? FetchMethods.PUT : FetchMethods.POST,
-        false
-    )
-
-    const category_api_fetch = useFetch(
-        '/v1/categories',
-        FetchMethods.GET,
-        true
-    )
-
-    function updateList() {
-        ServiceModal.setAttributes({
-            has_updates: true,
-        })
-    }
+    const [is_adding_category, toggleCategoryForm] =
+        useState<boolean>(false)
+    const [category_name, setServiceCategory] = useState<string>('')
 
     function handleCategoryChange({ value }: OptionListItem) {
         const category = value as string
-        setValue('category', category)
+        form.setValue('category', category)
         setAttributes({
             ...attributes,
             category,
         })
     }
-    function handleDurationChange({ value }: OptionListItem) {
-        setValue('duration', value as number)
-        setAttributes({
-            ...attributes,
-            duration: value as string,
+
+    function handleNewCategory() {
+        toggleCategoryForm(true)
+    }
+
+    function submitNewCategory() {
+        createCategory({
+            name: category_name,
+            type: 'SERVICE',
         })
     }
 
-    const onSubmit: SubmitHandler<Record<string, string>> = async (
-        values: Record<string, string>
-    ) => {
-        toggleLoading(true)
-        try {
-            const {
-                name,
-                category,
-                description,
-                duration,
-                max_participants,
-                primary_color,
-                price,
-                service_type,
-            } = values
-            const service: Record<string, string> = {}
-
-            if (attributes && attributes.id) {
-                service.id = attributes.id as string
-            }
-
-            const form_values: ServiceApiItem = {
-                id: attributes?.id as string,
-                category: {
-                    name: category,
-                },
-                description,
-                duration: duration as unknown as number,
-                name,
-                tenant: tenant as TenantInfo,
-                maxCapacity: max_participants as unknown as number,
-                price: price as unknown as number,
-                primaryColorHex: primary_color,
-                type: undefined,
-                series: false,
-            }
-
-            if (service_type == ServiceType.APPOINTMENT)
-                form_values.type = 'APPOINTMENT'
-            if (service_type == ServiceType.GROUP_CLASS)
-                form_values.type = 'GROUP_CLASS'
-            if (service_type == ServiceType.SERIES) {
-                form_values.type = 'SERIES'
-                form_values.series = true
-            }
-
-            const res = await api_fetch.doFetch(form_values)
-
-            if (res) {
-                updateList()
-                reset()
-                setSuccess(true)
-                ServiceModal.close()
-            }
-        } catch (e: unknown) {
-            const { name, message } = e as SubmitError
-            console.log(name, message)
-        }
-        toggleLoading(false)
-    }
-
-    function handleCloseModal(e: MouseEvent<HTMLButtonElement>) {
-        ServiceModal.setAttributes({})
-        ServiceModal.close()
-    }
-
     return (
-        <form method="POST" onSubmit={handleSubmit(onSubmit)}>
+        <form method="POST" onSubmit={onSubmit}>
             <div className="pb-6 lg:flex gap-8 border-b border-b-gray-300 mb-6">
                 <fieldset className="xl:w-3/5">
                     <div className="text-primary text-xl font-medium font-display">
@@ -187,12 +90,12 @@ function GeneralForm({
                                     ...attributes,
                                     service_type: v as string,
                                 })
-                                setValue('service_type', v as string)
+                                form.setValue('service_type', v as string)
                             }}
                         >
                             <RadioGroup.Label
                                 className={classNames(
-                                    errors.service_type?.type
+                                    form.formState.errors.service_type?.type
                                         ? 'text-red-700'
                                         : '',
                                     'text-lg block'
@@ -251,7 +154,9 @@ function GeneralForm({
                         htmlFor="last-name"
                         className={classNames(
                             'block text-lg',
-                            errors.primary_color?.type ? 'text-red-700' : ''
+                            form.formState.errors.primary_color?.type
+                                ? 'text-red-700'
+                                : ''
                         )}
                     >
                         Primary Color
@@ -317,7 +222,7 @@ function GeneralForm({
                     </div>
                 </fieldset>
 
-                <fieldset className="xl:w-2/5">
+                <fieldset className="xl:w-2/5 w-full">
                     <Translation
                         translations={translations}
                         content_key="thumbnail_label"
@@ -351,7 +256,9 @@ function GeneralForm({
                         htmlFor="name"
                         className={classNames(
                             'block text-lg',
-                            errors.name?.type ? 'text-red-700' : ''
+                            form.formState.errors.name?.type
+                                ? 'text-red-700'
+                                : ''
                         )}
                     >
                         <Translation
@@ -364,16 +271,16 @@ function GeneralForm({
                         id="name"
                         className={classNames(
                             'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
-                            errors.name?.type
+                            form.formState.errors.name?.type
                                 ? 'border-red-300 bg-red-100'
                                 : ''
                         )}
-                        {...register('name', {
+                        {...form.register('name', {
                             required: true,
                         })}
                         defaultValue={(attributes?.name as string) || ''}
                     />
-                    {errors.name?.type === 'required' && (
+                    {form.formState.errors.name?.type === 'required' && (
                         <span className="text-sm text-red-700">
                             <Translation
                                 content_key="error_name_of_service_required"
@@ -386,7 +293,9 @@ function GeneralForm({
                     <Translation
                         className={classNames(
                             'block text-lg mb-1',
-                            errors.category?.type ? 'text-red-700' : ''
+                            form.formState.errors.category?.type
+                                ? 'text-red-700'
+                                : ''
                         )}
                         htmlFor="category"
                         content_key="category_label"
@@ -395,12 +304,15 @@ function GeneralForm({
                     />
                     <OptionList
                         id="category"
-                        error={errors.category?.type}
+                        error={form.formState.errors.category?.type}
                         position={ListFlyFrom.TOP_RIGHT}
                         onChange={handleCategoryChange}
                         defaultValue={
-                            attributes && (attributes.category as string)
+                            (attributes &&
+                                (attributes.category as string)) ||
+                            ''
                         }
+                        className="overflow-auto"
                         options={categories.map(
                             ({ text, value, disabled }, idx) => {
                                 return {
@@ -409,9 +321,80 @@ function GeneralForm({
                                 }
                             }
                         )}
-                    />
+                        static
+                    >
+                        {is_adding_category ? (
+                            <div className="bg-white text-primary-light flex flex-col gap-2 w-full">
+                                <div className="border-t border-t-gray-300 w-11/12 mx-auto mt-2" />
+                                <div className="text-primary-light flex items-center gap-2 w-full justify-center cursor-default hover:bg-gray-50">
+                                    <input
+                                        type="text"
+                                        className={classNames(
+                                            'px-6 py-2 border-gray-300',
+                                            'focus:ring-primary-light focus:border-primary-light',
+                                            'w-64 shadow-sm rounded-md'
+                                        )}
+                                        onChange={(e) => {
+                                            setServiceCategory(
+                                                e.target.value
+                                            )
+                                        }}
+                                        onKeyDown={(e) => {
+                                            console.log(
+                                                e.code.toUpperCase()
+                                            )
+                                            if (
+                                                e.code
+                                                    .toUpperCase()
+                                                    .indexOf('SPACE') >= 0
+                                            ) {
+                                                e.preventDefault()
+                                                toggleCategoryForm(true)
+                                            }
+                                            if (
+                                                e.code
+                                                    .toUpperCase()
+                                                    .indexOf('ENTER') >= 0
+                                            ) {
+                                                e.preventDefault()
+                                                submitNewCategory()
+                                            }
+                                        }}
+                                    />
+                                    <button
+                                        type="button"
+                                        className="flex items-center bg-primary text-white rounded px-2 h-10"
+                                        onClick={submitNewCategory}
+                                    >
+                                        <i className="feather-plus text-2xl" />{' '}
+                                        <Translation
+                                            content_key="add"
+                                            translations={translations}
+                                            render_as="span"
+                                        />
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <div
+                                onClick={handleNewCategory}
+                                className="bg-white w-full py-2 flex flex-col"
+                            >
+                                <div className="border-t border-t-gray-300 w-11/12 mx-auto mt-2" />
+                                <div className="text-primary-light flex items-center gap-2 w-full justify-center cursor-default hover:bg-gray-50">
+                                    <i className="feather-plus text-2xl" />{' '}
+                                    <Translation
+                                        content_key="add_new_category"
+                                        translations={translations}
+                                        render_as="span"
+                                    />
+                                </div>
+                            </div>
+                        )}
+                    </OptionList>
 
-                    {errors.category?.type === 'required' && (
+                    {form.formState.errors.category?.type ===
+                        'required' && (
                         <Translation
                             render_as="span"
                             className="text-sm text-red-700 block"
@@ -427,7 +410,9 @@ function GeneralForm({
                     <Translation
                         className={classNames(
                             'block text-lg',
-                            errors.description?.type ? 'text-red-700' : ''
+                            form.formState.errors.description?.type
+                                ? 'text-red-700'
+                                : ''
                         )}
                         htmlFor="description"
                         content_key="description_label"
@@ -437,7 +422,7 @@ function GeneralForm({
                     <textarea
                         className={classNames(
                             'placeholder-gray-300 mt-1 h-40 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md px-6 py-3',
-                            errors.description?.type
+                            form.formState.errors.description?.type
                                 ? 'border-red-300 bg-red-100'
                                 : ''
                         )}
@@ -446,12 +431,13 @@ function GeneralForm({
                             translations.description_of_service ||
                             'description_of_service'
                         }
-                        {...register('description')}
+                        {...form.register('description')}
                         defaultValue={
                             (attributes?.description as string) || ''
                         }
                     />
-                    {errors.description?.type === 'pattern' && (
+                    {form.formState.errors.description?.type ===
+                        'pattern' && (
                         <Translation
                             render_as="span"
                             className="text-sm text-red-700"
@@ -467,32 +453,44 @@ function GeneralForm({
                     <Translation
                         className={classNames(
                             'block text-lg mb-1',
-                            errors.duration?.type ? 'text-red-700' : ''
+                            form.formState.errors.duration?.type
+                                ? 'text-red-700'
+                                : ''
                         )}
                         htmlFor="duration"
                         content_key="duration_label"
                         translations={translations}
                         render_as="label"
                     />
-                    <OptionList
+                    <input
+                        type="number"
                         id="duration"
-                        error={errors.duration?.type}
-                        position={ListFlyFrom.BOTTOM_RIGHT}
-                        onChange={handleDurationChange}
-                        defaultValue={
-                            attributes && (attributes.duration as string)
-                        }
-                        options={durations.map(
-                            ({ text, value, disabled }, idx) => {
-                                return {
-                                    text,
-                                    value,
-                                }
-                            }
+                        className={classNames(
+                            'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
+                            form.formState.errors.duration?.type
+                                ? 'border-red-300 bg-red-100'
+                                : ''
                         )}
+                        {...form.register('duration', {
+                            required: true,
+                            min: 5,
+                            valueAsNumber: true,
+                        })}
+                        defaultValue={
+                            (attributes?.duration as string) || ''
+                        }
+                        onChangeCapture={() => {
+                            setAttributes({
+                                ...attributes,
+                                duration: form.getValues(
+                                    'duration'
+                                ) as number,
+                            })
+                        }}
                     />
 
-                    {errors.duration?.type === 'required' && (
+                    {form.formState.errors.duration?.type ===
+                        'required' && (
                         <Translation
                             content_key="error_duration_required"
                             className="text-sm text-red-700"
@@ -506,7 +504,7 @@ function GeneralForm({
                     <Translation
                         className={classNames(
                             'block text-lg',
-                            errors.max_participants?.type
+                            form.formState.errors.max_participants?.type
                                 ? 'text-red-700'
                                 : ''
                         )}
@@ -520,11 +518,11 @@ function GeneralForm({
                         id="max_participants"
                         className={classNames(
                             'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
-                            errors.max_participants?.type
+                            form.formState.errors.max_participants?.type
                                 ? 'border-red-300 bg-red-100'
                                 : ''
                         )}
-                        {...register('max_participants', {
+                        {...form.register('max_participants', {
                             required: true,
                         })}
                         defaultValue={
@@ -532,7 +530,8 @@ function GeneralForm({
                         }
                     />
 
-                    {errors.max_participants?.type === 'required' && (
+                    {form.formState.errors.max_participants?.type ===
+                        'required' && (
                         <Translation
                             content_key="error_max_participants_required"
                             className="text-sm text-red-700"
@@ -546,7 +545,9 @@ function GeneralForm({
                     <Translation
                         className={classNames(
                             'block text-lg',
-                            errors.price?.type ? 'text-red-700' : ''
+                            form.formState.errors.price?.type
+                                ? 'text-red-700'
+                                : ''
                         )}
                         htmlFor="price"
                         content_key="price_label"
@@ -557,20 +558,19 @@ function GeneralForm({
                         id="price"
                         className={classNames(
                             'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
-                            errors.price?.type
+                            form.formState.errors.price?.type
                                 ? 'border-red-300 bg-red-100'
                                 : ''
                         )}
-                        value={(attributes?.price as string) || ''}
                         onChange={(v: string) => {
-                            setValue('price', v as unknown as number)
+                            form.setValue('price', v as unknown as number)
                             setAttributes({
                                 ...attributes,
                                 price: v,
                             })
                         }}
                     />
-                    {errors.price?.type == 'required' && (
+                    {form.formState.errors.price?.type == 'required' && (
                         <Translation
                             content_key="error_price_required"
                             className="text-sm text-red-700"
@@ -582,6 +582,13 @@ function GeneralForm({
             </div>
 
             <div>
+                {api_error && api_error.message ? (
+                    <div className="text-sm text-red-700">
+                        {api_error.message}
+                    </div>
+                ) : (
+                    ''
+                )}
                 <div className="flex justify-end">
                     <button
                         type="button"
@@ -591,7 +598,10 @@ function GeneralForm({
                         Cancel
                     </button>
                     <button
-                        type="submit"
+                        type="button"
+                        onClick={() => {
+                            onNext()
+                        }}
                         className={classNames(
                             'group relative flex justify-center',
                             'py-3 px-12 border border-transparent',
@@ -599,6 +609,8 @@ function GeneralForm({
                             'focus:outline-none',
                             loading
                                 ? 'bg-primary-light'
+                                : api_error && api_error.message
+                                ? 'bg-red-700 hover:bg-primary-dark focus:ring-2 focus:ring-offset-2 focus:ring-primary-light'
                                 : 'bg-primary hover:bg-primary-dark focus:ring-2 focus:ring-offset-2 focus:ring-primary-light'
                         )}
                     >

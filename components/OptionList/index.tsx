@@ -17,6 +17,7 @@ export interface OptionListProps {
     defaultValue?: string
     position?: ListFlyFrom
     onChange: (t: OptionListItem) => void
+    onActivate?: () => void
     options: OptionListItem[]
     error?: string
     children?: ReactNode
@@ -48,10 +49,10 @@ function OptionList(props: OptionListProps & withClass) {
     }, [props.defaultValue, selected])
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col relative">
             <Listbox value={selected} onChange={handleChange}>
                 {({ open }) => (
-                    <div className="relative">
+                    <div className="absolute h-72 w-full">
                         <Listbox.Button
                             className={classNames(
                                 props.error
@@ -60,6 +61,7 @@ function OptionList(props: OptionListProps & withClass) {
                                 'relative w-full border rounded-md shadow-sm pl-3 pr-10 py-3 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-primary-light focus:border-primary-light sm:text-base'
                             )}
                             role="button"
+                            onClickCapture={props.onActivate}
                         >
                             <span className="flex items-center">
                                 <span className="ml-3 block truncate h-6">
@@ -74,19 +76,14 @@ function OptionList(props: OptionListProps & withClass) {
                             </span>
                         </Listbox.Button>
 
-                        {open && (
-                            <Transition
-                                as={Fragment}
-                                leave="transition ease-in duration-100"
-                                leaveFrom="opacity-100"
-                                leaveTo="opacity-0"
-                            >
+                        {(props.static || open) && (
+                            <div className="relative ring-1 bg-white shadow-2xl h-56 rounded-md ring-black ring-opacity-5 focus:outline-none overflow-hidden">
                                 <Listbox.Options
                                     className={classNames(
                                         props.position ||
                                             ListFlyFrom.TOP_LEFT,
                                         props.className || '',
-                                        'absolute z-10 mt-1 w-full bg-white shadow-2xl max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'
+                                        'relative mt-1 w-full py-1 text-base sm:text-sm h-40'
                                     )}
                                     static={props.static}
                                 >
@@ -98,7 +95,7 @@ function OptionList(props: OptionListProps & withClass) {
                                                     active
                                                         ? 'text-white bg-primary'
                                                         : 'text-gray-900',
-                                                    'cursor-default select-none relative py-2 pl-3 pr-9'
+                                                    'hover:bg-primary-lighter cursor-default select-none relative py-2 pl-3 pr-9'
                                                 )
                                             }
                                             value={item}
@@ -138,20 +135,14 @@ function OptionList(props: OptionListProps & withClass) {
                                         </Listbox.Option>
                                     ))}
                                 </Listbox.Options>
-                            </Transition>
+                                <div className="absolute w-full z-10">
+                                    {children}
+                                </div>
+                            </div>
                         )}
                     </div>
                 )}
             </Listbox>
-            <Transition
-                as={Fragment}
-                show={false}
-                leave="transition ease-in duration-100"
-                leaveFrom="opacity-100"
-                leaveTo="opacity-0"
-            >
-                <div className="absolute">{children}</div>
-            </Transition>
         </div>
     )
 }

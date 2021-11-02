@@ -98,7 +98,6 @@ export function DropdownComponent(props: SelectorProps) {
                                             ) {
                                                 onClick &&
                                                     (onClick as () => void)
-                                                openMenu(false)
                                             }
                                         }}
                                     >

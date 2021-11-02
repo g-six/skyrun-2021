@@ -1,4 +1,6 @@
 import { useEffect, useState, MouseEvent } from 'react'
+import DialogModal from './Dialog'
+
 import { createModal } from '../ModalFactory'
 import { AuthContext, useAuth } from 'context/AuthContext'
 import { ModalWrapper } from '../ModalWrapper'
@@ -8,20 +10,13 @@ import {
     TabStripTab,
 } from '@progress/kendo-react-layout'
 import GeneralForm from './GeneralForm'
-import Appointments from './Appointments'
 import { FetchMethods } from 'utils/types'
 import { useFetch } from 'utils/fetch-helper'
 import { useAppContext } from 'context/AppContext'
-import GeneralModal from '../General'
 import ServiceModalStaff from './Staff'
-import {
-    FieldValues,
-    SubmitHandler,
-    useForm,
-    UseFormReturn,
-} from 'react-hook-form'
-import { ServiceFormModel } from 'types/service'
+import { ServiceApiItem } from 'types/service'
 import { ServiceType } from './types'
+import { TenantInfo } from 'context/types'
 
 const ModalProvider = createModal(
     AuthContext,
@@ -46,6 +41,7 @@ function ServiceModal() {
     const { attributes, setAttributes } = ServiceModal
     const { lang, translations: common_translations } = useAppContext()
     const [translations, setTranslations] = useState(common_translations)
+    const [prompt_message, toggleDialog] = useState<string>('')
 
     const categories =
         (attributes &&
@@ -86,10 +82,6 @@ function ServiceModal() {
         false
     )
 
-    const form: UseFormReturn = useForm<FieldValues>({
-        mode: 'onChange',
-    })
-
     function handleCloseModal(e: MouseEvent<HTMLButtonElement>) {
         ServiceModal.setAttributes({})
         ServiceModal.close()
@@ -101,18 +93,16 @@ function ServiceModal() {
         })
     }
 
-    form.register('category', { required: true })
-    form.register('price', { required: true, valueAsNumber: true })
-    form.register('service_type', {
-        required: true,
-        value:
-            (attributes?.service_type as ServiceType) ||
-            ServiceType.APPOINTMENT,
-    })
+    if (!attributes || !attributes?.service_type) {
+        setAttributes({
+            ...attributes,
+            service_type: ServiceType.APPOINTMENT,
+        })
+    }
 
-    const onSubmit: SubmitHandler<Record<string, string>> = async (
-        values: Record<string, string>
-    ) => {
+    const onSubmit = async () => {
+        service_api_response.message = undefined
+        service_api_response.type = undefined
         try {
             const {
                 name,
@@ -123,7 +113,11 @@ function ServiceModal() {
                 primary_color,
                 price,
                 service_type,
-            } = values
+            } = attributes as unknown as Record<string, string>
+            const { staff_assigned } = attributes as unknown as Record<
+                string,
+                Record<string, string>[]
+            >
             const service: Record<string, string> = {}
 
             if (attributes && attributes.id) {
@@ -133,7 +127,7 @@ function ServiceModal() {
             const form_values: ServiceApiItem = {
                 id: attributes?.id as string,
                 category: {
-                    id: category,
+                    id: category as string,
                 },
                 description,
                 duration: duration as unknown as number,
@@ -143,13 +137,17 @@ function ServiceModal() {
                 price: price as unknown as number,
                 primaryColorHex: primary_color,
                 type: undefined,
+                staff: staff_assigned as unknown as Record<
+                    string,
+                    string
+                >[],
                 series: false,
             }
 
             if (service_type == ServiceType.APPOINTMENT)
                 form_values.type = 'APPOINTMENT'
-            if (service_type == ServiceType.GROUP_CLASS)
-                form_values.type = 'GROUP_CLASS'
+            if (service_type == ServiceType.GROUP)
+                form_values.type = 'GROUP'
             if (service_type == ServiceType.SERIES) {
                 form_values.type = 'SERIES'
                 form_values.series = true
@@ -159,22 +157,40 @@ function ServiceModal() {
 
             if (res?.ok) {
                 updateList()
-                form.reset()
                 ServiceModal.close()
             }
-        } catch (e: unknown) {
-            const { name, message } = e as SubmitError
-            console.log(name, message)
+        } catch (e) {
+            const { message } = e as Record<string, string>
+            toggleDialog(message)
         }
     }
-
     useEffect(() => {
-        if (create_category_status == 200) {
-            console.log(create_category_api_response)
-            // categories.push({
-            //     text: category.name,
-            //     value: category.id,
-            // })
+        if (service_api_response && service_api_response.message) {
+            toggleDialog(service_api_response.message)
+            service_api_response.message = undefined
+            service_api_response.type = undefined
+        }
+        if (
+            create_category_status == 200 &&
+            create_category_api_response.id &&
+            categories.filter(
+                ({ id }) => id == create_category_api_response.id
+            ).length == 0
+        ) {
+            categories.push({
+                text: create_category_api_response.name,
+                value: create_category_api_response.id,
+            })
+            if (
+                !attributes?.category ||
+                (attributes?.category as unknown as Record<string, string>)
+                    .id != create_category_api_response.id
+            ) {
+                setAttributes({
+                    ...attributes,
+                    category: create_category_api_response,
+                })
+            }
         } else if (
             categories_api_status == 200 &&
             categories_api_response.content.length > 0 &&
@@ -210,20 +226,6 @@ function ServiceModal() {
                 ...translations_to_add,
             })
         }
-
-        // if (service_api_status >= 500) {
-        //     setAttributes({
-        //         ...attributes,
-        //         api_error: {
-        //             message: translations.api_5XX_error || 'api_5XX_error',
-        //         },
-        //     } as unknown as Record<string, string>)
-        // } else if (service_api_status != 200) {
-        //     setAttributes({
-        //         ...attributes,
-        //         api_error: service_api_response,
-        //     } as unknown as Record<string, string>)
-        // }
     }, [
         common_translations,
         page_translation,
@@ -273,13 +275,12 @@ function ServiceModal() {
                             <div className="p-10">
                                 <GeneralForm
                                     translations={translations}
-                                    service_api_response={
-                                        service_api_response
-                                    }
-                                    form={form}
                                     onNext={() => setSelectedTab(1)}
                                     handleCloseModal={handleCloseModal}
                                     createCategory={createCategory}
+                                    onSubmit={() => {
+                                        console.log(attributes)
+                                    }}
                                 />
                             </div>
                         </TabStripTab>
@@ -287,7 +288,9 @@ function ServiceModal() {
                             <div className="p-10">
                                 <ServiceModalStaff
                                     onPrevious={() => setSelectedTab(0)}
-                                    onNext={() => setSelectedTab(2)}
+                                    onNext={() => {
+                                        onSubmit()
+                                    }}
                                     translations={translations}
                                     handleCloseModal={handleCloseModal}
                                 />
@@ -298,7 +301,12 @@ function ServiceModal() {
                     </TabStrip>
                 </div>
             </ModalWrapper>
-            <GeneralModal />
+            <DialogModal
+                prompt_message={prompt_message}
+                onCloseModal={() => {
+                    toggleDialog('')
+                }}
+            />
         </ModalProvider.Visible>
     )
 }

@@ -1,6 +1,7 @@
 import UniversalSearch from 'components/UniversalSearch'
 import { useAuth } from 'context/AuthContext'
 import { useState, MouseEvent, createRef } from 'react'
+import { UseFormReturn } from 'react-hook-form'
 import { classNames } from 'utils/dom-helpers'
 import { getApiRequest } from 'utils/fetch-helper'
 import StaffCardItem, { StaffCardItemProps } from './StaffCardItem'
@@ -99,7 +100,12 @@ function ServiceModalStaff({
         }
     }
     function removeStaff(idx: number) {
-        const staff_assigned = attributes && attributes.staff_assigned as unknown as Record<string, string>[]
+        const staff_assigned =
+            attributes &&
+            (attributes.staff_assigned as unknown as Record<
+                string,
+                string
+            >[])
         if (staff_assigned) {
             staff_assigned.splice(idx, 1)
             setAttributes({
@@ -122,7 +128,11 @@ function ServiceModalStaff({
         }
     }
 
-    const is_staff_assigned = attributes && attributes.staff_assigned && (attributes.staff_assigned as unknown as StaffCardItemProps[]).length > 0
+    const is_staff_assigned =
+        attributes &&
+        attributes.staff_assigned &&
+        (attributes.staff_assigned as unknown as StaffCardItemProps[])
+            .length > 0
 
     return (
         <div
@@ -136,9 +146,12 @@ function ServiceModalStaff({
                 </div>
             </div>
 
-            <div className={
-                classNames(is_staff_assigned ? '' : '', 'text-center px-3 py-6 mb-6 rounded-xl bg-gray-100 mt-6 relative flex-1')
-            }>
+            <div
+                className={classNames(
+                    is_staff_assigned ? '' : '',
+                    'text-center px-3 py-6 mb-6 rounded-xl bg-gray-100 mt-6 relative flex-1'
+                )}
+            >
                 <div className="flex mb-6 mx-3">
                     <UniversalSearch
                         className="flex-1"
@@ -219,7 +232,14 @@ function ServiceModalStaff({
                 ) : (
                     ''
                 )}
-                <div className={classNames(is_staff_assigned ? 'justify-start' : 'justify-center', 'overflow-auto max-h-96 h-96 flex-1 flex flex-col p-3')}>
+                <div
+                    className={classNames(
+                        is_staff_assigned
+                            ? 'justify-start'
+                            : 'justify-center',
+                        'overflow-auto max-h-96 h-96 flex-1 flex flex-col p-3'
+                    )}
+                >
                     {is_staff_assigned ? (
                         <div className="grid gap-6 grid-cols-2">
                             {(

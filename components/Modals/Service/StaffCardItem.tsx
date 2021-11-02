@@ -1,11 +1,11 @@
 export type StaffCardItemProps = {
-    first_name: string,
-    last_name: string,
-    id: string,
-    staff_user_id: string,
-    staff_image: string,
-    translations?: Record<string, string>,
-    onDelete(): void,
+    first_name: string
+    last_name: string
+    id: string
+    staff_user_id: string
+    staff_image: string
+    translations?: Record<string, string>
+    onDelete(): void
 }
 
 export function StaffCardItem({

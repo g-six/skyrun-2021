@@ -1,4 +1,4 @@
-export type ServiceApiType = 'APPOINTMENT' | 'GROUP_CLASS' | 'SERIES' | undefined
+export type ServiceApiType = 'APPOINTMENT' | 'GROUP' | 'SERIES'
 export type ServiceApiItem = {
     id?: string,
     accentColorHex?: string,
@@ -8,12 +8,16 @@ export type ServiceApiItem = {
     addons?: string[],
     blockTimeAfter?: string,
     blockTimeBefore?: string,
-    public?: boolean,
-    category?: Record<string, string>,
+    public: boolean,
+    category: {
+        id: string,
+        name: string,
+    },
     name: string,
     tenant: {
         id: string,
     },
+    staff: Record<string, string>[],
     price: number,
     maxCapacity: number,
     description: string,
@@ -51,6 +55,9 @@ export interface ServiceItem extends ServiceBase {
     id?: string,
     addons?: string[],
     is_public: boolean,
-    category?: Record<string, string>,
+    category: {
+        id: string,
+        name: string,
+    },
 }
 

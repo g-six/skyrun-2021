@@ -5,17 +5,12 @@ import MoneyInput from 'components/MoneyInput'
 import { useAuth } from 'context/AuthContext'
 import { MouseEvent, useState } from 'react'
 import { HexColorInput, HexColorPicker } from 'react-colorful'
-import { SubmitHandler, useForm, UseFormReturn } from 'react-hook-form'
 import { classNames } from 'utils/dom-helpers'
-import { useFetch } from 'utils/fetch-helper'
-import { FetchMethods } from 'utils/types'
-import { SubmitError } from '../types'
-import { CategoryItem, ServiceType } from './types'
+import { FormErrors, ServiceType } from './types'
 
 import 'react-dropzone-uploader/dist/styles.css'
 import ImageFileUploader from 'components/FileUploader/Image'
 import Translation from 'components/Translation'
-import { ServiceApiItem, ServiceFormModel } from 'types/service'
 import OptionList, {
     ListFlyFrom,
     OptionListItem,
@@ -24,14 +19,12 @@ import { TenantInfo } from 'context/types'
 
 function GeneralForm({
     translations,
-    form,
     handleCloseModal,
     onSubmit,
     onNext,
     createCategory,
 }: {
     translations: Record<string, string>
-    form: UseFormReturn
     handleCloseModal: (e: MouseEvent<HTMLButtonElement>) => void
     onSubmit(): void
     onNext(): void
@@ -39,8 +32,13 @@ function GeneralForm({
 }) {
     const { ServiceModal, tenant } = useAuth()
     const { attributes, setAttributes } = ServiceModal
+    const [is_category_opened, toggleCategoryOpen] =
+        useState<boolean>(false)
     const api_error =
         attributes && (attributes.api_error as Record<string, string>)
+    const form_errors: FormErrors =
+        (attributes && (attributes.form_errors as unknown as FormErrors)) ||
+        {}
     const categories =
         (attributes &&
             (attributes.categories as unknown as Record<
@@ -56,7 +54,7 @@ function GeneralForm({
 
     function handleCategoryChange({ value }: OptionListItem) {
         const category = value as string
-        form.setValue('category', category)
+        toggleCategoryOpen(false)
         setAttributes({
             ...attributes,
             category,
@@ -72,6 +70,7 @@ function GeneralForm({
             name: category_name,
             type: 'SERVICE',
         })
+        toggleCategoryOpen(false)
     }
 
     return (
@@ -90,12 +89,11 @@ function GeneralForm({
                                     ...attributes,
                                     service_type: v as string,
                                 })
-                                form.setValue('service_type', v as string)
                             }}
                         >
                             <RadioGroup.Label
                                 className={classNames(
-                                    form.formState.errors.service_type?.type
+                                    form_errors.service_type
                                         ? 'text-red-700'
                                         : '',
                                     'text-lg block'
@@ -151,12 +149,10 @@ function GeneralForm({
                     </div>
 
                     <label
-                        htmlFor="last-name"
+                        htmlFor="primary-color"
                         className={classNames(
                             'block text-lg',
-                            form.formState.errors.primary_color?.type
-                                ? 'text-red-700'
-                                : ''
+                            form_errors.primary_color ? 'text-red-700' : ''
                         )}
                     >
                         Primary Color
@@ -167,19 +163,14 @@ function GeneralForm({
                             className="w-6 h-6 rounded-full"
                             style={{
                                 backgroundColor:
-                                    (attributes &&
-                                        (attributes.primary_color as string)) ||
-                                    '#23476B',
+                                    attributes?.primary_color as string,
                             }}
                         />
 
                         <HexColorInput
+                            id="primary-color"
                             className="focus:outline-none font-mono flex-1 py-3"
-                            color={
-                                (attributes &&
-                                    (attributes.primary_color as string)) ||
-                                '#23476B'
-                            }
+                            color={attributes?.primary_color as string}
                             onChange={(primary_color) => {
                                 setAttributes({
                                     ...attributes,
@@ -256,9 +247,7 @@ function GeneralForm({
                         htmlFor="name"
                         className={classNames(
                             'block text-lg',
-                            form.formState.errors.name?.type
-                                ? 'text-red-700'
-                                : ''
+                            form_errors.name ? 'text-red-700' : ''
                         )}
                     >
                         <Translation
@@ -271,31 +260,32 @@ function GeneralForm({
                         id="name"
                         className={classNames(
                             'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
-                            form.formState.errors.name?.type
+                            form_errors.name
                                 ? 'border-red-300 bg-red-100'
                                 : ''
                         )}
-                        {...form.register('name', {
-                            required: true,
-                        })}
+                        onChange={(e) => {
+                            setAttributes({
+                                ...attributes,
+                                name: e.target.value,
+                            })
+                        }}
                         defaultValue={(attributes?.name as string) || ''}
                     />
-                    {form.formState.errors.name?.type === 'required' && (
+                    {form_errors.name && (
                         <span className="text-sm text-red-700">
                             <Translation
-                                content_key="error_name_of_service_required"
+                                content_key={form_errors.name}
                                 translations={translations}
                             />
                         </span>
                     )}
                 </fieldset>
-                <fieldset className="lg:w-3/4">
+                <fieldset className="lg:w-1/2">
                     <Translation
                         className={classNames(
                             'block text-lg mb-1',
-                            form.formState.errors.category?.type
-                                ? 'text-red-700'
-                                : ''
+                            form_errors.category ? 'text-red-700' : ''
                         )}
                         htmlFor="category"
                         content_key="category_label"
@@ -304,9 +294,12 @@ function GeneralForm({
                     />
                     <OptionList
                         id="category"
-                        error={form.formState.errors.category?.type}
+                        error={form_errors.category}
                         position={ListFlyFrom.TOP_RIGHT}
                         onChange={handleCategoryChange}
+                        onActivate={() => {
+                            toggleCategoryOpen(true)
+                        }}
                         defaultValue={
                             (attributes &&
                                 (attributes.category as string)) ||
@@ -321,18 +314,18 @@ function GeneralForm({
                                 }
                             }
                         )}
-                        static
+                        static={is_category_opened}
                     >
                         {is_adding_category ? (
-                            <div className="bg-white text-primary-light flex flex-col gap-2 w-full">
-                                <div className="border-t border-t-gray-300 w-11/12 mx-auto mt-2" />
-                                <div className="text-primary-light flex items-center gap-2 w-full justify-center cursor-default hover:bg-gray-50">
+                            <div className="bg-white text-primary-light flex flex-col gap-2 w-full h-12">
+                                <div className="border-t border-t-gray-300 w-11/12 mx-auto" />
+                                <div className="text-primary-light flex items-center gap-2 w-full justify-center cursor-default h-full px-5">
                                     <input
                                         type="text"
                                         className={classNames(
-                                            'px-6 py-2 border-gray-300',
+                                            'h-full border-gray-300',
                                             'focus:ring-primary-light focus:border-primary-light',
-                                            'w-64 shadow-sm rounded-md'
+                                            'w-64 shadow-sm rounded-md flex-1'
                                         )}
                                         onChange={(e) => {
                                             setServiceCategory(
@@ -340,17 +333,6 @@ function GeneralForm({
                                             )
                                         }}
                                         onKeyDown={(e) => {
-                                            console.log(
-                                                e.code.toUpperCase()
-                                            )
-                                            if (
-                                                e.code
-                                                    .toUpperCase()
-                                                    .indexOf('SPACE') >= 0
-                                            ) {
-                                                e.preventDefault()
-                                                toggleCategoryForm(true)
-                                            }
                                             if (
                                                 e.code
                                                     .toUpperCase()
@@ -363,10 +345,10 @@ function GeneralForm({
                                     />
                                     <button
                                         type="button"
-                                        className="flex items-center bg-primary text-white rounded px-2 h-10"
+                                        className="flex items-center bg-primary gap-1 text-white rounded px-2 h-full"
                                         onClick={submitNewCategory}
                                     >
-                                        <i className="feather-plus text-2xl" />{' '}
+                                        <i className="feather-plus text-lg" />{' '}
                                         <Translation
                                             content_key="add"
                                             translations={translations}
@@ -380,9 +362,9 @@ function GeneralForm({
                                 onClick={handleNewCategory}
                                 className="bg-white w-full py-2 flex flex-col"
                             >
-                                <div className="border-t border-t-gray-300 w-11/12 mx-auto mt-2" />
-                                <div className="text-primary-light flex items-center gap-2 w-full justify-center cursor-default hover:bg-gray-50">
-                                    <i className="feather-plus text-2xl" />{' '}
+                                <div className="border-t border-t-gray-300 w-11/12 mx-auto" />
+                                <div className="text-primary-light flex items-center gap-4 w-full justify-center cursor-default hover:bg-gray-50 py-2">
+                                    <i className="feather-plus text-lg" />{' '}
                                     <Translation
                                         content_key="add_new_category"
                                         translations={translations}
@@ -393,12 +375,11 @@ function GeneralForm({
                         )}
                     </OptionList>
 
-                    {form.formState.errors.category?.type ===
-                        'required' && (
+                    {form_errors.category && (
                         <Translation
                             render_as="span"
                             className="text-sm text-red-700 block"
-                            content_key="error_category_required"
+                            content_key={form_errors.category}
                             translations={translations}
                         />
                     )}
@@ -408,12 +389,7 @@ function GeneralForm({
             <div className="pb-6 lg:flex gap-8">
                 <fieldset className="pb-6 lg:pb-0 w-full">
                     <Translation
-                        className={classNames(
-                            'block text-lg',
-                            form.formState.errors.description?.type
-                                ? 'text-red-700'
-                                : ''
-                        )}
+                        className="block text-lg"
                         htmlFor="description"
                         content_key="description_label"
                         translations={translations}
@@ -421,30 +397,25 @@ function GeneralForm({
                     />
                     <textarea
                         className={classNames(
-                            'placeholder-gray-300 mt-1 h-40 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md px-6 py-3',
-                            form.formState.errors.description?.type
-                                ? 'border-red-300 bg-red-100'
-                                : ''
+                            'placeholder-gray-300 mt-1 h-40',
+                            'focus:ring-primary-light focus:border-primary-light',
+                            'block w-full shadow-sm border-gray-300 rounded-md px-6 py-3'
                         )}
                         rows={3}
                         placeholder={
                             translations.description_of_service ||
                             'description_of_service'
                         }
-                        {...form.register('description')}
+                        onChange={(e) => {
+                            setAttributes({
+                                ...attributes,
+                                description: e.target.value,
+                            })
+                        }}
                         defaultValue={
                             (attributes?.description as string) || ''
                         }
                     />
-                    {form.formState.errors.description?.type ===
-                        'pattern' && (
-                        <Translation
-                            render_as="span"
-                            className="text-sm text-red-700"
-                            content_key="error_description_required"
-                            translations={translations}
-                        />
-                    )}
                 </fieldset>
             </div>
 
@@ -453,9 +424,7 @@ function GeneralForm({
                     <Translation
                         className={classNames(
                             'block text-lg mb-1',
-                            form.formState.errors.duration?.type
-                                ? 'text-red-700'
-                                : ''
+                            form_errors.duration ? 'text-red-700' : ''
                         )}
                         htmlFor="duration"
                         content_key="duration_label"
@@ -467,32 +436,24 @@ function GeneralForm({
                         id="duration"
                         className={classNames(
                             'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
-                            form.formState.errors.duration?.type
+                            form_errors.duration
                                 ? 'border-red-300 bg-red-100'
                                 : ''
                         )}
-                        {...form.register('duration', {
-                            required: true,
-                            min: 5,
-                            valueAsNumber: true,
-                        })}
                         defaultValue={
                             (attributes?.duration as string) || ''
                         }
-                        onChangeCapture={() => {
+                        onChange={(e) => {
                             setAttributes({
                                 ...attributes,
-                                duration: form.getValues(
-                                    'duration'
-                                ) as number,
+                                duration: e.target.value,
                             })
                         }}
                     />
 
-                    {form.formState.errors.duration?.type ===
-                        'required' && (
+                    {form_errors.duration && (
                         <Translation
-                            content_key="error_duration_required"
+                            content_key={form_errors.duration}
                             className="text-sm text-red-700"
                             render_as="span"
                             translations={translations}
@@ -504,7 +465,7 @@ function GeneralForm({
                     <Translation
                         className={classNames(
                             'block text-lg',
-                            form.formState.errors.max_participants?.type
+                            form_errors.max_participants
                                 ? 'text-red-700'
                                 : ''
                         )}
@@ -514,26 +475,28 @@ function GeneralForm({
                         render_as="label"
                     />
                     <input
-                        type="text"
+                        type="number"
                         id="max_participants"
                         className={classNames(
                             'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
-                            form.formState.errors.max_participants?.type
+                            form_errors.max_participants
                                 ? 'border-red-300 bg-red-100'
                                 : ''
                         )}
-                        {...form.register('max_participants', {
-                            required: true,
-                        })}
                         defaultValue={
                             (attributes?.max_participants as string) || ''
                         }
+                        onChange={(e) => {
+                            setAttributes({
+                                ...attributes,
+                                max_participants: e.target.value,
+                            })
+                        }}
                     />
 
-                    {form.formState.errors.max_participants?.type ===
-                        'required' && (
+                    {form_errors.max_participants && (
                         <Translation
-                            content_key="error_max_participants_required"
+                            content_key={form_errors.max_participants}
                             className="text-sm text-red-700"
                             render_as="span"
                             translations={translations}
@@ -545,9 +508,7 @@ function GeneralForm({
                     <Translation
                         className={classNames(
                             'block text-lg',
-                            form.formState.errors.price?.type
-                                ? 'text-red-700'
-                                : ''
+                            form_errors.price ? 'text-red-700' : ''
                         )}
                         htmlFor="price"
                         content_key="price_label"
@@ -558,21 +519,24 @@ function GeneralForm({
                         id="price"
                         className={classNames(
                             'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
-                            form.formState.errors.price?.type
+                            form_errors.price
                                 ? 'border-red-300 bg-red-100'
                                 : ''
                         )}
+                        defaultValue={
+                            attributes && (attributes.price as number)
+                        }
                         onChange={(v: string) => {
-                            form.setValue('price', v as unknown as number)
+                            console.log(v)
                             setAttributes({
                                 ...attributes,
                                 price: v,
                             })
                         }}
                     />
-                    {form.formState.errors.price?.type == 'required' && (
+                    {form_errors.price && (
                         <Translation
-                            content_key="error_price_required"
+                            content_key={form_errors.price}
                             className="text-sm text-red-700"
                             render_as="span"
                             translations={translations}

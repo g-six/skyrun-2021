@@ -4,8 +4,18 @@ export type CategoryItem = {
     value?: string
 }
 
+export type FormErrors = {
+    name?: string
+    category?: string
+    duration?: string
+    max_participants?: string
+    price?: string
+    primary_color?: string
+    service_type?: string
+}
+
 export enum ServiceType {
     APPOINTMENT = 'Appointment',
-    GROUP_CLASS = 'Group Class',
+    GROUP = 'Group Class',
     SERIES = 'Series',
 }

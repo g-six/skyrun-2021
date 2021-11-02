@@ -9,9 +9,10 @@ import DropdownComponent from 'components/DropdownSelectors'
 import { DropPosition } from 'components/DropdownSelectors/common'
 import ServiceModal from 'components/Modals/Service'
 import { ServiceApiItem, ServiceItem } from 'types/service'
+import ServiceList from './ServiceList'
 
 function DashboardServices() {
-    const { tenant, ServiceModal: ModalContext } = useAuth()
+    const { tenant } = useAuth()
     const [services, setServices] = useState<
         Record<
             string,
@@ -129,33 +130,12 @@ function DashboardServices() {
                 update_selection.push(idx)
             })
         }
-
-        if (ModalContext.attributes?.has_updates) {
-            ModalContext.setAttributes({
-                has_updates: false,
-            })
-            doFetch()
-        }
-    }, [doFetch, data, setServices, all_selected, ModalContext.is_open])
-
-    function handleEdit(idx: number) {
-        return () => {
-            ModalContext.setAttributes(
-                services[idx] as Record<string, string | boolean | number>
-            )
-
-            ModalContext.open()
-        }
-    }
-
-    function toggleAll() {
-        selectAll(!all_selected)
-    }
+    }, [data, setServices, all_selected])
 
     return (
         <Dashboard>
-            <div className="flex flex-col mt-4">
-                <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+            <div className="flex flex-col mt-4 gap-6 py-2 sm:px-6 lg:px-8">
+                <div className="align-middle inline-block min-w-full">
                     <div className="flex justify-between">
                         <div className="flex gap-4 items-center">
                             <ViewModeSelector
@@ -214,7 +194,17 @@ function DashboardServices() {
                         </div>
                     </div>
                 </div>
+
+                <ServiceList
+                    services={
+                        data.content as Record<
+                            string,
+                            Record<string, string>
+                        >[]
+                    }
+                />
             </div>
+
             <ServiceModal />
         </Dashboard>
     )

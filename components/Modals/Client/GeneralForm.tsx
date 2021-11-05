@@ -125,8 +125,10 @@ function GeneralForm() {
                         )}
                         {...register('first_name', {
                             required: true,
-                            value: (attributes?.first_name as string) || '',
                         })}
+                        defaultValue={
+                            (attributes?.first_name as string) || ''
+                        }
                     />
                     {errors.first_name?.type === 'required' && (
                         <span className="text-sm text-red-700">
@@ -156,8 +158,10 @@ function GeneralForm() {
                         )}
                         {...register('last_name', {
                             required: true,
-                            value: (attributes?.last_name as string) || '',
                         })}
+                        defaultValue={
+                            (attributes?.last_name as string) || ''
+                        }
                     />
                     {errors.last_name?.type === 'required' && (
                         <span className="text-sm text-red-700">
@@ -190,10 +194,10 @@ function GeneralForm() {
                         )}
                         {...register('email', {
                             required: true,
-                            value: (attributes?.email as string) || '',
                             pattern:
                                 /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
                         })}
+                        defaultValue={(attributes?.email as string) || ''}
                     />
                     {errors.email?.type === 'required' && (
                         <span className="text-sm text-red-700">

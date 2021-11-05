@@ -79,7 +79,6 @@ export function LocationListItem({
         places,
         map_pin_location,
         is_predicting,
-        places,
         record,
         record.street_1,
         poi_name,

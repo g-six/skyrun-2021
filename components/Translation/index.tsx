@@ -1,9 +1,11 @@
 export type TranslationProps = {
     className?: string
-    render_as?: 'div' | 'span' | 'p'
+    htmlFor?: string
+    render_as?: 'div' | 'span' | 'p' | 'label'
     content_key: string
     translations: Record<string, string>
 }
+
 export function Translation(p: TranslationProps) {
     if (p.render_as == 'div') {
         return (
@@ -22,6 +24,12 @@ export function Translation(p: TranslationProps) {
             <span className={p.className || ''}>
                 {p.translations[p.content_key] || p.content_key}
             </span>
+        )
+    } else if (p.render_as == 'label') {
+        return (
+            <label htmlFor={p.htmlFor || ''} className={p.className || ''}>
+                {p.translations[p.content_key] || p.content_key}
+            </label>
         )
     }
 

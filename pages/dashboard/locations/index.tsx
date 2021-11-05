@@ -4,13 +4,14 @@ import { GeneralFormValues as LocationItem } from 'components/Modals/Location/ty
 import { useAppContext } from 'context/AppContext'
 import { useAuth } from 'context/AuthContext'
 import { useEffect, useState } from 'react'
-import { ViewMode } from 'types'
+import { ViewMode } from 'components/ViewModeSelector/types'
 import { classNames } from 'utils/dom-helpers'
 import { deleteApiRequest, useFetch } from 'utils/fetch-helper'
 import { FetchMethods } from 'utils/types'
 import Dashboard from '..'
 import LocationCard from './LocationCard'
 import LocationListItem from './LocationListItem'
+import ViewModeSelector from 'components/ViewModeSelector'
 
 function DashboardLocations() {
     const ctx = useAuth()
@@ -104,32 +105,10 @@ function DashboardLocations() {
                 <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                     <div className="flex justify-between">
                         <div className="gap-2 flex pb-3">
-                            <button
-                                onClick={() => {
-                                    setViewMode(ViewMode.GRID)
-                                }}
-                                className={classNames(
-                                    view_mode == ViewMode.GRID
-                                        ? 'text-primary'
-                                        : 'text-gray-300',
-                                    'flex items-center hover:text-primary-dark font-thin rounded-lg w-10'
-                                )}
-                            >
-                                <i className="feather-grid text-3xl mx-auto" />
-                            </button>
-                            <button
-                                onClick={() => {
-                                    setViewMode(ViewMode.LIST)
-                                }}
-                                className={classNames(
-                                    view_mode == ViewMode.LIST
-                                        ? 'text-primary'
-                                        : 'text-gray-300',
-                                    'flex items-center hover:text-primary-dark font-thin rounded-lg w-10'
-                                )}
-                            >
-                                <i className="feather-list text-3xl mx-auto" />
-                            </button>
+                            <ViewModeSelector
+                                setViewMode={setViewMode}
+                                view_mode={view_mode}
+                            />
                         </div>
                         <button
                             onClick={() => {

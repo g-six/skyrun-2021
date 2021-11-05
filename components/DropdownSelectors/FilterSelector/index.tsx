@@ -1,6 +1,5 @@
 import { Fragment, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
-import { ChevronDownIcon } from '@heroicons/react/solid'
 import { classNames } from '@progress/kendo-react-common'
 import { SelectorProps } from '../common'
 import SearchBox from 'components/SearchBox'

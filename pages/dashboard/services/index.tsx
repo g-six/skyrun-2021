@@ -10,15 +10,19 @@ import { DropPosition } from 'components/DropdownSelectors/common'
 import ServiceModal from 'components/Modals/Service'
 import { ServiceApiItem, ServiceItem } from 'types/service'
 import ServiceList from './ServiceList'
+import { UserModel } from 'components/Modals/types'
+import { useAppContext } from 'context/AppContext'
 
 function DashboardServices() {
-    const { tenant } = useAuth()
+    const { tenant, ServiceModal: ModalContext } = useAuth()
     const [services, setServices] = useState<
         Record<
             string,
             string | boolean | number | Record<string, string | boolean>
         >[]
     >([])
+    const { lang, translations: common_translations } = useAppContext()
+    const [translations, setTranslations] = useState(common_translations)
     const [is_instructor_expanded, toggleInstructorFilter] =
         useState<boolean>(false)
     const [is_category_expanded, toggleCategoryFilter] =
@@ -32,6 +36,16 @@ function DashboardServices() {
         FetchMethods.GET,
         !!tenant?.id
     )
+
+    const { data: page_translation } = useFetch(
+        `/v1/contents?url=${encodeURI(
+            'https://cms.aot.plus/jsonapi/node/page_translation/c59c7fce-c546-4993-a1e7-2c54336c1bc4'
+        )}`,
+        FetchMethods.GET,
+        true,
+        true
+    )
+
     const instructor_filter = {
         label: <>Instructor</>,
         is_expanded: is_instructor_expanded,
@@ -97,6 +111,7 @@ function DashboardServices() {
                     longDescription: long_description,
                     customSlug: slug,
                     imageUrl: image_src,
+                    staff,
                 } = s
 
                 let service_type = s.series ? 'series' : ''
@@ -119,6 +134,20 @@ function DashboardServices() {
                     long_description,
                     service_type,
                     slug,
+                    staff: staff.map(
+                        ({
+                            id,
+                            user,
+                        }: {
+                            id: string
+                            user: UserModel
+                        }) => ({
+                            id,
+                            user_id: user.id as string,
+                            first_name: user.firstName,
+                            last_name: user.lastName,
+                        })
+                    ),
                     image_src,
                 }
             })
@@ -130,7 +159,21 @@ function DashboardServices() {
                 update_selection.push(idx)
             })
         }
-    }, [data, setServices, all_selected])
+
+        if (lang && page_translation.data?.attributes[lang]) {
+            const translations_to_add: Record<string, string> = {}
+            page_translation.data.attributes[lang].forEach(
+                ({ key, value }: any) => {
+                    translations_to_add[key] = value
+                }
+            )
+            setTranslations({
+                ...common_translations,
+                ...translations_to_add,
+            })
+        }
+    }, [data, 
+        common_translations, page_translation, lang, setServices, all_selected])
 
     return (
         <Dashboard>
@@ -195,14 +238,7 @@ function DashboardServices() {
                     </div>
                 </div>
 
-                <ServiceList
-                    services={
-                        data.content as Record<
-                            string,
-                            Record<string, string>
-                        >[]
-                    }
-                />
+                <ServiceList services={data.content as ServiceApiItem[]} translations={translations} />
             </div>
 
             <ServiceModal />

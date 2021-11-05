@@ -1,3 +1,5 @@
+import { UserModel } from 'components/Modals/types'
+
 export type ServiceApiType = 'APPOINTMENT' | 'GROUP' | 'SERIES'
 export type ServiceApiItem = {
     id?: string,
@@ -17,7 +19,10 @@ export type ServiceApiItem = {
     tenant: {
         id: string,
     },
-    staff: Record<string, string>[],
+    staff: {
+        id: string,
+        user: UserModel,
+    }[],
     price: number,
     maxCapacity: number,
     description: string,
@@ -59,5 +64,11 @@ export interface ServiceItem extends ServiceBase {
         id: string,
         name: string,
     },
+    staff: {
+        id: string,
+        user_id: string,
+        first_name: string,
+        last_name: string,
+    }[],
 }
 

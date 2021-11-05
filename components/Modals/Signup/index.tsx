@@ -140,8 +140,8 @@ function SignupModal() {
     return (
         <ModalProvider.Visible>
             <ModalWrapper>
-                <div className="bg-white shadow-3xl w-full overflow-hidden sm:rounded-md mx-auto my-4 relative border-2 border-gray-100 flex flex-col">
-                    <div className="flex justify-between px-10 text-gray-500 absolute z-10 h-10 w-full">
+                <div className="bg-white shadow-3xl w-large overflow-hidden sm:rounded-md mx-auto my-4 relative border-2 border-gray-100 flex flex-col py-8">
+                    <div className="flex justify-between px-10 text-gray-500 z-10 h-10 w-full">
                         <span className="inline-block self-center text-lg font-light text-gray-600">
                             {success
                                 ? 'Congratulations!'
@@ -150,7 +150,7 @@ function SignupModal() {
                         <SignupModalCloser className="self-center" />
                     </div>
                     {success ? (
-                        <div className="z-20 pt-16 px-10">
+                        <div className="z-20 px-10">
                             <p className="text-lg font-light">
                                 Please check your email inbox for your
                                 account activation link.

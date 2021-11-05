@@ -156,7 +156,7 @@ export function SkyAuthProvider({ children }: Props) {
             tenants: [],
         }
 
-        res.tenants.forEach((t: ApiTenant, idx) => {
+        res.tenants && res.tenants.forEach((t: ApiTenant, idx) => {
             const clean_tenant = {
                 id: t.id,
                 business_name: t.name,

@@ -7,33 +7,37 @@ export type TranslationProps = {
 }
 
 export function Translation(p: TranslationProps) {
+    let text = p.translations[p.content_key]
+    if (text == undefined) {
+        text = ''
+    }
     if (p.render_as == 'div') {
         return (
             <div className={p.className || ''}>
-                {p.translations[p.content_key] || p.content_key}
+                {text}
             </div>
         )
     } else if (p.render_as == 'p') {
         return (
             <p className={p.className || ''}>
-                {p.translations[p.content_key] || p.content_key}
+                {text}
             </p>
         )
     } else if (p.render_as == 'span') {
         return (
             <span className={p.className || ''}>
-                {p.translations[p.content_key] || p.content_key}
+                {text}
             </span>
         )
     } else if (p.render_as == 'label') {
         return (
             <label htmlFor={p.htmlFor || ''} className={p.className || ''}>
-                {p.translations[p.content_key] || p.content_key}
+                {text}
             </label>
         )
     }
 
-    return <>{p.translations[p.content_key] || p.content_key}</>
+    return <>{text}</>
 }
 
 export default Translation

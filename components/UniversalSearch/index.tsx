@@ -5,7 +5,7 @@ const defaultHandler = (e: { target: { value: string } }) => {}
 
 export type UniversalSearchProps = {
     selected_idx?: number
-    categories: string[]
+    categories?: string[]
     className?: string
     onChange?(e: { target: { value: string } }): void
     onClose?(): void

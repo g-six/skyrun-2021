@@ -13,7 +13,7 @@ export type ServiceApiItem = {
     public: boolean,
     category: {
         id: string,
-        name: string,
+        name?: string,
     },
     name: string,
     tenant: {
@@ -62,7 +62,7 @@ export interface ServiceItem extends ServiceBase {
     is_public: boolean,
     category: {
         id: string,
-        name: string,
+        name?: string,
     },
     staff: {
         id: string,
@@ -70,5 +70,6 @@ export interface ServiceItem extends ServiceBase {
         first_name: string,
         last_name: string,
     }[],
+    memberships?: Record<string, string>[],
 }
 

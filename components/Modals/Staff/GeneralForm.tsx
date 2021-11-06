@@ -76,9 +76,9 @@ function GeneralForm() {
             const res = await api_fetch.doFetch({
                 id: attributes?.id as string,
                 tenant,
-                hourlyWage: attributes?.hourly_rate as string,
-                monthlyWage: attributes?.monthly_rate as string,
-                overtimeRate: attributes?.overtime_rate as string,
+                hourlyWage: attributes?.hourly_rate as number,
+                monthlyWage: attributes?.monthly_rate as number,
+                overtimeRate: attributes?.overtime_rate as number,
                 user,
                 notes,
             })
@@ -298,9 +298,7 @@ function GeneralForm() {
                                     ? 'border-red-300 bg-red-100'
                                     : ''
                             )}
-                            value={
-                                (attributes?.hourly_rate as string) || ''
-                            }
+                            value={attributes?.hourly_rate as number}
                             onChange={(v: string) => {
                                 setAttributes({
                                     ...attributes,
@@ -335,9 +333,7 @@ function GeneralForm() {
                                     ? 'border-red-300 bg-red-100'
                                     : ''
                             )}
-                            value={
-                                (attributes?.monthly_rate as string) || ''
-                            }
+                            value={attributes?.monthly_rate as number}
                             onChange={(v: string) => {
                                 setAttributes({
                                     ...attributes,
@@ -372,9 +368,7 @@ function GeneralForm() {
                                     ? 'border-red-300 bg-red-100'
                                     : ''
                             )}
-                            value={
-                                (attributes?.overtime_rate as string) || ''
-                            }
+                            value={attributes?.overtime_rate as number}
                             onChange={(v: string) => {
                                 setAttributes({
                                     ...attributes,

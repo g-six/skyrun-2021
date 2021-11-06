@@ -17,6 +17,9 @@ import ServiceModalStaff from './Staff'
 import { ServiceApiItem } from 'types/service'
 import { ServiceType } from './types'
 import { TenantInfo } from 'context/types'
+import Translation from 'components/Translation'
+import ServiceModalMemberships from './Memberships'
+import { UserModel } from '../types'
 
 const ModalProvider = createModal(
     AuthContext,
@@ -134,13 +137,14 @@ function ServiceModal() {
                 name,
                 tenant: tenant as TenantInfo,
                 maxCapacity: max_participants as unknown as number,
+                public: true,
                 price: price as unknown as number,
                 primaryColorHex: primary_color,
-                type: undefined,
-                staff: staff_assigned as unknown as Record<
-                    string,
-                    string
-                >[],
+                type: 'APPOINTMENT',
+                staff: staff_assigned as unknown as {
+                    id: string
+                    user: UserModel
+                }[],
                 series: false,
             }
 
@@ -244,6 +248,64 @@ function ServiceModal() {
         setSelectedTab(e.selected)
     }
 
+    let step_2 = (
+        <Translation
+            content_key="assign_staff_panel_title"
+            translations={translations}
+        />
+    )
+    let step_3 = (
+        <Translation
+            content_key="memberships_panel_title"
+            translations={translations}
+        />
+    )
+
+    let form_2 = (
+        <ServiceModalStaff
+            onPrevious={() => setSelectedTab(0)}
+            onNext={() => {
+                onSubmit()
+            }}
+            translations={translations}
+            handleCloseModal={handleCloseModal}
+        />
+    )
+
+    let form_3 = <span>WIP</span>
+
+    if (attributes && attributes.service_type == ServiceType.GROUP) {
+        step_2 = (
+            <Translation
+                content_key="memberships_panel_title"
+                translations={translations}
+            />
+        )
+        step_3 = (
+            <Translation
+                content_key="offer_class_panel_title"
+                translations={translations}
+            />
+        )
+        form_2 = (
+            <ServiceModalMemberships
+                onPrevious={() => setSelectedTab(0)}
+                onNext={() => {
+                    onSubmit()
+                }}
+                attributes={attributes}
+                removeAll={() => {
+                    console.log('remove all')
+                }}
+                removeMembership={(idx: number) => {
+                    console.log('remove membership record', idx)
+                }}
+                translations={translations}
+                handleCloseModal={handleCloseModal}
+            />
+        )
+    }
+
     return (
         <ModalProvider.Visible>
             <ModalWrapper>
@@ -271,7 +333,14 @@ function ServiceModal() {
                         className="z-20 flex-1"
                         animation={false}
                     >
-                        <TabStripTab title="Basic Info">
+                        <TabStripTab
+                            title={
+                                <Translation
+                                    content_key="basic_info_panel_title"
+                                    translations={translations}
+                                />
+                            }
+                        >
                             <div className="p-10">
                                 <GeneralForm
                                     translations={translations}
@@ -284,20 +353,22 @@ function ServiceModal() {
                                 />
                             </div>
                         </TabStripTab>
-                        <TabStripTab title="Assign Staff">
-                            <div className="p-10">
-                                <ServiceModalStaff
-                                    onPrevious={() => setSelectedTab(0)}
-                                    onNext={() => {
-                                        onSubmit()
-                                    }}
-                                    translations={translations}
-                                    handleCloseModal={handleCloseModal}
-                                />
-                            </div>
+                        <TabStripTab title={step_2}>
+                            <div className="p-10">{form_2}</div>
                         </TabStripTab>
-                        <TabStripTab title="Memberships">WIP</TabStripTab>
-                        <TabStripTab title="Orders">WIP</TabStripTab>
+                        <TabStripTab title={step_3}>
+                            <div className="p-10">{form_3}</div>
+                        </TabStripTab>
+                        <TabStripTab
+                            title={
+                                <Translation
+                                    content_key="booking_panel_title"
+                                    translations={translations}
+                                />
+                            }
+                        >
+                            WIP
+                        </TabStripTab>
                     </TabStrip>
                 </div>
             </ModalWrapper>

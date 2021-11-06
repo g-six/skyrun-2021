@@ -9,26 +9,14 @@ export type TranslationProps = {
 export function Translation(p: TranslationProps) {
     let text = p.translations[p.content_key]
     if (text == undefined) {
-        text = ''
+        text = p.content_key
     }
     if (p.render_as == 'div') {
-        return (
-            <div className={p.className || ''}>
-                {text}
-            </div>
-        )
+        return <div className={p.className || ''}>{text}</div>
     } else if (p.render_as == 'p') {
-        return (
-            <p className={p.className || ''}>
-                {text}
-            </p>
-        )
+        return <p className={p.className || ''}>{text}</p>
     } else if (p.render_as == 'span') {
-        return (
-            <span className={p.className || ''}>
-                {text}
-            </span>
-        )
+        return <span className={p.className || ''}>{text}</span>
     } else if (p.render_as == 'label') {
         return (
             <label htmlFor={p.htmlFor || ''} className={p.className || ''}>

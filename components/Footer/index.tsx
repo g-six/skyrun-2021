@@ -83,16 +83,6 @@ export default function Footer(props: Record<string, string>) {
                     </div>
                 </div>
                 <div className="grid grid-cols-3 gap-4 py-8 text-gray-400">
-<<<<<<< HEAD
-                    <span className="col-span-2">
-                        {props.footer_copyright_1}{' '}
-                        <strong>{props.footer_copyright_2}</strong>{' '}
-                        {props.footer_copyright_3}
-                    </span>
-                    <span className="col-span-1 text-right">
-                        {props.footer_privacy_policy}
-                    </span>
-=======
                     <Translation
                         className="col-span-2"
                         content_key="footer_copyright"
@@ -105,7 +95,6 @@ export default function Footer(props: Record<string, string>) {
                         render_as="span"
                         translations={props}
                     />
->>>>>>> AOT-246 - FRONT END: Drupal tag updates
                 </div>
             </div>
         </footer>

@@ -13,20 +13,12 @@ export default function LandingSectionTestimonials(
             <div className={styles.largeCircle} />
 
             <div className="container m-auto">
-<<<<<<< HEAD
-                <h3 className="text-white drop-shadow text-5xl circular font-thin mb-8 mt-36">
-                    {props.section_5_title_1}
-                    <br />
-                    {props.section_5_title_2}
-                </h3>
-=======
                 <Translation
                     className="text-white drop-shadow text-5xl circular font-thin mb-8 mt-36"
                     content_key="section_5_title"
                     render_as="h3"
                     translations={props}
                 />
->>>>>>> AOT-246 - FRONT END: Drupal tag updates
                 <div className="grid relative lg:grid-cols-2 gap-8 lg:px-40 z-0">
                     <figure className="rounded-3xl bg-white min-h-32 w-full pt-12 px-8 shadow-2xl">
                         <blockquote className="text-justify leading-relaxed text-gray-400">

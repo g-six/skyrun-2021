@@ -54,6 +54,10 @@ module.exports = {
         'tall': '32rem',
         'grande': '36rem',
         'venti': '40rem',
+        '41':'41px',
+      },
+      width: {
+        '146':'146px',
       }
     },
   },

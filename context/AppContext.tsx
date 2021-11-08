@@ -107,7 +107,7 @@ export function SkyAppDataProvider({ children }: Props) {
                 ...translations_to_add,
             })
         }
-    }, [translations, lang])
+    }, [common_translations, lang])
 
     return <SkyContext.Provider value={
         { ...ctx, tiers, GOOGLE_API_KEY, lang, onLanguageChange, translations }

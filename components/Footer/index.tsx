@@ -1,7 +1,7 @@
-import { SectionProps } from 'types/landing'
+import Translation from 'components/Translation'
 import styles from '../../styles/Footer.module.scss'
 
-export default function Footer(props: SectionProps) {
+export default function Footer(props: Record<string, string>) {
     return (
         <footer className="container mx-auto pt-20 pb-8 lg:pb-12">
             <div className="flex flex-col divide-y gap-12">
@@ -10,9 +10,12 @@ export default function Footer(props: SectionProps) {
                         <div className={styles.logo} />
                     </div>
                     <div className="col-span-1">
-                        <div className="text-primary-dark circular font-bold">
-                            {props.footer_contact_title}
-                        </div>
+                        <Translation
+                            className="text-primary-dark circular font-bold"
+                            content_key="footer_contact_title"
+                            render_as="div"
+                            translations={props}
+                        />
                         <ul className="mt-2">
                             <li>
                                 <a href="mailto:support@aot.plus">
@@ -27,9 +30,12 @@ export default function Footer(props: SectionProps) {
                         </ul>
                     </div>
                     <div className="col-span-1">
-                        <div className="text-primary-dark circular font-bold">
-                            {props.footer_address_title}
-                        </div>
+                        <Translation
+                            className="text-primary-dark circular font-bold"
+                            content_key="footer_address_title"
+                            render_as="div"
+                            translations={props}
+                        />
                         <ul className="mt-2">
                             <li>{props.footer_address}</li>
                             <li>
@@ -45,9 +51,12 @@ export default function Footer(props: SectionProps) {
                         </ul>
                     </div>
                     <div className="col-span-1 text-primary-dark">
-                        <div className="circular font-bold">
-                            {props.footer_follow_us}
-                        </div>
+                        <Translation
+                            className="circular font-bold"
+                            content_key="footer_follow_us"
+                            render_as="div"
+                            translations={props}
+                        />
 
                         <div className="flex gap-3 mt-3">
                             <a
@@ -74,6 +83,7 @@ export default function Footer(props: SectionProps) {
                     </div>
                 </div>
                 <div className="grid grid-cols-3 gap-4 py-8 text-gray-400">
+<<<<<<< HEAD
                     <span className="col-span-2">
                         {props.footer_copyright_1}{' '}
                         <strong>{props.footer_copyright_2}</strong>{' '}
@@ -82,6 +92,20 @@ export default function Footer(props: SectionProps) {
                     <span className="col-span-1 text-right">
                         {props.footer_privacy_policy}
                     </span>
+=======
+                    <Translation
+                        className="col-span-2"
+                        content_key="footer_copyright"
+                        render_as="span"
+                        translations={props}
+                    />
+                    <Translation
+                        className="col-span-1 text-right"
+                        content_key="footer_privacy_policy"
+                        render_as="span"
+                        translations={props}
+                    />
+>>>>>>> AOT-246 - FRONT END: Drupal tag updates
                 </div>
             </div>
         </footer>

@@ -7,26 +7,18 @@ import { useFetch } from 'utils/fetch-helper'
 import { FetchMethods } from 'utils/types'
 import Footer from '../components/Footer'
 import Navbar from '../components/Navbar'
-import LandingHero, { Props as LandingHeroProps } from './Landing/hero'
+import LandingHero from './Landing/hero'
 import LandingFeaturesSection from './Landing/section-features'
 import LandingPricingSection from './Landing/section-pricing'
 import LandingSectionTestimonials from './Landing/section-testimonials'
 import LandingSectionTryCTA from './Landing/section-try-cta'
 
 function Home() {
-    const { lang } = useAppContext()
+    const { lang, translations: common_translations } = useAppContext()
     const refs = {
         features: useRef(null),
         testimonials: useRef(null),
         pricing: useRef(null),
-    }
-    const hero_props: LandingHeroProps = {
-        title_left: 'always',
-        title_center: 'on',
-        title_right: 'time',
-        subtitle:
-            'Scheduling, booking and business management platform for your business.',
-        button_label: <>Try it for free</>,
     }
 
     const { data: translation } = useFetch(
@@ -38,6 +30,7 @@ function Home() {
         true
     )
 
+<<<<<<< HEAD
     const ui_text = {
         company_name_1: 'always',
         company_name_2: 'on',
@@ -178,6 +171,11 @@ function Home() {
     hero_props.title_right = translations.company_name_3
     hero_props.subtitle = translations.hero_line_2
     hero_props.button_label = <>{translations.main_cta_button}</>
+=======
+    const [translations, setTranslations] = useState<
+        Record<string, string>
+    >({})
+>>>>>>> AOT-246 - FRONT END: Drupal tag updates
 
     const executeScroll = () => {
         if (
@@ -202,16 +200,22 @@ function Home() {
     }
     useEffect(() => {
         if (lang && translation.data?.attributes[lang]) {
+            const translations_to_add: Record<string, string> = {}
             translation.data.attributes[lang].forEach(
                 ({ key, value }: any) => {
-                    setTranslations((translations) => ({
-                        ...translations,
-                        [key]: value,
-                    }))
+                    translations_to_add[key] = value
                 }
             )
+
+            setTranslations({
+                ...translations,
+                ...translations_to_add,
+                ...common_translations,
+            })
         }
-    }, [translation, lang])
+    }, [translation, lang, common_translations])
+
+    console.log(translations)
 
     executeScroll()
 
@@ -235,7 +239,7 @@ function Home() {
             </Head>
             <Navbar />
 
-            <LandingHero {...hero_props} />
+            <LandingHero {...translations} />
 
             <main className="overflow-hidden">
                 <div ref={refs.features} id="features" />

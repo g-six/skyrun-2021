@@ -107,7 +107,7 @@ function OptionList(props: OptionListProps & withClass) {
                                                     active
                                                         ? 'text-white bg-primary'
                                                         : 'text-gray-900',
-                                                    'hover:bg-primary-lighter cursor-default select-none relative py-2 pl-3 pr-9'
+                                                    'hover:bg-primary-lighter hover:text-primary cursor-default select-none relative py-2 pl-3 pr-9'
                                                 )
                                             }
                                             value={item}

@@ -2,7 +2,7 @@ import { getTranslation } from './language-helper'
 
 describe('getTranslation', () => {
     const translations = {
-        'company_name': "always on time",
+        'login_button': "Login",
         'company_name_1': "always ",
         'company_name_2': "on ",
         'company_name_3': "time"

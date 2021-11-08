@@ -1,7 +1,6 @@
 import { UserModel } from 'components/Modals/types'
 
 export type ServiceApiType = 'APPOINTMENT' | 'GROUP' | 'SERIES'
-
 export type ServiceApiItem = {
     id?: string,
     accentColorHex?: string,

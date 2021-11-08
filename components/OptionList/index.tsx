@@ -1,5 +1,5 @@
-import React, { Fragment, useState, useEffect, ReactNode } from 'react'
-import { Listbox, Transition } from '@headlessui/react'
+import React, { useState, useEffect, ReactNode } from 'react'
+import { Listbox } from '@headlessui/react'
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid'
 import { classNames } from 'utils/dom-helpers'
 import { withClass } from 'components/types'

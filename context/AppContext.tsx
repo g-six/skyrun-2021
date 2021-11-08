@@ -83,7 +83,6 @@ export function SkyAppDataProvider({ children }: Props) {
                 } else {
                     location.href = `/${v.text.toLowerCase()}${pathname.substr(3)}`
                 }
-                // location.href = location.href.split(`/${lang}/`, 1).join(`/${v.code}/`)
             }
         }
     }

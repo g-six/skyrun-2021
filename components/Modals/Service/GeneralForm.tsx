@@ -14,7 +14,6 @@ import OptionList, {
     ListFlyFrom,
     OptionListItem,
 } from 'components/OptionList'
-import { TenantInfo } from 'context/types'
 import { ModalDataAttributes } from '../types'
 
 function GeneralForm({

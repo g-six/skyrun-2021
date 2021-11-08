@@ -75,7 +75,9 @@ export default function Footer(props: SectionProps) {
                 </div>
                 <div className="grid grid-cols-3 gap-4 py-8 text-gray-400">
                     <span className="col-span-2">
-                        {props.footer_copyright}
+                        {props.footer_copyright_1}{' '}
+                        <strong>{props.footer_copyright_2}</strong>{' '}
+                        {props.footer_copyright_3}
                     </span>
                     <span className="col-span-1 text-right">
                         {props.footer_privacy_policy}

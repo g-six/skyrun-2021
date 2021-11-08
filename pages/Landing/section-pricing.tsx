@@ -149,26 +149,38 @@ export default function LandingPricingSection(props: SectionProps) {
                         </div>
                         <div className="flex items-center mt-5">
                             <i className="feather feather-check px-6 text-primary-light w-auto text-2xl leading-none" />
-                            <span>Up to 100 appointments / mo</span>
+                            <span>
+                                {props.pricing_tier_0_feature_list_1}
+                            </span>
                         </div>
                         <div className="flex items-center mt-5">
                             <i className="feather feather-check px-6 text-primary-light w-auto text-2xl leading-none" />
-                            <span>1 location</span>
+                            <span>
+                                {props.pricing_tier_0_feature_list_2}
+                            </span>
                         </div>
                         <div className="flex items-center mt-5">
                             <i className="feather feather-check px-6 text-primary-light w-auto text-2xl leading-none" />
-                            <span>Up to 2 staff</span>
-                        </div>
-                        <div className="flex items-center mt-5 opacity-25">
-                            <i className="feather feather-check px-6 text-primary-light w-auto text-2xl leading-none" />
-                            <span>Open API</span>
+                            <span>
+                                {props.pricing_tier_0_feature_list_3}
+                            </span>
                         </div>
                         <div className="flex items-center mt-5 opacity-25">
                             <i className="feather feather-check px-6 text-primary-light w-auto text-2xl leading-none" />
                             <span>
-                                Branded app{' '}
+                                {
+                                    props.pricing_tier_0_disabled_feature_list_1
+                                }
+                            </span>
+                        </div>
+                        <div className="flex items-center mt-5 opacity-25">
+                            <i className="feather feather-check px-6 text-primary-light w-auto text-2xl leading-none" />
+                            <span>
+                                {
+                                    props.pricing_tier_0_disabled_feature_list_2
+                                }{' '}
                                 <small className="bg-primary-light text-xs text-white p-1 rounded">
-                                    Coming soon
+                                    {props.pricing_coming_soon}
                                 </small>
                             </span>
                         </div>
@@ -178,11 +190,20 @@ export default function LandingPricingSection(props: SectionProps) {
                                 {props.pricing_tier_0_subfeature_title}
                             </span>
                             <ul className="list-disc ml-6 leading-loose text-sm mt-2 h-28">
-                                <li>No credit card required</li>
-                                <li>No commitment</li>
                                 <li>
-                                    Includes free trial of our
-                                    Multi-location plan for 21 days
+                                    {
+                                        props.pricing_tier_0_subfeature_checklist_1
+                                    }
+                                </li>
+                                <li>
+                                    {
+                                        props.pricing_tier_0_subfeature_checklist_2
+                                    }
+                                </li>
+                                <li>
+                                    {
+                                        props.pricing_tier_0_subfeature_checklist_3
+                                    }
                                 </li>
                             </ul>
                         </div>
@@ -229,26 +250,38 @@ export default function LandingPricingSection(props: SectionProps) {
                         </div>
                         <div className="flex items-center mt-5">
                             <i className="feather feather-check px-6 text-primary w-auto text-2xl leading-none" />
-                            <span>Up to 1,000 appointments / mo</span>
+                            <span>
+                                {props.pricing_tier_1_feature_list_1}
+                            </span>
                         </div>
                         <div className="flex items-center mt-5">
                             <i className="feather feather-check px-6 text-primary w-auto text-2xl leading-none" />
-                            <span>1 location</span>
+                            <span>
+                                {props.pricing_tier_1_feature_list_2}
+                            </span>
                         </div>
                         <div className="flex items-center mt-5">
                             <i className="feather feather-check px-6 text-primary w-auto text-2xl leading-none" />
-                            <span>5 staff included</span>
-                        </div>
-                        <div className="flex items-center mt-5 opacity-25">
-                            <i className="feather feather-check px-6 text-primary w-auto text-2xl leading-none" />
-                            <span>Open API</span>
+                            <span>
+                                {props.pricing_tier_1_feature_list_3}
+                            </span>
                         </div>
                         <div className="flex items-center mt-5 opacity-25">
                             <i className="feather feather-check px-6 text-primary w-auto text-2xl leading-none" />
                             <span>
-                                Branded app{' '}
+                                {
+                                    props.pricing_tier_1_disabled_feature_list_1
+                                }
+                            </span>
+                        </div>
+                        <div className="flex items-center mt-5 opacity-25">
+                            <i className="feather feather-check px-6 text-primary w-auto text-2xl leading-none" />
+                            <span>
+                                {
+                                    props.pricing_tier_1_disabled_feature_list_2
+                                }{' '}
                                 <small className="bg-primary text-xs text-white p-1 rounded">
-                                    Coming soon
+                                    {props.pricing_coming_soon}
                                 </small>
                             </span>
                         </div>
@@ -260,18 +293,48 @@ export default function LandingPricingSection(props: SectionProps) {
                             <ul className="list-disc ml-6 leading-loose text-sm mt-2 h-28">
                                 <li>
                                     {currency.symbol}
-                                    {Math.ceil(20 * currency.rate)} per
-                                    additional location
+                                    {Math.ceil(
+                                        parseInt(
+                                            props.pricing_tier_1_subfeature_checklist_1.substring(
+                                                1,
+                                                3
+                                            ),
+                                            10
+                                        ) * currency.rate
+                                    )}{' '}
+                                    {props.pricing_tier_1_subfeature_checklist_1.substring(
+                                        3
+                                    )}
                                 </li>
                                 <li>
                                     {currency.symbol}
-                                    {Math.ceil(5 * currency.rate)} per
-                                    additional staff
+                                    {Math.ceil(
+                                        parseInt(
+                                            props.pricing_tier_1_subfeature_checklist_2.substring(
+                                                1,
+                                                3
+                                            ),
+                                            10
+                                        ) * currency.rate
+                                    )}{' '}
+                                    {props.pricing_tier_1_subfeature_checklist_2.substring(
+                                        3
+                                    )}
                                 </li>
                                 <li>
                                     {currency.symbol}
-                                    {Math.ceil(5 * currency.rate)} per
-                                    additional 1,000 appointments
+                                    {Math.ceil(
+                                        parseInt(
+                                            props.pricing_tier_1_subfeature_checklist_3.substring(
+                                                1,
+                                                3
+                                            ),
+                                            10
+                                        ) * currency.rate
+                                    )}{' '}
+                                    {props.pricing_tier_1_subfeature_checklist_3.substring(
+                                        3
+                                    )}
                                 </li>
                             </ul>
                         </div>
@@ -318,26 +381,34 @@ export default function LandingPricingSection(props: SectionProps) {
                         </div>
                         <div className="flex items-center mt-5">
                             <i className="feather feather-check px-6 text-secondary w-auto text-2xl leading-none" />
-                            <span>Unlimited appointments</span>
-                        </div>
-                        <div className="flex items-center mt-5">
-                            <i className="feather feather-check px-6 text-secondary w-auto text-2xl leading-none" />
-                            <span>3 locations included</span>
-                        </div>
-                        <div className="flex items-center mt-5">
-                            <i className="feather feather-check px-6 text-secondary w-auto text-2xl leading-none" />
-                            <span>10 staff included</span>
-                        </div>
-                        <div className="flex items-center mt-5">
-                            <i className="feather feather-check px-6 text-secondary w-auto text-2xl leading-none" />
-                            <span>Open API</span>
+                            <span>
+                                {props.pricing_tier_2_feature_list_1}
+                            </span>
                         </div>
                         <div className="flex items-center mt-5">
                             <i className="feather feather-check px-6 text-secondary w-auto text-2xl leading-none" />
                             <span>
-                                Branded app{' '}
+                                {props.pricing_tier_2_feature_list_2}
+                            </span>
+                        </div>
+                        <div className="flex items-center mt-5">
+                            <i className="feather feather-check px-6 text-secondary w-auto text-2xl leading-none" />
+                            <span>
+                                {props.pricing_tier_2_feature_list_3}
+                            </span>
+                        </div>
+                        <div className="flex items-center mt-5">
+                            <i className="feather feather-check px-6 text-secondary w-auto text-2xl leading-none" />
+                            <span>
+                                {props.pricing_tier_2_feature_list_4}
+                            </span>
+                        </div>
+                        <div className="flex items-center mt-5">
+                            <i className="feather feather-check px-6 text-secondary w-auto text-2xl leading-none" />
+                            <span>
+                                {props.pricing_tier_2_feature_list_5}{' '}
                                 <small className="bg-secondary text-xs text-white p-1 rounded">
-                                    Coming soon
+                                    {props.pricing_coming_soon}
                                 </small>
                             </span>
                         </div>
@@ -349,15 +420,39 @@ export default function LandingPricingSection(props: SectionProps) {
                             <ul className="list-disc ml-6 leading-loose text-sm mt-2 h-28">
                                 <li>
                                     {currency.symbol}
-                                    {Math.ceil(20 * currency.rate)} per
-                                    additional location
+                                    {Math.ceil(
+                                        parseInt(
+                                            props.pricing_tier_2_subfeature_checklist_1.substring(
+                                                1,
+                                                3
+                                            ),
+                                            10
+                                        ) * currency.rate
+                                    )}{' '}
+                                    {props.pricing_tier_2_subfeature_checklist_1.substring(
+                                        3
+                                    )}
                                 </li>
                                 <li>
                                     {currency.symbol}
-                                    {Math.ceil(5 * currency.rate)} per
-                                    additional staff
+                                    {Math.ceil(
+                                        parseInt(
+                                            props.pricing_tier_2_subfeature_checklist_2.substring(
+                                                1,
+                                                3
+                                            ),
+                                            10
+                                        ) * currency.rate
+                                    )}{' '}
+                                    {props.pricing_tier_2_subfeature_checklist_2.substring(
+                                        3
+                                    )}
                                 </li>
-                                <li>Unlimited appointments</li>
+                                <li>
+                                    {
+                                        props.pricing_tier_2_subfeature_checklist_3
+                                    }
+                                </li>
                             </ul>
                         </div>
 

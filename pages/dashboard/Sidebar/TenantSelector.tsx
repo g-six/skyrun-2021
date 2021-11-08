@@ -1,18 +1,24 @@
-import React, { Fragment, MouseEventHandler, MouseEvent } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/solid'
-import { classNames } from 'utils/dom-helpers'
-import { TenantInfo } from 'context/types'
-import { useAuth } from 'context/AuthContext'
 import { Tier } from 'context/AppContext'
+import { useAuth } from 'context/AuthContext'
+import { TenantInfo } from 'context/types'
 import Cookies from 'js-cookie'
+import React, { Fragment, MouseEvent } from 'react'
+import { SectionProps } from 'types/landing'
+import { classNames } from 'utils/dom-helpers'
 
 interface TenantSelectorProps {
     tenant?: TenantInfo
     tenants?: TenantInfo[]
+    translations: SectionProps
 }
 
-export function TenantSelector({ tenant, tenants }: TenantSelectorProps) {
+export function TenantSelector({
+    tenant,
+    tenants,
+    translations,
+}: TenantSelectorProps) {
     const { setTenant, TenantModal } = useAuth()
 
     function switchTenant(e: MouseEvent<HTMLButtonElement>) {
@@ -42,7 +48,7 @@ export function TenantSelector({ tenant, tenants }: TenantSelectorProps) {
                         <div className="flex-grow text-left">
                             <div>{tenant?.business_name}</div>
                             <div className="text-xs text-gray-300">
-                                Business category
+                                {translations.sidebar_business_category}
                             </div>
                         </div>
                         <ChevronDownIcon

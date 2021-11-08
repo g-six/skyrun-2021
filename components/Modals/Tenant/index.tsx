@@ -116,17 +116,22 @@ function TenantModal() {
     return (
         <ModalProvider.Visible>
             <ModalWrapper>
-                <div className="bg-white shadow-xl overflow-hidden sm:rounded-md w-11/12 sm:w-2/3 lg:w-1/2 xl:w-1/3 m-auto relative py-8">
-                    <div className="flex justify-between px-10 text-gray-500 absolute z-10 h-10 w-full">
+                <div
+                    className={classNames(
+                        'bg-white shadow-3xl overflow-hidden sm:rounded-md mx-auto my-4 relative border-2 border-gray-100 flex flex-col py-8',
+                        success ? 'w-96' : ''
+                    )}
+                >
+                    <div className="flex justify-between px-10 text-gray-500 z-10 h-10 w-full">
                         <span className="inline-block self-center text-lg font-light text-gray-600">
                             {success
                                 ? 'Congratulations!'
                                 : translations.title_bar}
                         </span>
-                        <TenantModalCloser className="self-center" />
+                        <TenantModalCloser className="cursor-pointer self-center" />
                     </div>
                     {success ? (
-                        <div className="z-20 pt-16 px-10">
+                        <div className="z-20 px-10">
                             <p className="text-lg font-light">
                                 Please check your email inbox for your
                                 account activation link.
@@ -136,7 +141,7 @@ function TenantModal() {
                         <form
                             method="POST"
                             onSubmit={handleSubmit(onSubmit)}
-                            className="z-20 pt-12 px-10"
+                            className="z-20 px-10"
                         >
                             <div className="pb-6 lg:flex">
                                 <fieldset className="pb-6 lg:pb-0 lg:w-1/2 lg:pr-2">

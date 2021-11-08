@@ -1,18 +1,20 @@
 import { Tier } from 'context/AppContext'
 import { CognitoErrorTypes } from 'services/CognitoErrorTypes'
 
+export interface ModalDataAttributes {
+    [key: string]:
+        | string
+        | number
+        | boolean
+        | File
+        | Tier
+        | ModalDataAttributes
+}
 export interface ModalHook {
     is_open: boolean
     open(): void
     close(): void
-    attributes?: Record<
-        string,
-        | number
-        | boolean
-        | string
-        | Tier
-        | Record<string, string | Record<string, string | number>>[]
-    >
+    attributes?: ModalDataAttributes
     setAttributes(
         attributes: Record<
             string,

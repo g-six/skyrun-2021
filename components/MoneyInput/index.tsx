@@ -1,7 +1,8 @@
 type InputProps = {
     id?: string
     error?: string
-    value?: string
+    value?: number
+    defaultValue?: number
     className?: string
     onChange?(value: string): void
 }
@@ -16,8 +17,9 @@ export function MoneyInput(props: InputProps) {
                 onChange={(e) => {
                     props.onChange ? props.onChange(e.target.value) : ''
                 }}
-                type="text"
+                type="number"
                 className={props.className}
+                defaultValue={props.defaultValue}
             />
         </div>
     )

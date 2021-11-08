@@ -9,6 +9,9 @@ import {
 } from 'context/AuthContext'
 import { Wrapper } from 'components/types'
 import LoginModal from 'components/Modals/Login'
+import CreateClientModal from 'components/Modals/Client'
+import StaffModal from 'components/Modals/Staff'
+import ServiceModal from 'components/Modals/Service'
 import { betterPathname, toTitleCase } from 'utils/string-helper'
 import LanguageSelector, { Language } from 'components/LanguageSelector'
 import { useAppContext } from 'context/AppContext'
@@ -29,6 +32,9 @@ function Dashboard({
     const {
         user,
         LoginModal: LoginModalContext,
+        CreateClientModal: NewClientModal,
+        StaffModal: NewStaffModal,
+        ServiceModal: NewServiceModal,
         is_drawer_expanded,
     } = useAuth()
     const { onLanguageChange } = useAppContext()
@@ -44,6 +50,17 @@ function Dashboard({
 
     function handleLanguageChange(e: DropDownListChangeEvent) {
         onLanguageChange(e.value)
+    }
+
+    function handleUniversalButtonChange(e: DropDownListChangeEvent) {
+        const value = e.target.value
+        if (value === 'Client') { 
+            NewClientModal.open()
+        } else if (value === 'Staff') {
+            NewStaffModal.open()
+        } else if (value === 'Service') {
+            NewServiceModal.open()
+        }
     }
 
     if (!user?.uuid && !Cookies.get('id_token')) {
@@ -92,6 +109,25 @@ function Dashboard({
                         <UniversalSearch />
                     </AppBarSection>
                     <AppBarSection className="page-actions">
+                        <select
+                            id="universalCreate"
+                            name="universalCreate"
+                            className={classNames(
+                                'h-full py-0 pl-2 pr-8 bg-primary',
+                                'focus:ring-primary-dark focus:border-primary-dark ',
+                                'border-transparent rounded',
+                                'text-gray-300 w-146 h-41'
+                            )}
+                            defaultValue="default"
+                            onChange={handleUniversalButtonChange}
+                            >
+                                <option value="default">+ New</option>
+                                <option value="Client">Client</option>
+                                <option value="Staff">Staff</option>
+                                <option value="Service">Service</option>
+                        </select>
+                    </AppBarSection>
+                    <AppBarSection className="page-actions">
                         <UserDropdown locale={locale} />
                     </AppBarSection>
 
@@ -107,6 +143,9 @@ function Dashboard({
                 </Sidebar>
                 <TenantModal />
                 <LoginModal />
+                <CreateClientModal />
+                <StaffModal />
+                <ServiceModal />
             </Authenticated>
 
             <NotAuthenticated>

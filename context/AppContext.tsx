@@ -64,7 +64,7 @@ export function SkyAppDataProvider({ children }: Props) {
 
     const { data: common_translations } = useFetch(
         `/v1/contents?url=${encodeURI(
-            'https://cms.aot.plus/jsonapi/node/page_translation/28a7ba7c-c1cd-4308-b45b-14ab5e7604fa'
+            'https://cms.aot.plus/jsonapi/node/page_translation/5b2201da-0798-4b53-8a70-8ba6a7261ac6'
         )}`,
         FetchMethods.GET,
         true,

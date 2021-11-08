@@ -1,7 +1,17 @@
 export type TranslationProps = {
     className?: string
     htmlFor?: string
-    render_as?: 'div' | 'span' | 'p' | 'label' | 'h2' | 'h3' | 'h4' | 'h5' | 'small' | 'li'
+    render_as?:
+        | 'div'
+        | 'span'
+        | 'p'
+        | 'label'
+        | 'h2'
+        | 'h3'
+        | 'h4'
+        | 'h5'
+        | 'small'
+        | 'li'
     content_key: string
     translations: Record<string, string>
 }

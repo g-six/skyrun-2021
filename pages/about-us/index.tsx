@@ -119,7 +119,6 @@ function AboutUs() {
                             render_as="span"
                             translations={translations}
                         />
-
                     </div>
                 </section>
 

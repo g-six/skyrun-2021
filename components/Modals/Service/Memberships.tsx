@@ -1,8 +1,5 @@
 import Translation from 'components/Translation'
-import UniversalSearch from 'components/UniversalSearch'
-import { useAuth } from 'context/AuthContext'
-import { useState, MouseEvent, createRef } from 'react'
-import { ServiceItem } from 'types/service'
+import { MouseEvent } from 'react'
 import { classNames } from 'utils/dom-helpers'
 import { ModalDataAttributes } from '../types'
 
@@ -23,7 +20,6 @@ function ServiceModalMemberships({
     onPrevious(): void
     onNext(): void
 }) {
-    const { ServiceModal, tenant } = useAuth()
     const api_error =
         attributes && (attributes.api_error as Record<string, string>)
     const loading = (attributes && attributes.loading) || false
@@ -95,6 +91,7 @@ function ServiceModalMemberships({
                         <button
                             className="border  border-gray-400 w-48 mx-auto font-sans font-thin text-lg px-5 py-1 rounded-lg"
                             type="button"
+                            onClick={onNext}
                         >
                             <Translation
                                 content_key="skip_button"
@@ -113,39 +110,6 @@ function ServiceModalMemberships({
                 ) : (
                     ''
                 )}
-            </div>
-
-            <div>
-                <div className="flex justify-end">
-                    <button
-                        type="button"
-                        className="border border-gray-300 rounded-lg py-3 inline-block mr-3 px-10"
-                        onClick={() => {
-                            onPrevious()
-                        }}
-                    >
-                        Previous
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => {
-                            onNext()
-                        }}
-                        className={classNames(
-                            'group relative flex justify-center',
-                            'py-3 px-12 border border-transparent',
-                            'rounded-md text-white',
-                            'focus:outline-none',
-                            loading
-                                ? 'bg-primary-light'
-                                : api_error && api_error.message
-                                ? 'bg-red-700 hover:bg-primary-dark focus:ring-2 focus:ring-offset-2 focus:ring-primary-light'
-                                : 'bg-primary hover:bg-primary-dark focus:ring-2 focus:ring-offset-2 focus:ring-primary-light'
-                        )}
-                    >
-                        Next
-                    </button>
-                </div>
             </div>
         </div>
     )

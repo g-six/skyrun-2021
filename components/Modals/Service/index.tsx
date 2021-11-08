@@ -19,7 +19,9 @@ import { ServiceType } from './types'
 import { TenantInfo } from 'context/types'
 import Translation from 'components/Translation'
 import ServiceModalMemberships from './Memberships'
-import { UserModel } from '../types'
+import { ModalDataAttributes, UserModel } from '../types'
+import ServiceModalOfferClasses, { BlankOffer } from './OfferClasses'
+import { ServiceModalBooking } from './BookingSettings'
 
 const ModalProvider = createModal(
     AuthContext,
@@ -41,10 +43,10 @@ export const ServiceModalCloser = ModalProvider.Closer
 
 function ServiceModal() {
     const { ServiceModal, tenant } = useAuth()
-    const { attributes, setAttributes } = ServiceModal
     const { lang, translations: common_translations } = useAppContext()
     const [translations, setTranslations] = useState(common_translations)
     const [prompt_message, toggleDialog] = useState<string>('')
+    const [attributes, setAttributes] = useState<ModalDataAttributes>({})
 
     const categories =
         (attributes &&
@@ -52,6 +54,10 @@ function ServiceModal() {
                 string,
                 string
             >[])) ||
+        []
+
+    const offerings =
+        (attributes && (attributes.offerings as ModalDataAttributes[])) ||
         []
 
     const { data: page_translation } = useFetch(
@@ -273,6 +279,7 @@ function ServiceModal() {
     )
 
     let form_3 = <span>WIP</span>
+    let form_4 = <span>WIP</span>
 
     if (attributes && attributes.service_type == ServiceType.GROUP) {
         step_2 = (
@@ -291,7 +298,7 @@ function ServiceModal() {
             <ServiceModalMemberships
                 onPrevious={() => setSelectedTab(0)}
                 onNext={() => {
-                    onSubmit()
+                    setSelectedTab(2)
                 }}
                 attributes={attributes}
                 removeAll={() => {
@@ -302,6 +309,69 @@ function ServiceModal() {
                 }}
                 translations={translations}
                 handleCloseModal={handleCloseModal}
+            />
+        )
+        form_3 =
+            offerings.length == 0 ? (
+                <BlankOffer
+                    onNext={() => {
+                        setSelectedTab(3)
+                    }}
+                    attributes={attributes}
+                    showOfferListForm={() => {
+                        setAttributes({
+                            ...attributes,
+                            offerings: [
+                                {
+                                    id: 'test',
+                                },
+                            ],
+                        })
+                    }}
+                    translations={translations}
+                />
+            ) : tenant ? (
+                <ServiceModalOfferClasses
+                    onPrevious={() => setSelectedTab(1)}
+                    onNext={() => {
+                        setSelectedTab(3)
+                    }}
+                    attributes={attributes}
+                    tenant_id={tenant && tenant.id}
+                    removeAll={() => {
+                        console.log('remove all')
+                    }}
+                    onAttributesChanged={(
+                        updated_attributes: ModalDataAttributes,
+                        idx: number
+                    ) => {
+                        const offerings =
+                            attributes.offerings as ModalDataAttributes[]
+                        offerings[idx] = updated_attributes
+                        setAttributes({
+                            ...attributes,
+                            offerings,
+                        })
+                    }}
+                    translations={translations}
+                    handleCloseModal={handleCloseModal}
+                />
+            ) : (
+                <span>Tenant not present</span>
+            )
+
+        form_4 = (
+            <ServiceModalBooking
+                attributes={attributes}
+                onChangeAttribute={(
+                    updated_attributes: ModalDataAttributes
+                ) => {
+                    setAttributes({
+                        ...attributes,
+                        ...updated_attributes,
+                    })
+                }}
+                translations={translations}
             />
         )
     }
@@ -343,13 +413,13 @@ function ServiceModal() {
                         >
                             <div className="p-10">
                                 <GeneralForm
+                                    attributes={attributes}
+                                    setAttributes={setAttributes}
                                     translations={translations}
                                     onNext={() => setSelectedTab(1)}
                                     handleCloseModal={handleCloseModal}
                                     createCategory={createCategory}
-                                    onSubmit={() => {
-                                        console.log(attributes)
-                                    }}
+                                    onSubmit={onSubmit}
                                 />
                             </div>
                         </TabStripTab>
@@ -367,7 +437,7 @@ function ServiceModal() {
                                 />
                             }
                         >
-                            WIP
+                            <div className="p-10">{form_4}</div>
                         </TabStripTab>
                     </TabStrip>
                 </div>

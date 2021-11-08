@@ -1,7 +1,7 @@
 export type TranslationProps = {
     className?: string
     htmlFor?: string
-    render_as?: 'div' | 'span' | 'p' | 'label' | 'h3' | 'small' | 'li'
+    render_as?: 'div' | 'span' | 'p' | 'label' | 'h2' | 'h3' | 'h4' | 'h5' | 'small' | 'li'
     content_key: string
     translations: Record<string, string>
 }
@@ -28,8 +28,14 @@ export function Translation(p: TranslationProps) {
                     {text}
                 </label>
             )
+        case 'h2':
+            return <h2 className={p.className || ''}>{text}</h2>
         case 'h3':
             return <h3 className={p.className || ''}>{text}</h3>
+        case 'h4':
+            return <h4 className={p.className || ''}>{text}</h4>
+        case 'h5':
+            return <h5 className={p.className || ''}>{text}</h5>
         case 'small':
             return <small className={p.className || ''}>{text}</small>
         case 'li':

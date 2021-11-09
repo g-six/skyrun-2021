@@ -13,11 +13,13 @@ import { useRouter } from 'next/router'
 import { MouseEvent, ReactElement, useEffect, useState } from 'react'
 import { classNames } from 'utils/dom-helpers'
 import { useFetch } from 'utils/fetch-helper'
+import { getTranslation } from 'utils/language-helper'
 import { betterPathname } from 'utils/string-helper'
 import { FetchMethods } from 'utils/types'
 import TenantSelector from './TenantSelector'
 
 type SidebarItem = {
+    translation_key?: string
     text?: string
     separator?: boolean
     icon?: string
@@ -32,13 +34,11 @@ interface Props {
 function Sidebar({ children }: Props) {
     const router = useRouter()
     const ctx = useAuth()
-    const { lang } = useAppContext()
-    const ui_text = {
-        sidebar_business_category: 'Business category',
-        sidebar_add_business: 'Add Business',
-        sidebar_lock: 'Lock Sidebar',
-    }
-    const [translations, setTranslations] = useState(ui_text)
+    const { lang, translations: common_translations } = useAppContext()
+
+    const [translations, setTranslations] = useState<
+        Record<string, string>
+    >({})
 
     const { data: translation } = useFetch(
         `/v1/contents?url=${encodeURI(
@@ -51,75 +51,105 @@ function Sidebar({ children }: Props) {
 
     useEffect(() => {
         if (lang && translation.data?.attributes[lang]) {
+            const translations_to_add: Record<string, string> = {}
             translation.data.attributes[lang].forEach(
                 ({ key, value }: any) => {
-                    setTranslations((translations) => ({
-                        ...translations,
-                        [key]: value,
-                    }))
+                    translations_to_add[key] = value
                 }
             )
+
+            setTranslations({
+                ...translations,
+                ...translations_to_add,
+                ...common_translations,
+            })
         }
-    }, [translation, lang])
+    }, [translation, lang, common_translations])
 
     const items: SidebarItem[] = [
         {},
-        { text: 'Home', icon: 'feather-sidebar', route: '/dashboard' },
         {
+            translation_key: 'home',
+            text: 'Home',
+            icon: 'feather-sidebar',
+            route: '/dashboard',
+        },
+        {
+            translation_key: 'calendar',
             text: 'Calendar',
             icon: 'feather-calendar',
             route: '/dashboard/calendar',
         },
         {
+            translation_key: 'clients',
             text: 'Clients',
             icon: 'feather-users',
             selected: true,
             route: '/dashboard/clients',
         },
         {
+            translation_key: 'locations',
             text: 'Locations',
             icon: 'feather-map-pin',
             route: '/dashboard/locations',
         },
         {
+            translation_key: 'products',
             text: 'Products',
             icon: 'feather-shopping-bag',
             route: '/dashboard/products',
         },
         {
+            translation_key: 'packages',
             text: 'Packages',
             icon: 'feather-gift',
             route: '/dashboard/packages',
         },
         {
+            translation_key: 'resources',
             text: 'Resources',
             icon: 'feather-folder',
             route: '/dashboard/resources',
         },
         {
+            translation_key: 'services',
             text: 'Services',
             icon: 'feather-briefcase',
             route: '/dashboard/services',
         },
-        { text: 'Staff', icon: 'feather-user', route: '/dashboard/staff' },
         {
+            translation_key: 'staff',
+            text: 'Staff',
+            icon: 'feather-user',
+            route: '/dashboard/staff',
+        },
+        {
+            translation_key: 'reports',
             text: 'Reports',
             icon: 'k-i-star-outline',
             route: '/dashboard/reports',
         },
         { separator: true },
-        { text: 'Settings', icon: 'k-i-cog', route: '/dashboard/settings' },
         {
+            translation_key: 'settings',
+            text: 'Settings',
+            icon: 'k-i-cog',
+            route: '/dashboard/settings',
+        },
+        {
+            translation_key: 'feedback',
             text: 'Feedback',
             icon: 'k-i-comment',
             route: '/dashboard/feedback',
         },
         {
+            translation_key: 'integrations',
             text: 'Integrations',
             icon: 'k-i-html',
             route: '/dashboard/integrations',
         },
         {
+            translation_key: 'notifications',
             text: 'Notifications',
             icon: 'feather-bell',
             route: '/dashboard/notifications',
@@ -149,6 +179,7 @@ function Sidebar({ children }: Props) {
     const CustomItem = (props: DrawerItemProps & SidebarItem) => {
         const [locale] = betterPathname(location.pathname)
         const { tenant, tenants } = useAuth()
+
         function getHomePath() {
             if (Object.keys(Language).indexOf(locale.toUpperCase()) > 0) {
                 return ['', locale, 'dashboard/'].join('/')
@@ -227,6 +258,13 @@ function Sidebar({ children }: Props) {
             items={
                 ctx.user?.uuid
                     ? items.map((item) => {
+                          if (item.translation_key) {
+                              item.text = getTranslation(
+                                  item.translation_key,
+                                  translations
+                              )
+                          }
+
                           if (item.route == '/') {
                               return {
                                   ...item,

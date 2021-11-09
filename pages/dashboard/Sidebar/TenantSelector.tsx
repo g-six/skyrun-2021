@@ -1,17 +1,17 @@
 import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/solid'
+import Translation from 'components/Translation'
 import { Tier } from 'context/AppContext'
 import { useAuth } from 'context/AuthContext'
 import { TenantInfo } from 'context/types'
 import Cookies from 'js-cookie'
 import React, { Fragment, MouseEvent } from 'react'
-import { SectionProps } from 'types/landing'
 import { classNames } from 'utils/dom-helpers'
 
 interface TenantSelectorProps {
     tenant?: TenantInfo
     tenants?: TenantInfo[]
-    translations: SectionProps
+    translations: Record<string, string>
 }
 
 export function TenantSelector({
@@ -47,9 +47,11 @@ export function TenantSelector({
                         </div>
                         <div className="flex-grow text-left">
                             <div>{tenant?.business_name}</div>
-                            <div className="text-xs text-gray-300">
-                                {translations.sidebar_business_category}
-                            </div>
+                            <Translation
+                                content_key="sidebar_business_category"
+                                render_as="div"
+                                translations={translations}
+                            />
                         </div>
                         <ChevronDownIcon
                             className="-mr-1 ml-2 h-5 w-5"

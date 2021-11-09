@@ -72,8 +72,6 @@ function Home() {
         }
     }, [translation, lang, common_translations])
 
-    console.log(translations)
-
     executeScroll()
 
     return (

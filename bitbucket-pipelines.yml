@@ -148,9 +148,7 @@ pipelines:
           artifacts:
               - out/**
           script:
-            - pipe: npm run build
-              variables:
-                LANDING_PAGE: $LANDING_PAGE
+            - export LANDING_PAGE=$LANDING_PAGE npm run build
             # sync your files to S3
             - pipe: atlassian/aws-s3-deploy:0.4.4
               variables:

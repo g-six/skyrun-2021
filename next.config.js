@@ -20,7 +20,7 @@ const pages = [
 pages.forEach((page) => {
   languages.forEach((language) => {
     translated_pages[`/${language}/${page}`] = {
-      page: `/${page || process.env.LANDING_PAGE}`,
+      page: `/${page || process.env.LANDING_PAGE || ''}`,
     }
   })
 })

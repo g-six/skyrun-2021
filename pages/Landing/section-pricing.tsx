@@ -7,44 +7,69 @@ import { AuthContext } from 'context/AuthContext'
 import { useState } from 'react'
 
 enum CurrencyIso {
-    SGD = 'SGD',
     USD = 'USD',
+    SGD = 'SGD',
     MYR = 'MYR',
     PHP = 'PHP',
 }
 type Currency = {
     iso: CurrencyIso
-    rate: number
+    conversion_rate: number
     symbol: string
 }
 const currencies: Currency[] = [
     {
-        iso: CurrencyIso.SGD,
-        rate: 1.0,
+        iso: CurrencyIso.USD,
+        conversion_rate: 1,
         symbol: '$',
     },
     {
-        iso: CurrencyIso.USD,
-        rate: 0.75,
+        iso: CurrencyIso.SGD,
+        conversion_rate: 1.35,
         symbol: '$',
     },
     {
         iso: CurrencyIso.MYR,
-        rate: 3.09,
+        conversion_rate: 4.15,
         symbol: 'RM',
     },
     {
         iso: CurrencyIso.PHP,
-        rate: 37.8,
+        conversion_rate: 49.98,
         symbol: '₱',
     },
 ]
+
+function getPriceFromContent(translate_key: string, translations: Record<string, string>) {
+    let price = translations[translate_key]
+
+    if (price == undefined) {
+        price = '0'
+    } else {
+        price = price.substring(1)
+    }
+
+    return parseInt(price, 10)
+}
+
+function getTotalPrice(price: number, discount: number, conversion_rate: number) {
+    if (discount > 0) {
+        return Math.round((price - (price * discount)) * conversion_rate)
+    } else {
+        return Math.round(price * conversion_rate)
+    }
+}
+
 export default function LandingPricingSection(
     props: Record<string, string>
 ) {
     const { tiers } = useAppContext()
     const [currency, setCurrency] = useState<Currency>(currencies[0])
-    const [discount, setDiscount] = useState(1)
+
+    const yearly_discount = props['pricing_promo_tag'] ? parseInt(props['pricing_promo_tag'].substring(5).split('%')[0]) : 0
+    const yearly_discount_rate = yearly_discount / 100
+
+    const [discountRate, setDiscountRate] = useState(yearly_discount_rate)
 
     const FreePlanModalProvider = createModal(
         AuthContext,
@@ -94,7 +119,7 @@ export default function LandingPricingSection(
     )
 
     const handleToggleSwitch = () => {
-        setDiscount(discount == 1 ? 0.8 : 1)
+        setDiscountRate(discountRate == yearly_discount_rate ? 0 : yearly_discount_rate)
     }
 
     const handleCurrencySelection = (idx: number) => {
@@ -123,7 +148,7 @@ export default function LandingPricingSection(
                         onLabel={''}
                         offLabel={''}
                         onChange={handleToggleSwitch}
-                        checked={discount != 1}
+                        checked={discountRate != yearly_discount_rate}
                     />
 
                     <Translation
@@ -293,25 +318,10 @@ export default function LandingPricingSection(
                                 translations={props}
                             />
                         </figure>
-                        {/* <div className="text-6xl block text-center text-primary-dark circular-light mt-5">
+                        <div className="text-6xl block text-center text-primary-dark circular-light mt-5">
                             {currency.symbol}
-                            {Math.ceil(
-                                parseInt(
-                                    props.pricing_tier_1_price_usd.substring(
-                                        1
-                                    ),
-                                    10
-                                ) *
-                                    discount *
-                                    currency.rate
-                            )}
-                        </div> */}
-                        <Translation
-                            className="text-6xl block text-center text-primary-dark circular-light mt-5"
-                            content_key="pricing_tier_1_price_usd"
-                            render_as="div"
-                            translations={props}
-                        />
+                            {getTotalPrice(getPriceFromContent('pricing_tier_1_price_usd', props), discountRate, currency.conversion_rate)}
+                        </div>
                         <Translation
                             className="block text-center text-gray-400 circular-light"
                             content_key="pricing_subtitle_monthly"
@@ -399,41 +409,6 @@ export default function LandingPricingSection(
                                     render_as="li"
                                     translations={props}
                                 />
-                                {/* <li>
-                                    {currency.symbol}
-                                    {Math.ceil(
-                                        parseInt(
-                                            props.pricing_tier_1_subfeature_checklist_1.substring(
-                                                1,
-                                                3
-                                            ),
-                                            10
-                                        ) * currency.rate
-                                    )}{' '}
-                                    {props.pricing_tier_1_subfeature_checklist_1.substring(
-                                        3
-                                    )}
-                                </li>
-                                <li>
-                                    {currency.symbol}
-                                    {Math.ceil(
-                                        parseInt(
-                                            props.pricing_tier_1_subfeature_checklist_2.substring(
-                                                1,
-                                                3
-                                            ),
-                                            10
-                                        ) * currency.rate
-                                    )}{' '}
-                                    {props.pricing_tier_1_subfeature_checklist_2.substring(
-                                        3
-                                    )}
-                                </li>
-                                <li>
-                                    {currency.symbol}
-                                    {Math.ceil(5 * currency.rate)} per
-                                    additional 1,000 appointments
-                                </li> */}
                             </ul>
                         </div>
 
@@ -454,25 +429,10 @@ export default function LandingPricingSection(
                                 {props.pricing_tier_2_name}
                             </span>
                         </figure>
-                        {/* <div className="text-6xl block text-center text-primary circular-light mt-5">
+                        <div className="text-6xl block text-center text-primary circular-light mt-5">
                             {currency.symbol}
-                            {Math.ceil(
-                                parseInt(
-                                    props.pricing_tier_2_price_usd.substring(
-                                        1
-                                    ),
-                                    10
-                                ) *
-                                    discount *
-                                    currency.rate
-                            )}
-                        </div> */}
-                        <Translation
-                            className="text-6xl block text-center text-primary circular-light mt-5"
-                            content_key="pricing_tier_2_price_usd"
-                            render_as="div"
-                            translations={props}
-                        />
+                            {getTotalPrice(getPriceFromContent('pricing_tier_2_price_usd', props), discountRate, currency.conversion_rate)}
+                        </div>
                         <Translation
                             className="block text-center text-gray-400 circular-light"
                             content_key="pricing_subtitle_monthly"
@@ -560,42 +520,6 @@ export default function LandingPricingSection(
                                     render_as="li"
                                     translations={props}
                                 />
-                                {/* <li>
-                                    {currency.symbol}
-                                    {Math.ceil(
-                                        parseInt(
-                                            props.pricing_tier_2_subfeature_checklist_1.substring(
-                                                1,
-                                                3
-                                            ),
-                                            10
-                                        ) * currency.rate
-                                    )}{' '}
-                                    {props.pricing_tier_2_subfeature_checklist_1.substring(
-                                        3
-                                    )}
-                                </li>
-                                <li>
-                                    {currency.symbol}
-                                    {Math.ceil(
-                                        parseInt(
-                                            props.pricing_tier_2_subfeature_checklist_2.substring(
-                                                1,
-                                                3
-                                            ),
-                                            10
-                                        ) * currency.rate
-                                    )}{' '}
-                                    {props.pricing_tier_2_subfeature_checklist_2.substring(
-                                        3
-                                    )}
-                                </li>
-                                <li>
-                                    {
-                                        props.pricing_tier_2_subfeature_checklist_3
-                                    }
-                                </li>
-                                <li>Unlimited appointments</li> */}
                             </ul>
                         </div>
 
@@ -608,6 +532,16 @@ export default function LandingPricingSection(
                             md:text-xl md:px-10"
                         />
                     </div>
+
+
+                </div>
+
+                <div className="flex justify-end max-w-7xl mt-2 mx-auto">
+                    <Translation
+                        content_key="pricing_disclaimer"
+                        render_as="i"
+                        translations={props}
+                    />
                 </div>
             </div>
         </section>

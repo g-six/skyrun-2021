@@ -36,6 +36,7 @@ module.exports = {
     defaultPathMap,
     { dev, dir, outDir, distDir, buildId }
   ) {
+    console.log('Environment variables', process.env)
     console.log('Landing page for environment:', process.env.LANDING_PAGE)
     console.log({
       '/': { page: '/' },

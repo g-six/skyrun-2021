@@ -67,6 +67,9 @@ export interface ServiceItem extends ServiceBase {
         id: string,
         name?: string,
     },
+    tenant: {
+        id: string,
+    },
     staff: {
         id: string,
         user_id: string,

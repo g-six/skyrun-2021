@@ -1,8 +1,7 @@
 import { Disclosure } from '@headlessui/react'
-import { UserModel } from 'components/Modals/types'
+import { ModalDataAttributes, UserModel } from 'components/Modals/types'
 import Translation from 'components/Translation'
-import { useAppContext } from 'context/AppContext'
-import { useState } from 'react'
+import { useAuth } from 'context/AuthContext'
 import { ServiceApiItem, ServiceItem } from 'types/service'
 export function ServiceList({
     translations = {},
@@ -11,6 +10,7 @@ export function ServiceList({
     services: ServiceApiItem[]
     translations: Record<string, string>
 }) {
+    const { ServiceModal } = useAuth()
     const categories: Record<string, string>[] = []
     const normalized: ServiceItem[] = []
     services.forEach((svc: ServiceApiItem) => {
@@ -21,6 +21,10 @@ export function ServiceList({
             is_public: svc.public,
             service_type: svc.type,
             max_participants: svc.maxCapacity,
+            tenant: {
+                id: svc.tenant.id,
+            },
+            primary_color: svc.primaryColorHex,
             staff: svc.staff.map(
                 ({ id, user }: { id: string; user: UserModel }) => ({
                     id,
@@ -93,6 +97,17 @@ export function ServiceList({
                                         <button
                                             type="button"
                                             className="bg-primary-lighter bg-opacity-50 text-primary-light h-12 w-12 rounded-lg"
+                                            onClick={() => {
+                                                console.log(service)
+                                                const attributes = ServiceModal.attributes as ModalDataAttributes
+                                                attributes.id = service.id as string
+                                                attributes.name = service.name as string
+                                                attributes.tenant = service.name as string
+                                                attributes.category = service.category.id
+                                                attributes.primary_color = service.primary_color as string
+                                                ServiceModal.setAttributes(attributes)
+                                                ServiceModal.open()
+                                            }}
                                         >
                                             <i className="feather-edit" />
                                         </button>

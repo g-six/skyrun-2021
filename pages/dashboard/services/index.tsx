@@ -134,6 +134,9 @@ function DashboardServices() {
                     long_description,
                     service_type,
                     slug,
+                    tenant: {
+                        id: s.tenant.id,
+                    },
                     staff: staff.map(
                         ({
                             id,

@@ -46,7 +46,7 @@ function ServiceModal() {
     const { lang, translations: common_translations } = useAppContext()
     const [translations, setTranslations] = useState(common_translations)
     const [prompt_message, toggleDialog] = useState<string>('')
-    const [attributes, setAttributes] = useState<ModalDataAttributes>({})
+    const [attributes, setAttributes] = useState<ModalDataAttributes>(ServiceModal.attributes || {})
 
     const categories =
         (attributes &&
@@ -90,6 +90,28 @@ function ServiceModal() {
         attributes?.id ? FetchMethods.PUT : FetchMethods.POST,
         false
     )
+
+    function duplicateOffer(idx: number) {
+        const offerings = attributes.offerings as ModalDataAttributes[]
+        if (offerings && offerings[idx]) {
+            offerings.push(offerings[idx])
+            setAttributes({
+                ...attributes,
+                offerings,
+            })
+        }
+    }
+
+    function removeOffer(idx: number) {
+        const offerings = attributes.offerings as ModalDataAttributes[]
+        if (offerings && offerings[idx]) {
+            offerings.splice(idx, 1)
+            setAttributes({
+                ...attributes,
+                offerings,
+            })
+        }
+    }
 
     function handleCloseModal(e: MouseEvent<HTMLButtonElement>) {
         ServiceModal.setAttributes({})
@@ -334,15 +356,14 @@ function ServiceModal() {
                 />
             ) : tenant ? (
                 <ServiceModalOfferClasses
+                    onDuplicate={duplicateOffer}
                     onPrevious={() => setSelectedTab(1)}
                     onNext={() => {
                         setSelectedTab(3)
                     }}
                     attributes={attributes}
                     tenant_id={tenant && tenant.id}
-                    removeAll={() => {
-                        console.log('remove all')
-                    }}
+                    onRemove={removeOffer}
                     onAttributesChanged={(
                         updated_attributes: ModalDataAttributes,
                         idx: number
@@ -380,7 +401,11 @@ function ServiceModal() {
                 onPrevious={() => {
                     setSelectedTab(2)
                 }}
-                onNext={() => {}}
+                onNext={() => {
+                    
+                    console.log(attributes.offerings)
+                    // onSubmit
+                }}
             />
         )
     }

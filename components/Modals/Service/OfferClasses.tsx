@@ -78,9 +78,10 @@ function ServiceModalOfferClasses({
     translations,
     attributes,
     onAttributesChanged,
+    onDuplicate,
     tenant_id,
     handleCloseModal,
-    removeAll,
+    onRemove,
     onPrevious,
     onNext,
 }: {
@@ -88,10 +89,11 @@ function ServiceModalOfferClasses({
     attributes?: ModalDataAttributes
     tenant_id: string
     handleCloseModal: (e: MouseEvent<HTMLButtonElement>) => void
-    removeAll(): void
+    onRemove(idx: number): void
     onPrevious(): void
     onNext(): void
     onAttributesChanged(u: ModalDataAttributes, idx: number): void
+    onDuplicate(idx: number): void
 }) {
     const api_error =
         attributes && (attributes.api_error as Record<string, string>)
@@ -132,10 +134,7 @@ function ServiceModalOfferClasses({
               )
             : []
 
-    function duplicateRow(idx: number) {}
-
-    const offerings =
-        attributes && (attributes.offerings as ModalDataAttributes[])
+    const offerings = attributes && (attributes.offerings as ModalDataAttributes[])
 
     return (
         <div
@@ -165,7 +164,7 @@ function ServiceModalOfferClasses({
                 <div
                     className={classNames(
                         'justify-start',
-                        'overflow-auto max-h-96 h-96 flex-1 flex flex-col p-3 gap-3'
+                        'flex-1 flex flex-col gap-3'
                     )}
                 >
                     <div className="flex gap-2">
@@ -178,7 +177,7 @@ function ServiceModalOfferClasses({
 
                         <Translation
                             render_as="span"
-                            className="font-semibold tracking-wider font-display text-gray-500 text-xs uppercase w-56"
+                            className="font-semibold tracking-wider font-display text-gray-500 text-xs uppercase w-52"
                             content_key="instructor_col_header"
                             translations={translations}
                         />
@@ -192,7 +191,7 @@ function ServiceModalOfferClasses({
 
                         <Translation
                             render_as="span"
-                            className="font-semibold tracking-wider font-display text-gray-500 text-xs uppercase w-28"
+                            className="font-semibold tracking-wider font-display text-gray-500 text-xs uppercase w-36"
                             content_key="date_col_header"
                             translations={translations}
                         />
@@ -205,7 +204,7 @@ function ServiceModalOfferClasses({
                         />
                     </div>
 
-                    <div className="bg-primary-lighter bg-opacity-40 py-2">
+                    <div className="bg-primary-lighter bg-opacity-40 py-2 overflow-auto max-h-96 h-96">
                         {offerings
                             ? offerings.map(
                                   (o: ModalDataAttributes, idx: number) => {
@@ -213,7 +212,7 @@ function ServiceModalOfferClasses({
                                           <div
                                               key={idx}
                                               className={classNames(
-                                                  'flex gap-2 px-2'
+                                                  'flex gap-2 p-2'
                                               )}
                                           >
                                               <div className="w-44 px-1">
@@ -246,9 +245,9 @@ function ServiceModalOfferClasses({
                                                   )}
                                               </div>
 
-                                              <div className="w-56 place-items-stretch  px-1">
+                                              <div className="w-52 place-items-stretch  px-1">
                                                   {staff_loading ? (
-                                                      <div className="bg-white h-full w-52 rounded-xl" />
+                                                      <div className="bg-white h-full w-48 rounded-xl" />
                                                   ) : (
                                                       <OptionList
                                                           id="staff"
@@ -292,9 +291,10 @@ function ServiceModalOfferClasses({
                                                               .time as string
                                                       }
                                                       options={times}
+                                                      listboxCss="h-auto"
                                                   />
                                               </div>
-                                              <div className="w-28 place-items-stretch px-1">
+                                              <div className="w-36 place-items-stretch px-1">
                                                   <DateInput
                                                       className="focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md calendar"
                                                       onChange={(
@@ -306,7 +306,7 @@ function ServiceModalOfferClasses({
                                                               idx
                                                           )
                                                       }}
-                                                      dateFormat="dd/MM/yyyy"
+                                                      dateFormat="MMMM d"
                                                       selected={
                                                           offerings[idx]
                                                               .date as Date
@@ -315,7 +315,7 @@ function ServiceModalOfferClasses({
                                               </div>
                                               <div className="flex-1 items-center flex px-1 gap-2">
                                                   <input
-                                                      id="check_1"
+                                                      id={`check_${idx}`}
                                                       className="h-4 w-4 border-gray-300 rounded text-primary focus:ring-primary-light"
                                                       type="checkbox"
                                                       onChange={(e) => {
@@ -333,7 +333,7 @@ function ServiceModalOfferClasses({
                                                   />
                                                   <Translation
                                                       render_as="label"
-                                                      htmlFor="check_1"
+                                                      htmlFor={`check_${idx}`}
                                                       content_key="recurring_label"
                                                       translations={
                                                           translations
@@ -342,14 +342,13 @@ function ServiceModalOfferClasses({
                                                   <div className="flex-1" />
                                                   <button
                                                       type="button"
-                                                      className="text-primary bg-primary-light bg-opacity-30 h-10 w-10 rounded-lg text-xl feather-copy"
-                                                      onClick={() => {
-                                                          duplicateRow(idx)
-                                                      }}
+                                                      className="text-primary bg-primary-light bg-opacity-30 h-8 w-8 rounded text-lg feather-copy"
+                                                      onClick={() => {onDuplicate(idx)}}
                                                   />
                                                   <button
                                                       type="button"
-                                                      className="text-red-500 bg-red-100 h-10 w-10 rounded-lg text-xl feather-trash-2"
+                                                      className="text-red-500 bg-red-100 h-8 w-8 rounded text-lg feather-trash-2"
+                                                      onClick={() => {onRemove(idx)}}
                                                   />
                                               </div>
                                           </div>

@@ -133,7 +133,7 @@ pipelines:
             script:
               - npm install
               - npm test
-              - npm run build
+              - LANDING_PAGE=$LANDING_PAGE npm run build
             artifacts:
               - out/**
         - step:

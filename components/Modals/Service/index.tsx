@@ -236,6 +236,8 @@ function ServiceModal() {
                 ...translations_to_add,
             })
         }
+
+        console.log(attributes)
     }, [
         common_translations,
         page_translation,
@@ -347,7 +349,10 @@ function ServiceModal() {
                     ) => {
                         const offerings =
                             attributes.offerings as ModalDataAttributes[]
-                        offerings[idx] = updated_attributes
+                        offerings[idx] = {
+                            ...offerings[idx],
+                            ...updated_attributes,
+                        }
                         setAttributes({
                             ...attributes,
                             offerings,
@@ -372,6 +377,10 @@ function ServiceModal() {
                     })
                 }}
                 translations={translations}
+                onPrevious={() => {
+                    setSelectedTab(2)
+                }}
+                onNext={() => {}}
             />
         )
     }

@@ -100,7 +100,7 @@ function ServiceModalOfferClasses({
         getTimes()
     )
 
-    const { data } = useFetch(
+    const { data, is_loading: locations_loading } = useFetch(
         `/v1/locations/tenant-id/?tenantId=${tenant_id}`,
         FetchMethods.GET,
         true
@@ -113,11 +113,8 @@ function ServiceModalOfferClasses({
               }))
             : []
 
-    const { data: staff_api_response } = useFetch(
-        `/v1/staff/?tenantId=${tenant_id}`,
-        FetchMethods.GET,
-        true
-    )
+    const { data: staff_api_response, is_loading: staff_loading } =
+        useFetch(`/v1/staff/?tenantId=${tenant_id}`, FetchMethods.GET, true)
     const staff =
         staff_api_response &&
         staff_api_response.content &&
@@ -140,9 +137,6 @@ function ServiceModalOfferClasses({
     const offerings =
         attributes && (attributes.offerings as ModalDataAttributes[])
 
-    useEffect(() => {
-        console.log(offerings)
-    }, [offerings])
     return (
         <div
             className="relative flex flex-col"
@@ -215,7 +209,6 @@ function ServiceModalOfferClasses({
                         {offerings
                             ? offerings.map(
                                   (o: ModalDataAttributes, idx: number) => {
-                                      console.log(offerings[idx].date)
                                       return (
                                           <div
                                               key={idx}
@@ -224,41 +217,60 @@ function ServiceModalOfferClasses({
                                               )}
                                           >
                                               <div className="w-44 px-1">
-                                                  <OptionList
-                                                      id="location"
-                                                      className="text-xs"
-                                                      onChange={(
-                                                          t: OptionListItem
-                                                      ) => {
-                                                          ;(o.location =
-                                                              t.value as string),
+                                                  {locations_loading ? (
+                                                      <div className="bg-white h-full w-40 rounded-xl" />
+                                                  ) : (
+                                                      <OptionList
+                                                          id="location"
+                                                          className="text-xs"
+                                                          onChange={(
+                                                              t: OptionListItem
+                                                          ) => {
                                                               onAttributesChanged(
-                                                                  o,
+                                                                  {
+                                                                      location:
+                                                                          t.value as string,
+                                                                  },
                                                                   idx
                                                               )
-                                                      }}
-                                                      options={locations}
-                                                      listboxCss="h-auto"
-                                                  />
+                                                          }}
+                                                          defaultValue={
+                                                              offerings[idx]
+                                                                  .location as string
+                                                          }
+                                                          options={
+                                                              locations
+                                                          }
+                                                          listboxCss="h-auto"
+                                                      />
+                                                  )}
                                               </div>
 
                                               <div className="w-56 place-items-stretch  px-1">
-                                                  <OptionList
-                                                      id="staff"
-                                                      className="text-xs"
-                                                      onChange={(
-                                                          t: OptionListItem
-                                                      ) => {
-                                                          ;(o.staff =
-                                                              t.value as string),
-                                                              onAttributesChanged(
-                                                                  o,
-                                                                  idx
-                                                              )
-                                                      }}
-                                                      options={staff}
-                                                      listboxCss="h-auto"
-                                                  />
+                                                  {staff_loading ? (
+                                                      <div className="bg-white h-full w-52 rounded-xl" />
+                                                  ) : (
+                                                      <OptionList
+                                                          id="staff"
+                                                          className="text-xs"
+                                                          onChange={(
+                                                              t: OptionListItem
+                                                          ) => {
+                                                              ;(o.staff =
+                                                                  t.value as string),
+                                                                  onAttributesChanged(
+                                                                      o,
+                                                                      idx
+                                                                  )
+                                                          }}
+                                                          options={staff}
+                                                          defaultValue={
+                                                              offerings[idx]
+                                                                  .staff as string
+                                                          }
+                                                          listboxCss="h-auto"
+                                                      />
+                                                  )}
                                               </div>
 
                                               <div className="w-28 px-1">
@@ -275,6 +287,10 @@ function ServiceModalOfferClasses({
                                                               idx
                                                           )
                                                       }}
+                                                      defaultValue={
+                                                          offerings[idx]
+                                                              .time as string
+                                                      }
                                                       options={times}
                                                   />
                                               </div>
@@ -302,6 +318,18 @@ function ServiceModalOfferClasses({
                                                       id="check_1"
                                                       className="h-4 w-4 border-gray-300 rounded text-primary focus:ring-primary-light"
                                                       type="checkbox"
+                                                      onChange={(e) => {
+                                                          o.is_recurring =
+                                                              e.target.checked
+                                                          onAttributesChanged(
+                                                              o,
+                                                              idx
+                                                          )
+                                                      }}
+                                                      defaultChecked={
+                                                          offerings[idx]
+                                                              .is_recurring as boolean
+                                                      }
                                                   />
                                                   <Translation
                                                       render_as="label"

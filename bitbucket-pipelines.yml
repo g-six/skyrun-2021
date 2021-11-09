@@ -133,9 +133,6 @@ pipelines:
             script:
               - npm install
               - npm test
-              - LANDING_PAGE=$LANDING_PAGE npm run build
-            artifacts:
-              - out/**
         - step:
             name: Security Scan
             script:
@@ -148,7 +145,12 @@ pipelines:
           trigger: manual
           clone:
             enabled: false
+          artifacts:
+              - out/**
           script:
+            - pipe: npm run build
+              variables:
+                LANDING_PAGE: $LANDING_PAGE
             # sync your files to S3
             - pipe: atlassian/aws-s3-deploy:0.4.4
               variables:

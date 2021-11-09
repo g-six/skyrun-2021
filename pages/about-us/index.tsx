@@ -127,13 +127,13 @@ function AboutUs() {
                         <Translation
                             className="text-primary-light uppercase tracking-widest mb-3 font-display"
                             content_key="section_1_story"
-                            render_as="span"
+                            render_as="div"
                             translations={translations}
                         />
                         <Translation
                             className="text-primary font-medium text-5xl mb-5 font-display"
                             content_key="section_1_how_it_started"
-                            render_as="span"
+                            render_as="div"
                             translations={translations}
                         />
                         <div className="font-sans xl:col-span-2">

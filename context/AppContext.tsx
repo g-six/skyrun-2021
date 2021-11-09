@@ -62,7 +62,7 @@ export function SkyAppDataProvider({ children }: Props) {
 
     const [translations, setTranslations] = useState<Record<string, string>>({})
 
-    const { data: common_translations } = useFetch(
+    const { data: common_translations, is_loading } = useFetch(
         `/v1/contents?url=${encodeURI(
             'https://cms.aot.plus/jsonapi/node/page_translation/5b2201da-0798-4b53-8a70-8ba6a7261ac6'
         )}`,
@@ -91,10 +91,7 @@ export function SkyAppDataProvider({ children }: Props) {
         if (data.length && tiers.length == 0) {
             setTiers(data)
         }
-    }, [data, tiers, GOOGLE_API_KEY, lang])
-
-    useEffect(() => {
-        if (lang && common_translations.data?.attributes[lang]) {
+        if (lang && !is_loading && Object.keys(translations).length == 0) {
             const translations_to_add: Record<string, string> = {}
             common_translations.data.attributes[lang].forEach(
                 ({ key, value }: any) => {
@@ -106,7 +103,7 @@ export function SkyAppDataProvider({ children }: Props) {
                 ...translations_to_add,
             })
         }
-    }, [translations, lang])
+    }, [data, tiers, GOOGLE_API_KEY, translations, lang, is_loading, common_translations])
 
     return <SkyContext.Provider value={
         { ...ctx, tiers, GOOGLE_API_KEY, lang, onLanguageChange, translations }

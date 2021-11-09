@@ -84,7 +84,6 @@ pipelines:
       - step:
           name: Deploy to QA
           deployment: QA
-          trigger: manual
           clone:
             enabled: false
           script:
@@ -106,6 +105,28 @@ pipelines:
       - step:
           name: Deploy to Staging
           deployment: Staging
+          trigger: manual
+          clone:
+            enabled: false
+          script:
+            # sync your files to S3
+            - pipe: atlassian/aws-s3-deploy:0.4.4
+              variables:
+                AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+                AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+                AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+                S3_BUCKET: $S3_BUCKET
+                LOCAL_PATH: 'out'
+            # triggering a distribution invalidation to refresh the CDN caches
+            - pipe: atlassian/aws-cloudfront-invalidate:0.1.1
+              variables:
+                AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+                AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+                AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+                DISTRIBUTION_ID: $DISTRIBUTION_ID
+      - step:
+          name: Deploy to Prod
+          deployment: Production
           trigger: manual
           clone:
             enabled: false

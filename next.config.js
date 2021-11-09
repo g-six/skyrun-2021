@@ -5,6 +5,7 @@ const translated_pages = {}
 const pages = [
   '',
   'about-us',
+  'coming-soon',
   'dashboard',
   'dashboard/calendar',
   'dashboard/clients',
@@ -19,7 +20,7 @@ const pages = [
 pages.forEach((page) => {
   languages.forEach((language) => {
     translated_pages[`/${language}/${page}`] = {
-      page: `/${page}`,
+      page: `/${page || 'coming-soon'}`,
     }
   })
 })
@@ -40,7 +41,7 @@ module.exports = {
       ...translated_pages,
     })
     return {
-      '/': { page: '/' },
+      '/': { page: '/coming-soon' },
       ...translated_pages,
     }
   },

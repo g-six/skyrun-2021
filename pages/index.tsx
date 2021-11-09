@@ -7,26 +7,18 @@ import { useFetch } from 'utils/fetch-helper'
 import { FetchMethods } from 'utils/types'
 import Footer from '../components/Footer'
 import Navbar from '../components/Navbar'
-import LandingHero, { Props as LandingHeroProps } from './Landing/hero'
+import LandingHero from './Landing/hero'
 import LandingFeaturesSection from './Landing/section-features'
 import LandingPricingSection from './Landing/section-pricing'
 import LandingSectionTestimonials from './Landing/section-testimonials'
 import LandingSectionTryCTA from './Landing/section-try-cta'
 
 function Home() {
-    const { lang } = useAppContext()
+    const { lang, translations: common_translations } = useAppContext()
     const refs = {
         features: useRef(null),
         testimonials: useRef(null),
         pricing: useRef(null),
-    }
-    const hero_props: LandingHeroProps = {
-        title_left: 'always',
-        title_center: 'on',
-        title_right: 'time',
-        subtitle:
-            'Scheduling, booking and business management platform for your business.',
-        button_label: <>Try it for free</>,
     }
 
     const { data: translation } = useFetch(
@@ -38,23 +30,9 @@ function Home() {
         true
     )
 
-    const ui_text = {
-        hero_line_2: 'Scheduling, booking and business management platform',
-        main_cta_button: 'Try it for free',
-        section_2_left_title: 'Scheduling & Booking',
-        section_2_right_title: 'System',
-        section_2_mid_left_title: 'Scheduling & Booking',
-        section_2_mid_right_title: 'System',
-        section_2_checklist: '...',
-        section_3_title: '...',
-        section_3_body: '...',
-        pricing_plans_title: 'Pricing',
-    }
-
-    const [translations, setTranslations] = useState(ui_text)
-
-    hero_props.subtitle = translations.hero_line_2
-    hero_props.button_label = <>{translations.main_cta_button}</>
+    const [translations, setTranslations] = useState<
+        Record<string, string>
+    >({})
 
     const executeScroll = () => {
         if (
@@ -79,16 +57,20 @@ function Home() {
     }
     useEffect(() => {
         if (lang && translation.data?.attributes[lang]) {
+            const translations_to_add: Record<string, string> = {}
             translation.data.attributes[lang].forEach(
                 ({ key, value }: any) => {
-                    setTranslations((translations) => ({
-                        ...translations,
-                        [key]: value,
-                    }))
+                    translations_to_add[key] = value
                 }
             )
+
+            setTranslations({
+                ...translations,
+                ...translations_to_add,
+                ...common_translations,
+            })
         }
-    }, [translation, lang])
+    }, [translation, lang, common_translations])
 
     executeScroll()
 
@@ -112,30 +94,19 @@ function Home() {
             </Head>
             <Navbar />
 
-            <LandingHero {...hero_props} />
+            <LandingHero {...translations} />
 
             <main className="overflow-hidden">
                 <div ref={refs.features} id="features" />
-                <LandingFeaturesSection
-                    date_of_exercise={new Date().toLocaleDateString()}
-                    location_name="Taiseng"
-                    instructor_name="Muhammad Ali"
-                    left_title={translations.section_2_left_title}
-                    right_title={translations.section_2_right_title}
-                    mid_left_title={translations.section_2_mid_left_title}
-                    mid_right_title={translations.section_2_mid_right_title}
-                    section_2_checklist={translations.section_2_checklist}
-                    section_3_title={translations.section_3_title}
-                    section_3_body={translations.section_3_body}
-                />
+                <LandingFeaturesSection {...translations} />
                 <div ref={refs.testimonials} id="testimonials" />
-                <LandingSectionTestimonials />
+                <LandingSectionTestimonials {...translations} />
                 <div ref={refs.pricing} id="pricing" />
                 <LandingPricingSection {...translations} />
-                <LandingSectionTryCTA />
+                <LandingSectionTryCTA {...translations} />
             </main>
 
-            <Footer />
+            <Footer {...translations} />
             <LoginModal />
             <SignupModal />
         </div>

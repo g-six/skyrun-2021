@@ -1,10 +1,11 @@
 /** @type {import('next').NextConfig} */
 
-const other_languages = ['zh']
+const languages = ['en', 'zh']
 const translated_pages = {}
 const pages = [
   '',
   'about-us',
+  'coming-soon',
   'dashboard',
   'dashboard/calendar',
   'dashboard/clients',
@@ -17,12 +18,9 @@ const pages = [
   'dashboard/settings',
 ]
 pages.forEach((page) => {
-  other_languages.forEach((language) => {
-    translated_pages[`/${page}`] = {
-      page: `/${page}`,
-    }
+  languages.forEach((language) => {
     translated_pages[`/${language}/${page}`] = {
-      page: `/${page}`,
+      page: `/${page || process.env.LANDING_PAGE || ''}`,
     }
   })
 })
@@ -43,7 +41,7 @@ module.exports = {
       ...translated_pages,
     })
     return {
-      '/': { page: '/' },
+      '/': { page: process.env.LANDING_PAGE || '/' },
       ...translated_pages,
     }
   },

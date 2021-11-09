@@ -76,9 +76,9 @@ function GeneralForm() {
             const res = await api_fetch.doFetch({
                 id: attributes?.id as string,
                 tenant,
-                hourlyWage: attributes?.hourly_rate as string,
-                monthlyWage: attributes?.monthly_rate as string,
-                overtimeRate: attributes?.overtime_rate as string,
+                hourlyWage: attributes?.hourly_rate as number,
+                monthlyWage: attributes?.monthly_rate as number,
+                overtimeRate: attributes?.overtime_rate as number,
                 user,
                 notes,
             })
@@ -163,7 +163,9 @@ function GeneralForm() {
                         {...register('last_name', {
                             required: true,
                         })}
-                        defaultValue={attributes?.last_name as string}
+                        defaultValue={
+                            (attributes?.last_name as string) || ''
+                        }
                     />
                     {errors.last_name?.type === 'required' && (
                         <span className="text-sm text-red-700">
@@ -196,7 +198,7 @@ function GeneralForm() {
                         {...register('phone', {
                             required: false,
                         })}
-                        defaultValue={attributes?.phone as string}
+                        defaultValue={(attributes?.phone as string) || ''}
                     />
                     {errors.phone?.type === 'pattern' && (
                         <span className="text-sm text-red-700">
@@ -229,7 +231,7 @@ function GeneralForm() {
                             pattern:
                                 /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
                         })}
-                        defaultValue={attributes?.email as string}
+                        defaultValue={(attributes?.email as string) || ''}
                     />
                     {errors.email?.type === 'required' && (
                         <span className="text-sm text-red-700">
@@ -296,9 +298,7 @@ function GeneralForm() {
                                     ? 'border-red-300 bg-red-100'
                                     : ''
                             )}
-                            value={
-                                (attributes?.hourly_rate as string) || ''
-                            }
+                            value={attributes?.hourly_rate as number}
                             onChange={(v: string) => {
                                 setAttributes({
                                     ...attributes,
@@ -333,9 +333,7 @@ function GeneralForm() {
                                     ? 'border-red-300 bg-red-100'
                                     : ''
                             )}
-                            value={
-                                (attributes?.monthly_rate as string) || ''
-                            }
+                            value={attributes?.monthly_rate as number}
                             onChange={(v: string) => {
                                 setAttributes({
                                     ...attributes,
@@ -370,9 +368,7 @@ function GeneralForm() {
                                     ? 'border-red-300 bg-red-100'
                                     : ''
                             )}
-                            value={
-                                (attributes?.overtime_rate as string) || ''
-                            }
+                            value={attributes?.overtime_rate as number}
                             onChange={(v: string) => {
                                 setAttributes({
                                     ...attributes,

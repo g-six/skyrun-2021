@@ -1,22 +1,15 @@
 import { createModal } from 'components/Modals/ModalFactory'
+import Translation from 'components/Translation'
 import { AuthContext } from 'context/AuthContext'
 import styles from '../../styles/Landing/hero.module.scss'
-export interface Props {
-    title_left: string
-    title_center: string
-    title_right: string
-    subtitle: string
-    button_label: JSX.Element
-}
-export default function LandingHero({
-    title_center,
-    title_left,
-    title_right,
-    subtitle,
-    button_label,
-}: Props) {
+
+export default function LandingHero(props: Record<string, string>) {
     const ModalProvider = createModal(AuthContext, 'SignupModal', () => (
-        <span>{button_label}</span>
+        <Translation
+            content_key="main_cta_button"
+            render_as="span"
+            translations={props}
+        />
     ))
     return (
         <div className={styles.gradBg}>
@@ -25,28 +18,39 @@ export default function LandingHero({
                 <main className="py-60 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-0 lg:px-8 text-white">
                     <div className="sm:text-center lg:text-left">
                         <h1 className="binary text-4xl tracking-tight font-light sm:text-5xl md:text-8xl">
-                            <span className="block xl:inline text-primary">
-                                {title_left}
-                            </span>
-                            <span className="block xl:inline text-secondary">
-                                {' '}
-                                {title_center}{' '}
-                            </span>
-                            <span className="block xl:inline text-primary">
-                                {title_right}
-                            </span>
+                            <Translation
+                                className="block xl:inline text-primary"
+                                content_key="company_name_1"
+                                render_as="span"
+                                translations={props}
+                            />
+                            <Translation
+                                className="block xl:inline text-secondary"
+                                content_key="company_name_2"
+                                render_as="span"
+                                translations={props}
+                            />
+                            <Translation
+                                className="block xl:inline text-primary"
+                                content_key="company_name_3"
+                                render_as="span"
+                                translations={props}
+                            />
                         </h1>
-                        <p className="mt-3 text-base text-gray-400 sm:mt-5 sm:text-lg sm:max-w-lg sm:mx-auto md:mt-5 md:text-xl lg:mx-0 ">
-                            {subtitle}
-                        </p>
+                        <Translation
+                            className="mt-3 text-base text-gray-400 sm:mt-5 sm:text-lg sm:max-w-lg sm:mx-auto md:mt-5 md:text-xl lg:mx-0"
+                            content_key="hero_line_2"
+                            render_as="p"
+                            translations={props}
+                        />
                         <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
                             <div className="overflow-hidden ">
                                 <ModalProvider.Opener
-                                    className="shadow w-full flex items-center justify-center 
+                                    className="shadow w-full flex items-center justify-center
                                 px-6 py-4 text-base text-white font-bold
                                 bg-primary border rounded-full
                                 transition duration-300 ease-in-out
-                                hover:bg-transparent border-solid border-primary 
+                                hover:bg-transparent border-solid border-primary
                                 hover:text-primary
                                 md:text-xl md:px-10"
                                 />

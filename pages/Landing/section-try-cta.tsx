@@ -1,11 +1,13 @@
-import { createModal } from 'components/Modals/ModalFactory'
+import Translation from 'components/Translation'
 import { useAppContext } from 'context/AppContext'
-import { AuthContext, useAuth } from 'context/AuthContext'
+import { useAuth } from 'context/AuthContext'
 import { useEffect } from 'react'
 import { classNames } from 'utils/dom-helpers'
 import styles from '../../styles/Landing/section-try-cta.module.scss'
 
-export default function LandingSectionTryCTA() {
+export default function LandingSectionTryCTA(
+    props: Record<string, string>
+) {
     const { tiers } = useAppContext()
     const { SignupModal } = useAuth()
 
@@ -30,17 +32,26 @@ export default function LandingSectionTryCTA() {
                 <div className="grid grid-cols-2 h-48 place-items-center">
                     <div>
                         <h3 className="text-white drop-shadow text-4xl circular">
-                            Try always on time for
+                            <Translation
+                                content_key="section_6_title_1"
+                                translations={props}
+                            />
                             <br />
-                            21 days, absolutely free!
+                            <Translation
+                                content_key="section_6_title_2"
+                                translations={props}
+                            />
                         </h3>
-                        <small className="text-lg text-white circular-thin">
-                            Take your business to the next leavel
-                        </small>
+                        <Translation
+                            className="text-lg text-white circular-thin"
+                            content_key="section_6_subtitle"
+                            render_as="small"
+                            translations={props}
+                        />
                         <div className="flex mt-2 items-center">
                             <button
                                 type="button"
-                                className="shadow 
+                                className="shadow
                                 py-3 text-sm text-white font-bold
                                 bg-secondary rounded-full
                                 transition duration-300 ease-in-out
@@ -50,12 +61,19 @@ export default function LandingSectionTryCTA() {
                                     SignupModal.open()
                                 }}
                             >
-                                <span>Try it for free</span>
+                                <Translation
+                                    content_key="section_6_cta"
+                                    render_as="span"
+                                    translations={props}
+                                />
                             </button>
                             <div className="pl-6 align-middle">
-                                <span className="text-sm text-white leading-none">
-                                    No credit card required
-                                </span>
+                                <Translation
+                                    className="text-sm text-white leading-none"
+                                    content_key="section_6_cta_note"
+                                    render_as="span"
+                                    translations={props}
+                                />
                             </div>
                         </div>
                     </div>

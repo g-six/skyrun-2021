@@ -1,13 +1,10 @@
-import { useState } from 'react'
-import { Switch } from '@progress/kendo-react-inputs'
 import { Button, ButtonGroup } from '@progress/kendo-react-buttons'
+import { Switch } from '@progress/kendo-react-inputs'
 import { createModal } from 'components/Modals/ModalFactory'
-import { AuthContext } from 'context/AuthContext'
+import Translation from 'components/Translation'
 import { useAppContext } from 'context/AppContext'
-
-type SectionProps = {
-    [key: string]: string
-}
+import { AuthContext } from 'context/AuthContext'
+import { useState } from 'react'
 
 enum CurrencyIso {
     SGD = 'SGD',
@@ -42,7 +39,9 @@ const currencies: Currency[] = [
         symbol: '₱',
     },
 ]
-export default function LandingPricingSection(props: SectionProps) {
+export default function LandingPricingSection(
+    props: Record<string, string>
+) {
     const { tiers } = useAppContext()
     const [currency, setCurrency] = useState<Currency>(currencies[0])
     const [discount, setDiscount] = useState(1)
@@ -50,15 +49,32 @@ export default function LandingPricingSection(props: SectionProps) {
     const FreePlanModalProvider = createModal(
         AuthContext,
         'SignupModal',
-        () => <span data-plan="free">Choose plan</span>,
-        () => <span data-plan="free">Cancel</span>,
+        () => (
+            <span data-plan="free">
+                <Translation
+                    content_key="pricing_tier_0_cta"
+                    translations={props}
+                />
+            </span>
+        ),
+        () => (
+            <span data-plan="free">
+                <Translation content_key="cancel" translations={props} />
+            </span>
+        ),
         { tier: tiers[0] }
     )
 
     const SinglePlanModalProvider = createModal(
         AuthContext,
         'SignupModal',
-        () => <span>Try it for free</span>,
+        () => (
+            <Translation
+                content_key="pricing_tier_1_cta"
+                render_as="span"
+                translations={props}
+            />
+        ),
         undefined,
         { tier: tiers[1] }
     )
@@ -66,7 +82,13 @@ export default function LandingPricingSection(props: SectionProps) {
     const MultiLocModalProvider = createModal(
         AuthContext,
         'SignupModal',
-        () => <span>Try it for free</span>,
+        () => (
+            <Translation
+                content_key="pricing_tier_2_cta"
+                render_as="span"
+                translations={props}
+            />
+        ),
         undefined,
         { tier: tiers[2] }
     )
@@ -82,19 +104,20 @@ export default function LandingPricingSection(props: SectionProps) {
     return (
         <section className="pt-20 pb-40 pricing-plans bg-primary bg-opacity-10">
             <div className="container m-auto">
-                <h3 className="text-center text-primary-dark drop-shadow text-5xl circular font-thin mb-8">
-                    {props.pricing_plans_title}
-                </h3>
-                <p className="text-center leading-relaxed">
-                    Amet minim mollit non deserunt ullamco est sit aliqua
-                    dolor do amet sint.
-                    <br />
-                    Velit officia consequat duis enim velit mollit.
-                    Exercitation veniam <br />
-                    consequat sunt nostrud amet.
-                </p>
+                <Translation
+                    className="text-center text-primary-dark drop-shadow text-5xl circular font-thin mb-8"
+                    content_key="pricing_title"
+                    render_as="h3"
+                    translations={props}
+                />
+                <Translation
+                    className="text-center leading-relaxed"
+                    content_key="pricing_body"
+                    render_as="p"
+                    translations={props}
+                />
                 <div className="flex justify-center items-center w-auto mt-8">
-                    <span className="mr-4">Monthly</span>
+                    <span className="mr-4">{props.pricing_monthly}</span>
 
                     <Switch
                         onLabel={''}
@@ -103,13 +126,26 @@ export default function LandingPricingSection(props: SectionProps) {
                         checked={discount != 1}
                     />
 
-                    <span className="ml-3 mr-2">Yearly</span>
-                    <span className="text-white text-xs bg-primary-light rounded px-2 py-1">
-                        Save 20%
-                    </span>
+                    <Translation
+                        className="ml-3 mr-2"
+                        content_key="pricing_yearly"
+                        render_as="span"
+                        translations={props}
+                    />
+                    <Translation
+                        className="text-white text-xs bg-primary-light rounded px-2 py-1"
+                        content_key="pricing_promo_tag"
+                        render_as="span"
+                        translations={props}
+                    />
                 </div>
                 <div className="flex justify-center items-center w-auto mt-8">
-                    <div className="pr-6 circular">Pricing in</div>
+                    <Translation
+                        className="pr-6 circular"
+                        content_key="pricing_currency_title"
+                        render_as="div"
+                        translations={props}
+                    />
                     <ButtonGroup className="bg-primary-light circular-light">
                         {currencies.map(
                             ({ iso, symbol }: Currency, idx) => (
@@ -134,66 +170,111 @@ export default function LandingPricingSection(props: SectionProps) {
                             <span className="rounded-lg p-0.5 pt-1 w-8 inline-block border-2 border-primary-light">
                                 <i className="feather feather-user" />
                             </span>
-                            <span className="ml-2 circular text-lg">
-                                Free
-                            </span>
+                            <Translation
+                                className="ml-2 circular text-lg"
+                                content_key="pricing_tier_0_name"
+                                render_as="span"
+                                translations={props}
+                            />
                         </figure>
-                        <div className="text-6xl block text-center text-primary circular-light mt-5">
-                            $0
-                        </div>
-                        <div className="text-sm block text-center text-gray-400 circular-light">
-                            forever
-                        </div>
-                        <div className="block text-center mt-8">
-                            For individuals, small businesses, and
-                            entrepreneurs
-                        </div>
+                        <Translation
+                            className="text-6xl block text-center text-primary circular-light mt-5"
+                            content_key="pricing_tier_0_price_usd"
+                            render_as="div"
+                            translations={props}
+                        />
+                        <Translation
+                            className="text-sm block text-center text-gray-400 circular-light"
+                            content_key="pricing_tier_0_subtitle_monthly"
+                            render_as="div"
+                            translations={props}
+                        />
+                        <Translation
+                            className="block text-center mt-8"
+                            content_key="pricing_tier_0_subtitle_yearly"
+                            render_as="div"
+                            translations={props}
+                        />
                         <div className="divide-y divide-primary-lighter">
                             <div className="h-8"></div>
                             <div className="h-8"></div>
                         </div>
                         <div className="flex items-center mt-5">
                             <i className="feather feather-check px-6 text-primary-light w-auto text-2xl leading-none" />
-                            <span>Up to 100 appointments / mo</span>
+                            <Translation
+                                content_key="pricing_tier_0_feature_list_1"
+                                render_as="span"
+                                translations={props}
+                            />
                         </div>
                         <div className="flex items-center mt-5">
                             <i className="feather feather-check px-6 text-primary-light w-auto text-2xl leading-none" />
-                            <span>1 location</span>
+                            <Translation
+                                content_key="pricing_tier_0_feature_list_2"
+                                render_as="span"
+                                translations={props}
+                            />
                         </div>
                         <div className="flex items-center mt-5">
                             <i className="feather feather-check px-6 text-primary-light w-auto text-2xl leading-none" />
-                            <span>Up to 2 staff</span>
+                            <Translation
+                                content_key="pricing_tier_0_feature_list_3"
+                                render_as="span"
+                                translations={props}
+                            />
                         </div>
                         <div className="flex items-center mt-5 opacity-25">
                             <i className="feather feather-check px-6 text-primary-light w-auto text-2xl leading-none" />
-                            <span>Open API</span>
+                            <Translation
+                                content_key="pricing_tier_0_disabled_feature_list_1"
+                                render_as="span"
+                                translations={props}
+                            />
                         </div>
                         <div className="flex items-center mt-5 opacity-25">
                             <i className="feather feather-check px-6 text-primary-light w-auto text-2xl leading-none" />
                             <span>
-                                Branded app{' '}
-                                <small className="bg-primary-light text-xs text-white p-1 rounded">
-                                    Coming soon
-                                </small>
+                                <Translation
+                                    content_key="pricing_tier_0_disabled_feature_list_2"
+                                    translations={props}
+                                />{' '}
+                                <Translation
+                                    className="bg-primary-light text-xs text-white p-1 rounded"
+                                    content_key="pricing_coming_soon"
+                                    render_as="small"
+                                    translations={props}
+                                />
                             </span>
                         </div>
 
                         <div className="rounded-2xl bg-primary-lighter bg-opacity-20 w-full mt-6 p-6">
-                            <span className="text-primary circular text-xl">
-                                Free forever
-                            </span>
+                            <Translation
+                                className="text-primary circular text-xl"
+                                content_key="pricing_tier_0_subfeature_title"
+                                render_as="span"
+                                translations={props}
+                            />
                             <ul className="list-disc ml-6 leading-loose text-sm mt-2 h-28">
-                                <li>No credit card required</li>
-                                <li>No commitment</li>
-                                <li>
-                                    Includes free trial of our
-                                    Multi-location plan for 21 days
-                                </li>
+                                <Translation
+                                    content_key="pricing_tier_0_subfeature_checklist_1"
+                                    render_as="li"
+                                    translations={props}
+                                />
+                                <Translation
+                                    content_key="pricing_tier_0_subfeature_checklist_2"
+                                    render_as="li"
+                                    translations={props}
+                                />
+                                <Translation
+                                    content_key="pricing_tier_0_subfeature_checklist_3"
+                                    render_as="li"
+                                    translations={props}
+                                />
                             </ul>
                         </div>
 
                         <FreePlanModalProvider.Opener
-                            className="mt-8 shadow w-full flex items-center justify-center 
+                            className="mt-8 shadow w-full flex items-center justify-center
                             px-6 py-4 text-base text-white font-bold
                             bg-primary-light rounded-full
                             transition duration-300 ease-in-out
@@ -205,79 +286,163 @@ export default function LandingPricingSection(props: SectionProps) {
                     <div className="bg-white rounded-2xl shadow-2xl w-full py-10 px-8">
                         <figure className="w-60 text-center m-auto mt-2 text-primary flex items-center justify-center">
                             <i className="text-2xl feather feather-users flex items-center justify-center" />
-                            <span className="ml-2 circular text-lg flex items-center justify-center">
-                                Single Studio
-                            </span>
+                            <Translation
+                                className="ml-2 circular text-lg flex items-center justify-center"
+                                content_key="pricing_tier_1_name"
+                                render_as="span"
+                                translations={props}
+                            />
                         </figure>
-                        <div className="text-6xl block text-center text-primary-dark circular-light mt-5">
+                        {/* <div className="text-6xl block text-center text-primary-dark circular-light mt-5">
                             {currency.symbol}
-                            {Math.ceil(49 * discount * currency.rate)}
-                        </div>
-                        <div className="block text-center text-gray-400 circular-light">
-                            / month
-                        </div>
-                        <div className="block text-center mt-8">
-                            For small businesses with one or two locations
-                        </div>
+                            {Math.ceil(
+                                parseInt(
+                                    props.pricing_tier_1_price_usd.substring(
+                                        1
+                                    ),
+                                    10
+                                ) *
+                                    discount *
+                                    currency.rate
+                            )}
+                        </div> */}
+                        <Translation
+                            className="text-6xl block text-center text-primary-dark circular-light mt-5"
+                            content_key="pricing_tier_1_price_usd"
+                            render_as="div"
+                            translations={props}
+                        />
+                        <Translation
+                            className="block text-center text-gray-400 circular-light"
+                            content_key="pricing_subtitle_monthly"
+                            render_as="div"
+                            translations={props}
+                        />
+                        <Translation
+                            className="block text-center mt-8"
+                            content_key="pricing_tier_1_subtitle"
+                            render_as="div"
+                            translations={props}
+                        />
                         <div className="divide-y divide-primary-lighter">
                             <div className="h-8"></div>
                             <div className="h-8"></div>
                         </div>
                         <div className="flex items-center mt-5">
                             <i className="feather feather-check px-6 text-primary w-auto text-2xl leading-none" />
-                            <span>Up to 1,000 appointments / mo</span>
+                            <Translation
+                                content_key="pricing_tier_1_feature_list_1"
+                                render_as="span"
+                                translations={props}
+                            />
                         </div>
                         <div className="flex items-center mt-5">
                             <i className="feather feather-check px-6 text-primary w-auto text-2xl leading-none" />
-                            <span>1 location</span>
+                            <Translation
+                                content_key="pricing_tier_1_feature_list_2"
+                                render_as="span"
+                                translations={props}
+                            />
                         </div>
                         <div className="flex items-center mt-5">
                             <i className="feather feather-check px-6 text-primary w-auto text-2xl leading-none" />
-                            <span>5 staff included</span>
+                            <Translation
+                                content_key="pricing_tier_1_feature_list_3"
+                                render_as="span"
+                                translations={props}
+                            />
                         </div>
                         <div className="flex items-center mt-5 opacity-25">
                             <i className="feather feather-check px-6 text-primary w-auto text-2xl leading-none" />
-                            <span>Open API</span>
+                            <Translation
+                                content_key="pricing_tier_1_disabled_feature_list_1"
+                                render_as="span"
+                                translations={props}
+                            />
                         </div>
                         <div className="flex items-center mt-5 opacity-25">
                             <i className="feather feather-check px-6 text-primary w-auto text-2xl leading-none" />
                             <span>
-                                Branded app{' '}
-                                <small className="bg-primary text-xs text-white p-1 rounded">
-                                    Coming soon
-                                </small>
+                                <Translation
+                                    content_key="pricing_tier_1_disabled_feature_list_2"
+                                    translations={props}
+                                />{' '}
+                                <Translation
+                                    className="bg-primary text-xs text-white p-1 rounded"
+                                    content_key="pricing_coming_soon"
+                                    render_as="small"
+                                    translations={props}
+                                />
                             </span>
                         </div>
 
                         <div className="rounded-2xl bg-primary-light bg-opacity-10 w-full mt-6 p-6">
-                            <span className="text-primary circular text-xl">
-                                Bring your business online
-                            </span>
+                            <Translation
+                                className="text-primary circular text-xl"
+                                content_key="pricing_tier_1_subfeature_title"
+                                render_as="span"
+                                translations={props}
+                            />
                             <ul className="list-disc ml-6 leading-loose text-sm mt-2 h-28">
-                                <li>
+                                <Translation
+                                    content_key="pricing_tier_2_subfeature_checklist_1"
+                                    render_as="li"
+                                    translations={props}
+                                />
+                                <Translation
+                                    content_key="pricing_tier_2_subfeature_checklist_2"
+                                    render_as="li"
+                                    translations={props}
+                                />
+                                <Translation
+                                    content_key="pricing_tier_2_subfeature_checklist_3"
+                                    render_as="li"
+                                    translations={props}
+                                />
+                                {/* <li>
                                     {currency.symbol}
-                                    {Math.ceil(20 * currency.rate)} per
-                                    additional location
+                                    {Math.ceil(
+                                        parseInt(
+                                            props.pricing_tier_1_subfeature_checklist_1.substring(
+                                                1,
+                                                3
+                                            ),
+                                            10
+                                        ) * currency.rate
+                                    )}{' '}
+                                    {props.pricing_tier_1_subfeature_checklist_1.substring(
+                                        3
+                                    )}
                                 </li>
                                 <li>
                                     {currency.symbol}
-                                    {Math.ceil(5 * currency.rate)} per
-                                    additional staff
+                                    {Math.ceil(
+                                        parseInt(
+                                            props.pricing_tier_1_subfeature_checklist_2.substring(
+                                                1,
+                                                3
+                                            ),
+                                            10
+                                        ) * currency.rate
+                                    )}{' '}
+                                    {props.pricing_tier_1_subfeature_checklist_2.substring(
+                                        3
+                                    )}
                                 </li>
                                 <li>
                                     {currency.symbol}
                                     {Math.ceil(5 * currency.rate)} per
                                     additional 1,000 appointments
-                                </li>
+                                </li> */}
                             </ul>
                         </div>
 
                         <SinglePlanModalProvider.Opener
-                            className="mt-8 shadow w-full flex items-center justify-center 
+                            className="mt-8 shadow w-full flex items-center justify-center
                             px-6 py-4 text-base text-white font-bold
                             bg-primary-dark rounded-full
                             transition duration-300 ease-in-out
-                            hover:bg-opacity-80 
+                            hover:bg-opacity-80
                             md:text-xl md:px-10"
                         />
                     </div>
@@ -286,74 +451,160 @@ export default function LandingPricingSection(props: SectionProps) {
                         <figure className="w-60 text-center m-auto mt-2 text-secondary flex items-center justify-center">
                             <i className="text-2xl feather feather-map-pin flex items-center justify-center" />
                             <span className="ml-2 circular text-lg flex items-center justify-center">
-                                Multi-location Business
+                                {props.pricing_tier_2_name}
                             </span>
                         </figure>
-                        <div className="text-6xl block text-center text-primary circular-light mt-5">
+                        {/* <div className="text-6xl block text-center text-primary circular-light mt-5">
                             {currency.symbol}
-                            {Math.ceil(89 * discount * currency.rate)}
-                        </div>
-                        <div className="block text-center text-gray-400 circular-light">
-                            / month
-                        </div>
-                        <div className="block text-center mt-8">
-                            For growing businesses with multiple locations
-                        </div>
+                            {Math.ceil(
+                                parseInt(
+                                    props.pricing_tier_2_price_usd.substring(
+                                        1
+                                    ),
+                                    10
+                                ) *
+                                    discount *
+                                    currency.rate
+                            )}
+                        </div> */}
+                        <Translation
+                            className="text-6xl block text-center text-primary circular-light mt-5"
+                            content_key="pricing_tier_2_price_usd"
+                            render_as="div"
+                            translations={props}
+                        />
+                        <Translation
+                            className="block text-center text-gray-400 circular-light"
+                            content_key="pricing_subtitle_monthly"
+                            render_as="div"
+                            translations={props}
+                        />
+                        <Translation
+                            className="block text-center mt-8"
+                            content_key="pricing_tier_2_subtitle"
+                            render_as="div"
+                            translations={props}
+                        />
                         <div className="divide-y divide-primary-lighter">
                             <div className="h-8"></div>
                             <div className="h-8"></div>
                         </div>
                         <div className="flex items-center mt-5">
                             <i className="feather feather-check px-6 text-secondary w-auto text-2xl leading-none" />
-                            <span>Unlimited appointments</span>
+                            <Translation
+                                content_key="pricing_tier_2_feature_list_1"
+                                render_as="span"
+                                translations={props}
+                            />
                         </div>
                         <div className="flex items-center mt-5">
                             <i className="feather feather-check px-6 text-secondary w-auto text-2xl leading-none" />
-                            <span>3 locations included</span>
+                            <Translation
+                                content_key="pricing_tier_2_feature_list_2"
+                                render_as="span"
+                                translations={props}
+                            />
                         </div>
                         <div className="flex items-center mt-5">
                             <i className="feather feather-check px-6 text-secondary w-auto text-2xl leading-none" />
-                            <span>10 staff included</span>
+                            <Translation
+                                content_key="pricing_tier_2_feature_list_3"
+                                render_as="span"
+                                translations={props}
+                            />
                         </div>
                         <div className="flex items-center mt-5">
                             <i className="feather feather-check px-6 text-secondary w-auto text-2xl leading-none" />
-                            <span>Open API</span>
+                            <Translation
+                                content_key="pricing_tier_2_feature_list_4"
+                                render_as="span"
+                                translations={props}
+                            />
                         </div>
                         <div className="flex items-center mt-5">
                             <i className="feather feather-check px-6 text-secondary w-auto text-2xl leading-none" />
                             <span>
-                                Branded app{' '}
-                                <small className="bg-secondary text-xs text-white p-1 rounded">
-                                    Coming soon
-                                </small>
+                                <Translation
+                                    content_key="pricing_tier_2_feature_list_5"
+                                    translations={props}
+                                />{' '}
+                                <Translation
+                                    className="bg-secondary text-xs text-white p-1 rounded"
+                                    content_key="pricing_coming_soon"
+                                    render_as="small"
+                                    translations={props}
+                                />
                             </span>
                         </div>
 
                         <div className="rounded-2xl bg-secondary bg-opacity-10 w-full mt-6 p-6">
-                            <span className="text-primary circular text-xl">
-                                Everything you will need
-                            </span>
+                            <Translation
+                                className="text-primary circular text-xl"
+                                content_key="pricing_tier_2_subfeature_title"
+                                render_as="span"
+                                translations={props}
+                            />
                             <ul className="list-disc ml-6 leading-loose text-sm mt-2 h-28">
-                                <li>
+                                <Translation
+                                    content_key="pricing_tier_2_subfeature_checklist_1"
+                                    render_as="li"
+                                    translations={props}
+                                />
+                                <Translation
+                                    content_key="pricing_tier_2_subfeature_checklist_2"
+                                    render_as="li"
+                                    translations={props}
+                                />
+                                <Translation
+                                    content_key="pricing_tier_2_subfeature_checklist_3"
+                                    render_as="li"
+                                    translations={props}
+                                />
+                                {/* <li>
                                     {currency.symbol}
-                                    {Math.ceil(20 * currency.rate)} per
-                                    additional location
+                                    {Math.ceil(
+                                        parseInt(
+                                            props.pricing_tier_2_subfeature_checklist_1.substring(
+                                                1,
+                                                3
+                                            ),
+                                            10
+                                        ) * currency.rate
+                                    )}{' '}
+                                    {props.pricing_tier_2_subfeature_checklist_1.substring(
+                                        3
+                                    )}
                                 </li>
                                 <li>
                                     {currency.symbol}
-                                    {Math.ceil(5 * currency.rate)} per
-                                    additional staff
+                                    {Math.ceil(
+                                        parseInt(
+                                            props.pricing_tier_2_subfeature_checklist_2.substring(
+                                                1,
+                                                3
+                                            ),
+                                            10
+                                        ) * currency.rate
+                                    )}{' '}
+                                    {props.pricing_tier_2_subfeature_checklist_2.substring(
+                                        3
+                                    )}
                                 </li>
-                                <li>Unlimited appointments</li>
+                                <li>
+                                    {
+                                        props.pricing_tier_2_subfeature_checklist_3
+                                    }
+                                </li>
+                                <li>Unlimited appointments</li> */}
                             </ul>
                         </div>
 
                         <MultiLocModalProvider.Opener
-                            className="mt-8 shadow w-full flex items-center justify-center 
+                            className="mt-8 shadow w-full flex items-center justify-center
                             px-6 py-4 text-base text-white font-bold
                             bg-secondary rounded-full
                             transition duration-300 ease-in-out
-                            hover:bg-opacity-80 
+                            hover:bg-opacity-80
                             md:text-xl md:px-10"
                         />
                     </div>

@@ -23,7 +23,7 @@ function Card(
     }
 
     return (
-        <div className="shadow-2xl p-8 pt-12 rounded-xl border border-t-0 border-l-0  border-r-0 border-gray-150 text-center relative">
+        <div className="shadow-2xl p-8 pt-12 w-80 h-short rounded-xl border border-t-0 border-l-0  border-r-0 border-gray-150 text-center relative">
             <button
                 type="button"
                 onClick={() => {

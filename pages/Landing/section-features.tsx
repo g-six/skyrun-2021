@@ -1,26 +1,28 @@
+import Translation from 'components/Translation'
 import { ReactElement } from 'react'
 import { classNames } from 'utils/dom-helpers'
 import styles from '../../styles/Landing/section-features.module.scss'
 
-export type SectionProps = {
-    [key: string]: string
-}
-
-export default function LandingFeaturesSection(props: SectionProps) {
-    const section_2_checklist: ReactElement[] = []
-    props.section_2_checklist.split('<li>').forEach((i: string, idx) => {
-        if (idx > 0) {
-            section_2_checklist.push(
-                <li
-                    key={idx}
-                    className="flex center-items leading-8 gap-2 text-gray-400 mb-2"
-                >
-                    <i className="feather leading-0 text-primary-light text-2xl feather-check-square mr-2" />
-                    {i.split('</li')[0]}
-                </li>
-            )
-        }
-    })
+export default function LandingFeaturesSection(
+    props: Record<string, string>
+) {
+    const section_3_checklist: ReactElement[] = []
+    props['section_3_checklist'] &&
+        props['section_3_checklist']
+            .split('\n')
+            .forEach((i: string, idx) => {
+                if (idx >= 0) {
+                    section_3_checklist.push(
+                        <li
+                            key={idx}
+                            className="flex center-items leading-8 gap-2 text-gray-400 mb-2"
+                        >
+                            <i className="feather leading-0 text-primary-light text-2xl feather-check-square mr-2" />
+                            {i.split('\n')[0]}
+                        </li>
+                    )
+                }
+            })
 
     return (
         <section className="py-20 container max-w-7xl mx-auto">
@@ -29,34 +31,55 @@ export default function LandingFeaturesSection(props: SectionProps) {
                     <div className="absolute bottom-0 right-3 p-4">
                         <div className="bg-white rounded-xl p-5 shadow-2xl w-44 h-50">
                             <div className="text-primary text-lg circular font-medium">
-                                Aerobics
+                                <Translation
+                                    content_key="section_2_item_5"
+                                    translations={props}
+                                />
                             </div>
                             <p className="mt-2">
-                                <span className="text-primary-light text-sm">
-                                    Date:
-                                </span>
+                                <Translation
+                                    className="text-primary-light text-sm"
+                                    content_key="section_2_item_6"
+                                    render_as="span"
+                                    translations={props}
+                                />
                                 <br />
-                                <span className="text-xs text-gray-500">
-                                    {props.date_of_exercise}
-                                </span>
+                                <Translation
+                                    className="text-xs text-gray-500"
+                                    content_key="section_2_item_7"
+                                    render_as="span"
+                                    translations={props}
+                                />
                             </p>
                             <p className="mt-2">
-                                <span className="text-primary-light text-sm">
-                                    Location:
-                                </span>
+                                <Translation
+                                    className="text-primary-light text-sm"
+                                    content_key="section_2_item_8"
+                                    render_as="span"
+                                    translations={props}
+                                />
                                 <br />
-                                <span className="text-xs text-gray-500">
-                                    {props.location_name}
-                                </span>
+                                <Translation
+                                    className="text-xs text-gray-500"
+                                    content_key="section_2_item_9"
+                                    render_as="span"
+                                    translations={props}
+                                />
                             </p>
                             <p className="mt-2">
-                                <span className="text-primary-light text-sm">
-                                    Instructor:
-                                </span>
+                                <Translation
+                                    className="text-primary-light text-sm"
+                                    content_key="section_2_item_10"
+                                    render_as="span"
+                                    translations={props}
+                                />
                                 <br />
-                                <span className="text-xs text-gray-500">
-                                    {props.instructor_name}
-                                </span>
+                                <Translation
+                                    className="text-xs text-gray-500"
+                                    content_key="section_2_item_11"
+                                    render_as="span"
+                                    translations={props}
+                                />
                             </p>
                         </div>
                         <div className="block absolute top-0 right-0 h-12 w-12 rounded-full flex items-center text-center bg-primary-light text-white">
@@ -66,45 +89,57 @@ export default function LandingFeaturesSection(props: SectionProps) {
                 </div>
                 <div className="lg:col-span-1">
                     <h1 className="mt-20 mb-10 lg:mb-5 text-5xl circular leading-none tracking-wide">
-                        <span className="text-primary-dark">
-                            {props.left_title}
-                        </span>
-                        <span className="text-primary-dark">
-                            {props.right_title}
-                        </span>
+                        <Translation
+                            className="text-primary-dark"
+                            content_key="section_2_title"
+                            render_as="span"
+                            translations={props}
+                        />
                     </h1>
 
-                    <p className="text-gray-400 leading-relaxed">
-                        Anim aute id magna aliqua ad ad non deserunt sunt.{' '}
-                        <br />
-                        Qui irure qui lorem cupidatat commodo. <br />
-                        Elit sunt amet fugiat veniam occaecat fugiat aliqua.
-                    </p>
+                    <Translation
+                        className="text-gray-400 leading-relaxed"
+                        content_key="section_2_body"
+                        render_as="p"
+                        translations={props}
+                    />
 
                     <div className="grid grid-cols-2 grid-rows-2 grid-flow-col gap-4 mt-5">
                         <div>
                             <i className="inline-block align-middle feather feather-calendar text-secondary mr-4 text-2xl" />
-                            <span className="inline-block align-middle">
-                                Appointment Scheduling
-                            </span>
+                            <Translation
+                                className="inline-block align-middle"
+                                content_key="section_2_item_1"
+                                render_as="span"
+                                translations={props}
+                            />
                         </div>
                         <div>
                             <i className="inline-block align-middle feather feather-box text-secondary mr-4 text-2xl" />
-                            <span className="inline-block align-middle">
-                                Packages &amp; Membership
-                            </span>
+                            <Translation
+                                className="inline-block align-middle"
+                                content_key="section_2_item_2"
+                                render_as="span"
+                                translations={props}
+                            />
                         </div>
                         <div>
                             <i className="inline-block align-middle feather feather-user-plus text-secondary mr-4 text-2xl" />
-                            <span className="inline-block align-middle">
-                                Group Booking
-                            </span>
+                            <Translation
+                                className="inline-block align-middle"
+                                content_key="section_2_item_3"
+                                render_as="span"
+                                translations={props}
+                            />
                         </div>
                         <div>
                             <i className="inline-block align-middle feather feather-message-square text-secondary mr-4 text-2xl" />
-                            <span className="inline-block align-middle">
-                                Multi-lingual
-                            </span>
+                            <Translation
+                                className="inline-block align-middle"
+                                content_key="section_2_item_4"
+                                render_as="span"
+                                translations={props}
+                            />
                         </div>
                     </div>
                 </div>
@@ -125,17 +160,30 @@ export default function LandingFeaturesSection(props: SectionProps) {
                         )}
                     />
                     <h1 className="mt-20 mb-10 lg:mb-5 text-5xl circular leading-none tracking-wide">
-                        <span className="text-primary-dark">
-                            {props.mid_left_title}{' '}
-                        </span>
-                        <span className="text-gray-600 text-3xl block font-light">
-                            {props.mid_right_title}
-                        </span>
+                        <Translation
+                            className="text-primary-dark"
+                            content_key="section_3_title"
+                            render_as="span"
+                            translations={props}
+                        />
+                        <Translation
+                            className="text-gray-600 text-3xl block font-light"
+                            content_key="section_3_subtitle"
+                            render_as="span"
+                            translations={props}
+                        />
                     </h1>
 
                     <ul className="text-gray-500 leading-relaxed">
-                        {section_2_checklist}
+                        {section_3_checklist}
                     </ul>
+
+                    <Translation
+                        className="text-gray-400 leading-relaxed"
+                        content_key="section_3_body"
+                        render_as="p"
+                        translations={props}
+                    />
                 </div>
                 <div className={styles.spriteTools} />
             </div>
@@ -153,9 +201,12 @@ export default function LandingFeaturesSection(props: SectionProps) {
                                     40
                                 </span>
                                 <br />
-                                <span className="text-xs text-gray-400 font-medium tracking-widest">
-                                    MEMBERS
-                                </span>
+                                <Translation
+                                    className="text-xs text-gray-400 font-medium tracking-widest"
+                                    content_key="members"
+                                    render_as="span"
+                                    translations={props}
+                                />
                             </p>
                         </div>
                     </div>
@@ -175,14 +226,20 @@ export default function LandingFeaturesSection(props: SectionProps) {
                         )}
                     />
                     <h1 className="mt-20 mb-10 lg:mb-5 text-5xl circular leading-none tracking-wide">
-                        <span className="text-primary-dark">
-                            {props.section_3_title}
-                        </span>
+                        <Translation
+                            className="text-primary-dark"
+                            content_key="section_4_title"
+                            render_as="span"
+                            translations={props}
+                        />
                     </h1>
 
-                    <p className="text-gray-500 leading-relaxed">
-                        {props.section_3_body}
-                    </p>
+                    <Translation
+                        className="text-gray-500 leading-relaxed"
+                        content_key="section_4_body"
+                        render_as="p"
+                        translations={props}
+                    />
                 </div>
             </div>
         </section>

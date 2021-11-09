@@ -6,15 +6,20 @@ import {
     DrawerSelectEvent,
 } from '@progress/kendo-react-layout'
 import { Language } from 'components/LanguageSelector'
+import { useAppContext } from 'context/AppContext'
 import { useAuth } from 'context/AuthContext'
 import Cookies from 'js-cookie'
 import { useRouter } from 'next/router'
-import { MouseEvent, ReactElement, useState } from 'react'
+import { MouseEvent, ReactElement, useEffect, useState } from 'react'
 import { classNames } from 'utils/dom-helpers'
+import { useFetch } from 'utils/fetch-helper'
+import { getTranslation } from 'utils/language-helper'
 import { betterPathname } from 'utils/string-helper'
+import { FetchMethods } from 'utils/types'
 import TenantSelector from './TenantSelector'
 
 type SidebarItem = {
+    translation_key?: string
     text?: string
     separator?: boolean
     icon?: string
@@ -25,127 +30,132 @@ type SidebarItem = {
 interface Props {
     children?: ReactElement
 }
-const items: SidebarItem[] = [
-    {},
-    { text: 'Home', icon: 'feather-sidebar', route: '/dashboard' },
-    {
-        text: 'Calendar',
-        icon: 'feather-calendar',
-        route: '/dashboard/calendar',
-    },
-    {
-        text: 'Clients',
-        icon: 'feather-users',
-        selected: true,
-        route: '/dashboard/clients',
-    },
-    {
-        text: 'Locations',
-        icon: 'feather-map-pin',
-        route: '/dashboard/locations',
-    },
-    {
-        text: 'Products',
-        icon: 'feather-shopping-bag',
-        route: '/dashboard/products',
-    },
-    {
-        text: 'Packages',
-        icon: 'feather-gift',
-        route: '/dashboard/packages',
-    },
-    {
-        text: 'Resources',
-        icon: 'feather-folder',
-        route: '/dashboard/resources',
-    },
-    {
-        text: 'Services',
-        icon: 'feather-briefcase',
-        route: '/dashboard/services',
-    },
-    { text: 'Staff', icon: 'feather-user', route: '/dashboard/staff' },
-    {
-        text: 'Reports',
-        icon: 'k-i-star-outline',
-        route: '/dashboard/reports',
-    },
-    { separator: true },
-    { text: 'Settings', icon: 'k-i-cog', route: '/dashboard/settings' },
-    { text: 'Feedback', icon: 'k-i-comment', route: '/dashboard/feedback' },
-    {
-        text: 'Integrations',
-        icon: 'k-i-html',
-        route: '/dashboard/integrations',
-    },
-    {
-        text: 'Notifications',
-        icon: 'feather-bell',
-        route: '/dashboard/notifications',
-    },
-]
-
-const CustomItem = (props: DrawerItemProps & SidebarItem) => {
-    const [locale] = betterPathname(location.pathname)
-    const { tenant, tenants } = useAuth()
-    function getHomePath() {
-        if (Object.keys(Language).indexOf(locale.toUpperCase()) > 0) {
-            return ['', locale, 'dashboard/'].join('/')
-        }
-        return '/dashboard/'
-    }
-
-    if (!props.icon && !props.route && !props.separator) {
-        return (
-            <div
-                className={classNames(
-                    props.className || '',
-                    'bg-white mt-6 mb-3 px-3'
-                )}
-                onClickCapture={props.onClickCapture}
-            >
-                <TenantSelector tenant={tenant} tenants={tenants} />
-            </div>
-        )
-    } else if (props.separator) {
-        return (
-            <div className="justify-self-stretch flex-auto px-5">
-                <div
-                    className="block border-b-gray-400 border-b h-full"
-                    style={{ height: '1px' }}
-                />
-            </div>
-        )
-    }
-
-    return (
-        <DrawerItem
-            {...props}
-            className="flex items-center text-gray-600"
-            title={props.text}
-        >
-            <span
-                className={classNames(
-                    props.selected ? 'text-primary' : 'text-gray-400',
-                    `k-icon text-2xl ${props.icon}`
-                )}
-            ></span>
-            <div className="item-descr-wrap ml-2 w-full" title={props.text}>
-                <div
-                    className={classNames(
-                        props.selected ? 'text-primary' : 'text-gray-700'
-                    )}
-                >
-                    {props.text}
-                </div>
-            </div>
-        </DrawerItem>
-    )
-}
 
 function Sidebar({ children }: Props) {
     const router = useRouter()
     const ctx = useAuth()
+    const { lang, translations: common_translations } = useAppContext()
+
+    const [translations, setTranslations] = useState<
+        Record<string, string>
+    >({})
+
+    const { data: translation } = useFetch(
+        `/v1/contents?url=${encodeURI(
+            'https://cms.aot.plus/jsonapi/node/page_translation/be42cdfb-b39b-4b19-9bee-9b983024f917'
+        )}`,
+        FetchMethods.GET,
+        true,
+        true
+    )
+
+    useEffect(() => {
+        if (lang && translation.data?.attributes[lang]) {
+            const translations_to_add: Record<string, string> = {}
+            translation.data.attributes[lang].forEach(
+                ({ key, value }: any) => {
+                    translations_to_add[key] = value
+                }
+            )
+
+            setTranslations({
+                ...translations,
+                ...translations_to_add,
+                ...common_translations,
+            })
+        }
+    }, [translation, lang, common_translations])
+
+    const items: SidebarItem[] = [
+        {},
+        {
+            translation_key: 'home',
+            text: 'Home',
+            icon: 'feather-sidebar',
+            route: '/dashboard',
+        },
+        {
+            translation_key: 'calendar',
+            text: 'Calendar',
+            icon: 'feather-calendar',
+            route: '/dashboard/calendar',
+        },
+        {
+            translation_key: 'clients',
+            text: 'Clients',
+            icon: 'feather-users',
+            selected: true,
+            route: '/dashboard/clients',
+        },
+        {
+            translation_key: 'locations',
+            text: 'Locations',
+            icon: 'feather-map-pin',
+            route: '/dashboard/locations',
+        },
+        {
+            translation_key: 'products',
+            text: 'Products',
+            icon: 'feather-shopping-bag',
+            route: '/dashboard/products',
+        },
+        {
+            translation_key: 'packages',
+            text: 'Packages',
+            icon: 'feather-gift',
+            route: '/dashboard/packages',
+        },
+        {
+            translation_key: 'resources',
+            text: 'Resources',
+            icon: 'feather-folder',
+            route: '/dashboard/resources',
+        },
+        {
+            translation_key: 'services',
+            text: 'Services',
+            icon: 'feather-briefcase',
+            route: '/dashboard/services',
+        },
+        {
+            translation_key: 'staff',
+            text: 'Staff',
+            icon: 'feather-user',
+            route: '/dashboard/staff',
+        },
+        {
+            translation_key: 'reports',
+            text: 'Reports',
+            icon: 'k-i-star-outline',
+            route: '/dashboard/reports',
+        },
+        { separator: true },
+        {
+            translation_key: 'settings',
+            text: 'Settings',
+            icon: 'k-i-cog',
+            route: '/dashboard/settings',
+        },
+        {
+            translation_key: 'feedback',
+            text: 'Feedback',
+            icon: 'k-i-comment',
+            route: '/dashboard/feedback',
+        },
+        {
+            translation_key: 'integrations',
+            text: 'Integrations',
+            icon: 'k-i-html',
+            route: '/dashboard/integrations',
+        },
+        {
+            translation_key: 'notifications',
+            text: 'Notifications',
+            icon: 'feather-bell',
+            route: '/dashboard/notifications',
+        },
+    ]
+
     const handleClick = (e: MouseEvent) => {
         e.preventDefault()
         ctx.toggleDrawerSize(!ctx.is_drawer_expanded)
@@ -166,6 +176,74 @@ function Sidebar({ children }: Props) {
     }
     const selected = setSelectedItem(router.pathname)
 
+    const CustomItem = (props: DrawerItemProps & SidebarItem) => {
+        const [locale] = betterPathname(location.pathname)
+        const { tenant, tenants } = useAuth()
+
+        function getHomePath() {
+            if (Object.keys(Language).indexOf(locale.toUpperCase()) > 0) {
+                return ['', locale, 'dashboard/'].join('/')
+            }
+            return '/dashboard/'
+        }
+
+        if (!props.icon && !props.route && !props.separator) {
+            return (
+                <div
+                    className={classNames(
+                        props.className || '',
+                        'bg-white mt-6 mb-3 px-3'
+                    )}
+                    onClickCapture={props.onClickCapture}
+                >
+                    <TenantSelector
+                        tenant={tenant}
+                        tenants={tenants}
+                        translations={translations}
+                    />
+                </div>
+            )
+        } else if (props.separator) {
+            return (
+                <div className="justify-self-stretch flex-auto px-5">
+                    <div
+                        className="block border-b-gray-400 border-b h-full"
+                        style={{ height: '1px' }}
+                    />
+                </div>
+            )
+        }
+
+        return (
+            <DrawerItem
+                {...props}
+                className="flex items-center text-gray-600"
+                title={props.text}
+            >
+                <span
+                    className={classNames(
+                        props.selected ? 'text-primary' : 'text-gray-400',
+                        `k-icon text-2xl ${props.icon}`
+                    )}
+                ></span>
+                <div
+                    className="item-descr-wrap ml-2 w-full"
+                    title={props.text}
+                >
+                    <div
+                        className={classNames(
+                            props.selected
+                                ? 'text-primary'
+                                : 'text-gray-700'
+                        )}
+                    >
+                        {props.text}
+                    </div>
+                </div>
+            </DrawerItem>
+        )
+    }
+
     const nav_height = '80px'
     return (
         <Drawer
@@ -180,6 +258,13 @@ function Sidebar({ children }: Props) {
             items={
                 ctx.user?.uuid
                     ? items.map((item) => {
+                          if (item.translation_key) {
+                              item.text = getTranslation(
+                                  item.translation_key,
+                                  translations
+                              )
+                          }
+
                           if (item.route == '/') {
                               return {
                                   ...item,
@@ -213,7 +298,7 @@ function Sidebar({ children }: Props) {
                 {children}
                 <button
                     className={classNames(
-                        'absolute bottom-28 bg-primary text-white w-9 h-9 transition-all duration-200',
+                        'absolute bottom-16 bg-primary text-white w-9 h-9 transition-all duration-200',
                         ctx.is_drawer_expanded
                             ? 'left-56 shadow-xl border-r border-indigo-50'
                             : 'left-10 hover:bg-opacity-30 bg-opacity-70',

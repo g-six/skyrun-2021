@@ -1,6 +1,7 @@
+import Translation from 'components/Translation'
 import styles from '../../styles/Footer.module.scss'
 
-export default function Footer() {
+export default function Footer(props: Record<string, string>) {
     return (
         <footer className="container mx-auto pt-20 pb-8 lg:pb-12">
             <div className="flex flex-col divide-y gap-12">
@@ -9,9 +10,12 @@ export default function Footer() {
                         <div className={styles.logo} />
                     </div>
                     <div className="col-span-1">
-                        <div className="text-primary-dark circular font-bold">
-                            Get in touch with us
-                        </div>
+                        <Translation
+                            className="text-primary-dark circular font-bold"
+                            content_key="footer_contact_title"
+                            render_as="div"
+                            translations={props}
+                        />
                         <ul className="mt-2">
                             <li>
                                 <a href="mailto:support@aot.plus">
@@ -26,10 +30,14 @@ export default function Footer() {
                         </ul>
                     </div>
                     <div className="col-span-1">
-                        <div className="text-primary-dark circular font-bold">
-                            Office address
-                        </div>
+                        <Translation
+                            className="text-primary-dark circular font-bold"
+                            content_key="footer_address_title"
+                            render_as="div"
+                            translations={props}
+                        />
                         <ul className="mt-2">
+                            <li>{props.footer_address}</li>
                             <li>
                                 <a href="mailto:support@aot.plus">
                                     support@aot.plus
@@ -43,7 +51,12 @@ export default function Footer() {
                         </ul>
                     </div>
                     <div className="col-span-1 text-primary-dark">
-                        <div className="circular font-bold">Follow us</div>
+                        <Translation
+                            className="circular font-bold"
+                            content_key="footer_follow_us"
+                            render_as="div"
+                            translations={props}
+                        />
 
                         <div className="flex gap-3 mt-3">
                             <a
@@ -70,13 +83,18 @@ export default function Footer() {
                     </div>
                 </div>
                 <div className="grid grid-cols-3 gap-4 py-8 text-gray-400">
-                    <span className="col-span-2">
-                        Copyright © 2021 <strong>Always On Time</strong>.
-                        All Rights Reserved.
-                    </span>
-                    <span className="col-span-1 text-right">
-                        Privacy Policy
-                    </span>
+                    <Translation
+                        className="col-span-2"
+                        content_key="footer_copyright"
+                        render_as="span"
+                        translations={props}
+                    />
+                    <Translation
+                        className="col-span-1 text-right"
+                        content_key="footer_privacy_policy"
+                        render_as="span"
+                        translations={props}
+                    />
                 </div>
             </div>
         </footer>

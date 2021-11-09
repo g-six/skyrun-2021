@@ -9,14 +9,15 @@ import {
 } from 'context/AuthContext'
 import { Wrapper } from 'components/types'
 import LoginModal from 'components/Modals/Login'
-import { toTitleCase } from 'utils/string-helper'
-import LanguageSelector from 'components/LanguageSelector'
+import { betterPathname, toTitleCase } from 'utils/string-helper'
+import LanguageSelector, { Language } from 'components/LanguageSelector'
 import { useAppContext } from 'context/AppContext'
 import { DropDownListChangeEvent } from '@progress/kendo-react-dropdowns'
 import TenantModal from 'components/Modals/Tenant'
 import Cookies from 'js-cookie'
 import { classNames } from 'utils/dom-helpers'
 import UniversalSearch from 'components/UniversalSearch'
+import UserDropdown from 'components/Navbar/UserDropdown'
 
 const Sidebar = dynamic(() => import('./Sidebar'), { ssr: false })
 
@@ -31,6 +32,15 @@ function Dashboard({
         is_drawer_expanded,
     } = useAuth()
     const { onLanguageChange } = useAppContext()
+    const [first_part] = betterPathname(location.pathname)
+    let locale = '/en'
+
+    if (
+        first_part &&
+        Object.keys(Language).indexOf(first_part.toUpperCase()) > 0
+    ) {
+        locale = `/${first_part.toLowerCase()}`
+    }
 
     function handleLanguageChange(e: DropDownListChangeEvent) {
         onLanguageChange(e.value)
@@ -79,9 +89,10 @@ function Dashboard({
                         ) : (
                             ''
                         )}
+                        <UniversalSearch />
                     </AppBarSection>
                     <AppBarSection className="page-actions">
-                        <UniversalSearch />
+                        <UserDropdown locale={locale} />
                     </AppBarSection>
 
                     <AppBarSection>

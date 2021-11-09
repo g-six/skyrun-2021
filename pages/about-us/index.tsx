@@ -1,6 +1,7 @@
 import Footer from 'components/Footer'
 import LoginModal from 'components/Modals/Login'
 import Navbar from 'components/Navbar'
+import Translation from 'components/Translation'
 import { useAppContext } from 'context/AppContext'
 import Head from 'next/head'
 import { useEffect, useState } from 'react'
@@ -8,7 +9,7 @@ import { useFetch } from 'utils/fetch-helper'
 import { FetchMethods } from 'utils/types'
 
 function AboutUs() {
-    const { lang } = useAppContext()
+    const { lang, translations: common_translations } = useAppContext()
 
     const { data: translation } = useFetch(
         `/v1/contents?url=${encodeURI(
@@ -19,49 +20,26 @@ function AboutUs() {
         true
     )
 
-    const ui_text = {
-        banner_title: 'About Us',
-        section_1_title:
-            'Best-in-class Scheduling & Business Management Platform +',
-        section_1_cofounder: "Hi I'm Greg, the co-founder",
-        section_1_story: 'Our story',
-        section_1_how_it_started: 'How it started',
-        section_1_story_paragraph: 'Loading...',
-        section_1_mission: 'Our mission',
-        section_1_exist: 'Why We Exist',
-        section_1_exist_paragraph: '...',
-        section_2_title_1: '...',
-        section_2_title_2: '...',
-        section_2_paragraph: '...',
-        section_3_title: '...',
-        section_3_subtitle: '...',
-        section_3_item_1_title: '...',
-        section_3_item_1_body: '...',
-        section_3_item_2_title: '...',
-        section_3_item_2_body: '...',
-        section_3_item_3_title: '...',
-        section_3_item_3_body: '...',
-        section_3_item_4_title: '...',
-        section_3_item_4_body: '...',
-        section_4_title: '...',
-        section_4_subtitle: '...',
-        join_cta_button: '...',
-    }
-
-    const [translations, setTranslations] = useState(ui_text)
+    const [translations, setTranslations] = useState<
+        Record<string, string>
+    >({})
 
     useEffect(() => {
         if (lang && translation.data?.attributes[lang]) {
+            const translations_to_add: Record<string, string> = {}
             translation.data.attributes[lang].forEach(
                 ({ key, value }: any) => {
-                    setTranslations((translations) => ({
-                        ...translations,
-                        [key]: value,
-                    }))
+                    translations_to_add[key] = value
                 }
             )
+
+            setTranslations({
+                ...translations,
+                ...translations_to_add,
+                ...common_translations,
+            })
         }
-    }, [translation, lang])
+    }, [translation, lang, common_translations])
 
     return (
         <div>
@@ -93,28 +71,29 @@ function AboutUs() {
                     }}
                 >
                     <div className="flex justify-center items-center bg-black bg-opacity-25 h-full w-full">
-                        <h2 className="text-7xl binary font-light text-white text-center shadow-2xl">
-                            {translations.banner_title}
-                        </h2>
+                        <Translation
+                            className="text-7xl binary font-light text-white text-center shadow-2xl"
+                            content_key="banner_title"
+                            render_as="h2"
+                            translations={translations}
+                        />
                     </div>
                 </section>
 
                 <section className="container mx-auto py-32">
                     <div className="lg:grid grid-cols-2 xl:grid-cols-5 max-w-5xl gap-12 mx-auto">
-                        <div className="xl:col-span-3 col-span-2 text-primary text-5xl font-light font-display pr-8">
-                            {translations.section_1_title}
-                        </div>
-                        <div className="font-sans leading-relaxed xl:col-span-2">
-                            <p>
-                                Amet minim mollit non deserunt ullamco est
-                                sit aliqua dolor do amet sint. Velit officia
-                                consequat duis enim velit mollit.
-                                Exercitation veniam consequat sunt nostrud
-                                amet. Amet minim mollit non deserunt ullamco
-                                est sit aliqua dolor do amet sint. Velit
-                                officia consequat duis enim velit mollit
-                            </p>
-                        </div>
+                        <Translation
+                            className="xl:col-span-3 col-span-2 text-primary text-5xl font-light font-display pr-8"
+                            content_key="section_1_title"
+                            render_as="div"
+                            translations={translations}
+                        />
+                        <Translation
+                            className="font-sans leading-relaxed xl:col-span-2"
+                            content_key="section_1_body"
+                            render_as="div"
+                            translations={translations}
+                        />
                     </div>
                 </section>
 
@@ -134,24 +113,36 @@ function AboutUs() {
                                     'url(//static.aot.plus/images/about-us/emoji.svg)',
                             }}
                         />
-                        <span className="text-primary font-display text-3xl mt-2">
-                            {translations.section_1_cofounder}
-                        </span>
+                        <Translation
+                            className="text-primary font-display text-3xl mt-2"
+                            content_key="section_1_cofounder"
+                            render_as="span"
+                            translations={translations}
+                        />
                     </div>
                 </section>
 
                 <section className="container mx-auto py-32">
                     <div className="max-w-4xl mx-auto text-center">
-                        <div className="text-primary-light uppercase tracking-widest mb-3 font-display">
-                            {translations.section_1_story}
-                        </div>
-                        <div className="text-primary font-medium text-5xl mb-5 font-display">
-                            {translations.section_1_how_it_started}
-                        </div>
+                        <Translation
+                            className="text-primary-light uppercase tracking-widest mb-3 font-display"
+                            content_key="section_1_story"
+                            render_as="div"
+                            translations={translations}
+                        />
+                        <Translation
+                            className="text-primary font-medium text-5xl mb-5 font-display"
+                            content_key="section_1_how_it_started"
+                            render_as="div"
+                            translations={translations}
+                        />
                         <div className="font-sans xl:col-span-2">
-                            <p className="leading-loose">
-                                {translations.section_1_story_paragraph}
-                            </p>
+                            <Translation
+                                className="leading-loose"
+                                content_key="section_1_story_paragraph"
+                                render_as="p"
+                                translations={translations}
+                            />
                         </div>
                     </div>
                 </section>
@@ -166,13 +157,23 @@ function AboutUs() {
                             }}
                         />
                         <div className="font-sans leading-relaxed col-span-1">
-                            <div className="text-primary-light uppercase tracking-widest mb-3 font-display">
-                                {translations.section_1_mission}
-                            </div>
-                            <div className="text-primary font-medium text-5xl mb-5 font-display">
-                                {translations.section_1_exist}
-                            </div>
-                            <p>{translations.section_1_exist_paragraph}</p>
+                            <Translation
+                                className="text-primary-light uppercase tracking-widest mb-3 font-display"
+                                content_key="section_1_mission"
+                                render_as="div"
+                                translations={translations}
+                            />
+                            <Translation
+                                className="text-primary font-medium text-5xl mb-5 font-display"
+                                content_key="section_1_exist"
+                                render_as="div"
+                                translations={translations}
+                            />
+                            <Translation
+                                content_key="section_1_exist_paragraph"
+                                render_as="p"
+                                translations={translations}
+                            />
                         </div>
                     </div>
                 </section>
@@ -181,17 +182,26 @@ function AboutUs() {
                     <div className="container mx-auto">
                         <div className="lg:grid grid-cols-2 xl:grid-cols-3 max-w-6xl gap-3 mx-auto text-white">
                             <div className="col-span-1 xl:col-span-1">
-                                <div className="text-white mb-2 text-6xl font-light tracking-tight font-display">
-                                    {translations.section_2_title_1}
-                                </div>
-                                <div className="text-gray-400 text-4xl font-light font-display">
-                                    {translations.section_2_title_2}
-                                </div>
+                                <Translation
+                                    className="text-white mb-2 text-6xl font-light tracking-tight font-display"
+                                    content_key="section_2_title_1"
+                                    render_as="div"
+                                    translations={translations}
+                                />
+                                <Translation
+                                    className="text-gray-400 text-4xl font-light font-display"
+                                    content_key="section_2_title_2"
+                                    render_as="div"
+                                    translations={translations}
+                                />
                             </div>
                             <div className="leading-relaxed col-span-1 xl:col-span-2">
-                                <p className="font-light">
-                                    {translations.section_2_paragraph}
-                                </p>
+                                <Translation
+                                    className="font-light"
+                                    content_key="section_2_paragraph"
+                                    render_as="p"
+                                    translations={translations}
+                                />
                             </div>
                         </div>
                     </div>
@@ -201,9 +211,12 @@ function AboutUs() {
                 <section className="bg-primary-lighter bg-opacity-40 py-20">
                     <div className="container mx-auto">
                         <div className="max-w-6xl mx-auto text-center">
-                            <div className="text-primary mb-4 text-5xl font-light tracking-tight font-display">
-                                {translations.section_3_title}
-                            </div>
+                            <Translation
+                                className="text-primary mb-4 text-5xl font-light tracking-tight font-display"
+                                content_key="section_3_title"
+                                render_as="div"
+                                translations={translations}
+                            />
                             <p>{translations.section_3_subtitle}</p>
                         </div>
                         <div className="md:grid md:grid-cols-2 gap-10 xl:grid-cols-4 mt-10 max-w-7xl mx-auto">
@@ -215,12 +228,18 @@ function AboutUs() {
                                             'url(//static.aot.plus/images/about-us/magnify.svg)',
                                     }}
                                 />
-                                <h4 className="font-display text-primary-dark text-xl mb-2">
-                                    {translations.section_3_item_1_title}
-                                </h4>
-                                <p className="leading-loose text-gray-400">
-                                    {translations.section_3_item_1_body}
-                                </p>
+                                <Translation
+                                    className="font-display text-primary-dark text-xl mb-2"
+                                    content_key="section_3_item_1_title"
+                                    render_as="h4"
+                                    translations={translations}
+                                />
+                                <Translation
+                                    className="leading-loose text-gray-400"
+                                    content_key="section_3_item_1_body"
+                                    render_as="p"
+                                    translations={translations}
+                                />
                             </div>
                             <div className="bg-white px-8 py-10 rounded-3xl shadow-2xl h-80">
                                 <i
@@ -230,12 +249,18 @@ function AboutUs() {
                                             'url(//static.aot.plus/images/about-us/heart.svg)',
                                     }}
                                 />
-                                <h4 className="font-display text-primary-dark text-xl mb-2">
-                                    {translations.section_3_item_2_title}
-                                </h4>
-                                <p className="leading-loose text-gray-400">
-                                    {translations.section_3_item_2_body}
-                                </p>
+                                <Translation
+                                    className="font-display text-primary-dark text-xl mb-2"
+                                    content_key="section_3_item_2_title"
+                                    render_as="h4"
+                                    translations={translations}
+                                />
+                                <Translation
+                                    className="leading-loose text-gray-400"
+                                    content_key="section_3_item_2_body"
+                                    render_as="p"
+                                    translations={translations}
+                                />
                             </div>
                             <div className="bg-white px-8 py-10 rounded-3xl shadow-2xl h-80">
                                 <i
@@ -245,12 +270,18 @@ function AboutUs() {
                                             'url(//static.aot.plus/images/about-us/bullseye.svg)',
                                     }}
                                 />
-                                <h4 className="font-display text-primary-dark text-xl mb-2">
-                                    {translations.section_3_item_3_title}
-                                </h4>
-                                <p className="leading-loose text-gray-400">
-                                    {translations.section_3_item_3_body}
-                                </p>
+                                <Translation
+                                    className="font-display text-primary-dark text-xl mb-2"
+                                    content_key="section_3_item_3_title"
+                                    render_as="h4"
+                                    translations={translations}
+                                />
+                                <Translation
+                                    className="leading-loose text-gray-400"
+                                    content_key="section_3_item_3_body"
+                                    render_as="p"
+                                    translations={translations}
+                                />
                             </div>
                             <div className="bg-white px-8 py-10 rounded-3xl shadow-2xl h-80">
                                 <i
@@ -260,12 +291,18 @@ function AboutUs() {
                                             'url(//static.aot.plus/images/about-us/thumbsup.svg)',
                                     }}
                                 />
-                                <h4 className="font-display text-primary-dark text-xl mb-2">
-                                    {translations.section_3_item_4_title}
-                                </h4>
-                                <p className="leading-loose text-gray-400">
-                                    {translations.section_3_item_4_body}
-                                </p>
+                                <Translation
+                                    className="font-display text-primary-dark text-xl mb-2"
+                                    content_key="section_3_item_4_title"
+                                    render_as="h4"
+                                    translations={translations}
+                                />
+                                <Translation
+                                    className="leading-loose text-gray-400"
+                                    content_key="section_3_item_4_body"
+                                    render_as="p"
+                                    translations={translations}
+                                />
                             </div>
                         </div>
                     </div>
@@ -278,17 +315,27 @@ function AboutUs() {
                             'linear-gradient(104.86deg, #86C5E0 39.52%, #86C5E0 81.67%)',
                     }}
                 >
-                    <h4 className="text-5xl font-thin mx-auto max-w-2xl mb-3">
-                        {translations.section_4_title}
-                    </h4>
-                    <h5 className="text-3xl font-thin mb-8">
-                        {translations.section_4_subtitle}
-                    </h5>
+                    <Translation
+                        className="text-5xl font-thin mx-auto max-w-2xl mb-3"
+                        content_key="section_4_title"
+                        render_as="h4"
+                        translations={translations}
+                    />
+                    <Translation
+                        className="text-3xl font-thin mb-8"
+                        content_key="section_4_subtitle"
+                        render_as="h5"
+                        translations={translations}
+                    />
                     <button
                         className="bg-secondary text-white text-lg font-display rounded-full py-5 px-12"
                         type="button"
                     >
                         {translations.join_cta_button}
+                        <Translation
+                            content_key="join_cta_button"
+                            translations={translations}
+                        />
                     </button>
                 </section>
             </main>

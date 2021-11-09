@@ -6,25 +6,18 @@ export interface ModalDataAttributes {
         | string
         | number
         | boolean
+        | Date
         | File
         | Tier
         | ModalDataAttributes
+        | ModalDataAttributes[]
 }
 export interface ModalHook {
     is_open: boolean
     open(): void
     close(): void
     attributes?: ModalDataAttributes
-    setAttributes(
-        attributes: Record<
-            string,
-            | string
-            | number
-            | boolean
-            | Tier
-            | Record<string, string | Record<string, string | number>>[]
-        >
-    ): void
+    setAttributes(attributes: ModalDataAttributes): void
 }
 
 export type UserModel = {

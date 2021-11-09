@@ -2,7 +2,6 @@ import { RadioGroup } from '@headlessui/react'
 import DropdownComponent from 'components/DropdownSelectors'
 import { DropPosition } from 'components/DropdownSelectors/common'
 import MoneyInput from 'components/MoneyInput'
-import { useAuth } from 'context/AuthContext'
 import { MouseEvent, useState } from 'react'
 import { HexColorInput, HexColorPicker } from 'react-colorful'
 import { classNames } from 'utils/dom-helpers'
@@ -15,23 +14,25 @@ import OptionList, {
     ListFlyFrom,
     OptionListItem,
 } from 'components/OptionList'
-import { TenantInfo } from 'context/types'
+import { ModalDataAttributes } from '../types'
 
 function GeneralForm({
+    attributes,
+    setAttributes,
     translations,
     handleCloseModal,
     onSubmit,
     onNext,
     createCategory,
 }: {
+    attributes: ModalDataAttributes
+    setAttributes(r: ModalDataAttributes): void
     translations: Record<string, string>
     handleCloseModal: (e: MouseEvent<HTMLButtonElement>) => void
     onSubmit(): void
     onNext(): void
     createCategory(c: Record<string, string>): void
 }) {
-    const { ServiceModal, tenant } = useAuth()
-    const { attributes, setAttributes } = ServiceModal
     const [is_category_opened, toggleCategoryOpen] =
         useState<boolean>(false)
     const api_error =
@@ -52,13 +53,20 @@ function GeneralForm({
         useState<boolean>(false)
     const [category_name, setServiceCategory] = useState<string>('')
 
-    function handleCategoryChange({ value }: OptionListItem) {
-        const category = value as string
+    function handleCategoryChange({
+        value: id,
+        text: name,
+    }: OptionListItem) {
         toggleCategoryOpen(false)
-        setAttributes({
-            ...attributes,
-            category,
-        })
+        if (id) {
+            setAttributes({
+                ...attributes,
+                category: {
+                    id,
+                    name,
+                },
+            })
+        }
     }
 
     function handleNewCategory() {
@@ -559,7 +567,32 @@ function GeneralForm({
                         className="border border-gray-300 rounded-lg py-3 inline-block mr-3 px-10"
                         onClick={handleCloseModal}
                     >
-                        Cancel
+                        <Translation
+                            content_key="cancel_button"
+                            translations={translations}
+                        />
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => {
+                            onSubmit()
+                        }}
+                        className={classNames(
+                            'group relative flex justify-center',
+                            'py-3 px-12 border border-gray-300',
+                            'rounded-md',
+                            'focus:outline-none mr-3',
+                            loading
+                                ? 'bg-primary-light'
+                                : api_error && api_error.message
+                                ? 'border-red-700 focus:ring-2 focus:ring-offset-2 focus:ring-red-300'
+                                : 'bg-white focus:ring-2 focus:ring-offset-2 focus:ring-primary-light'
+                        )}
+                    >
+                        <Translation
+                            content_key="save_button"
+                            translations={translations}
+                        />
                     </button>
                     <button
                         type="button"
@@ -578,7 +611,10 @@ function GeneralForm({
                                 : 'bg-primary hover:bg-primary-dark focus:ring-2 focus:ring-offset-2 focus:ring-primary-light'
                         )}
                     >
-                        Next
+                        <Translation
+                            content_key="next_button"
+                            translations={translations}
+                        />
                     </button>
                 </div>
             </div>

@@ -17,6 +17,11 @@ import ServiceModalStaff from './Staff'
 import { ServiceApiItem } from 'types/service'
 import { ServiceType } from './types'
 import { TenantInfo } from 'context/types'
+import Translation from 'components/Translation'
+import ServiceModalMemberships from './Memberships'
+import { ModalDataAttributes, UserModel } from '../types'
+import ServiceModalOfferClasses, { BlankOffer } from './OfferClasses'
+import { ServiceModalBooking } from './BookingSettings'
 
 const ModalProvider = createModal(
     AuthContext,
@@ -38,10 +43,10 @@ export const ServiceModalCloser = ModalProvider.Closer
 
 function ServiceModal() {
     const { ServiceModal, tenant } = useAuth()
-    const { attributes, setAttributes } = ServiceModal
     const { lang, translations: common_translations } = useAppContext()
     const [translations, setTranslations] = useState(common_translations)
     const [prompt_message, toggleDialog] = useState<string>('')
+    const [attributes, setAttributes] = useState<ModalDataAttributes>({})
 
     const categories =
         (attributes &&
@@ -49,6 +54,10 @@ function ServiceModal() {
                 string,
                 string
             >[])) ||
+        []
+
+    const offerings =
+        (attributes && (attributes.offerings as ModalDataAttributes[])) ||
         []
 
     const { data: page_translation } = useFetch(
@@ -134,13 +143,14 @@ function ServiceModal() {
                 name,
                 tenant: tenant as TenantInfo,
                 maxCapacity: max_participants as unknown as number,
+                public: true,
                 price: price as unknown as number,
                 primaryColorHex: primary_color,
-                type: undefined,
-                staff: staff_assigned as unknown as Record<
-                    string,
-                    string
-                >[],
+                type: 'APPOINTMENT',
+                staff: staff_assigned as unknown as {
+                    id: string
+                    user: UserModel
+                }[],
                 series: false,
             }
 
@@ -244,6 +254,128 @@ function ServiceModal() {
         setSelectedTab(e.selected)
     }
 
+    let step_2 = (
+        <Translation
+            content_key="assign_staff_panel_title"
+            translations={translations}
+        />
+    )
+    let step_3 = (
+        <Translation
+            content_key="memberships_panel_title"
+            translations={translations}
+        />
+    )
+
+    let form_2 = (
+        <ServiceModalStaff
+            onPrevious={() => setSelectedTab(0)}
+            onNext={() => {
+                onSubmit()
+            }}
+            translations={translations}
+            handleCloseModal={handleCloseModal}
+        />
+    )
+
+    let form_3 = <span>WIP</span>
+    let form_4 = <span>WIP</span>
+
+    if (attributes && attributes.service_type == ServiceType.GROUP) {
+        step_2 = (
+            <Translation
+                content_key="memberships_panel_title"
+                translations={translations}
+            />
+        )
+        step_3 = (
+            <Translation
+                content_key="offer_class_panel_title"
+                translations={translations}
+            />
+        )
+        form_2 = (
+            <ServiceModalMemberships
+                onPrevious={() => setSelectedTab(0)}
+                onNext={() => {
+                    setSelectedTab(2)
+                }}
+                attributes={attributes}
+                removeAll={() => {
+                    console.log('remove all')
+                }}
+                removeMembership={(idx: number) => {
+                    console.log('remove membership record', idx)
+                }}
+                translations={translations}
+                handleCloseModal={handleCloseModal}
+            />
+        )
+        form_3 =
+            offerings.length == 0 ? (
+                <BlankOffer
+                    onNext={() => {
+                        setSelectedTab(3)
+                    }}
+                    attributes={attributes}
+                    showOfferListForm={() => {
+                        setAttributes({
+                            ...attributes,
+                            offerings: [
+                                {
+                                    id: 'test',
+                                },
+                            ],
+                        })
+                    }}
+                    translations={translations}
+                />
+            ) : tenant ? (
+                <ServiceModalOfferClasses
+                    onPrevious={() => setSelectedTab(1)}
+                    onNext={() => {
+                        setSelectedTab(3)
+                    }}
+                    attributes={attributes}
+                    tenant_id={tenant && tenant.id}
+                    removeAll={() => {
+                        console.log('remove all')
+                    }}
+                    onAttributesChanged={(
+                        updated_attributes: ModalDataAttributes,
+                        idx: number
+                    ) => {
+                        const offerings =
+                            attributes.offerings as ModalDataAttributes[]
+                        offerings[idx] = updated_attributes
+                        setAttributes({
+                            ...attributes,
+                            offerings,
+                        })
+                    }}
+                    translations={translations}
+                    handleCloseModal={handleCloseModal}
+                />
+            ) : (
+                <span>Tenant not present</span>
+            )
+
+        form_4 = (
+            <ServiceModalBooking
+                attributes={attributes}
+                onChangeAttribute={(
+                    updated_attributes: ModalDataAttributes
+                ) => {
+                    setAttributes({
+                        ...attributes,
+                        ...updated_attributes,
+                    })
+                }}
+                translations={translations}
+            />
+        )
+    }
+
     return (
         <ModalProvider.Visible>
             <ModalWrapper>
@@ -271,33 +403,42 @@ function ServiceModal() {
                         className="z-20 flex-1"
                         animation={false}
                     >
-                        <TabStripTab title="Basic Info">
+                        <TabStripTab
+                            title={
+                                <Translation
+                                    content_key="basic_info_panel_title"
+                                    translations={translations}
+                                />
+                            }
+                        >
                             <div className="p-10">
                                 <GeneralForm
+                                    attributes={attributes}
+                                    setAttributes={setAttributes}
                                     translations={translations}
                                     onNext={() => setSelectedTab(1)}
                                     handleCloseModal={handleCloseModal}
                                     createCategory={createCategory}
-                                    onSubmit={() => {
-                                        console.log(attributes)
-                                    }}
+                                    onSubmit={onSubmit}
                                 />
                             </div>
                         </TabStripTab>
-                        <TabStripTab title="Assign Staff">
-                            <div className="p-10">
-                                <ServiceModalStaff
-                                    onPrevious={() => setSelectedTab(0)}
-                                    onNext={() => {
-                                        onSubmit()
-                                    }}
+                        <TabStripTab title={step_2}>
+                            <div className="p-10">{form_2}</div>
+                        </TabStripTab>
+                        <TabStripTab title={step_3}>
+                            <div className="p-10">{form_3}</div>
+                        </TabStripTab>
+                        <TabStripTab
+                            title={
+                                <Translation
+                                    content_key="booking_panel_title"
                                     translations={translations}
-                                    handleCloseModal={handleCloseModal}
                                 />
-                            </div>
+                            }
+                        >
+                            <div className="p-10">{form_4}</div>
                         </TabStripTab>
-                        <TabStripTab title="Memberships">WIP</TabStripTab>
-                        <TabStripTab title="Orders">WIP</TabStripTab>
                     </TabStrip>
                 </div>
             </ModalWrapper>

@@ -1,5 +1,5 @@
-import React, { Fragment, useState, useEffect, ReactNode } from 'react'
-import { Listbox, Transition } from '@headlessui/react'
+import React, { useState, useEffect, ReactNode } from 'react'
+import { Listbox } from '@headlessui/react'
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid'
 import { classNames } from 'utils/dom-helpers'
 import { withClass } from 'components/types'
@@ -22,6 +22,7 @@ export interface OptionListProps {
     error?: string
     children?: ReactNode
     static?: boolean
+    listboxCss?: string
 }
 
 function OptionList(props: OptionListProps & withClass) {
@@ -52,19 +53,24 @@ function OptionList(props: OptionListProps & withClass) {
         <div className="flex flex-col relative">
             <Listbox value={selected} onChange={handleChange}>
                 {({ open }) => (
-                    <div className="absolute h-72 w-full">
+                    <div
+                        className={classNames(
+                            'absolute w-full',
+                            props.listboxCss || 'h-72'
+                        )}
+                    >
                         <Listbox.Button
                             className={classNames(
                                 props.error
                                     ? 'bg-red-100 border-red-300'
                                     : 'bg-white border-gray-300',
-                                'relative w-full border rounded-md shadow-sm pl-3 pr-10 py-3 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-primary-light focus:border-primary-light sm:text-base'
+                                'relative w-full border rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-primary-light focus:border-primary-light sm:text-base'
                             )}
                             role="button"
                             onClickCapture={props.onActivate}
                         >
                             <span className="flex items-center">
-                                <span className="ml-3 block truncate h-6">
+                                <span className="block truncate h-6">
                                     {selected?.text}
                                 </span>
                             </span>
@@ -77,13 +83,19 @@ function OptionList(props: OptionListProps & withClass) {
                         </Listbox.Button>
 
                         {(props.static || open) && (
-                            <div className="relative ring-1 bg-white shadow-2xl h-56 rounded-md ring-black ring-opacity-5 focus:outline-none overflow-hidden">
+                            <div
+                                className={classNames(
+                                    'relative ring-1 bg-white shadow-2xl rounded-md ring-black ring-opacity-5 focus:outline-none overflow-hidden',
+                                    props.listboxCss || 'h-56'
+                                )}
+                            >
                                 <Listbox.Options
                                     className={classNames(
                                         props.position ||
                                             ListFlyFrom.TOP_LEFT,
                                         props.className || '',
-                                        'relative mt-1 w-full py-1 text-base sm:text-sm h-40'
+                                        'relative mt-1 w-full py-1 sm:text-sm',
+                                        props.listboxCss || 'h-40'
                                     )}
                                     static={props.static}
                                 >
@@ -108,7 +120,7 @@ function OptionList(props: OptionListProps & withClass) {
                                                                 selected
                                                                     ? 'font-semibold'
                                                                     : 'font-normal',
-                                                                'ml-3 block truncate text-base'
+                                                                'block truncate'
                                                             )}
                                                         >
                                                             {item.text}

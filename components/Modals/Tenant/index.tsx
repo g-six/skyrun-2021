@@ -116,8 +116,12 @@ function TenantModal() {
     return (
         <ModalProvider.Visible>
             <ModalWrapper>
-                <div className={
-                    classNames('bg-white shadow-3xl overflow-hidden sm:rounded-md mx-auto my-4 relative border-2 border-gray-100 flex flex-col py-8', success ? 'w-96' : '')}>
+                <div
+                    className={classNames(
+                        'bg-white shadow-3xl overflow-hidden sm:rounded-md mx-auto my-4 relative border-2 border-gray-100 flex flex-col py-8',
+                        success ? 'w-96' : ''
+                    )}
+                >
                     <div className="flex justify-between px-10 text-gray-500 z-10 h-10 w-full">
                         <span className="inline-block self-center text-lg font-light text-gray-600">
                             {success

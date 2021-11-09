@@ -172,8 +172,14 @@ function DashboardServices() {
                 ...translations_to_add,
             })
         }
-    }, [data, 
-        common_translations, page_translation, lang, setServices, all_selected])
+    }, [
+        data,
+        common_translations,
+        page_translation,
+        lang,
+        setServices,
+        all_selected,
+    ])
 
     return (
         <Dashboard>
@@ -238,7 +244,10 @@ function DashboardServices() {
                     </div>
                 </div>
 
-                <ServiceList services={data.content as ServiceApiItem[]} translations={translations} />
+                <ServiceList
+                    services={data.content as ServiceApiItem[]}
+                    translations={translations}
+                />
             </div>
 
             <ServiceModal />

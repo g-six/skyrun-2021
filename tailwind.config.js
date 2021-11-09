@@ -24,9 +24,14 @@ module.exports = {
     extend: {
       backgroundSize: theme => ({
         'hero-pattern': 'contain',
+        '50%': '50%',
       }),
       colors: {
         'sec-blue-gray': '#496175',
+        sky: {
+          '200': '#86C5E0',
+          '600': '#10ACEF',
+        },
         primary: {
           DEFAULT: '#23476B',
           lighter: '#CFE2F5',
@@ -54,10 +59,15 @@ module.exports = {
         'tall': '32rem',
         'grande': '36rem',
         'venti': '40rem',
-        '41':'41px',
+        '41':'2.563rem',
       },
       width: {
-        '146':'146px',
+        'alley': '26rem',
+        'street': '28rem',
+        'road': '32rem',
+        'hiway': '36rem',
+        'freeway': '40rem',
+        '146':'9.125rem',
       }
     },
   },

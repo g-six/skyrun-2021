@@ -1,5 +1,3 @@
-import { useAuth } from 'context/AuthContext'
-
 function EmptyAppointments() {
     return (
         <div className="text-center py-10">

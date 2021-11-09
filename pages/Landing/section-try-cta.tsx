@@ -1,11 +1,13 @@
+import Translation from 'components/Translation'
 import { useAppContext } from 'context/AppContext'
 import { useAuth } from 'context/AuthContext'
 import { useEffect } from 'react'
 import { classNames } from 'utils/dom-helpers'
 import styles from '../../styles/Landing/section-try-cta.module.scss'
-import { SectionProps } from '../../types/landing'
 
-export default function LandingSectionTryCTA(props: SectionProps) {
+export default function LandingSectionTryCTA(
+    props: Record<string, string>
+) {
     const { tiers } = useAppContext()
     const { SignupModal } = useAuth()
 
@@ -30,13 +32,22 @@ export default function LandingSectionTryCTA(props: SectionProps) {
                 <div className="grid grid-cols-2 h-48 place-items-center">
                     <div>
                         <h3 className="text-white drop-shadow text-4xl circular">
-                            {props.section_6_title_1}
+                            <Translation
+                                content_key="section_6_title_1"
+                                translations={props}
+                            />
                             <br />
-                            {props.section_6_title_2}
+                            <Translation
+                                content_key="section_6_title_2"
+                                translations={props}
+                            />
                         </h3>
-                        <small className="text-lg text-white circular-thin">
-                            {props.section_6_subtitle}
-                        </small>
+                        <Translation
+                            className="text-lg text-white circular-thin"
+                            content_key="section_6_subtitle"
+                            render_as="small"
+                            translations={props}
+                        />
                         <div className="flex mt-2 items-center">
                             <button
                                 type="button"
@@ -50,12 +61,19 @@ export default function LandingSectionTryCTA(props: SectionProps) {
                                     SignupModal.open()
                                 }}
                             >
-                                <span>{props.section_6_cta}</span>
+                                <Translation
+                                    content_key="section_6_cta"
+                                    render_as="span"
+                                    translations={props}
+                                />
                             </button>
                             <div className="pl-6 align-middle">
-                                <span className="text-sm text-white leading-none">
-                                    {props.section_6_cta_note}
-                                </span>
+                                <Translation
+                                    className="text-sm text-white leading-none"
+                                    content_key="section_6_cta_note"
+                                    render_as="span"
+                                    translations={props}
+                                />
                             </div>
                         </div>
                     </div>

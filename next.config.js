@@ -5,6 +5,7 @@ const translated_pages = {}
 const pages = [
   '',
   'about-us',
+  'coming-soon',
   'dashboard',
   'dashboard/calendar',
   'dashboard/clients',

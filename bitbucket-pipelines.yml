@@ -140,21 +140,15 @@ pipelines:
               # See more security tools at https://bitbucket.org/product/features/pipelines/integrations?&category=security
               - pipe: atlassian/git-secrets-scan:0.4.3
       - step:
-          name: Build
+          name: Build and Deploy
           deployment: Production
+          trigger: manual
           caches:
             - node
           script:
             - echo 'Landing Page set to '$LANDING_PAGE
             - npm install
             - npm run build
-          artifacts:
-              - out/**
-      - step:
-          name: Deploy to Prod
-          deployment: Production
-          trigger: manual
-          script:
             - pipe: atlassian/aws-s3-deploy:0.4.4
               variables:
                 AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
@@ -169,6 +163,8 @@ pipelines:
                 AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
                 AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
                 DISTRIBUTION_ID: $DISTRIBUTION_ID
+          artifacts:
+              - out/**
 
 
 

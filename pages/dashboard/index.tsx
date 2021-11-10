@@ -31,7 +31,7 @@ function Dashboard({
         LoginModal: LoginModalContext,
         is_drawer_expanded,
     } = useAuth()
-    const { onLanguageChange } = useAppContext()
+    const { onLanguageChange, translations } = useAppContext()
     const [first_part] = betterPathname(location.pathname)
     let locale = '/en'
 

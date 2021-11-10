@@ -91,7 +91,8 @@ export function SkyAppDataProvider({ children }: Props) {
         if (data.length && tiers.length == 0) {
             setTiers(data)
         }
-        if (lang && !is_loading && Object.keys(translations).length == 0) {
+        if (lang && common_translations.data && common_translations.data.attributes[lang] && common_translations.data.attributes[lang].length > 0 && Object.keys(translations).length == 0) {
+            console.log(translations, common_translations.data.attributes[lang])
             const translations_to_add: Record<string, string> = {}
             common_translations.data.attributes[lang].forEach(
                 ({ key, value }: any) => {
@@ -101,6 +102,7 @@ export function SkyAppDataProvider({ children }: Props) {
             setTranslations({
                 ...translations,
                 ...translations_to_add,
+                lang,
             })
         }
     }, [data, tiers, GOOGLE_API_KEY, translations, lang, is_loading, common_translations])

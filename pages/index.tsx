@@ -24,7 +24,7 @@ function Home() {
         pricing: useRef(null),
     }
 
-    const { data: translation } = useFetch(
+    const { data: translation, is_loading } = useFetch(
         `/v1/contents?url=${encodeURI(
             `https://cms.aot.plus/jsonapi/node/page_translation/${LANDING_TRANSLATION_ID}`
         )}`,
@@ -75,6 +75,9 @@ function Home() {
         }
     }, [translation, lang, common_translations])
 
+    if (is_loading) return <div className="h-venti w-full flex items-center bg-white animate-pulse">
+        <div className="h-4 bg-primary-lighter rounded block" />
+    </div>
     executeScroll()
 
     return (

@@ -64,7 +64,10 @@ export type AppContextType = {
 }
 
 declare global {
-    interface Window { Chargebee: any }
+    interface Window { 
+        Chargebee: any
+        dataLayer: any
+     }
 }
 
 window.Chargebee = window.Chargebee || {}

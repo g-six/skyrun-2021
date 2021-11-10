@@ -92,11 +92,6 @@ function Home() {
                     rel="icon"
                     href="https://static.aot.plus/images/favicon.ico"
                 />
-                <link
-                    href="https://static.aot.plus/feather.css"
-                    rel="stylesheet"
-                    type="text/css"
-                />
             </Head>
             <Navbar />
 

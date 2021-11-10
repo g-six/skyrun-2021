@@ -328,6 +328,14 @@ export default function LandingPricingSection(
                             render_as="div"
                             translations={props}
                         />
+                        <div className="block text-center text-gray-400 circular-light">
+                            {currency.symbol}
+                            {getTotalPrice(getPriceFromContent('pricing_tier_1_price_usd', props), discountRate, currency.conversion_rate) * 12}{' '}
+                            <Translation
+                                content_key="pricing_subtitle_billed_annually"
+                                translations={props}
+                            />
+                        </div>
                         <Translation
                             className="block text-center mt-8"
                             content_key="pricing_tier_1_subtitle"
@@ -429,7 +437,7 @@ export default function LandingPricingSection(
                                 {props.pricing_tier_2_name}
                             </span>
                         </figure>
-                        <div className="text-6xl block text-center text-primary circular-light mt-5">
+                        <div className="text-6xl block text-center text-primary-dark circular-light mt-5">
                             {currency.symbol}
                             {getTotalPrice(getPriceFromContent('pricing_tier_2_price_usd', props), discountRate, currency.conversion_rate)}
                         </div>
@@ -439,6 +447,14 @@ export default function LandingPricingSection(
                             render_as="div"
                             translations={props}
                         />
+                        <div className="block text-center text-gray-400 circular-light">
+                            {currency.symbol}
+                            {getTotalPrice(getPriceFromContent('pricing_tier_1_price_usd', props), discountRate, currency.conversion_rate) * 12}{' '}
+                            <Translation
+                                content_key="pricing_subtitle_billed_annually"
+                                translations={props}
+                            />
+                        </div>
                         <Translation
                             className="block text-center mt-8"
                             content_key="pricing_tier_2_subtitle"

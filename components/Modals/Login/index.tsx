@@ -1,3 +1,4 @@
+import getConfig from 'next/config'
 import { LockClosedIcon } from '@heroicons/react/solid'
 import { MaskedTextBox } from '@progress/kendo-react-inputs'
 import { useAppContext } from 'context/AppContext'
@@ -20,6 +21,7 @@ type FormValues = {
     code?: string
 }
 
+const { LOGIN_TRANSLATION_ID } = getConfig().publicRuntimeConfig
 const ModalProvider = createModal(AuthContext, 'LoginModal', () => (
     <>Login</>
 ))
@@ -63,7 +65,7 @@ function LoginModal() {
 
     const { data: translation } = useFetch(
         `/v1/contents?url=${encodeURI(
-            'https://cms.aot.plus/jsonapi/node/page_translation/1d1a8c44-463b-474e-bc06-fc22ce77ab27'
+            `https://cms.aot.plus/jsonapi/node/page_translation/${LOGIN_TRANSLATION_ID}`
         )}`,
         FetchMethods.GET,
         true,

@@ -1,3 +1,4 @@
+import getConfig from 'next/config'
 import LoginModal from 'components/Modals/Login'
 import SignupModal from 'components/Modals/Signup'
 import { useAppContext } from 'context/AppContext'
@@ -13,6 +14,8 @@ import LandingPricingSection from './Landing/section-pricing'
 import LandingSectionTestimonials from './Landing/section-testimonials'
 import LandingSectionTryCTA from './Landing/section-try-cta'
 
+const { LANDING_TRANSLATION_ID } = getConfig().publicRuntimeConfig
+
 function Home() {
     const { lang, translations: common_translations } = useAppContext()
     const refs = {
@@ -23,7 +26,7 @@ function Home() {
 
     const { data: translation } = useFetch(
         `/v1/contents?url=${encodeURI(
-            'https://cms.aot.plus/jsonapi/node/page_translation/67489b82-c576-41d4-a1b4-19f3c77e7ed3'
+            `https://cms.aot.plus/jsonapi/node/page_translation/${LANDING_TRANSLATION_ID}`
         )}`,
         FetchMethods.GET,
         true,

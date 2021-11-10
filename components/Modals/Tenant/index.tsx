@@ -30,55 +30,37 @@ const ModalProvider = createModal(
 export const TenantModalOpener = ModalProvider.Opener
 export const TenantModalCloser = ModalProvider.Closer
 
+import getConfig from 'next/config'
+const { TENANT_MODAL_TRANSLATION_ID } = getConfig().publicRuntimeConfig
+
 function TenantModal() {
     const ctx = useAuth()
-    const { lang } = useAppContext()
+    const { lang, translations: common_translations } = useAppContext()
     const [loading, toggleLoading] = useState(false)
     const [success, setSuccess] = useState(false)
 
-    const ui_text = {
-        title_bar: 'New Tenant',
-        first_name_label: 'First name',
-        last_name_label: 'Last name',
-        email_address_label: 'Email address',
-        business_name_label: 'Business name',
-        signup_button: 'Sign Up',
-    }
+    const [translations, setTranslations] = useState<
+        Record<string, string>
+    >(common_translations || {})
 
-    const [translations, setTranslations] = useState(ui_text)
-
-    const api_fetch = useFetch('/v1/tenants', FetchMethods.POST, false)
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-        setError,
-        reset,
-    } = useForm<FormValues>({
-        mode: 'onChange',
-    })
-
-    const { data: translation } = useFetch(
+    const { data: component_translation } = useFetch(
         `/v1/contents?url=${encodeURI(
-            'https://cms.aot.plus/jsonapi/node/page_translation/c043c316-895c-4d7d-862c-40da5cbb91da'
+            `https://cms.aot.plus/jsonapi/node/page_translation/${TENANT_MODAL_TRANSLATION_ID}`
         )}`,
         FetchMethods.GET,
         true,
         true
     )
 
-    useEffect(() => {
-        if (lang && translation.data?.attributes[lang]) {
-            translation.data.attributes[lang].forEach(
-                ({ key, value }: any) => {
-                    setTranslations((translations) => ({
-                        ...translations,
-                        [key]: value,
-                    }))
-                }
-            )
-        }
-    }, [translation, lang])
+    const api_fetch = useFetch('/v1/tenants', FetchMethods.POST, false)
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        reset,
+    } = useForm<FormValues>({
+        mode: 'onChange',
+    })
 
     const { tier } = ctx.TenantModal.attributes as Record<
         string,
@@ -113,6 +95,29 @@ function TenantModal() {
         toggleLoading(false)
     }
 
+    useEffect(() => {
+        if (
+            lang &&
+            component_translation.data &&
+            component_translation.data.attributes[lang] &&
+            component_translation.data.attributes[lang].length > 0 &&
+            Object.keys(translations).length == 0
+        ) {
+            const translations_to_add: Record<string, string> = {}
+            component_translation.attributes[lang].forEach(
+                ({ key, value }: any) => {
+                    translations_to_add[key] = value
+                }
+            )
+
+            setTranslations({
+                ...translations,
+                ...translations_to_add,
+                TENANT_MODAL_TRANSLATION_ID,
+            })
+        }
+    }, [component_translation, lang])
+
     return (
         <ModalProvider.Visible>
             <ModalWrapper>
@@ -124,9 +129,7 @@ function TenantModal() {
                 >
                     <div className="flex justify-between px-10 text-gray-500 z-10 h-10 w-full">
                         <span className="inline-block self-center text-lg font-light text-gray-600">
-                            {success
-                                ? 'Congratulations!'
-                                : translations.title_bar}
+                            {translations.title_bar}
                         </span>
                         <TenantModalCloser className="cursor-pointer self-center" />
                     </div>

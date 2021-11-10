@@ -1,9 +1,10 @@
+import getConfig from 'next/config'
+import { useEffect, useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import { SignUpCommandOutput } from '@aws-sdk/client-cognito-identity-provider'
 import { CursorClickIcon } from '@heroicons/react/solid'
 import { Tier, useAppContext } from 'context/AppContext'
 import { AuthContext, useAuth } from 'context/AuthContext'
-import { useEffect, useState } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
 import { CognitoErrorTypes } from 'services/CognitoErrorTypes'
 import { classNames } from 'utils/dom-helpers'
 import { useFetch } from 'utils/fetch-helper'
@@ -19,6 +20,8 @@ type FormValues = {
     last_name: string
     name: string
 }
+
+const { SIGNUP_MODAL_TRANSLATION_ID } = getConfig().publicRuntimeConfig
 
 const ModalProvider = createModal(
     AuthContext,
@@ -64,7 +67,7 @@ function SignupModal() {
 
     const { data: translation } = useFetch(
         `/v1/contents?url=${encodeURI(
-            'https://cms.aot.plus/jsonapi/node/page_translation/c043c316-895c-4d7d-862c-40da5cbb91da'
+            `https://cms.aot.plus/jsonapi/node/page_translation/${SIGNUP_MODAL_TRANSLATION_ID}`
         )}`,
         FetchMethods.GET,
         true,

@@ -23,7 +23,7 @@ function Home() {
 
     const { data: translation } = useFetch(
         `/v1/contents?url=${encodeURI(
-            'https://cms.aot.plus/jsonapi/node/page_translation/be42cdfb-b39b-4b19-9bee-9b983024f917'
+            'https://cms.aot.plus/jsonapi/node/page_translation/67489b82-c576-41d4-a1b4-19f3c77e7ed3'
         )}`,
         FetchMethods.GET,
         true,

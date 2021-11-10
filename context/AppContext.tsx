@@ -40,7 +40,7 @@ export function useAppContext() {
 export function SkyAppDataProvider({ children }: Props) {
     const [tiers, setTiers] = useState([] as Tier[])
     const [locale] = betterPathname(location.pathname)
-    const { GOOGLE_API_KEY } = getConfig().publicRuntimeConfig
+    const { GOOGLE_API_KEY, COMMON_TRANSLATION_ID } = getConfig().publicRuntimeConfig
 
     let initial_locale = languages[0].code
     if (isValidLocale(locale)) {
@@ -64,7 +64,7 @@ export function SkyAppDataProvider({ children }: Props) {
 
     const { data: common_translations, is_loading } = useFetch(
         `/v1/contents?url=${encodeURI(
-            'https://cms.aot.plus/jsonapi/node/page_translation/5b2201da-0798-4b53-8a70-8ba6a7261ac6'
+            `https://cms.aot.plus/jsonapi/node/page_translation/${COMMON_TRANSLATION_ID}`
         )}`,
         FetchMethods.GET,
         true,

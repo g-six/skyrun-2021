@@ -14,7 +14,7 @@ import { UserModel } from 'components/Modals/types'
 import { useAppContext } from 'context/AppContext'
 
 import getConfig from 'next/config'
-const { SERVICES_TRANSLATION_ID } = getConfig().publicRuntimeConfig
+const { SERVICE_MODAL_TRANSLATION_ID } = getConfig().publicRuntimeConfig
 
 function DashboardServices() {
     const { tenant, ServiceModal: ModalContext } = useAuth()

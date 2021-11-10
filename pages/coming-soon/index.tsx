@@ -107,15 +107,17 @@ function ComingSoon() {
                                         'enter_email'
                                     }
                                 />
-                                <button
-                                    type="button"
-                                    className="bg-primary text-white rounded-full w-56 px-8"
+                                <a
+                                    className="bg-primary text-white rounded-full w-56 flex items-center justify-center font-display text-lg"
+                                    href="https://aotplus.activehosted.com/f/5"
+                                    target="_blank"
+                                    rel="noreferrer"
                                 >
                                     <Translation
                                         content_key="be_early_adopter"
                                         translations={translations}
                                     />
-                                </button>
+                                </a>
                             </div>
 
                             <div className="mt-6 xl:mt-16 text-primary font-display text-base font-bold">

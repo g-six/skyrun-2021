@@ -8,12 +8,15 @@ import { useEffect, useState } from 'react'
 import { useFetch } from 'utils/fetch-helper'
 import { FetchMethods } from 'utils/types'
 
+import getConfig from 'next/config'
+const { COMING_SOON_TRANSLATION_ID } = getConfig().publicRuntimeConfig
+
 function ComingSoon() {
     const { lang, translations: common_translations } = useAppContext()
 
     const { data: translation, is_loading } = useFetch(
         `/v1/contents?url=${encodeURI(
-            'https://cms.aot.plus/jsonapi/node/page_translation/84a584ff-22a4-4c9f-8ea7-1b88dba4e1e6'
+            `https://cms.aot.plus/jsonapi/node/page_translation/${COMING_SOON_TRANSLATION_ID}`
         )}`,
         FetchMethods.GET,
         true,
@@ -37,6 +40,7 @@ function ComingSoon() {
                 ...translations,
                 ...translations_to_add,
                 ...common_translations,
+                COMING_SOON_TRANSLATION_ID,
             })
         }
     }, [translation, lang, common_translations])
@@ -55,7 +59,11 @@ function ComingSoon() {
                 <link rel="icon" href="/favicon.ico" />
                 <script src="//static.aot.plus/js/ac.js" defer />
                 <script src="//static.aot.plus/js/fb.js" defer />
-                <script src="https://aotplus.activehosted.com/f/embed.php?id=1" type="text/javascript" defer />
+                <script
+                    src="https://aotplus.activehosted.com/f/embed.php?id=1"
+                    type="text/javascript"
+                    defer
+                />
                 <link
                     href="https://static.aot.plus/feather.css"
                     rel="stylesheet"

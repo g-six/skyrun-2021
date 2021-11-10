@@ -116,7 +116,7 @@ function Dashboard({
                                 'h-full py-0 pl-2 pr-8 bg-primary',
                                 'focus:ring-primary-dark focus:border-primary-dark ',
                                 'border-transparent rounded',
-                                'text-gray-300 w-146 h-41'
+                                'text-gray-300 universal-create-button'
                             )}
                             defaultValue="default"
                             onChange={handleUniversalButtonChange}

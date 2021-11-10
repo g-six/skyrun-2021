@@ -247,7 +247,7 @@ function Sidebar({ children }: Props) {
     }
 
     const nav_height = '80px'
-    console.log(location.pathname)
+
     return (
         <Drawer
             className="relative z-0"

@@ -42,7 +42,7 @@ function DashboardServices() {
 
     const { data: page_translation } = useFetch(
         `/v1/contents?url=${encodeURI(
-            `https://cms.aot.plus/jsonapi/node/page_translation/${SERVICES_TRANSLATION_ID}`
+            `https://cms.aot.plus/jsonapi/node/page_translation/${SERVICE_MODAL_TRANSLATION_ID}`
         )}`,
         FetchMethods.GET,
         true,

@@ -8,12 +8,15 @@ import { useEffect, useState } from 'react'
 import { useFetch } from 'utils/fetch-helper'
 import { FetchMethods } from 'utils/types'
 
+import getConfig from 'next/config'
+const { COMING_SOON_TRANSLATION_ID } = getConfig().publicRuntimeConfig
+
 function ComingSoon() {
     const { lang, translations: common_translations } = useAppContext()
 
     const { data: translation, is_loading } = useFetch(
         `/v1/contents?url=${encodeURI(
-            'https://cms.aot.plus/jsonapi/node/page_translation/84a584ff-22a4-4c9f-8ea7-1b88dba4e1e6'
+            `https://cms.aot.plus/jsonapi/node/page_translation/${COMING_SOON_TRANSLATION_ID}`
         )}`,
         FetchMethods.GET,
         true,
@@ -37,6 +40,7 @@ function ComingSoon() {
                 ...translations,
                 ...translations_to_add,
                 ...common_translations,
+                COMING_SOON_TRANSLATION_ID,
             })
         }
     }, [translation, lang, common_translations])
@@ -55,6 +59,11 @@ function ComingSoon() {
                 <link rel="icon" href="/favicon.ico" />
                 <script src="//static.aot.plus/js/ac.js" defer />
                 <script src="//static.aot.plus/js/fb.js" defer />
+                <script
+                    src="https://aotplus.activehosted.com/f/embed.php?id=1"
+                    type="text/javascript"
+                    defer
+                />
                 <link
                     href="https://static.aot.plus/feather.css"
                     rel="stylesheet"
@@ -106,15 +115,17 @@ function ComingSoon() {
                                         'enter_email'
                                     }
                                 />
-                                <button
-                                    type="button"
-                                    className="bg-primary text-white rounded-full w-56 px-8"
+                                <a
+                                    className="bg-primary text-white rounded-full w-56 flex items-center justify-center font-display text-lg"
+                                    href="https://aotplus.activehosted.com/f/5"
+                                    target="_blank"
+                                    rel="noreferrer"
                                 >
                                     <Translation
                                         content_key="be_early_adopter"
                                         translations={translations}
                                     />
-                                </button>
+                                </a>
                             </div>
 
                             <div className="mt-6 xl:mt-16 text-primary font-display text-base font-bold">
@@ -127,14 +138,9 @@ function ComingSoon() {
                                 <div>
                                     <div className="flex gap-3 mt-3">
                                         <a
-                                            href="https://twitter.com/aotplus"
-                                            className="w-8 h-8 flex items-center justify-center text-center bg-primary-lighter rounded-full"
-                                        >
-                                            <i className="k-icon k-i-twitter" />
-                                        </a>
-
-                                        <a
                                             href="https://www.facebook.com/aotplus.software"
+                                            target="_blank"
+                                            rel="noreferrer"
                                             className="w-8 h-8 flex items-center justify-center text-center bg-primary-lighter rounded-full"
                                         >
                                             <i className="k-icon k-i-facebook " />
@@ -142,6 +148,8 @@ function ComingSoon() {
 
                                         <a
                                             href="https://www.instagram.com/aotplus.software/"
+                                            target="_blank"
+                                            rel="noreferrer"
                                             className="flex items-center justify-center w-8 h-8 text-center inline-block bg-primary-lighter rounded-full"
                                         >
                                             <i className="feather-instagram font-bold" />

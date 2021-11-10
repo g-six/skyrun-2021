@@ -18,6 +18,9 @@ import { betterPathname } from 'utils/string-helper'
 import { FetchMethods } from 'utils/types'
 import TenantSelector from './TenantSelector'
 
+import getConfig from 'next/config'
+const { TENANT_SIDEBAR } = getConfig().publicRuntimeConfig
+
 type SidebarItem = {
     translation_key?: string
     text?: string
@@ -38,11 +41,11 @@ function Sidebar({ children }: Props) {
 
     const [translations, setTranslations] = useState<
         Record<string, string>
-    >({})
+    >(common_translations || {})
 
-    const { data: translation } = useFetch(
+    const { data: component_translation, is_loading } = useFetch(
         `/v1/contents?url=${encodeURI(
-            'https://cms.aot.plus/jsonapi/node/page_translation/be42cdfb-b39b-4b19-9bee-9b983024f917'
+            `https://cms.aot.plus/jsonapi/node/page_translation/${TENANT_SIDEBAR}`
         )}`,
         FetchMethods.GET,
         true,
@@ -50,9 +53,15 @@ function Sidebar({ children }: Props) {
     )
 
     useEffect(() => {
-        if (lang && translation.data?.attributes[lang]) {
+        if (
+            lang &&
+            component_translation.data &&
+            component_translation.data.attributes[lang] &&
+            component_translation.data.attributes[lang].length > 0 &&
+            Object.keys(translations).length == 0
+        ) {
             const translations_to_add: Record<string, string> = {}
-            translation.data.attributes[lang].forEach(
+            component_translation.attributes[lang].forEach(
                 ({ key, value }: any) => {
                     translations_to_add[key] = value
                 }
@@ -61,10 +70,10 @@ function Sidebar({ children }: Props) {
             setTranslations({
                 ...translations,
                 ...translations_to_add,
-                ...common_translations,
+                TENANT_SIDEBAR,
             })
         }
-    }, [translation, lang, common_translations])
+    }, [component_translation, lang])
 
     const items: SidebarItem[] = [
         {},
@@ -180,13 +189,6 @@ function Sidebar({ children }: Props) {
         const [locale] = betterPathname(location.pathname)
         const { tenant, tenants } = useAuth()
 
-        function getHomePath() {
-            if (Object.keys(Language).indexOf(locale.toUpperCase()) > 0) {
-                return ['', locale, 'dashboard/'].join('/')
-            }
-            return '/dashboard/'
-        }
-
         if (!props.icon && !props.route && !props.separator) {
             return (
                 <div
@@ -245,6 +247,7 @@ function Sidebar({ children }: Props) {
     }
 
     const nav_height = '80px'
+
     return (
         <Drawer
             className="relative z-0"
@@ -268,7 +271,7 @@ function Sidebar({ children }: Props) {
                           if (item.route == '/') {
                               return {
                                   ...item,
-                                  selected: item.text === selected,
+                                  selected: item.route === location.pathname,
                               }
                           }
                           if (
@@ -278,16 +281,18 @@ function Sidebar({ children }: Props) {
                           ) {
                               return {
                                   ...item,
-                                  selected: item.text === selected,
                                   onClickCapture: () => {
                                       Cookies.set('drawer', 'expanded')
                                       ctx.toggleDrawerSize(true)
                                   },
                               }
                           }
+                          const [,,page] = location.pathname.split('/')
+                          const selected = !!(item.route && `/dashboard/${page}` == item.route)
+
                           return {
                               ...item,
-                              selected: item.text === selected,
+                              selected,
                           }
                       })
                     : []

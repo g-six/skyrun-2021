@@ -24,7 +24,7 @@ export function UniversalCreateButton({
                 }
             >
                 <option value="default" disabled selected>
-                    + New
+                    +&nbsp;&nbsp; New
                 </option>
                 <option value="Client">Client</option>
                 <option value="Staff">Staff</option>

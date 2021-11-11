@@ -10,7 +10,7 @@ import { useAppContext } from 'context/AppContext'
 import {
     Authenticated,
     NotAuthenticated,
-    useAuth,
+    useAuth
 } from 'context/AuthContext'
 import Cookies from 'js-cookie'
 import dynamic from 'next/dynamic'
@@ -53,7 +53,7 @@ function Dashboard({
     return (
         <>
             <Head>
-                <title>{translations.dashboard}</title>
+                <title>{translations.dashboard || 'Dashboard'}</title>
                 <meta property="og:title" content="Dashboard" key="title" />
                 <link
                     href="https://static.aot.plus/feather.css"

@@ -96,7 +96,7 @@ export default function Footer(props: Record<string, string>) {
                             content_key="footer_copyright_2"
                             render_as="strong"
                             translations={props}
-                        /> {''}
+                        />{' '}
                         <Translation
                             content_key="footer_copyright_3"
                             translations={props}

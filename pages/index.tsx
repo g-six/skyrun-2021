@@ -1,7 +1,7 @@
-import getConfig from 'next/config'
 import LoginModal from 'components/Modals/Login'
 import SignupModal from 'components/Modals/Signup'
 import { useAppContext } from 'context/AppContext'
+import getConfig from 'next/config'
 import Head from 'next/head'
 import { useEffect, useRef, useState } from 'react'
 import { useFetch } from 'utils/fetch-helper'
@@ -86,14 +86,8 @@ function Home() {
     return (
         <div>
             <Head>
-                <title>
-                    Nerubia | Your Software as a Solution development
-                    partner
-                </title>
-                <meta
-                    name="description"
-                    content="Skyrun - A Nerubia base code"
-                />
+                <title>{translations.home}</title>
+                <meta property="og:title" content="Home" key="title" />
                 <link
                     rel="icon"
                     href="https://static.aot.plus/images/favicon.ico"

@@ -3,12 +3,12 @@ import LoginModal from 'components/Modals/Login'
 import Navbar from 'components/Navbar'
 import Translation from 'components/Translation'
 import { useAppContext } from 'context/AppContext'
+import getConfig from 'next/config'
 import Head from 'next/head'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { useFetch } from 'utils/fetch-helper'
 import { FetchMethods } from 'utils/types'
 
-import getConfig from 'next/config'
 const { COMING_SOON_TRANSLATION_ID } = getConfig().publicRuntimeConfig
 
 function ComingSoon() {
@@ -48,13 +48,11 @@ function ComingSoon() {
     return (
         <div>
             <Head>
-                <title>
-                    Nerubia | Your Software as a Solution development
-                    partner
-                </title>
+                <title>{translations.header_title}</title>
                 <meta
-                    name="description"
-                    content="Skyrun - A Nerubia base code"
+                    property="og:title"
+                    content="Coming Soon"
+                    key="title"
                 />
 
                 <link

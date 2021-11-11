@@ -57,14 +57,8 @@ function AboutUs() {
     return (
         <div>
             <Head>
-                <title>
-                    Nerubia | Your Software as a Solution development
-                    partner
-                </title>
-                <meta
-                    name="description"
-                    content="Skyrun - A Nerubia base code"
-                />
+                <title>{translations.banner_title}</title>
+                <meta property="og:title" content="About Us" key="title" />
 
                 <link
                     rel="icon"

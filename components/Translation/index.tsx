@@ -12,6 +12,7 @@ export type TranslationProps = {
         | 'h5'
         | 'small'
         | 'li'
+        | 'strong'
     content_key: string
     translations: Record<string, string>
 }
@@ -50,6 +51,8 @@ export function Translation(p: TranslationProps) {
             return <small className={p.className || ''}>{text}</small>
         case 'li':
             return <li className={p.className || ''}>{text}</li>
+        case 'strong':
+            return <strong className={p.className || ''}>{text}</strong>
         default:
             return <>{text}</>
     }

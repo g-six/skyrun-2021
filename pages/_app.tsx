@@ -5,6 +5,7 @@ import '../styles/globals.scss'
 import SkyContext, { SkyAppDataProvider } from '../context/AppContext'
 import { classNames } from 'utils/dom-helpers'
 import { SkyAuthProvider } from 'context/AuthContext'
+import { useRouter } from 'next/router'
 
 const GridSpinner = dynamic(() => import('components/Spinners/grid'), {
     ssr: false,
@@ -25,7 +26,8 @@ function MyApp({ Component, pageProps }: AppProps) {
     const [context, setContext] = useState({
         locale_id: '',
     })
-    const [blur, setBlur] = useState(true)
+    const [blur, setBlur] = useState(true) 
+    const router = useRouter()
 
     const onLanguageChange = useCallback(
         (event) => {
@@ -54,6 +56,19 @@ function MyApp({ Component, pageProps }: AppProps) {
 
         setFetching(false)
     }, [is_fetching, context])
+
+    useEffect(() => {
+        import('react-facebook-pixel')
+          .then((x) => x.default)
+          .then((ReactPixel) => {
+            ReactPixel.init(`${process.env.FACEBOOK_PIXEL_ID}`) // facebookPixelId
+            ReactPixel.pageView()
+    
+            router.events.on('routeChangeComplete', () => {
+              ReactPixel.pageView()
+            })
+          })
+      }, [router.events])
 
     return (
         <SafeHydrate>

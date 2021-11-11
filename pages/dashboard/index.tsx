@@ -54,7 +54,7 @@ function Dashboard({
     }
 
     function handleUniversalButtonChange(value: string) {
-        if (value === 'Client') { 
+        if (value === 'Client') {
             NewClientModal.open()
         } else if (value === 'Staff') {
             NewStaffModal.open()
@@ -109,7 +109,11 @@ function Dashboard({
                         <UniversalSearch />
                     </AppBarSection>
                     <AppBarSection className="page-actions">
-                        <UniversalCreateButton handleUniversalButtonChange={handleUniversalButtonChange} />
+                        <UniversalCreateButton
+                            handleUniversalButtonChange={
+                                handleUniversalButtonChange
+                            }
+                        />
                     </AppBarSection>
                     <AppBarSection className="page-actions">
                         <UserDropdown locale={locale} />

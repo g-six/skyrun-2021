@@ -74,14 +74,12 @@ export function SkyAppDataProvider({ children }: Props) {
     function onLanguageChange(v: LanguageOption) {
         if (lang != v.code) {
             const { pathname, href, origin } = location
+
             if (pathname.substr(0, 3).toUpperCase() != v.text) {
-                const current_lang_uri = href.substr(origin.length + 1, 2)
-                if (lang == languages[0].code) {
-                    location.href = `/${v.text.toLowerCase()}${pathname}`
-                } else if (v.text.toLowerCase()) {
-                    location.href = pathname.substr(3)
-                } else {
+                if (v.text.toLowerCase()) {
                     location.href = `/${v.text.toLowerCase()}${pathname.substr(3)}`
+                } else {
+                    location.href = `/${languages[0].code}/${pathname.substr(3)}`
                 }
             }
         }

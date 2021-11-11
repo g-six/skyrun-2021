@@ -4,7 +4,7 @@ import Navbar from 'components/Navbar'
 import Translation from 'components/Translation'
 import { useAppContext } from 'context/AppContext'
 import Head from 'next/head'
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { useFetch } from 'utils/fetch-helper'
 import { FetchMethods } from 'utils/types'
 
@@ -13,7 +13,7 @@ const { COMING_SOON_TRANSLATION_ID } = getConfig().publicRuntimeConfig
 
 function ComingSoon() {
     const { lang, translations: common_translations } = useAppContext()
-
+    const [email, setEmail] = useState<string>('')
     const { data: translation, is_loading } = useFetch(
         `/v1/contents?url=${encodeURI(
             `https://cms.aot.plus/jsonapi/node/page_translation/${COMING_SOON_TRANSLATION_ID}`
@@ -56,7 +56,8 @@ function ComingSoon() {
                     name="description"
                     content="Skyrun - A Nerubia base code"
                 />
-                <link rel="icon" href="/favicon.ico" />
+                
+                <link rel="icon" href="https://static.aot.plus/images/favicon.ico" />
                 <script src="//static.aot.plus/js/ac.js" defer />
                 <script src="//static.aot.plus/js/fb.js" defer />
                 <script
@@ -114,10 +115,13 @@ function ComingSoon() {
                                         translations.enter_email ||
                                         'enter_email'
                                     }
+                                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                                        setEmail(e.target.value)
+                                    }}
                                 />
                                 <a
                                     className="bg-primary text-white rounded-full w-56 flex items-center justify-center font-display text-lg"
-                                    href="https://aotplus.activehosted.com/f/5"
+                                    href={`https://aotplus.activehosted.com/f/5?email=${encodeURI(email)}`}
                                     target="_blank"
                                     rel="noreferrer"
                                 >

@@ -55,7 +55,11 @@ function ComingSoon() {
                 <link rel="icon" href="/favicon.ico" />
                 <script src="//static.aot.plus/js/ac.js" defer />
                 <script src="//static.aot.plus/js/fb.js" defer />
-                <script src="https://aotplus.activehosted.com/f/embed.php?id=1" type="text/javascript" defer />
+                <script
+                    src="https://aotplus.activehosted.com/f/embed.php?id=1"
+                    type="text/javascript"
+                    defer
+                />
                 <link
                     href="https://static.aot.plus/feather.css"
                     rel="stylesheet"

@@ -21,6 +21,7 @@ import Cookies from 'js-cookie'
 import { classNames } from 'utils/dom-helpers'
 import UniversalSearch from 'components/UniversalSearch'
 import UserDropdown from 'components/Navbar/UserDropdown'
+import UniversalCreateButton from 'components/DropdownSelectors/UniversalCreateButton'
 
 const Sidebar = dynamic(() => import('./Sidebar'), { ssr: false })
 
@@ -52,9 +53,9 @@ function Dashboard({
         onLanguageChange(e.value)
     }
 
-    function handleUniversalButtonChange(e: DropDownListChangeEvent) {
-        const value = e.target.value
-        if (value === 'Client') { 
+    function handleUniversalButtonChange(value: string) {
+        if (value === 'Client') {
+
             NewClientModal.open()
         } else if (value === 'Staff') {
             NewStaffModal.open()
@@ -109,23 +110,11 @@ function Dashboard({
                         <UniversalSearch />
                     </AppBarSection>
                     <AppBarSection className="page-actions">
-                        <select
-                            id="universalCreate"
-                            name="universalCreate"
-                            className={classNames(
-                                'h-full py-0 pl-2 pr-8 bg-primary',
-                                'focus:ring-primary-dark focus:border-primary-dark ',
-                                'border-transparent rounded',
-                                'text-gray-300 universal-create-button'
-                            )}
-                            defaultValue="default"
-                            onChange={handleUniversalButtonChange}
-                            >
-                                <option value="default">+ New</option>
-                                <option value="Client">Client</option>
-                                <option value="Staff">Staff</option>
-                                <option value="Service">Service</option>
-                        </select>
+                        <UniversalCreateButton
+                            handleUniversalButtonChange={
+                                handleUniversalButtonChange
+                            }
+                        />
                     </AppBarSection>
                     <AppBarSection className="page-actions">
                         <UserDropdown locale={locale} />

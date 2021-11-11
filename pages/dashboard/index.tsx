@@ -9,6 +9,9 @@ import {
 } from 'context/AuthContext'
 import { Wrapper } from 'components/types'
 import LoginModal from 'components/Modals/Login'
+import CreateClientModal from 'components/Modals/Client'
+import StaffModal from 'components/Modals/Staff'
+import ServiceModal from 'components/Modals/Service'
 import { betterPathname, toTitleCase } from 'utils/string-helper'
 import LanguageSelector, { Language } from 'components/LanguageSelector'
 import { useAppContext } from 'context/AppContext'
@@ -18,6 +21,7 @@ import Cookies from 'js-cookie'
 import { classNames } from 'utils/dom-helpers'
 import UniversalSearch from 'components/UniversalSearch'
 import UserDropdown from 'components/Navbar/UserDropdown'
+import UniversalCreateButton from 'components/DropdownSelectors/UniversalCreateButton'
 
 const Sidebar = dynamic(() => import('./Sidebar'), { ssr: false })
 
@@ -29,6 +33,9 @@ function Dashboard({
     const {
         user,
         LoginModal: LoginModalContext,
+        CreateClientModal: NewClientModal,
+        StaffModal: NewStaffModal,
+        ServiceModal: NewServiceModal,
         is_drawer_expanded,
     } = useAuth()
     const { onLanguageChange, translations } = useAppContext()
@@ -44,6 +51,16 @@ function Dashboard({
 
     function handleLanguageChange(e: DropDownListChangeEvent) {
         onLanguageChange(e.value)
+    }
+
+    function handleUniversalButtonChange(value: string) {
+        if (value === 'Client') { 
+            NewClientModal.open()
+        } else if (value === 'Staff') {
+            NewStaffModal.open()
+        } else if (value === 'Service') {
+            NewServiceModal.open()
+        }
     }
 
     if (!user?.uuid && !Cookies.get('id_token')) {
@@ -92,6 +109,9 @@ function Dashboard({
                         <UniversalSearch />
                     </AppBarSection>
                     <AppBarSection className="page-actions">
+                        <UniversalCreateButton handleUniversalButtonChange={handleUniversalButtonChange} />
+                    </AppBarSection>
+                    <AppBarSection className="page-actions">
                         <UserDropdown locale={locale} />
                     </AppBarSection>
 
@@ -107,6 +127,9 @@ function Dashboard({
                 </Sidebar>
                 <TenantModal />
                 <LoginModal />
+                <CreateClientModal />
+                <StaffModal />
+                <ServiceModal />
             </Authenticated>
 
             <NotAuthenticated>

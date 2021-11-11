@@ -1,23 +1,23 @@
-import dynamic from 'next/dynamic'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
+import { DropDownListChangeEvent } from '@progress/kendo-react-dropdowns'
 import { AppBar, AppBarSection } from '@progress/kendo-react-layout'
+import LanguageSelector, { Language } from 'components/LanguageSelector'
+import LoginModal from 'components/Modals/Login'
+import TenantModal from 'components/Modals/Tenant'
+import UserDropdown from 'components/Navbar/UserDropdown'
+import { Wrapper } from 'components/types'
+import UniversalSearch from 'components/UniversalSearch'
+import { useAppContext } from 'context/AppContext'
 import {
     Authenticated,
     NotAuthenticated,
     useAuth,
 } from 'context/AuthContext'
-import { Wrapper } from 'components/types'
-import LoginModal from 'components/Modals/Login'
-import { betterPathname, toTitleCase } from 'utils/string-helper'
-import LanguageSelector, { Language } from 'components/LanguageSelector'
-import { useAppContext } from 'context/AppContext'
-import { DropDownListChangeEvent } from '@progress/kendo-react-dropdowns'
-import TenantModal from 'components/Modals/Tenant'
 import Cookies from 'js-cookie'
+import dynamic from 'next/dynamic'
+import Head from 'next/head'
+import { useRouter } from 'next/router'
 import { classNames } from 'utils/dom-helpers'
-import UniversalSearch from 'components/UniversalSearch'
-import UserDropdown from 'components/Navbar/UserDropdown'
+import { betterPathname, toTitleCase } from 'utils/string-helper'
 
 const Sidebar = dynamic(() => import('./Sidebar'), { ssr: false })
 
@@ -31,7 +31,7 @@ function Dashboard({
         LoginModal: LoginModalContext,
         is_drawer_expanded,
     } = useAuth()
-    const { onLanguageChange, translations } = useAppContext()
+    const { onLanguageChange } = useAppContext()
     const [first_part] = betterPathname(location.pathname)
     let locale = '/en'
 

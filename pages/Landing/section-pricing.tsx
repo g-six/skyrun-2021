@@ -40,7 +40,10 @@ const currencies: Currency[] = [
     },
 ]
 
-function getPriceFromContent(translate_key: string, translations: Record<string, string>) {
+function getPriceFromContent(
+    translate_key: string,
+    translations: Record<string, string>
+) {
     let price = translations[translate_key]
 
     if (price == undefined) {
@@ -52,9 +55,13 @@ function getPriceFromContent(translate_key: string, translations: Record<string,
     return parseInt(price, 10)
 }
 
-function getTotalPrice(price: number, discount: number, conversion_rate: number) {
+function getTotalPrice(
+    price: number,
+    discount: number,
+    conversion_rate: number
+) {
     if (discount > 0) {
-        return Math.round((price - (price * discount)) * conversion_rate)
+        return Math.round((price - price * discount) * conversion_rate)
     } else {
         return Math.round(price * conversion_rate)
     }
@@ -66,7 +73,9 @@ export default function LandingPricingSection(
     const { tiers } = useAppContext()
     const [currency, setCurrency] = useState<Currency>(currencies[0])
 
-    const yearly_discount = props['pricing_promo_tag'] ? parseInt(props['pricing_promo_tag'].substring(5).split('%')[0]) : 0
+    const yearly_discount = props['pricing_promo_tag']
+        ? parseInt(props['pricing_promo_tag'].substring(5).split('%')[0])
+        : 0
     const yearly_discount_rate = yearly_discount / 100
 
     const [discountRate, setDiscountRate] = useState(yearly_discount_rate)
@@ -119,7 +128,9 @@ export default function LandingPricingSection(
     )
 
     const handleToggleSwitch = () => {
-        setDiscountRate(discountRate == yearly_discount_rate ? 0 : yearly_discount_rate)
+        setDiscountRate(
+            discountRate == yearly_discount_rate ? 0 : yearly_discount_rate
+        )
     }
 
     const handleCurrencySelection = (idx: number) => {
@@ -325,7 +336,14 @@ export default function LandingPricingSection(
                         </figure>
                         <div className="text-6xl block text-center text-primary-dark circular-light mt-5">
                             {currency.symbol}
-                            {getTotalPrice(getPriceFromContent('pricing_tier_1_price_usd', props), discountRate, currency.conversion_rate)}
+                            {getTotalPrice(
+                                getPriceFromContent(
+                                    'pricing_tier_1_price_usd',
+                                    props
+                                ),
+                                discountRate,
+                                currency.conversion_rate
+                            )}
                         </div>
                         <Translation
                             className="block text-center text-gray-400 circular-light"
@@ -335,7 +353,14 @@ export default function LandingPricingSection(
                         />
                         <div className="block text-center text-gray-400 circular-light">
                             {currency.symbol}
-                            {getTotalPrice(getPriceFromContent('pricing_tier_1_price_usd', props), discountRate, currency.conversion_rate) * 12}{' '}
+                            {getTotalPrice(
+                                getPriceFromContent(
+                                    'pricing_tier_1_price_usd',
+                                    props
+                                ),
+                                discountRate,
+                                currency.conversion_rate
+                            ) * 12}{' '}
                             <Translation
                                 content_key="pricing_subtitle_billed_annually"
                                 translations={props}
@@ -447,7 +472,14 @@ export default function LandingPricingSection(
                         </figure>
                         <div className="text-6xl block text-center text-primary-dark circular-light mt-5">
                             {currency.symbol}
-                            {getTotalPrice(getPriceFromContent('pricing_tier_2_price_usd', props), discountRate, currency.conversion_rate)}
+                            {getTotalPrice(
+                                getPriceFromContent(
+                                    'pricing_tier_2_price_usd',
+                                    props
+                                ),
+                                discountRate,
+                                currency.conversion_rate
+                            )}
                         </div>
                         <Translation
                             className="block text-center text-gray-400 circular-light"
@@ -457,7 +489,14 @@ export default function LandingPricingSection(
                         />
                         <div className="block text-center text-gray-400 circular-light">
                             {currency.symbol}
-                            {getTotalPrice(getPriceFromContent('pricing_tier_1_price_usd', props), discountRate, currency.conversion_rate) * 12}{' '}
+                            {getTotalPrice(
+                                getPriceFromContent(
+                                    'pricing_tier_1_price_usd',
+                                    props
+                                ),
+                                discountRate,
+                                currency.conversion_rate
+                            ) * 12}{' '}
                             <Translation
                                 content_key="pricing_subtitle_billed_annually"
                                 translations={props}
@@ -556,8 +595,6 @@ export default function LandingPricingSection(
                             md:text-xl md:px-10"
                         />
                     </div>
-
-
                 </div>
 
                 <div className="flex justify-end max-w-7xl mt-2 mx-auto">

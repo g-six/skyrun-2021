@@ -55,6 +55,7 @@ function Dashboard({
 
     function handleUniversalButtonChange(value: string) {
         if (value === 'Client') {
+
             NewClientModal.open()
         } else if (value === 'Staff') {
             NewStaffModal.open()

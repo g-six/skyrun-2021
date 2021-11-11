@@ -1,9 +1,12 @@
-import getConfig from 'next/config'
 import Footer from 'components/Footer'
 import LoginModal from 'components/Modals/Login'
+import { createModal } from 'components/Modals/ModalFactory'
+import SignupModal from 'components/Modals/Signup'
 import Navbar from 'components/Navbar'
 import Translation from 'components/Translation'
 import { useAppContext } from 'context/AppContext'
+import { AuthContext } from 'context/AuthContext'
+import getConfig from 'next/config'
 import Head from 'next/head'
 import { useEffect, useState } from 'react'
 import { useFetch } from 'utils/fetch-helper'
@@ -25,6 +28,14 @@ function AboutUs() {
     const [translations, setTranslations] = useState<
         Record<string, string>
     >({})
+
+    const ModalProvider = createModal(AuthContext, 'SignupModal', () => (
+        <Translation
+            content_key="section_1_cta_button"
+            render_as="span"
+            translations={translations}
+        />
+    ))
 
     useEffect(() => {
         if (lang && translation.data?.attributes[lang]) {
@@ -100,6 +111,18 @@ function AboutUs() {
                             render_as="div"
                             translations={translations}
                         />
+                    </div>
+                    <div className="sm:mt-5 sm:flex sm:justify-center lg:justify-start max-w-5xl mx-auto">
+                        <div className="overflow-hidden ">
+                            <ModalProvider.Opener
+                                className="shadow w-full flex items-center justify-center
+                                px-6 py-4 text-base text-white font-bold
+                                bg-secondary border rounded-full
+                                transition duration-300 ease-in-out
+                                hover:bg-opacity-80
+                                md:text-xl md:px-10"
+                            />
+                        </div>
                     </div>
                 </section>
 
@@ -348,6 +371,7 @@ function AboutUs() {
 
             <Footer />
             <LoginModal />
+            <SignupModal />
         </div>
     )
 }

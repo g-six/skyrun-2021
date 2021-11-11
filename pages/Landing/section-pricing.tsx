@@ -142,7 +142,12 @@ export default function LandingPricingSection(
                     translations={props}
                 />
                 <div className="flex justify-center items-center w-auto mt-8">
-                    <span className="mr-4">{props.pricing_monthly}</span>
+                    <Translation
+                        className="mr-4"
+                        content_key="pricing_monthly"
+                        render_as="p"
+                        translations={props}
+                    />
 
                     <Switch
                         onLabel={''}
@@ -433,9 +438,12 @@ export default function LandingPricingSection(
                     <div className="bg-white rounded-2xl shadow-2xl w-full py-10 px-8">
                         <figure className="w-60 text-center m-auto mt-2 text-secondary flex items-center justify-center">
                             <i className="text-2xl feather feather-map-pin flex items-center justify-center" />
-                            <span className="ml-2 circular text-lg flex items-center justify-center">
-                                {props.pricing_tier_2_name}
-                            </span>
+                            <Translation
+                                className="ml-2 circular text-lg flex items-center justify-center"
+                                content_key="pricing_tier_2_name"
+                                render_as="span"
+                                translations={props}
+                            />
                         </figure>
                         <div className="text-6xl block text-center text-primary-dark circular-light mt-5">
                             {currency.symbol}

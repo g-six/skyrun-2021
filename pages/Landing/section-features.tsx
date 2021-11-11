@@ -1,4 +1,6 @@
+import { createModal } from 'components/Modals/ModalFactory'
 import Translation from 'components/Translation'
+import { AuthContext } from 'context/AuthContext'
 import { ReactElement } from 'react'
 import { classNames } from 'utils/dom-helpers'
 import styles from '../../styles/Landing/section-features.module.scss'
@@ -6,6 +8,14 @@ import styles from '../../styles/Landing/section-features.module.scss'
 export default function LandingFeaturesSection(
     props: Record<string, string>
 ) {
+    const ModalProvider = createModal(AuthContext, 'SignupModal', () => (
+        <Translation
+            content_key="section_4_cta_button"
+            render_as="span"
+            translations={props}
+        />
+    ))
+
     const section_3_checklist: ReactElement[] = []
     props['section_3_checklist'] &&
         props['section_3_checklist']
@@ -239,6 +249,19 @@ export default function LandingFeaturesSection(
                         content_key="section_4_body"
                         render_as="p"
                         translations={props}
+                    />
+                </div>
+            </div>
+
+            <div className="sm:flex sm:justify-center lg:justify-start max-w-5xl mx-auto">
+                <div className="overflow-hidden ">
+                    <ModalProvider.Opener
+                        className="shadow w-full flex items-center justify-center
+                                px-6 py-4 text-base text-white font-bold
+                                bg-secondary border rounded-full
+                                transition duration-300 ease-in-out
+                                hover:bg-opacity-80
+                                md:text-xl md:px-10"
                     />
                 </div>
             </div>

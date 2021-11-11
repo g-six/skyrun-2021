@@ -40,7 +40,7 @@ export function useAppContext() {
 export function SkyAppDataProvider({ children }: Props) {
     const [tiers, setTiers] = useState([] as Tier[])
     const [locale] = betterPathname(location.pathname)
-    const { GOOGLE_API_KEY } = getConfig().publicRuntimeConfig
+    const { GOOGLE_API_KEY, COMMON_TRANSLATION_ID } = getConfig().publicRuntimeConfig
 
     let initial_locale = languages[0].code
     if (isValidLocale(locale)) {
@@ -64,7 +64,7 @@ export function SkyAppDataProvider({ children }: Props) {
 
     const { data: common_translations, is_loading } = useFetch(
         `/v1/contents?url=${encodeURI(
-            'https://cms.aot.plus/jsonapi/node/page_translation/5b2201da-0798-4b53-8a70-8ba6a7261ac6'
+            `https://cms.aot.plus/jsonapi/node/page_translation/${COMMON_TRANSLATION_ID}`
         )}`,
         FetchMethods.GET,
         true,
@@ -74,14 +74,12 @@ export function SkyAppDataProvider({ children }: Props) {
     function onLanguageChange(v: LanguageOption) {
         if (lang != v.code) {
             const { pathname, href, origin } = location
+
             if (pathname.substr(0, 3).toUpperCase() != v.text) {
-                const current_lang_uri = href.substr(origin.length + 1, 2)
-                if (lang == languages[0].code) {
-                    location.href = `/${v.text.toLowerCase()}${pathname}`
-                } else if (v.text.toLowerCase()) {
-                    location.href = pathname.substr(3)
-                } else {
+                if (v.text.toLowerCase()) {
                     location.href = `/${v.text.toLowerCase()}${pathname.substr(3)}`
+                } else {
+                    location.href = `/${languages[0].code}/${pathname.substr(3)}`
                 }
             }
         }
@@ -91,7 +89,7 @@ export function SkyAppDataProvider({ children }: Props) {
         if (data.length && tiers.length == 0) {
             setTiers(data)
         }
-        if (lang && !is_loading && Object.keys(translations).length == 0) {
+        if (lang && common_translations.data && common_translations.data.attributes[lang] && common_translations.data.attributes[lang].length > 0 && Object.keys(translations).length == 0) {
             const translations_to_add: Record<string, string> = {}
             common_translations.data.attributes[lang].forEach(
                 ({ key, value }: any) => {
@@ -101,6 +99,7 @@ export function SkyAppDataProvider({ children }: Props) {
             setTranslations({
                 ...translations,
                 ...translations_to_add,
+                lang,
             })
         }
     }, [data, tiers, GOOGLE_API_KEY, translations, lang, is_loading, common_translations])

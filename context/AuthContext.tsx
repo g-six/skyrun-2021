@@ -62,14 +62,6 @@ export function SkyAuthProvider({ children }: Props) {
     const ServiceModal = useModal()
     const StaffModal = useModal()
 
-    useEffect(() => {
-        if (is_drawer_expanded) {
-            Cookies.set('drawer', 'expanded')
-        } else {
-            Cookies.set('drawer', 'mini')
-        }
-    }, [is_drawer_expanded])
-
     const value = {
         user,
         is_drawer_expanded,
@@ -176,7 +168,12 @@ export function SkyAuthProvider({ children }: Props) {
     }
 
     useEffect(() => {
-        const { user: api_user, roles: api_roles, tenants: api_tenants } = data
+        if (is_drawer_expanded) {
+            Cookies.set('drawer', 'expanded')
+        } else {
+            Cookies.set('drawer', 'mini')
+        }
+        const { tenants: api_tenants } = data
 
         async function getProfile() {
             const auth_data = await profile()
@@ -228,7 +225,7 @@ export function SkyAuthProvider({ children }: Props) {
         } else if (!user || !user?.uuid) {
             getProfile()
         }
-    }, [user, all_tenants, active_tenant, already_set, data])
+    }, [user, all_tenants, active_tenant, already_set, data, is_drawer_expanded])
 
 
     return (

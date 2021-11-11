@@ -1,3 +1,4 @@
+import getConfig from 'next/config'
 import Footer from 'components/Footer'
 import LoginModal from 'components/Modals/Login'
 import Navbar from 'components/Navbar'
@@ -8,12 +9,13 @@ import { useEffect, useState } from 'react'
 import { useFetch } from 'utils/fetch-helper'
 import { FetchMethods } from 'utils/types'
 
+const { ABOUT_US_TRANSLATION_ID } = getConfig().publicRuntimeConfig
 function AboutUs() {
     const { lang, translations: common_translations } = useAppContext()
 
     const { data: translation } = useFetch(
         `/v1/contents?url=${encodeURI(
-            'https://cms.aot.plus/jsonapi/node/page_translation/34b00648-32fb-4c97-a865-f66dcd6642f7'
+            `https://cms.aot.plus/jsonapi/node/page_translation/${ABOUT_US_TRANSLATION_ID}`
         )}`,
         FetchMethods.GET,
         true,
@@ -52,7 +54,11 @@ function AboutUs() {
                     name="description"
                     content="Skyrun - A Nerubia base code"
                 />
-                <link rel="icon" href="/favicon.ico" />
+
+                <link
+                    rel="icon"
+                    href="https://static.aot.plus/images/favicon.ico"
+                />
                 <link
                     href="https://static.aot.plus/feather.css"
                     rel="stylesheet"

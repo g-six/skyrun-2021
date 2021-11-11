@@ -220,6 +220,24 @@ export default function LandingFeaturesSection(
                             </p>
                         </div>
                     </div>
+                    <div className="absolute bottom-24 right-0 p-4 z-10">
+                        <div className="bg-white rounded-xl p-4 shadow-2xl w-auto h-42">
+                            <div className="grid grid-cols-3 gap-4 m-4">
+                                <div className="grid grid-rows-2 grid-flow-col">
+                                    <div className="bg-primary-light rounded p-4 shadow-2xl"></div>
+                                    <p>Aug</p>
+                                </div>
+                                <div>
+                                    <div className="bg-secondary rounded p-4 shadow-2xl h-12"></div>
+                                    <p>Sep</p>
+                                </div>
+                                <div className="">
+                                    <div className="bg-primary-light rounded p-4 shadow-2xl h-14"></div>
+                                    <p>Oct</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div className={styles.spriteLeapingLady}></div>
                 </div>
                 <div className="lg:col-span-1 relative">

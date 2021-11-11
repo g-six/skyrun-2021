@@ -56,7 +56,8 @@ function ComingSoon() {
                     name="description"
                     content="Skyrun - A Nerubia base code"
                 />
-                <link rel="icon" href="/favicon.ico" />
+                
+                <link rel="icon" href="https://static.aot.plus/images/favicon.ico" />
                 <script src="//static.aot.plus/js/ac.js" defer />
                 <script src="//static.aot.plus/js/fb.js" defer />
                 <script

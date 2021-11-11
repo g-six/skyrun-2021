@@ -54,7 +54,8 @@ function AboutUs() {
                     name="description"
                     content="Skyrun - A Nerubia base code"
                 />
-                <link rel="icon" href="/favicon.ico" />
+                
+                <link rel="icon" href="https://static.aot.plus/images/favicon.ico" />
                 <link
                     href="https://static.aot.plus/feather.css"
                     rel="stylesheet"

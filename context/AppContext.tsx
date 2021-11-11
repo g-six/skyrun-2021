@@ -92,7 +92,6 @@ export function SkyAppDataProvider({ children }: Props) {
             setTiers(data)
         }
         if (lang && common_translations.data && common_translations.data.attributes[lang] && common_translations.data.attributes[lang].length > 0 && Object.keys(translations).length == 0) {
-            console.log(translations, common_translations.data.attributes[lang])
             const translations_to_add: Record<string, string> = {}
             common_translations.data.attributes[lang].forEach(
                 ({ key, value }: any) => {

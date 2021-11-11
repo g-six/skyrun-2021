@@ -18,11 +18,6 @@ export default function Footer(props: Record<string, string>) {
                         />
                         <ul className="mt-2">
                             <li>
-                                <a href="mailto:support@aot.plus">
-                                    support@aot.plus
-                                </a>
-                            </li>
-                            <li>
                                 <a href="tel:0063322312705">
                                     +63 32 233 2233
                                 </a>
@@ -37,12 +32,11 @@ export default function Footer(props: Record<string, string>) {
                             translations={props}
                         />
                         <ul className="mt-2">
-                            <li>{props.footer_address}</li>
-                            <li>
-                                <a href="mailto:support@aot.plus">
-                                    support@aot.plus
-                                </a>
-                            </li>
+                            <Translation
+                                content_key="footer_address"
+                                render_as="li"
+                                translations={props}
+                            />
                             <li>
                                 <a href="tel:0063322312705">
                                     +63 32 233 2233
@@ -83,12 +77,21 @@ export default function Footer(props: Record<string, string>) {
                     </div>
                 </div>
                 <div className="grid grid-cols-3 gap-4 py-8 text-gray-400">
-                    <Translation
-                        className="col-span-2"
-                        content_key="footer_copyright"
-                        render_as="span"
-                        translations={props}
-                    />
+                    <span className="col-span-2">
+                        <Translation
+                            content_key="footer_copyright_1"
+                            translations={props}
+                        />{' '}
+                        <Translation
+                            content_key="footer_copyright_2"
+                            render_as="strong"
+                            translations={props}
+                        />{' '}
+                        <Translation
+                            content_key="footer_copyright_3"
+                            translations={props}
+                        />
+                    </span>
                     <Translation
                         className="col-span-1 text-right"
                         content_key="footer_privacy_policy"

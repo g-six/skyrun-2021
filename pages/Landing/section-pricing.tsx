@@ -161,10 +161,11 @@ export default function LandingPricingSection(
                     />
 
                     <Switch
+                        className="no-color-change"
                         onLabel={''}
                         offLabel={''}
                         onChange={handleToggleSwitch}
-                        checked={discountRate != yearly_discount_rate}
+                        checked={discountRate == yearly_discount_rate ? true : false}
                     />
 
                     <Translation

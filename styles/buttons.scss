@@ -55,6 +55,16 @@
     background-color: $primary-300;
 }
 
+.k-switch-off.no-color-change {
+    .k-switch-container {
+        background-color: $primary-300;
+    }
+}
+
+.k-switch-off.no-color-change:hover .k-switch-container {
+    background-color: $primary;
+}
+
 nav {
     .k-button.k-button-icontext {
         font-size: 1.25rem;

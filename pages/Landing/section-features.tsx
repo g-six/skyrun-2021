@@ -221,19 +221,19 @@ export default function LandingFeaturesSection(
                         </div>
                     </div>
                     <div className="absolute bottom-24 right-0 p-4 z-10">
-                        <div className="bg-white rounded-xl p-4 shadow-2xl w-auto h-42">
-                            <div className="grid grid-cols-3 gap-4 m-4">
-                                <div className="grid grid-rows-2 grid-flow-col">
-                                    <div className="bg-primary-light rounded p-4 shadow-2xl"></div>
-                                    <p>Aug</p>
+                        <div className="bg-white rounded-3xl p-4 shadow-2xl w-auto h-42">
+                            <div className="grid sm:grid-cols-3 gap-4 mx-auto">
+                                <div>
+                                    <div className="bg-primary-light rounded shadow-2xl mt-12 h-8"></div>
+                                    <p className="mt-5">Aug</p>
                                 </div>
                                 <div>
-                                    <div className="bg-secondary rounded p-4 shadow-2xl h-12"></div>
-                                    <p>Sep</p>
+                                    <div className="bg-secondary rounded shadow-2xl mt-10 h-10"></div>
+                                    <p className="mt-5">Sep</p>
                                 </div>
-                                <div className="">
-                                    <div className="bg-primary-light rounded p-4 shadow-2xl h-14"></div>
-                                    <p>Oct</p>
+                                <div>
+                                    <div className="bg-primary-light rounded shadow-2xl mt-8 h-12"></div>
+                                    <p className="mt-5">Oct</p>
                                 </div>
                             </div>
                         </div>

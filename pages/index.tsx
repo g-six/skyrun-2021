@@ -75,9 +75,12 @@ function Home() {
         }
     }, [translation, lang, common_translations])
 
-    if (is_loading) return <div className="h-venti w-full flex items-center bg-white animate-pulse">
-        <div className="h-4 bg-primary-lighter rounded block" />
-    </div>
+    if (is_loading)
+        return (
+            <div className="h-venti w-full flex items-center bg-white animate-pulse">
+                <div className="h-4 bg-primary-lighter rounded block" />
+            </div>
+        )
     executeScroll()
 
     return (
@@ -91,7 +94,10 @@ function Home() {
                     name="description"
                     content="Skyrun - A Nerubia base code"
                 />
-                <link rel="icon" href="https://static.aot.plus/images/favicon.ico" />
+                <link
+                    rel="icon"
+                    href="https://static.aot.plus/images/favicon.ico"
+                />
                 <link
                     href="https://static.aot.plus/feather.css"
                     rel="stylesheet"

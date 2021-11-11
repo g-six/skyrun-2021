@@ -53,7 +53,10 @@ export function UserDropdown({ locale }: Props) {
                                     'block px-4 py-2 text-sm text-black'
                                 )}
                             >
-                                <Translation content_key="dashboard" translations={translations} />
+                                <Translation
+                                    content_key="dashboard"
+                                    translations={translations}
+                                />
                             </a>
                         )}
                     </Menu.Item>
@@ -66,7 +69,10 @@ export function UserDropdown({ locale }: Props) {
                                     'block px-4 py-2 text-sm text-black'
                                 )}
                             >
-                                <Translation content_key="settings" translations={translations} />
+                                <Translation
+                                    content_key="settings"
+                                    translations={translations}
+                                />
                             </a>
                         )}
                     </Menu.Item>
@@ -79,8 +85,10 @@ export function UserDropdown({ locale }: Props) {
                                     'w-full text-left block px-4 py-2 text-sm text-black'
                                 )}
                             >
-                                
-                                <Translation content_key="sign_out" translations={translations} />
+                                <Translation
+                                    content_key="sign_out"
+                                    translations={translations}
+                                />
                             </button>
                         )}
                     </Menu.Item>

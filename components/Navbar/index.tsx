@@ -129,7 +129,14 @@ export default function Navbar() {
                                                                             : undefined
                                                                     }
                                                                 >
-                                                                    <Translation content_key={item.label} translations={translations} />
+                                                                    <Translation
+                                                                        content_key={
+                                                                            item.label
+                                                                        }
+                                                                        translations={
+                                                                            translations
+                                                                        }
+                                                                    />
                                                                 </a>
                                                             )
                                                         )}

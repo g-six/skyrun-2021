@@ -271,7 +271,8 @@ function Sidebar({ children }: Props) {
                           if (item.route == '/') {
                               return {
                                   ...item,
-                                  selected: item.route === location.pathname,
+                                  selected:
+                                      item.route === location.pathname,
                               }
                           }
                           if (
@@ -287,8 +288,11 @@ function Sidebar({ children }: Props) {
                                   },
                               }
                           }
-                          const [,,page] = location.pathname.split('/')
-                          const selected = !!(item.route && `/dashboard/${page}` == item.route)
+                          const [, , page] = location.pathname.split('/')
+                          const selected = !!(
+                              item.route &&
+                              `/dashboard/${page}` == item.route
+                          )
 
                           return {
                               ...item,

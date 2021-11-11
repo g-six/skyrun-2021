@@ -56,8 +56,11 @@ function ComingSoon() {
                     name="description"
                     content="Skyrun - A Nerubia base code"
                 />
-                
-                <link rel="icon" href="https://static.aot.plus/images/favicon.ico" />
+
+                <link
+                    rel="icon"
+                    href="https://static.aot.plus/images/favicon.ico"
+                />
                 <script src="//static.aot.plus/js/ac.js" defer />
                 <script src="//static.aot.plus/js/fb.js" defer />
                 <script
@@ -115,13 +118,17 @@ function ComingSoon() {
                                         translations.enter_email ||
                                         'enter_email'
                                     }
-                                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                                    onChange={(
+                                        e: ChangeEvent<HTMLInputElement>
+                                    ) => {
                                         setEmail(e.target.value)
                                     }}
                                 />
                                 <a
                                     className="bg-primary text-white rounded-full w-56 flex items-center justify-center font-display text-lg"
-                                    href={`https://aotplus.activehosted.com/f/5?email=${encodeURI(email)}`}
+                                    href={`https://aotplus.activehosted.com/f/5?email=${encodeURI(
+                                        email
+                                    )}`}
                                     target="_blank"
                                     rel="noreferrer"
                                 >

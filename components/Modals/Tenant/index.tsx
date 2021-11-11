@@ -159,7 +159,10 @@ function TenantModal() {
                                                 : ''
                                         )}
                                     >
-                                        <Translation content_key="first_name" translations={translations} />
+                                        <Translation
+                                            content_key="first_name"
+                                            translations={translations}
+                                        />
                                     </label>
                                     <input
                                         type="text"
@@ -193,7 +196,10 @@ function TenantModal() {
                                                 : ''
                                         )}
                                     >
-                                        <Translation content_key="last_name" translations={translations} />
+                                        <Translation
+                                            content_key="last_name"
+                                            translations={translations}
+                                        />
                                     </label>
                                     <input
                                         type="text"
@@ -263,7 +269,10 @@ function TenantModal() {
                                             : ''
                                     )}
                                 >
-                                    <Translation content_key="email" translations={translations} />
+                                    <Translation
+                                        content_key="email"
+                                        translations={translations}
+                                    />
                                 </label>
                                 <input
                                     type="text"

@@ -48,7 +48,7 @@ function ComingSoon() {
     return (
         <div>
             <Head>
-                <title>Coming Soon</title>
+                <title>{translations.header_title}</title>
                 <meta
                     property="og:title"
                     content="Coming Soon"

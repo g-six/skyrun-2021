@@ -86,7 +86,7 @@ function Home() {
     return (
         <div>
             <Head>
-                <title>Home</title>
+                <title>{translations.home}</title>
                 <meta property="og:title" content="Home" key="title" />
                 <link
                     rel="icon"

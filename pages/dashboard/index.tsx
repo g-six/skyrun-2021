@@ -31,7 +31,7 @@ function Dashboard({
         LoginModal: LoginModalContext,
         is_drawer_expanded,
     } = useAuth()
-    const { onLanguageChange } = useAppContext()
+    const { onLanguageChange, translations } = useAppContext()
     const [first_part] = betterPathname(location.pathname)
     let locale = '/en'
 
@@ -53,7 +53,7 @@ function Dashboard({
     return (
         <>
             <Head>
-                <title>Dashboard</title>
+                <title>{translations.dashboard}</title>
                 <meta property="og:title" content="Dashboard" key="title" />
                 <link
                     href="https://static.aot.plus/feather.css"

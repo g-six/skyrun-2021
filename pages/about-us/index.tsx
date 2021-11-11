@@ -57,7 +57,7 @@ function AboutUs() {
     return (
         <div>
             <Head>
-                <title>About Us</title>
+                <title>{translations.banner_title}</title>
                 <meta property="og:title" content="About Us" key="title" />
 
                 <link

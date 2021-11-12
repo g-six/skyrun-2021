@@ -31,6 +31,7 @@ export const TenantModalOpener = ModalProvider.Opener
 export const TenantModalCloser = ModalProvider.Closer
 
 import getConfig from 'next/config'
+import Translation from 'components/Translation'
 const { TENANT_MODAL_TRANSLATION_ID } = getConfig().publicRuntimeConfig
 
 function TenantModal() {
@@ -42,7 +43,6 @@ function TenantModal() {
     const [translations, setTranslations] = useState<
         Record<string, string>
     >(common_translations || {})
-
     const { data: component_translation } = useFetch(
         `/v1/contents?url=${encodeURI(
             `https://cms.aot.plus/jsonapi/node/page_translation/${TENANT_MODAL_TRANSLATION_ID}`
@@ -101,7 +101,7 @@ function TenantModal() {
             component_translation.data &&
             component_translation.data.attributes[lang] &&
             component_translation.data.attributes[lang].length > 0 &&
-            Object.keys(translations).length == 0
+            !translations['TENANT_MODAL_TRANSLATION_ID']
         ) {
             const translations_to_add: Record<string, string> = {}
             component_translation.attributes[lang].forEach(
@@ -128,9 +128,11 @@ function TenantModal() {
                     )}
                 >
                     <div className="flex justify-between px-10 text-gray-500 z-10 h-10 w-full">
-                        <span className="inline-block self-center text-lg font-light text-gray-600">
-                            {translations.title_bar}
-                        </span>
+                        <Translation
+                            className="inline-block self-center text-lg font-light text-gray-600"
+                            content_key="sign_up_business"
+                            translations={translations}
+                        />
                         <TenantModalCloser className="cursor-pointer self-center" />
                     </div>
                     {success ? (
@@ -157,7 +159,10 @@ function TenantModal() {
                                                 : ''
                                         )}
                                     >
-                                        {translations.first_name_label}
+                                        <Translation
+                                            content_key="first_name"
+                                            translations={translations}
+                                        />
                                     </label>
                                     <input
                                         type="text"
@@ -191,7 +196,10 @@ function TenantModal() {
                                                 : ''
                                         )}
                                     >
-                                        {translations.last_name_label}
+                                        <Translation
+                                            content_key="last_name"
+                                            translations={translations}
+                                        />
                                     </label>
                                     <input
                                         type="text"
@@ -218,17 +226,18 @@ function TenantModal() {
                             </div>
 
                             <fieldset className="pb-6">
-                                <label
-                                    htmlFor="business_name"
+                                <Translation
                                     className={classNames(
                                         'block font-bold text-gray-600',
                                         errors.name?.type
                                             ? 'text-red-700'
                                             : ''
                                     )}
-                                >
-                                    {translations.business_name_label}
-                                </label>
+                                    htmlFor="business_name"
+                                    render_as="label"
+                                    content_key="business_name_label"
+                                    translations={translations}
+                                />
                                 <input
                                     type="text"
                                     id="business_name"
@@ -260,7 +269,10 @@ function TenantModal() {
                                             : ''
                                     )}
                                 >
-                                    {translations.email_address_label}
+                                    <Translation
+                                        content_key="email"
+                                        translations={translations}
+                                    />
                                 </label>
                                 <input
                                     type="text"
@@ -353,7 +365,10 @@ function TenantModal() {
                                             />
                                         )}
                                     </span>
-                                    {translations.signup_button}
+                                    <Translation
+                                        content_key="signup_button"
+                                        translations={translations}
+                                    />
                                 </button>
                             </div>
                         </form>

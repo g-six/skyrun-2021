@@ -74,14 +74,12 @@ export function SkyAppDataProvider({ children }: Props) {
     function onLanguageChange(v: LanguageOption) {
         if (lang != v.code) {
             const { pathname, href, origin } = location
+
             if (pathname.substr(0, 3).toUpperCase() != v.text) {
-                const current_lang_uri = href.substr(origin.length + 1, 2)
-                if (lang == languages[0].code) {
-                    location.href = `/${v.text.toLowerCase()}${pathname}`
-                } else if (v.text.toLowerCase()) {
-                    location.href = pathname.substr(3)
-                } else {
+                if (v.text.toLowerCase()) {
                     location.href = `/${v.text.toLowerCase()}${pathname.substr(3)}`
+                } else {
+                    location.href = `/${languages[0].code}/${pathname.substr(3)}`
                 }
             }
         }
@@ -92,7 +90,6 @@ export function SkyAppDataProvider({ children }: Props) {
             setTiers(data)
         }
         if (lang && common_translations.data && common_translations.data.attributes[lang] && common_translations.data.attributes[lang].length > 0 && Object.keys(translations).length == 0) {
-            console.log(translations, common_translations.data.attributes[lang])
             const translations_to_add: Record<string, string> = {}
             common_translations.data.attributes[lang].forEach(
                 ({ key, value }: any) => {

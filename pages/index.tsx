@@ -1,7 +1,7 @@
-import getConfig from 'next/config'
 import LoginModal from 'components/Modals/Login'
 import SignupModal from 'components/Modals/Signup'
 import { useAppContext } from 'context/AppContext'
+import getConfig from 'next/config'
 import Head from 'next/head'
 import { useEffect, useRef, useState } from 'react'
 import { useFetch } from 'utils/fetch-helper'
@@ -24,7 +24,7 @@ function Home() {
         pricing: useRef(null),
     }
 
-    const { data: translation } = useFetch(
+    const { data: translation, is_loading } = useFetch(
         `/v1/contents?url=${encodeURI(
             `https://cms.aot.plus/jsonapi/node/page_translation/${LANDING_TRANSLATION_ID}`
         )}`,
@@ -75,20 +75,23 @@ function Home() {
         }
     }, [translation, lang, common_translations])
 
+    if (is_loading)
+        return (
+            <div className="h-venti w-full flex items-center bg-white animate-pulse">
+                <div className="h-4 bg-primary-lighter rounded block" />
+            </div>
+        )
     executeScroll()
 
     return (
         <div>
             <Head>
-                <title>
-                    Nerubia | Your Software as a Solution development
-                    partner
-                </title>
-                <meta
-                    name="description"
-                    content="Skyrun - A Nerubia base code"
+                <title>{translations.home || 'Home'}</title>
+                <meta property="og:title" content="Home" key="title" />
+                <link
+                    rel="icon"
+                    href="https://static.aot.plus/images/favicon.ico"
                 />
-                <link rel="icon" href="/favicon.ico" />
                 <link
                     href="https://static.aot.plus/feather.css"
                     rel="stylesheet"

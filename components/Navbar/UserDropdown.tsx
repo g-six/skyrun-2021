@@ -1,6 +1,8 @@
 import { Menu, Transition } from '@headlessui/react'
 import LoginButton from 'components/Buttons/LoginButton'
 import SignupButton from 'components/Buttons/SignupButton'
+import Translation from 'components/Translation'
+import { useAppContext } from 'context/AppContext'
 import { useAuth } from 'context/AuthContext'
 import Cookies from 'js-cookie'
 import { Fragment, useState } from 'react'
@@ -11,6 +13,7 @@ interface Props {
     locale?: string
 }
 export function UserDropdown({ locale }: Props) {
+    const { translations } = useAppContext()
     const { user } = useAuth()
     const [username, setUsername] = useState(Cookies.get('email'))
 
@@ -50,7 +53,10 @@ export function UserDropdown({ locale }: Props) {
                                     'block px-4 py-2 text-sm text-black'
                                 )}
                             >
-                                Your Profile
+                                <Translation
+                                    content_key="dashboard"
+                                    translations={translations}
+                                />
                             </a>
                         )}
                     </Menu.Item>
@@ -63,7 +69,10 @@ export function UserDropdown({ locale }: Props) {
                                     'block px-4 py-2 text-sm text-black'
                                 )}
                             >
-                                Settings
+                                <Translation
+                                    content_key="settings"
+                                    translations={translations}
+                                />
                             </a>
                         )}
                     </Menu.Item>
@@ -76,7 +85,10 @@ export function UserDropdown({ locale }: Props) {
                                     'w-full text-left block px-4 py-2 text-sm text-black'
                                 )}
                             >
-                                Sign out
+                                <Translation
+                                    content_key="sign_out"
+                                    translations={translations}
+                                />
                             </button>
                         )}
                     </Menu.Item>

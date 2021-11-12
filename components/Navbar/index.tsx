@@ -14,24 +14,25 @@ import { DropDownListChangeEvent } from '@progress/kendo-react-dropdowns'
 import LanguageSelector, { Language } from 'components/LanguageSelector'
 import { betterPathname } from 'utils/string-helper'
 import UserDropdown from './UserDropdown'
+import Translation from 'components/Translation'
 
 const navigation = [
     {
         id: 'menu_1',
         href: '/#features',
-        label: 'Features',
+        label: 'features',
         current: false,
     },
     {
         id: 'menu_2',
         href: '/#pricing',
-        label: 'Pricing',
+        label: 'pricing',
         current: false,
     },
     {
         id: 'menu_3',
         href: '/about-us',
-        label: 'About Us',
+        label: 'about_us',
         current: false,
     },
 ]
@@ -41,7 +42,7 @@ function classNames(...classes: string[]) {
 }
 
 export default function Navbar() {
-    const { lang, onLanguageChange } = useAppContext()
+    const { lang, onLanguageChange, translations } = useAppContext()
     const [mounted, setMounted] = useState(false)
 
     function handleLanguageChange(e: DropDownListChangeEvent) {
@@ -128,9 +129,14 @@ export default function Navbar() {
                                                                             : undefined
                                                                     }
                                                                 >
-                                                                    {
-                                                                        item.label
-                                                                    }
+                                                                    <Translation
+                                                                        content_key={
+                                                                            item.label
+                                                                        }
+                                                                        translations={
+                                                                            translations
+                                                                        }
+                                                                    />
                                                                 </a>
                                                             )
                                                         )}

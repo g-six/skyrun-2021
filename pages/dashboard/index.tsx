@@ -1,27 +1,28 @@
-import dynamic from 'next/dynamic'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
+import { DropDownListChangeEvent } from '@progress/kendo-react-dropdowns'
 import { AppBar, AppBarSection } from '@progress/kendo-react-layout'
+import LanguageSelector, { Language } from 'components/LanguageSelector'
+import LoginModal from 'components/Modals/Login'
+import TenantModal from 'components/Modals/Tenant'
+import UserDropdown from 'components/Navbar/UserDropdown'
+import { Wrapper } from 'components/types'
+import UniversalSearch from 'components/UniversalSearch'
+import { useAppContext } from 'context/AppContext'
 import {
     Authenticated,
     NotAuthenticated,
-    useAuth,
+    useAuth
 } from 'context/AuthContext'
-import { Wrapper } from 'components/types'
-import LoginModal from 'components/Modals/Login'
+
+import Cookies from 'js-cookie'
+import dynamic from 'next/dynamic'
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+import { classNames } from 'utils/dom-helpers'
+import UniversalCreateButton from 'components/DropdownSelectors/UniversalCreateButton'
+import { betterPathname, toTitleCase } from 'utils/string-helper'
 import CreateClientModal from 'components/Modals/Client'
 import StaffModal from 'components/Modals/Staff'
 import ServiceModal from 'components/Modals/Service'
-import { betterPathname, toTitleCase } from 'utils/string-helper'
-import LanguageSelector, { Language } from 'components/LanguageSelector'
-import { useAppContext } from 'context/AppContext'
-import { DropDownListChangeEvent } from '@progress/kendo-react-dropdowns'
-import TenantModal from 'components/Modals/Tenant'
-import Cookies from 'js-cookie'
-import { classNames } from 'utils/dom-helpers'
-import UniversalSearch from 'components/UniversalSearch'
-import UserDropdown from 'components/Navbar/UserDropdown'
-import UniversalCreateButton from 'components/DropdownSelectors/UniversalCreateButton'
 
 const Sidebar = dynamic(() => import('./Sidebar'), { ssr: false })
 
@@ -71,7 +72,7 @@ function Dashboard({
     return (
         <>
             <Head>
-                <title>Dashboard</title>
+                <title>{translations.dashboard || 'Dashboard'}</title>
                 <meta property="og:title" content="Dashboard" key="title" />
                 <link
                     href="https://static.aot.plus/feather.css"

@@ -13,6 +13,9 @@ import ServiceList from './ServiceList'
 import { UserModel } from 'components/Modals/types'
 import { useAppContext } from 'context/AppContext'
 
+import getConfig from 'next/config'
+const { SERVICE_MODAL_TRANSLATION_ID } = getConfig().publicRuntimeConfig
+
 function DashboardServices() {
     const { tenant, ServiceModal: ModalContext } = useAuth()
     const [services, setServices] = useState<
@@ -39,7 +42,7 @@ function DashboardServices() {
 
     const { data: page_translation } = useFetch(
         `/v1/contents?url=${encodeURI(
-            'https://cms.aot.plus/jsonapi/node/page_translation/c59c7fce-c546-4993-a1e7-2c54336c1bc4'
+            `https://cms.aot.plus/jsonapi/node/page_translation/${SERVICE_MODAL_TRANSLATION_ID}`
         )}`,
         FetchMethods.GET,
         true,

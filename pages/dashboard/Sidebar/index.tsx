@@ -43,7 +43,7 @@ function Sidebar({ children }: Props) {
         Record<string, string>
     >(common_translations || {})
 
-    const { data: component_translation } = useFetch(
+    const { data: component_translation, is_loading } = useFetch(
         `/v1/contents?url=${encodeURI(
             `https://cms.aot.plus/jsonapi/node/page_translation/${TENANT_SIDEBAR}`
         )}`,
@@ -189,13 +189,6 @@ function Sidebar({ children }: Props) {
         const [locale] = betterPathname(location.pathname)
         const { tenant, tenants } = useAuth()
 
-        function getHomePath() {
-            if (Object.keys(Language).indexOf(locale.toUpperCase()) > 0) {
-                return ['', locale, 'dashboard/'].join('/')
-            }
-            return '/dashboard/'
-        }
-
         if (!props.icon && !props.route && !props.separator) {
             return (
                 <div
@@ -254,6 +247,7 @@ function Sidebar({ children }: Props) {
     }
 
     const nav_height = '80px'
+
     return (
         <Drawer
             className="relative z-0"
@@ -277,7 +271,8 @@ function Sidebar({ children }: Props) {
                           if (item.route == '/') {
                               return {
                                   ...item,
-                                  selected: item.text === selected,
+                                  selected:
+                                      item.route === location.pathname,
                               }
                           }
                           if (
@@ -287,16 +282,21 @@ function Sidebar({ children }: Props) {
                           ) {
                               return {
                                   ...item,
-                                  selected: item.text === selected,
                                   onClickCapture: () => {
                                       Cookies.set('drawer', 'expanded')
                                       ctx.toggleDrawerSize(true)
                                   },
                               }
                           }
+                          const [, , page] = location.pathname.split('/')
+                          const selected = !!(
+                              item.route &&
+                              `/dashboard/${page}` == item.route
+                          )
+
                           return {
                               ...item,
-                              selected: item.text === selected,
+                              selected,
                           }
                       })
                     : []

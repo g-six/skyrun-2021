@@ -6,6 +6,7 @@ import SkyContext, { SkyAppDataProvider } from '../context/AppContext'
 import { classNames } from 'utils/dom-helpers'
 import { SkyAuthProvider } from 'context/AuthContext'
 import { useRouter } from 'next/router'
+import * as gtag from "../lib/gtag";
 
 const GridSpinner = dynamic(() => import('components/Spinners/grid'), {
     ssr: false,
@@ -61,14 +62,24 @@ function MyApp({ Component, pageProps }: AppProps) {
         import('react-facebook-pixel')
           .then((x) => x.default)
           .then((ReactPixel) => {
-            ReactPixel.init(`${process.env.FACEBOOK_PIXEL_ID}`) // facebookPixelId
+            ReactPixel.init(`${process.env.FACEBOOK_PIXEL_ID}`)
             ReactPixel.pageView()
     
             router.events.on('routeChangeComplete', () => {
               ReactPixel.pageView()
             })
           })
-      }, [router.events])
+    }, [router.events])
+
+    useEffect(() => {
+        const handleRouteChange = (url: URL) => {
+            gtag.pageview(url);
+        };
+        router.events.on("routeChangeComplete", handleRouteChange);
+        return () => {
+            router.events.off("routeChangeComplete", handleRouteChange);
+        };
+    }, [router.events]);
 
     return (
         <SafeHydrate>

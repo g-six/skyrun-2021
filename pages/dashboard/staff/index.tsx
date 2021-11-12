@@ -1,5 +1,4 @@
 import DataTable from 'components/DataTable'
-import StaffModal from 'components/Modals/Staff'
 import { useAuth } from 'context/AuthContext'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { ViewMode } from 'types'
@@ -328,8 +327,6 @@ function DashboardStaff() {
             </div>
 
             {view_mode == ViewMode.GRID ? <CardView /> : <TableView />}
-
-            <StaffModal />
         </Dashboard>
     )
 }

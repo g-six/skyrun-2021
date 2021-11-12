@@ -1,19 +1,18 @@
+import DropdownComponent from 'components/DropdownSelectors'
+import { DropPosition } from 'components/DropdownSelectors/common'
+import { UserModel } from 'components/Modals/types'
 import ViewModeSelector from 'components/ViewModeSelector'
 import { ViewMode } from 'components/ViewModeSelector/types'
+import { useAppContext } from 'context/AppContext'
 import { useAuth } from 'context/AuthContext'
+import getConfig from 'next/config'
 import { useEffect, useState } from 'react'
+import { ServiceApiItem, ServiceItem } from 'types/service'
 import { useFetch } from 'utils/fetch-helper'
 import { FetchMethods } from 'utils/types'
 import Dashboard from '..'
-import DropdownComponent from 'components/DropdownSelectors'
-import { DropPosition } from 'components/DropdownSelectors/common'
-import ServiceModal from 'components/Modals/Service'
-import { ServiceApiItem, ServiceItem } from 'types/service'
 import ServiceList from './ServiceList'
-import { UserModel } from 'components/Modals/types'
-import { useAppContext } from 'context/AppContext'
 
-import getConfig from 'next/config'
 const { SERVICE_MODAL_TRANSLATION_ID } = getConfig().publicRuntimeConfig
 
 function DashboardServices() {
@@ -252,8 +251,6 @@ function DashboardServices() {
                     translations={translations}
                 />
             </div>
-
-            <ServiceModal />
         </Dashboard>
     )
 }

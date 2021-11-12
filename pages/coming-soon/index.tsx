@@ -172,7 +172,7 @@ function ComingSoon() {
                 <div className="rounded bg-primary-150 bg-opacity-30 rounded-full h-48 w-48 absolute block -right-10 bottom-10" />
             </main>
 
-            <Footer />
+            <Footer {...translations} />
             <LoginModal />
         </div>
     )

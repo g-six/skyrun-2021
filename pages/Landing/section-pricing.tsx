@@ -165,7 +165,7 @@ export default function LandingPricingSection(
                         onLabel={''}
                         offLabel={''}
                         onChange={handleToggleSwitch}
-                        checked={discountRate == yearly_discount_rate ? true : false}
+                        checked={discountRate == yearly_discount_rate}
                     />
 
                     <Translation

@@ -1,5 +1,4 @@
 import { Menu, Transition } from '@headlessui/react'
-import LoginButton from 'components/Buttons/LoginButton'
 import SignupButton from 'components/Buttons/SignupButton'
 import Translation from 'components/Translation'
 import { useAppContext } from 'context/AppContext'
@@ -14,7 +13,7 @@ interface Props {
 }
 export function UserDropdown({ locale }: Props) {
     const { translations } = useAppContext()
-    const { user } = useAuth()
+    const { user, LoginModal } = useAuth()
     const [username, setUsername] = useState(Cookies.get('email'))
 
     async function killSession() {
@@ -97,8 +96,17 @@ export function UserDropdown({ locale }: Props) {
         </Menu>
     ) : (
         <>
-            <LoginButton />
-            <SignupButton className="button primary inline-block px-5 p-2" />
+            <button
+                type="button"
+                className="font-display text-black"
+                onClick={() => { LoginModal.open() }}>
+                    <Translation content_key="login" translations={translations} />
+                </button>
+
+            <SignupButton
+                className="button primary inline-block px-5 p-2"
+                translations={translations}
+            />
         </>
     )
 }

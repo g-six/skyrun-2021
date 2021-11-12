@@ -6,7 +6,7 @@ import SkyContext, { SkyAppDataProvider } from '../context/AppContext'
 import { classNames } from 'utils/dom-helpers'
 import { SkyAuthProvider } from 'context/AuthContext'
 import { useRouter } from 'next/router'
-import * as gtag from "../lib/gtag";
+import * as gtag from "lib/gtag";
 
 const GridSpinner = dynamic(() => import('components/Spinners/grid'), {
     ssr: false,
@@ -64,7 +64,6 @@ function MyApp({ Component, pageProps }: AppProps) {
           .then((ReactPixel) => {
             ReactPixel.init(`${process.env.FACEBOOK_PIXEL_ID}`)
             ReactPixel.pageView()
-    
             router.events.on('routeChangeComplete', () => {
               ReactPixel.pageView()
             })

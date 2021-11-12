@@ -41,12 +41,14 @@ const ModalProvider = createModal(
 
 export const ServiceModalCloser = ModalProvider.Closer
 
-function ServiceModal() {
-    const { ServiceModal, tenant } = useAuth()
+function ServiceModal({ tenant_id } = { tenant_id: '' }) {
+    const { ServiceModal } = useAuth()
     const { lang, translations: common_translations } = useAppContext()
     const [translations, setTranslations] = useState(common_translations)
     const [prompt_message, toggleDialog] = useState<string>('')
-    const [attributes, setAttributes] = useState<ModalDataAttributes>({})
+    const [attributes, setAttributes] = useState<ModalDataAttributes>({
+        tenant: { id: tenant_id },
+    })
 
     const categories =
         (attributes &&
@@ -73,7 +75,7 @@ function ServiceModal() {
         data: categories_api_response,
         status: categories_api_status,
         doFetch: getCategories,
-    } = useFetch('/v1/categories', FetchMethods.GET, true)
+    } = useFetch(`/v1/categories/?tenantId=${tenant_id}`, FetchMethods.GET, true)
 
     const {
         data: create_category_api_response,
@@ -115,7 +117,6 @@ function ServiceModal() {
         try {
             const {
                 name,
-                category,
                 description,
                 duration,
                 max_participants,
@@ -135,13 +136,13 @@ function ServiceModal() {
 
             const form_values: ServiceApiItem = {
                 id: attributes?.id as string,
-                category: {
-                    id: category as string,
-                },
+                category: attributes.category as { id: string },
                 description,
                 duration: duration as unknown as number,
                 name,
-                tenant: tenant as TenantInfo,
+                tenant: {
+                    id: tenant_id,
+                },
                 maxCapacity: max_participants as unknown as number,
                 public: true,
                 price: price as unknown as number,
@@ -337,10 +338,7 @@ function ServiceModal() {
                         setSelectedTab(3)
                     }}
                     attributes={attributes}
-                    tenant_id={tenant && tenant.id}
-                    removeAll={() => {
-                        console.log('remove all')
-                    }}
+                    tenant_id={tenant_id}
                     onAttributesChanged={(
                         updated_attributes: ModalDataAttributes,
                         idx: number

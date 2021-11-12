@@ -32,6 +32,7 @@ function Dashboard({
     const router = useRouter()
     const {
         user,
+        tenant,
         LoginModal: LoginModalContext,
         CreateClientModal: NewClientModal,
         StaffModal: NewStaffModal,
@@ -133,7 +134,8 @@ function Dashboard({
                 <LoginModal />
                 <CreateClientModal />
                 <StaffModal />
-                <ServiceModal />
+                { tenant && tenant.id ? <StaffModal /> : <></>} 
+                { tenant && tenant.id ? <ServiceModal tenant_id={ tenant.id } /> : <></>} 
             </Authenticated>
 
             <NotAuthenticated>

@@ -136,7 +136,7 @@ function DashboardServices() {
                     long_description,
                     service_type,
                     slug,
-                    staff: staff.map(
+                    staff: staff && staff.map(
                         ({
                             id,
                             user,
@@ -149,7 +149,7 @@ function DashboardServices() {
                             first_name: user.firstName,
                             last_name: user.lastName,
                         })
-                    ),
+                    ) || [],
                     image_src,
                 }
             })

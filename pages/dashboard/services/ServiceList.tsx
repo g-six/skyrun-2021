@@ -21,14 +21,14 @@ export function ServiceList({
             is_public: svc.public,
             service_type: svc.type,
             max_participants: svc.maxCapacity,
-            staff: svc.staff.map(
+            staff: svc.staff && svc.staff.map(
                 ({ id, user }: { id: string; user: UserModel }) => ({
                     id,
                     user_id: user.id as string,
                     first_name: user.firstName,
                     last_name: user.lastName,
                 })
-            ),
+            ) || [],
         })
         if (
             categories.filter(({ id }) => svc.category.id == id).length == 0
@@ -47,7 +47,7 @@ export function ServiceList({
                         </Disclosure.Button>
                         <Disclosure.Panel>
                             {normalized.map((service: ServiceItem, idx) => {
-                                return (
+                                return service.category.id as string == id ? (
                                     <div
                                         key={idx}
                                         className="bg-gray-50 py-2 px-6 flex items-center gap-3"
@@ -103,7 +103,7 @@ export function ServiceList({
                                             <i className="feather-archive" />
                                         </button>
                                     </div>
-                                )
+                                ) : ''
                             })}
                         </Disclosure.Panel>
                     </Disclosure>

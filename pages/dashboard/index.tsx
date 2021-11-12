@@ -1,28 +1,31 @@
 import { DropDownListChangeEvent } from '@progress/kendo-react-dropdowns'
 import { AppBar, AppBarSection } from '@progress/kendo-react-layout'
-import LanguageSelector, { Language } from 'components/LanguageSelector'
-import LoginModal from 'components/Modals/Login'
-import TenantModal from 'components/Modals/Tenant'
-import UserDropdown from 'components/Navbar/UserDropdown'
-import { Wrapper } from 'components/types'
-import UniversalSearch from 'components/UniversalSearch'
+import dynamic from 'next/dynamic'
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+import Cookies from 'js-cookie'
+
 import { useAppContext } from 'context/AppContext'
 import {
     Authenticated,
     NotAuthenticated,
-    useAuth
+    useAuth,
 } from 'context/AuthContext'
 
-import Cookies from 'js-cookie'
-import dynamic from 'next/dynamic'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import { classNames } from 'utils/dom-helpers'
+import { Wrapper } from 'components/types'
+import UniversalSearch from 'components/UniversalSearch'
+import UserDropdown from 'components/Navbar/UserDropdown'
 import UniversalCreateButton from 'components/DropdownSelectors/UniversalCreateButton'
-import { betterPathname, toTitleCase } from 'utils/string-helper'
+import LanguageSelector, { Language } from 'components/LanguageSelector'
+
 import CreateClientModal from 'components/Modals/Client'
-import StaffModal from 'components/Modals/Staff'
+import LoginModal from 'components/Modals/Login'
 import ServiceModal from 'components/Modals/Service'
+import StaffModal from 'components/Modals/Staff'
+import TenantModal from 'components/Modals/Tenant'
+
+import { classNames } from 'utils/dom-helpers'
+import { betterPathname, toTitleCase } from 'utils/string-helper'
 
 const Sidebar = dynamic(() => import('./Sidebar'), { ssr: false })
 
@@ -56,7 +59,6 @@ function Dashboard({
 
     function handleUniversalButtonChange(value: string) {
         if (value === 'Client') {
-
             NewClientModal.open()
         } else if (value === 'Staff') {
             NewStaffModal.open()
@@ -109,6 +111,13 @@ function Dashboard({
                             ''
                         )}
                         <UniversalSearch />
+                    </AppBarSection>
+                    <AppBarSection className="mr-5">
+                        <UniversalCreateButton
+                            handleUniversalButtonChange={
+                                handleUniversalButtonChange
+                            }
+                        />
                     </AppBarSection>
                     <AppBarSection className="page-actions">
                         <UniversalCreateButton

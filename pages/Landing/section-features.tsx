@@ -268,19 +268,19 @@ export default function LandingFeaturesSection(
                         render_as="p"
                         translations={props}
                     />
-                </div>
-            </div>
 
-            <div className="sm:flex sm:justify-center lg:justify-start max-w-5xl mx-auto">
-                <div className="overflow-hidden ">
-                    <ModalProvider.Opener
-                        className="shadow w-full flex items-center justify-center
+                    <div className="sm:flex sm:justify-center lg:justify-start max-w-5xl mx-auto mt-5">
+                        <div className="overflow-hidden ">
+                            <ModalProvider.Opener
+                                className="shadow w-full flex items-center justify-center
                                 px-6 py-4 text-base text-white font-bold
                                 bg-secondary border rounded-full
                                 transition duration-300 ease-in-out
                                 hover:bg-opacity-80
                                 md:text-xl md:px-10"
-                    />
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>

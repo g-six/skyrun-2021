@@ -1,4 +1,4 @@
-import { ForwardedRef, forwardRef, RefObject, useState } from 'react'
+import { ForwardedRef, forwardRef, useState } from 'react'
 import { classNames } from 'utils/dom-helpers'
 
 const defaultHandler = (e: { target: { value: string } }) => {}
@@ -114,7 +114,7 @@ export function UniversalSearch(
                                     ? 'text-gray-500'
                                     : 'text-gray-300'
                             )}
-                            defaultValue="Categpry"
+                            defaultValue="Category"
                         >
                             <option disabled>Category</option>
                             <option>Location</option>

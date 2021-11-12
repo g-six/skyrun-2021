@@ -19,7 +19,7 @@ export function UniversalCreateButton({
             defaultValue="default"
             onChange={(e) => handleUniversalButtonChange(e.target.value)}
         >
-            <option value="default" disabled selected>
+            <option value="default" disabled>
                 +&nbsp;&nbsp; New
             </option>
             <option value="Client">Client</option>

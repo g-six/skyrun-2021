@@ -1,5 +1,6 @@
 import Footer from 'components/Footer'
 import LoginModal from 'components/Modals/Login'
+import SignupModal from 'components/Modals/Signup'
 import Navbar from 'components/Navbar'
 import Translation from 'components/Translation'
 import { useAppContext } from 'context/AppContext'
@@ -172,7 +173,8 @@ function ComingSoon() {
                 <div className="rounded bg-primary-150 bg-opacity-30 rounded-full h-48 w-48 absolute block -right-10 bottom-10" />
             </main>
 
-            <Footer />
+            <Footer {...translations} />
+            <SignupModal />
             <LoginModal />
         </div>
     )

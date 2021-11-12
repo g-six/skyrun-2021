@@ -2,7 +2,7 @@ import { RadioGroup } from '@headlessui/react'
 import DropdownComponent from 'components/DropdownSelectors'
 import { DropPosition } from 'components/DropdownSelectors/common'
 import MoneyInput from 'components/MoneyInput'
-import { MouseEvent, useState } from 'react'
+import { MouseEvent, useEffect, useState } from 'react'
 import { HexColorInput, HexColorPicker } from 'react-colorful'
 import { classNames } from 'utils/dom-helpers'
 import { FormErrors, ServiceType } from './types'
@@ -310,7 +310,10 @@ function GeneralForm({
                         }}
                         defaultValue={
                             (attributes &&
-                                (attributes.category as string)) ||
+                                attributes.category &&
+                                ((
+                                    attributes.category as ModalDataAttributes
+                                ).id as string)) ||
                             ''
                         }
                         className="overflow-auto"
@@ -535,7 +538,6 @@ function GeneralForm({
                             attributes && (attributes.price as number)
                         }
                         onChange={(v: string) => {
-                            console.log(v)
                             setAttributes({
                                 ...attributes,
                                 price: v,

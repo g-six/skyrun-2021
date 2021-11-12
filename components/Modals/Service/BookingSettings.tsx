@@ -5,10 +5,14 @@ export function ServiceModalBooking({
     attributes,
     onChangeAttribute,
     translations,
+    onPrevious,
+    onNext,
 }: {
     attributes: ModalDataAttributes
     onChangeAttribute(d: ModalDataAttributes): void
     translations: Record<string, string>
+    onPrevious(): void
+    onNext(): void
 }) {
     return (
         <div

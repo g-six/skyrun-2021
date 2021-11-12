@@ -16,7 +16,7 @@ import ServiceList from './ServiceList'
 const { SERVICE_MODAL_TRANSLATION_ID } = getConfig().publicRuntimeConfig
 
 function DashboardServices() {
-    const { tenant, ServiceModal: ModalContext } = useAuth()
+    const { tenant, ServiceModal: ModalContext, setAttributes } = useAuth()
     const [services, setServices] = useState<
         Record<
             string,
@@ -32,7 +32,6 @@ function DashboardServices() {
     const [view_mode, setViewMode] = useState<ViewMode>(ViewMode.GRID)
     const [selected_instructors, selectInstructors] = useState<number[]>([])
     const [selected_categories, selectCategories] = useState<number[]>([])
-    const [all_selected, selectAll] = useState<boolean>(false)
     const { data, doFetch } = useFetch(
         `/v1/services/tenant-id/${tenant?.id}`,
         FetchMethods.GET,
@@ -91,6 +90,18 @@ function DashboardServices() {
         },
     }
 
+    function handleItemEdit({ id, name, category }: ServiceItem) {
+        if (id) {
+            console.log(category)
+            setAttributes({
+                id,
+                name,
+                category,
+            })
+            ModalContext.open()
+        }
+    }
+
     useEffect(() => {
         const list: Record<string, string | boolean | number>[] =
             data &&
@@ -136,30 +147,28 @@ function DashboardServices() {
                     long_description,
                     service_type,
                     slug,
-                    staff: staff && staff.map(
-                        ({
-                            id,
-                            user,
-                        }: {
-                            id: string
-                            user: UserModel
-                        }) => ({
-                            id,
-                            user_id: user.id as string,
-                            first_name: user.firstName,
-                            last_name: user.lastName,
-                        })
-                    ) || [],
+                    staff:
+                        (staff &&
+                            staff.map(
+                                ({
+                                    id,
+                                    user,
+                                }: {
+                                    id: string
+                                    user: UserModel
+                                }) => ({
+                                    id,
+                                    user_id: user.id as string,
+                                    first_name: user.firstName,
+                                    last_name: user.lastName,
+                                })
+                            )) ||
+                        [],
                     image_src,
                 }
             })
-        setServices(list)
-
-        const update_selection: number[] = []
-        if (all_selected) {
-            services.forEach((x, idx) => {
-                update_selection.push(idx)
-            })
+        if (list && list.length > 0 && services.length != list.length) {
+            setServices(list)
         }
 
         if (lang && page_translation.data?.attributes[lang]) {
@@ -170,18 +179,11 @@ function DashboardServices() {
                 }
             )
             setTranslations({
-                ...common_translations,
+                ...translations,
                 ...translations_to_add,
             })
         }
-    }, [
-        data,
-        common_translations,
-        page_translation,
-        lang,
-        setServices,
-        all_selected,
-    ])
+    }, [data, page_translation, lang])
 
     return (
         <Dashboard>
@@ -249,6 +251,7 @@ function DashboardServices() {
                 <ServiceList
                     services={data.content as ServiceApiItem[]}
                     translations={translations}
+                    editItem={handleItemEdit}
                 />
             </div>
         </Dashboard>

@@ -84,7 +84,8 @@ export default function Footer(props: Record<string, string>) {
                         />{' '}
                         <Translation
                             content_key="footer_copyright_2"
-                            render_as="strong"
+                            className="font-bold"
+                            render_as="span"
                             translations={props}
                         />{' '}
                         <Translation

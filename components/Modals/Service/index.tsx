@@ -16,7 +16,6 @@ import { useAppContext } from 'context/AppContext'
 import ServiceModalStaff from './Staff'
 import { ServiceApiItem } from 'types/service'
 import { ServiceType } from './types'
-import { TenantInfo } from 'context/types'
 import Translation from 'components/Translation'
 import ServiceModalMemberships from './Memberships'
 import { ModalDataAttributes, UserModel } from '../types'
@@ -41,22 +40,17 @@ const ModalProvider = createModal(
 
 export const ServiceModalCloser = ModalProvider.Closer
 
-function ServiceModal({ tenant_id } = { tenant_id: '' }) {
-    const { ServiceModal } = useAuth()
+function ServiceModal(
+    { tenant_id, data } = {
+        tenant_id: '',
+        data: {},
+    }
+) {
+    const { setAttributes, attributes, ServiceModal: Context } = useAuth()
     const { lang, translations: common_translations } = useAppContext()
     const [translations, setTranslations] = useState(common_translations)
     const [prompt_message, toggleDialog] = useState<string>('')
-    const [attributes, setAttributes] = useState<ModalDataAttributes>({
-        tenant: { id: tenant_id },
-    })
-
-    const categories =
-        (attributes &&
-            (attributes.categories as unknown as Record<
-                string,
-                string
-            >[])) ||
-        []
+    const categories: Record<string, string>[] = []
 
     const offerings =
         (attributes && (attributes.offerings as ModalDataAttributes[])) ||
@@ -75,7 +69,11 @@ function ServiceModal({ tenant_id } = { tenant_id: '' }) {
         data: categories_api_response,
         status: categories_api_status,
         doFetch: getCategories,
-    } = useFetch(`/v1/categories/?tenantId=${tenant_id}`, FetchMethods.GET, true)
+    } = useFetch(
+        `/v1/categories/?tenantId=${tenant_id}`,
+        FetchMethods.GET,
+        true
+    )
 
     const {
         data: create_category_api_response,
@@ -94,20 +92,13 @@ function ServiceModal({ tenant_id } = { tenant_id: '' }) {
     )
 
     function handleCloseModal(e: MouseEvent<HTMLButtonElement>) {
-        ServiceModal.setAttributes({})
-        ServiceModal.close()
+        setAttributes({})
+        Context.close()
     }
 
     function updateList() {
-        ServiceModal.setAttributes({
-            has_updates: true,
-        })
-    }
-
-    if (!attributes || !attributes?.service_type) {
         setAttributes({
-            ...attributes,
-            service_type: ServiceType.APPOINTMENT,
+            has_updates: true,
         })
     }
 
@@ -168,7 +159,7 @@ function ServiceModal({ tenant_id } = { tenant_id: '' }) {
 
             if (res?.ok) {
                 updateList()
-                ServiceModal.close()
+                Context.close()
             }
         } catch (e) {
             const { message } = e as Record<string, string>
@@ -225,6 +216,13 @@ function ServiceModal({ tenant_id } = { tenant_id: '' }) {
             }
         }
 
+        if (!attributes || !attributes?.service_type) {
+            setAttributes({
+                ...attributes,
+                service_type: ServiceType.APPOINTMENT,
+            })
+        }
+
         if (lang && page_translation.data?.attributes[lang]) {
             const translations_to_add: Record<string, string> = {}
             page_translation.data.attributes[lang].forEach(
@@ -241,8 +239,6 @@ function ServiceModal({ tenant_id } = { tenant_id: '' }) {
         common_translations,
         page_translation,
         lang,
-        attributes,
-        setAttributes,
         categories_api_response,
         categories_api_status,
         create_category_status,
@@ -331,7 +327,7 @@ function ServiceModal({ tenant_id } = { tenant_id: '' }) {
                     }}
                     translations={translations}
                 />
-            ) : tenant ? (
+            ) : tenant_id ? (
                 <ServiceModalOfferClasses
                     onPrevious={() => setSelectedTab(1)}
                     onNext={() => {
@@ -369,7 +365,9 @@ function ServiceModal({ tenant_id } = { tenant_id: '' }) {
                         ...updated_attributes,
                     })
                 }}
+                onPrevious={() => setSelectedTab(2)}
                 translations={translations}
+                onNext={onSubmit}
             />
         )
     }
@@ -387,9 +385,7 @@ function ServiceModal({ tenant_id } = { tenant_id: '' }) {
                             <span className="inline-block self-center text-lg text-primary-dark">
                                 <ServiceModalCloser className="self-center" />
                                 <span className="circular">
-                                    {ServiceModal.attributes?.id
-                                        ? 'Edit'
-                                        : 'New'}{' '}
+                                    {attributes?.id ? 'Edit' : 'New'}{' '}
                                     Service
                                 </span>
                             </span>

@@ -80,7 +80,6 @@ function ServiceModalOfferClasses({
     onAttributesChanged,
     tenant_id,
     handleCloseModal,
-    removeAll,
     onPrevious,
     onNext,
 }: {
@@ -88,7 +87,6 @@ function ServiceModalOfferClasses({
     attributes?: ModalDataAttributes
     tenant_id: string
     handleCloseModal: (e: MouseEvent<HTMLButtonElement>) => void
-    removeAll(): void
     onPrevious(): void
     onNext(): void
     onAttributesChanged(u: ModalDataAttributes, idx: number): void

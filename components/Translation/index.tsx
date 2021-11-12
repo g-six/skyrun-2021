@@ -1,5 +1,6 @@
 export type TranslationProps = {
     className?: string
+    href?: string
     htmlFor?: string
     render_as?:
         | 'div'
@@ -14,6 +15,7 @@ export type TranslationProps = {
         | 'li'
         | 'strong'
         | 'i'
+        | 'a'
     content_key: string
     translations: Record<string, string>
 }
@@ -56,6 +58,12 @@ export function Translation(p: TranslationProps) {
             return <strong className={p.className || ''}>{text}</strong>
         case 'i':
             return <i className={p.className || ''}>{text}</i>
+        case 'a':
+            return (
+                <a className={p.className || ''} href={p.href || ''}>
+                    {text}
+                </a>
+            )
         default:
             return <>{text}</>
     }

@@ -61,11 +61,6 @@ function MyApp({ Component, pageProps }: AppProps) {
     }, [is_fetching, context])
 
     useEffect(() => {
-        // ReactPixel.init(`${process.env.FACEBOOK_PIXEL_ID}`)
-        // ReactPixel.pageView()
-        // router.events.on('routeChangeComplete', () => {
-        //     ReactPixel.pageView()
-        // })
         fbq.pageview()
         const handleRouteChange = () => {
             fbq.pageview()

@@ -7,6 +7,7 @@ import { classNames } from 'utils/dom-helpers'
 import { SkyAuthProvider } from 'context/AuthContext'
 import { useRouter } from 'next/router'
 import * as gtag from 'lib/gtag'
+import ReactPixel from 'react-facebook-pixel';
 
 const GridSpinner = dynamic(() => import('components/Spinners/grid'), {
     ssr: false,
@@ -59,15 +60,11 @@ function MyApp({ Component, pageProps }: AppProps) {
     }, [is_fetching, context])
 
     useEffect(() => {
-        import('react-facebook-pixel')
-            .then((x) => x.default)
-            .then((ReactPixel) => {
-                ReactPixel.init(`${process.env.FACEBOOK_PIXEL_ID}`)
-                ReactPixel.pageView()
-                router.events.on('routeChangeComplete', () => {
-                    ReactPixel.pageView()
-                })
-            })
+        ReactPixel.init(`${process.env.FACEBOOK_PIXEL_ID}`)
+        ReactPixel.pageView()
+        router.events.on('routeChangeComplete', () => {
+            ReactPixel.pageView()
+        })
     }, [router.events])
 
     useEffect(() => {

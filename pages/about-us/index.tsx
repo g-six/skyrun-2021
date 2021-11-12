@@ -29,9 +29,17 @@ function AboutUs() {
         Record<string, string>
     >({})
 
-    const ModalProvider = createModal(AuthContext, 'SignupModal', () => (
+    const Section1ModalProvider = createModal(AuthContext, 'SignupModal', () => (
         <Translation
             content_key="section_1_cta_button"
+            render_as="span"
+            translations={translations}
+        />
+    ))
+
+    const Section4ModalProvider = createModal(AuthContext, 'SignupModal', () => (
+        <Translation
+            content_key="join_cta_button"
             render_as="span"
             translations={translations}
         />
@@ -108,7 +116,7 @@ function AboutUs() {
                     </div>
                     <div className="sm:mt-5 sm:flex sm:justify-center lg:justify-start max-w-5xl mx-auto">
                         <div className="overflow-hidden ">
-                            <ModalProvider.Opener
+                            <Section1ModalProvider.Opener
                                 className="shadow w-full flex items-center justify-center
                                 px-6 py-4 text-base text-white font-bold
                                 bg-secondary border rounded-full
@@ -350,16 +358,17 @@ function AboutUs() {
                         render_as="h5"
                         translations={translations}
                     />
-                    <button
-                        className="bg-secondary text-white text-lg font-display rounded-full py-5 px-12"
-                        type="button"
-                    >
-                        {translations.join_cta_button}
-                        <Translation
-                            content_key="join_cta_button"
-                            translations={translations}
+                    <div className="overflow-hidden ">
+                        <Section4ModalProvider.Opener
+                            className="shadow items-center justify-center
+                                px-12 py-5 text-base text-white font-bold
+                                bg-secondary rounded-full
+                                transition duration-300 ease-in-out
+                                hover:bg-opacity-80
+                                md:text-xl md:px-10"
                         />
-                    </button>
+                    </div>
+
                 </section>
             </main>
 

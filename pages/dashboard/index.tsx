@@ -14,7 +14,7 @@ import { useAppContext } from 'context/AppContext'
 import {
     Authenticated,
     NotAuthenticated,
-    useAuth
+    useAuth,
 } from 'context/AuthContext'
 import Cookies from 'js-cookie'
 import dynamic from 'next/dynamic'

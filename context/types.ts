@@ -68,6 +68,7 @@ declare global {
         Chargebee: any
         dataLayer: any
         gtag: any
+        fbq: any
      }
 }
 

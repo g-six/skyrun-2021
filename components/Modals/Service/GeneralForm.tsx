@@ -80,7 +80,7 @@ function GeneralForm({
         })
         toggleCategoryOpen(false)
     }
-
+    console.log(attributes)
     return (
         <form method="POST" onSubmit={onSubmit}>
             <div className="pb-6 lg:flex gap-8 border-b border-b-gray-300 mb-6">

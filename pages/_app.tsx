@@ -6,7 +6,7 @@ import SkyContext, { SkyAppDataProvider } from '../context/AppContext'
 import { classNames } from 'utils/dom-helpers'
 import { SkyAuthProvider } from 'context/AuthContext'
 import { useRouter } from 'next/router'
-import * as gtag from "lib/gtag";
+import * as gtag from 'lib/gtag'
 
 const GridSpinner = dynamic(() => import('components/Spinners/grid'), {
     ssr: false,
@@ -27,7 +27,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     const [context, setContext] = useState({
         locale_id: '',
     })
-    const [blur, setBlur] = useState(true) 
+    const [blur, setBlur] = useState(true)
     const router = useRouter()
 
     const onLanguageChange = useCallback(
@@ -60,25 +60,25 @@ function MyApp({ Component, pageProps }: AppProps) {
 
     useEffect(() => {
         import('react-facebook-pixel')
-          .then((x) => x.default)
-          .then((ReactPixel) => {
-            ReactPixel.init(`${process.env.FACEBOOK_PIXEL_ID}`)
-            ReactPixel.pageView()
-            router.events.on('routeChangeComplete', () => {
-              ReactPixel.pageView()
+            .then((x) => x.default)
+            .then((ReactPixel) => {
+                ReactPixel.init(`${process.env.FACEBOOK_PIXEL_ID}`)
+                ReactPixel.pageView()
+                router.events.on('routeChangeComplete', () => {
+                    ReactPixel.pageView()
+                })
             })
-          })
     }, [router.events])
 
     useEffect(() => {
         const handleRouteChange = (url: URL) => {
-            gtag.pageview(url);
-        };
-        router.events.on("routeChangeComplete", handleRouteChange);
+            gtag.pageview(url)
+        }
+        router.events.on('routeChangeComplete', handleRouteChange)
         return () => {
-            router.events.off("routeChangeComplete", handleRouteChange);
-        };
-    }, [router.events]);
+            router.events.off('routeChangeComplete', handleRouteChange)
+        }
+    }, [router.events])
 
     return (
         <SafeHydrate>

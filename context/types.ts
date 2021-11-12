@@ -67,6 +67,7 @@ declare global {
     interface Window { 
         Chargebee: any
         dataLayer: any
+        gtag: any
      }
 }
 

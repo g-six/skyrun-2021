@@ -91,7 +91,7 @@ function GeneralForm({
 
                     <div className="my-8">
                         <RadioGroup
-                            value={attributes?.service_type}
+                            value={attributes?.service_type as unknown as ServiceType}
                             onChange={(v) => {
                                 setAttributes({
                                     ...attributes,
@@ -113,7 +113,7 @@ function GeneralForm({
                                 />
                             </RadioGroup.Label>
                             <div className="flex gap-6">
-                                {Object.values(ServiceType).map((v) => {
+                                {Object.keys(ServiceType).map((v, idx) => {
                                     return (
                                         <RadioGroup.Option
                                             key={v}
@@ -145,7 +145,7 @@ function GeneralForm({
                                                                 : ''
                                                         }
                                                     >
-                                                        {v}
+                                                        {Object.values(ServiceType)[idx]}
                                                     </span>
                                                 </div>
                                             )}

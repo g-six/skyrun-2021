@@ -79,6 +79,40 @@ function ServiceModal(
         true
     )
 
+    const { data: staff_api_response } = useFetch(
+        `/v1/staff/?tenantId=${tenant_id}`,
+        FetchMethods.GET,
+        true
+    )
+    const staff: Record<string, string>[] =
+        staff_api_response &&
+        staff_api_response.content &&
+        staff_api_response.numberOfElements > 0
+            ? staff_api_response.content.map(
+                  (s: { id: string; user: Record<string, string> }) => ({
+                      value: s.id,
+                      text: [
+                          (s.user as unknown as Record<string, string>)
+                              .firstName,
+                          (s.user as unknown as Record<string, string>)
+                              .lastName,
+                      ].join(' '),
+                  })
+              )
+            : []
+    const { data: location_list } = useFetch(
+        `/v1/locations/tenant-id/?tenantId=${tenant_id}`,
+        FetchMethods.GET,
+        true
+    )
+    const locations =
+        location_list && location_list.content && location_list.numberOfElements > 0
+            ? location_list.content.map((loc: Record<string, string>) => ({
+                    value: loc.id,
+                    text: loc.name,
+                }))
+            : []
+
     const {
         data: create_category_api_response,
         status: create_category_status,
@@ -111,9 +145,6 @@ function ServiceModal(
                 is_public,
             } = attributes as unknown as ServiceItem
 
-            const { offerings } = attributes
-            console.log(offerings)
-            return
             const { staff_assigned } = attributes as unknown as Record<
                 string,
                 Record<string, string>[]
@@ -149,7 +180,9 @@ function ServiceModal(
                 form_values.series = true
             }
 
+            let serviceId: string
             if (form_values.id) {
+                serviceId = form_values.id
                 const api = await putApiRequest(
                     `/v1/services/${form_values.id}`,
                     form_values as unknown as Record<
@@ -164,9 +197,58 @@ function ServiceModal(
                     list_item_idx,
                     updated_item: api,
                 })
+            } else {
+                const api = await postApiRequest(
+                    '/v1/services',
+                    form_values as unknown as Record<
+                        string,
+                        string | number | boolean
+                    >
+                )
 
-                Context.close()
+                setAttributes({
+                    categories: attributes.categories,
+                })
             }
+
+            if (offerings.length > 0) {
+                const offerings = attributes.offerings as Record<string, string>[]
+                console.log(offerings)
+                offerings.forEach(async ({
+                    date,
+                    time,
+                    is_recurring,
+                    id,
+                    duration,
+                    location: locationId,
+                    staff: staffId,
+                }) => {
+                    const group_class: Record<string, string | boolean | Record<string, string | boolean>> = {
+                        id,
+                        effectiveDate: date,
+                        startTime: time,
+                        endTime: '23:59',
+                        recurring: is_recurring,
+                        serviceId: attributes.id as string,
+                        groupClassSetting: {
+                            locationId,
+                            staffId,
+                        }
+                    }
+                    if (id) {
+                        const offer_api = await putApiRequest(
+                            `/v1/group_classes/${id}`,
+                            group_class,
+                        )
+                    } else {
+                        const offer_api = await postApiRequest(
+                            '/v1/group_classes',
+                            group_class,
+                        )
+                    }
+                })
+            }
+            Context.close()
         } catch (e) {
             const { message } = e as Record<string, string>
             toggleDialog(message)
@@ -317,7 +399,12 @@ function ServiceModal(
                     showOfferListForm={() => {
                         setAttributes({
                             ...attributes,
-                            offerings: [{}],
+                            offerings: [{
+                                date: new Date(Date.now() + 24 * 60 * 60 * 1000),
+                                location: locations && locations[0].value,
+                                staff: staff && staff[0].value,
+                                time: '10:00',
+                            }],
                         })
                     }}
                     translations={translations}
@@ -329,6 +416,8 @@ function ServiceModal(
                         setSelectedTab(3)
                     }}
                     attributes={attributes}
+                    locations={locations}
+                    staff={staff}
                     setAttributes={setAttributes}
                     tenant_id={tenant_id}
                     onAttributesChanged={(

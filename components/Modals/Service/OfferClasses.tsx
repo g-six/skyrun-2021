@@ -78,6 +78,8 @@ export function BlankOffer({
 function ServiceModalOfferClasses({
     translations,
     attributes,
+    locations,
+    staff,
     setAttributes,
     onAttributesChanged,
     removeItem,
@@ -90,10 +92,12 @@ function ServiceModalOfferClasses({
     attributes?: ModalDataAttributes
     tenant_id: string
     handleCloseModal: (e: MouseEvent<HTMLButtonElement>) => void
+    locations: Record<string, string>[],
     onPrevious(): void
     onNext(): void
     onAttributesChanged(u: ModalDataAttributes, idx: number): void
     removeItem(idx: number): void
+    staff: Record<string, string>[]
     setAttributes(r: ModalDataAttributes): void
 }) {
     const api_error =
@@ -103,44 +107,9 @@ function ServiceModalOfferClasses({
         getTimes()
     )
 
-    const { data } = useFetch(
-        `/v1/locations/tenant-id/?tenantId=${tenant_id}`,
-        FetchMethods.GET,
-        true
-    )
-    const locations =
-        data && data.content && data.numberOfElements > 0
-            ? data.content.map((loc: Record<string, string>) => ({
-                  value: loc.id,
-                  text: loc.name,
-              }))
-            : []
-
-    const { data: staff_api_response } = useFetch(
-        `/v1/staff/?tenantId=${tenant_id}`,
-        FetchMethods.GET,
-        true
-    )
-    const staff =
-        staff_api_response &&
-        staff_api_response.content &&
-        staff_api_response.numberOfElements > 0
-            ? staff_api_response.content.map(
-                  (loc: { id: string; user: Record<string, string> }) => ({
-                      value: loc.id,
-                      text: [
-                          (loc.user as unknown as Record<string, string>)
-                              .firstName,
-                          (loc.user as unknown as Record<string, string>)
-                              .lastName,
-                      ].join(' '),
-                  })
-              )
-            : []
-
     let offerings =
         attributes && (attributes.offerings as ModalDataAttributes[])
-    console.log(offerings)
+
     function duplicateRow(idx: number) {
         if (offerings && offerings[idx]) {
             offerings.push({

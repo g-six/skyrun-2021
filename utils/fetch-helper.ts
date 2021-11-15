@@ -40,6 +40,72 @@ export async function getApiRequest(
     }
 }
 
+export async function postApiRequest(
+    path: string,
+    body: Record<string, string | number | boolean | Record<string, string | number | boolean>> = {},
+    headers: Record<string, string> = {},
+) {
+    let req_init: RequestInit = {
+        body: JSON.stringify(body),
+        method: FetchMethods.POST,
+        mode: 'cors',
+        headers: {
+            ...headers,
+            'Content-Type': 'application/json',
+        },
+    }
+
+    if (Cookies.get('id_token')) {
+        (req_init.headers as Record<string, string>)['Authorization'] = `Bearer ${Cookies.get('id_token')}`
+    }
+
+    try {
+        const response = await fetch(fetchPath(path), req_init)
+
+        try {
+            return await response.json()
+        } catch (e) {
+            return { error: 'API error' }
+        }
+
+    } catch (e) {
+        console.error('doFetch:', (e as unknown as Error).message)
+    }
+}
+
+export async function putApiRequest(
+    path: string,
+    body: Record<string, string | number | boolean | Record<string, string | number | boolean>> = {},
+    headers: Record<string, string> = {},
+) {
+    let req_init: RequestInit = {
+        body: JSON.stringify(body),
+        method: FetchMethods.PUT,
+        mode: 'cors',
+        headers: {
+            ...headers,
+            'Content-Type': 'application/json',
+        },
+    }
+
+    if (Cookies.get('id_token')) {
+        (req_init.headers as Record<string, string>)['Authorization'] = `Bearer ${Cookies.get('id_token')}`
+    }
+
+    try {
+        const response = await fetch(fetchPath(path), req_init)
+
+        try {
+            return await response.json()
+        } catch (e) {
+            return { error: 'API error' }
+        }
+
+    } catch (e) {
+        console.error('doFetch:', (e as unknown as Error).message)
+    }
+}
+
 export async function deleteApiRequest(
     path: string,
     headers: Record<string, string> = {},

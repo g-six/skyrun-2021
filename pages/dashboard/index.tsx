@@ -139,11 +139,7 @@ function Dashboard({
                 <StaffModal />
                 {tenant && tenant.id ? <StaffModal /> : <></>}
                 {tenant && tenant.id ? (
-                    <ServiceModal
-                        tenant_id={tenant.id}
-                        data={attributes}
-                        onClose={() => {}}
-                    />
+                    <ServiceModal tenant_id={tenant.id} data={attributes} />
                 ) : (
                     <></>
                 )}

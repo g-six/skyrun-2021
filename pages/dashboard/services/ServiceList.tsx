@@ -1,47 +1,19 @@
 import { Disclosure } from '@headlessui/react'
 import { UserModel } from 'components/Modals/types'
 import Translation from 'components/Translation'
-import { useAppContext } from 'context/AppContext'
-import { useState } from 'react'
 import { ServiceApiItem, ServiceItem } from 'types/service'
 export function ServiceList({
     translations = {},
     services = [],
-    editItem = (e) => {},
+    editItem = (e, i) => {},
 }: {
-    services: ServiceApiItem[]
+    services: ServiceItem[]
     translations: Record<string, string>
-    editItem(s: ServiceItem): void
+    editItem(s: ServiceItem, list_item_idx: number): void
 }) {
     const categories: Record<string, string>[] = []
     const normalized: ServiceItem[] = []
-    services.forEach((svc: ServiceApiItem) => {
-        normalized.push({
-            ...svc,
-            name: svc.name,
-            category: svc.category,
-            primary_color: svc.primaryColorHex,
-            is_public: svc.public,
-            service_type: svc.type,
-            max_participants: svc.maxCapacity,
-            staff:
-                (svc.staff &&
-                    svc.staff.map(
-                        ({
-                            id,
-                            user,
-                        }: {
-                            id: string
-                            user: UserModel
-                        }) => ({
-                            id,
-                            user_id: user.id as string,
-                            first_name: user.firstName,
-                            last_name: user.lastName,
-                        })
-                    )) ||
-                [],
-        })
+    services.forEach((svc: ServiceItem) => {
         if (
             categories.filter(({ id }) => svc.category.id == id).length == 0
         ) {
@@ -59,8 +31,9 @@ export function ServiceList({
                                 <i className="feather-chevron-down text-xl" />
                             </Disclosure.Button>
                             <Disclosure.Panel>
-                                {normalized.map(
+                                {services.map(
                                     (service: ServiceItem, idx) => {
+                                        console.log(service)
                                         return (service.category
                                             .id as string) == id ? (
                                             <div
@@ -114,7 +87,10 @@ export function ServiceList({
                                                     type="button"
                                                     className="bg-primary-lighter bg-opacity-50 text-primary-light h-12 w-12 rounded-lg"
                                                     onClick={() => {
-                                                        editItem(service)
+                                                        editItem(
+                                                            service,
+                                                            idx
+                                                        )
                                                     }}
                                                 >
                                                     <i className="feather-edit" />

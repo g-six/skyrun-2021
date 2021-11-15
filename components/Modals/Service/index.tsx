@@ -11,11 +11,10 @@ import {
 } from '@progress/kendo-react-layout'
 import GeneralForm from './GeneralForm'
 import { FetchMethods } from 'utils/types'
-import { useFetch } from 'utils/fetch-helper'
+import { postApiRequest, putApiRequest, useFetch } from 'utils/fetch-helper'
 import { useAppContext } from 'context/AppContext'
 import ServiceModalStaff from './Staff'
-import { ServiceApiItem } from 'types/service'
-import { ServiceType } from './types'
+import { ServiceApiItem, ServiceType } from 'types/service'
 import Translation from 'components/Translation'
 import ServiceModalMemberships from './Memberships'
 import { ModalDataAttributes, UserModel } from '../types'
@@ -81,16 +80,6 @@ function ServiceModal(
         doFetch: createCategory,
     } = useFetch('/v1/categories', FetchMethods.POST, false)
 
-    const {
-        data: service_api_response,
-        status: service_api_status,
-        doFetch: postService,
-    } = useFetch(
-        attributes?.id ? `/v1/services/${attributes?.id}` : '/v1/services',
-        attributes?.id ? FetchMethods.PUT : FetchMethods.POST,
-        false
-    )
-
     function handleCloseModal(e: MouseEvent<HTMLButtonElement>) {
         setAttributes({
             categories: attributes.categories,
@@ -105,8 +94,6 @@ function ServiceModal(
     }
 
     const onSubmit = async () => {
-        service_api_response.message = undefined
-        service_api_response.type = undefined
         try {
             const {
                 name,
@@ -157,23 +144,26 @@ function ServiceModal(
                 form_values.series = true
             }
 
-            const res = await postService(form_values)
-
-            if (res?.ok) {
-                updateList()
-                Context.close()
+            if (form_values.id) {
+                const api = await putApiRequest(
+                    `/v1/services/${form_values.id}`,
+                    form_values as unknown as Record<
+                        string,
+                        string | number | boolean
+                    >
+                )
+                console.log(api)
             }
+            // if (res?.ok) {
+            //     updateList()
+            //     Context.close()
+            // }
         } catch (e) {
             const { message } = e as Record<string, string>
             toggleDialog(message)
         }
     }
     useEffect(() => {
-        if (service_api_response && service_api_response.message) {
-            toggleDialog(service_api_response.message)
-            service_api_response.message = undefined
-            service_api_response.type = undefined
-        }
         if (
             create_category_status == 200 &&
             create_category_api_response.id &&
@@ -244,8 +234,6 @@ function ServiceModal(
         categories_api_response,
         categories_api_status,
         create_category_status,
-        service_api_response,
-        service_api_status,
     ])
 
     const [selected_tab, setSelectedTab] = useState<number>(0)

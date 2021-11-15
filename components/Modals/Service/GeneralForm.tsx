@@ -5,7 +5,7 @@ import MoneyInput from 'components/MoneyInput'
 import { MouseEvent, useEffect, useState } from 'react'
 import { HexColorInput, HexColorPicker } from 'react-colorful'
 import { classNames } from 'utils/dom-helpers'
-import { FormErrors, ServiceType } from './types'
+import { FormErrors } from './types'
 
 import 'react-dropzone-uploader/dist/styles.css'
 import ImageFileUploader from 'components/FileUploader/Image'
@@ -15,6 +15,7 @@ import OptionList, {
     OptionListItem,
 } from 'components/OptionList'
 import { ModalDataAttributes } from '../types'
+import { ServiceType } from 'types/service'
 
 function GeneralForm({
     attributes,
@@ -91,7 +92,9 @@ function GeneralForm({
 
                     <div className="my-8">
                         <RadioGroup
-                            value={attributes?.service_type as unknown as ServiceType}
+                            value={
+                                attributes?.service_type as unknown as ServiceType
+                            }
                             onChange={(v) => {
                                 setAttributes({
                                     ...attributes,
@@ -145,7 +148,11 @@ function GeneralForm({
                                                                 : ''
                                                         }
                                                     >
-                                                        {Object.values(ServiceType)[idx]}
+                                                        {
+                                                            Object.values(
+                                                                ServiceType
+                                                            )[idx]
+                                                        }
                                                     </span>
                                                 </div>
                                             )}

@@ -7,7 +7,7 @@ import { useAppContext } from 'context/AppContext'
 import { useAuth } from 'context/AuthContext'
 import getConfig from 'next/config'
 import { useEffect, useState } from 'react'
-import { ServiceApiItem, ServiceItem } from 'types/service'
+import { ServiceApiItem, ServiceItem, ServiceType } from 'types/service'
 import { useFetch } from 'utils/fetch-helper'
 import { FetchMethods } from 'utils/types'
 import Dashboard from '..'
@@ -22,12 +22,7 @@ function DashboardServices() {
         attributes,
         setAttributes,
     } = useAuth()
-    const [services, setServices] = useState<
-        Record<
-            string,
-            string | boolean | number | Record<string, string | boolean>
-        >[]
-    >([])
+    const [services, setServices] = useState<ServiceItem[]>([])
     const { lang, translations: common_translations } = useAppContext()
     const [translations, setTranslations] = useState(common_translations)
     const [is_instructor_expanded, toggleInstructorFilter] =
@@ -95,17 +90,20 @@ function DashboardServices() {
         },
     }
 
-    function handleItemEdit({
-        id,
-        name,
-        category,
-        description,
-        duration,
-        max_participants,
-        price,
-        primary_color,
-        service_type,
-    }: ServiceItem) {
+    function handleItemEdit(
+        {
+            id,
+            name,
+            category,
+            description,
+            duration,
+            max_participants,
+            price,
+            primary_color,
+            service_type,
+        }: ServiceItem,
+        idx: number
+    ) {
         if (id) {
             setAttributes({
                 ...attributes,
@@ -118,13 +116,14 @@ function DashboardServices() {
                 price: price || '',
                 primary_color: primary_color || '',
                 service_type,
+                list_item_idx: idx,
             })
             ModalContext.open()
         }
     }
 
     useEffect(() => {
-        const list: Record<string, string | boolean | number>[] =
+        const list: ServiceItem[] =
             data &&
             data.content &&
             data.content.map((s: ServiceApiItem): ServiceItem => {
@@ -148,8 +147,6 @@ function DashboardServices() {
                     staff,
                 } = s
 
-                let service_type = s.series ? 'series' : ''
-
                 return {
                     id,
                     accent_color,
@@ -166,7 +163,7 @@ function DashboardServices() {
                     price,
                     description,
                     long_description,
-                    service_type,
+                    service_type: s.type as ServiceType,
                     slug,
                     staff:
                         (staff &&
@@ -270,7 +267,7 @@ function DashboardServices() {
                 </div>
 
                 <ServiceList
-                    services={data.content as ServiceApiItem[]}
+                    services={services}
                     translations={translations}
                     editItem={handleItemEdit}
                 />

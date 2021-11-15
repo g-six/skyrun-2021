@@ -15,6 +15,59 @@ import ServiceList from './ServiceList'
 
 const { SERVICE_MODAL_TRANSLATION_ID } = getConfig().publicRuntimeConfig
 
+export function normalizeItem(s: ServiceApiItem): ServiceItem {
+    const {
+        id,
+        accentColorHex: accent_color,
+        primaryColorHex: primary_color,
+        secondaryColorHex: secondary_color,
+        duration,
+        addons,
+        blockTimeAfter: blocked_from,
+        blockTimeBefore: blocked_to,
+        category,
+        name,
+        price,
+        maxCapacity: max_capacity,
+        description,
+        longDescription: long_description,
+        customSlug: slug,
+        imageUrl: image_src,
+        staff,
+    } = s
+
+    return {
+        id,
+        accent_color,
+        primary_color,
+        secondary_color,
+        duration,
+        addons,
+        is_public: s.public || false,
+        max_participants: s.maxCapacity || 0,
+        blocked_from,
+        blocked_to,
+        category,
+        name,
+        price,
+        description,
+        long_description,
+        service_type: s.type as ServiceType,
+        slug,
+        staff:
+            (staff &&
+                staff.map(
+                    ({ id, user }: { id: string; user: UserModel }) => ({
+                        id,
+                        user_id: user.id as string,
+                        first_name: user.firstName,
+                        last_name: user.lastName,
+                    })
+                )) ||
+            [],
+        image_src,
+    }
+}
 function DashboardServices() {
     const {
         tenant,
@@ -97,6 +150,7 @@ function DashboardServices() {
             category,
             description,
             duration,
+            is_public,
             max_participants,
             price,
             primary_color,
@@ -112,6 +166,7 @@ function DashboardServices() {
                 category,
                 description: description || '',
                 duration: duration || '',
+                is_public,
                 max_participants: max_participants || '',
                 price: price || '',
                 primary_color: primary_color || '',
@@ -124,67 +179,7 @@ function DashboardServices() {
 
     useEffect(() => {
         const list: ServiceItem[] =
-            data &&
-            data.content &&
-            data.content.map((s: ServiceApiItem): ServiceItem => {
-                const {
-                    id,
-                    accentColorHex: accent_color,
-                    primaryColorHex: primary_color,
-                    secondaryColorHex: secondary_color,
-                    duration,
-                    addons,
-                    blockTimeAfter: blocked_from,
-                    blockTimeBefore: blocked_to,
-                    category,
-                    name,
-                    price,
-                    maxCapacity: max_capacity,
-                    description,
-                    longDescription: long_description,
-                    customSlug: slug,
-                    imageUrl: image_src,
-                    staff,
-                } = s
-
-                return {
-                    id,
-                    accent_color,
-                    primary_color,
-                    secondary_color,
-                    duration,
-                    addons,
-                    is_public: s.public || false,
-                    max_participants: s.maxCapacity || 0,
-                    blocked_from,
-                    blocked_to,
-                    category,
-                    name,
-                    price,
-                    description,
-                    long_description,
-                    service_type: s.type as ServiceType,
-                    slug,
-                    staff:
-                        (staff &&
-                            staff.map(
-                                ({
-                                    id,
-                                    user,
-                                }: {
-                                    id: string
-                                    user: UserModel
-                                }) => ({
-                                    id,
-                                    user_id: user.id as string,
-                                    first_name: user.firstName,
-                                    last_name: user.lastName,
-                                })
-                            )) ||
-                        [],
-                    image_src,
-                }
-            })
+            data && data.content && data.content.map(normalizeItem)
         if (list && list.length > 0 && services.length != list.length) {
             setServices(list)
         }
@@ -201,7 +196,23 @@ function DashboardServices() {
                 ...translations_to_add,
             })
         }
-    }, [data, page_translation, lang])
+
+        if (attributes.list_item_idx && attributes.updated_item) {
+            services[attributes.list_item_idx as number] = normalizeItem(
+                attributes.updated_item as ServiceApiItem
+            )
+            setAttributes({
+                categories: attributes.categories,
+            })
+            setServices(services)
+        }
+    }, [
+        data,
+        page_translation,
+        lang,
+        attributes.list_item_idx,
+        attributes.updated_item,
+    ])
 
     return (
         <Dashboard>

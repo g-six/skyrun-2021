@@ -1,7 +1,6 @@
 import { Disclosure } from '@headlessui/react'
-import { UserModel } from 'components/Modals/types'
 import Translation from 'components/Translation'
-import { ServiceApiItem, ServiceItem } from 'types/service'
+import { ServiceItem } from 'types/service'
 export function ServiceList({
     translations = {},
     services = [],
@@ -12,7 +11,6 @@ export function ServiceList({
     editItem(s: ServiceItem, list_item_idx: number): void
 }) {
     const categories: Record<string, string>[] = []
-    const normalized: ServiceItem[] = []
     services.forEach((svc: ServiceItem) => {
         if (
             categories.filter(({ id }) => svc.category.id == id).length == 0
@@ -33,7 +31,6 @@ export function ServiceList({
                             <Disclosure.Panel>
                                 {services.map(
                                     (service: ServiceItem, idx) => {
-                                        console.log(service)
                                         return (service.category
                                             .id as string) == id ? (
                                             <div

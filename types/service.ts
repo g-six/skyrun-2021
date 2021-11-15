@@ -70,6 +70,7 @@ export interface ServiceItem extends ServiceBase {
     id?: string,
     addons?: string[],
     is_public: boolean,
+    description: string,
     category: {
         id: string,
         name?: string,

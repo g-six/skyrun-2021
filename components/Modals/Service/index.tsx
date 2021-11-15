@@ -14,7 +14,7 @@ import { FetchMethods } from 'utils/types'
 import { postApiRequest, putApiRequest, useFetch } from 'utils/fetch-helper'
 import { useAppContext } from 'context/AppContext'
 import ServiceModalStaff from './Staff'
-import { ServiceApiItem, ServiceType } from 'types/service'
+import { ServiceApiItem, ServiceApiType, ServiceItem, ServiceType } from 'types/service'
 import Translation from 'components/Translation'
 import ServiceModalMemberships from './Memberships'
 import { ModalDataAttributes, UserModel } from '../types'
@@ -103,7 +103,8 @@ function ServiceModal(
                 primary_color,
                 price,
                 service_type,
-            } = attributes as unknown as Record<string, string>
+                is_public,
+            } = attributes as unknown as ServiceItem
             const { staff_assigned } = attributes as unknown as Record<
                 string,
                 Record<string, string>[]
@@ -124,10 +125,10 @@ function ServiceModal(
                     id: tenant_id,
                 },
                 maxCapacity: max_participants as unknown as number,
-                public: true,
+                public: is_public,
                 price: price as unknown as number,
-                primaryColorHex: primary_color,
-                type: 'APPOINTMENT',
+                primaryColorHex: primary_color as string,
+                type: service_type as unknown as ServiceApiType,
                 staff: staff_assigned as unknown as {
                     id: string
                     user: UserModel
@@ -135,12 +136,7 @@ function ServiceModal(
                 series: false,
             }
 
-            if (service_type == ServiceType.APPOINTMENT)
-                form_values.type = 'APPOINTMENT'
-            if (service_type == ServiceType.GROUP)
-                form_values.type = 'GROUP'
-            if (service_type == ServiceType.SERIES) {
-                form_values.type = 'SERIES'
+            if (form_values.type == 'SERIES') {
                 form_values.series = true
             }
 
@@ -152,12 +148,16 @@ function ServiceModal(
                         string | number | boolean
                     >
                 )
-                console.log(api)
+                const { list_item_idx } = attributes
+
+                setAttributes({
+                    categories: attributes.categories,
+                    list_item_idx,
+                    updated_item: api,
+                })
+
+                Context.close()
             }
-            // if (res?.ok) {
-            //     updateList()
-            //     Context.close()
-            // }
         } catch (e) {
             const { message } = e as Record<string, string>
             toggleDialog(message)
@@ -268,7 +268,7 @@ function ServiceModal(
     let form_3 = <span>WIP</span>
     let form_4 = <span>WIP</span>
 
-    if (attributes && attributes.service_type == ServiceType.GROUP) {
+    if (attributes && attributes.service_type == 'GROUP') {
         step_2 = (
             <Translation
                 content_key="memberships_panel_title"

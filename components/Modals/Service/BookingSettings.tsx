@@ -20,12 +20,14 @@ export function ServiceModalBooking({
     const privacy_options = [
         {
             name: 'Public',
-            description: 'Include this service on your Customer Booking Page',
+            description:
+                'Include this service on your Customer Booking Page',
             value: true,
         },
         {
             name: 'Private',
-            description: 'Only offer this service privately by sharing the direct link',
+            description:
+                'Only offer this service privately by sharing the direct link',
             value: false,
         },
     ]
@@ -69,7 +71,10 @@ export function ServiceModalBooking({
                                     <RadioGroup.Option
                                         key={op.name}
                                         value={op.value}
-                                        className={({ active, checked }) => {
+                                        className={({
+                                            active,
+                                            checked,
+                                        }) => {
                                             return classNames(
                                                 active
                                                     ? 'ring-2 ring-offset-2 ring-offset-sky-300 ring-primary-light ring-opacity-60'
@@ -87,7 +92,7 @@ export function ServiceModalBooking({
                                                     <div className="flex items-center justify-between w-full">
                                                         <div className="flex-shrink-0 text-primary w-10">
                                                             {checked && (
-                                                            <CheckIcon className="w-6 h-6" />
+                                                                <CheckIcon className="w-6 h-6" />
                                                             )}
                                                         </div>
                                                         <div className="flex flex-1 items-center">
@@ -100,7 +105,9 @@ export function ServiceModalBooking({
                                                                             : 'text-gray-400'
                                                                     }`}
                                                                 >
-                                                                    {op.name}
+                                                                    {
+                                                                        op.name
+                                                                    }
                                                                 </RadioGroup.Label>
                                                                 <RadioGroup.Description
                                                                     as="span"

@@ -14,7 +14,12 @@ import { FetchMethods } from 'utils/types'
 import { postApiRequest, putApiRequest, useFetch } from 'utils/fetch-helper'
 import { useAppContext } from 'context/AppContext'
 import ServiceModalStaff from './Staff'
-import { ServiceApiItem, ServiceApiType, ServiceItem, ServiceType } from 'types/service'
+import {
+    ServiceApiItem,
+    ServiceApiType,
+    ServiceItem,
+    ServiceType,
+} from 'types/service'
 import Translation from 'components/Translation'
 import ServiceModalMemberships from './Memberships'
 import { ModalDataAttributes, UserModel } from '../types'
@@ -105,6 +110,10 @@ function ServiceModal(
                 service_type,
                 is_public,
             } = attributes as unknown as ServiceItem
+
+            const { offerings } = attributes
+            console.log(offerings)
+            return
             const { staff_assigned } = attributes as unknown as Record<
                 string,
                 Record<string, string>[]
@@ -308,11 +317,7 @@ function ServiceModal(
                     showOfferListForm={() => {
                         setAttributes({
                             ...attributes,
-                            offerings: [
-                                {
-                                    id: 'test',
-                                },
-                            ],
+                            offerings: [{}],
                         })
                     }}
                     translations={translations}
@@ -324,6 +329,7 @@ function ServiceModal(
                         setSelectedTab(3)
                     }}
                     attributes={attributes}
+                    setAttributes={setAttributes}
                     tenant_id={tenant_id}
                     onAttributesChanged={(
                         updated_attributes: ModalDataAttributes,
@@ -332,6 +338,15 @@ function ServiceModal(
                         const offerings =
                             attributes.offerings as ModalDataAttributes[]
                         offerings[idx] = updated_attributes
+                        setAttributes({
+                            ...attributes,
+                            offerings,
+                        })
+                    }}
+                    removeItem={(idx: number) => {
+                        const offerings =
+                            attributes.offerings as ModalDataAttributes[]
+                        offerings.splice(idx, 1)
                         setAttributes({
                             ...attributes,
                             offerings,

@@ -120,13 +120,6 @@ function Dashboard({
                         />
                     </AppBarSection>
                     <AppBarSection className="page-actions">
-                        <UniversalCreateButton
-                            handleUniversalButtonChange={
-                                handleUniversalButtonChange
-                            }
-                        />
-                    </AppBarSection>
-                    <AppBarSection className="page-actions">
                         <UserDropdown locale={locale} />
                     </AppBarSection>
 

@@ -16,7 +16,12 @@ import ServiceList from './ServiceList'
 const { SERVICE_MODAL_TRANSLATION_ID } = getConfig().publicRuntimeConfig
 
 function DashboardServices() {
-    const { tenant, ServiceModal: ModalContext, attributes, setAttributes } = useAuth()
+    const {
+        tenant,
+        ServiceModal: ModalContext,
+        attributes,
+        setAttributes,
+    } = useAuth()
     const [services, setServices] = useState<
         Record<
             string,
@@ -90,7 +95,17 @@ function DashboardServices() {
         },
     }
 
-    function handleItemEdit({ id, name, category, description, duration, max_participants, price, primary_color, service_type }: ServiceItem) {
+    function handleItemEdit({
+        id,
+        name,
+        category,
+        description,
+        duration,
+        max_participants,
+        price,
+        primary_color,
+        service_type,
+    }: ServiceItem) {
         if (id) {
             setAttributes({
                 ...attributes,

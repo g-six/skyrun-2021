@@ -20,6 +20,7 @@ export function ServiceList({
             ...svc,
             name: svc.name,
             category: svc.category,
+            primary_color: svc.primaryColorHex,
             is_public: svc.public,
             service_type: svc.type,
             max_participants: svc.maxCapacity,

@@ -92,7 +92,9 @@ function ServiceModal(
     )
 
     function handleCloseModal(e: MouseEvent<HTMLButtonElement>) {
-        setAttributes({})
+        setAttributes({
+            categories: attributes.categories,
+        })
         Context.close()
     }
 

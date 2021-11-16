@@ -1,6 +1,7 @@
 import { InvalidPasswordException } from '@aws-sdk/client-cognito-identity-provider'
 import { useItemsSelection } from '@progress/kendo-react-scheduler/dist/npm/hooks/use-items-selection'
-import ToggleSwitch from 'components/ToggleSwitch'
+import { Switch } from '@progress/kendo-react-inputs'
+import Translation from 'components/Translation'
 import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { classNames } from 'utils/dom-helpers'
@@ -14,6 +15,16 @@ type FormValues = {
     toRecipient: string
     subject: string
     bodyHtml: string
+}
+
+type BookingAndAppointmentEmailItemProps = {
+    item: string
+}
+
+type CollapsibleProps = {
+    headerText: string
+    headerButton?: JSX.Element
+    children: string | JSX.Element | JSX.Element[]
 }
 
 function NotificationsPage() {
@@ -65,47 +76,71 @@ function NotificationsPage() {
         toggleLoading(false)
     }
 
+    const uiText = [
+        {
+            translation_key: 'notifications_1_item_1',
+            title: 'Booking Confirmation',
+        },
+        {
+            translation_key: 'notifications_1_item_2',
+            title: 'Booking Cancellation',
+        },
+        {
+            translation_key: 'notifications_1_item_3',
+            title: 'Booking Rescheduled',
+        },
+        {
+            translation_key: 'notifications_1_item_4',
+            title: 'Reminder Alert',
+        },
+        {
+            translation_key: 'notifications_1_item_5',
+            title: 'Booking Cancellation',
+        },
+        {
+            translation_key: 'notifications_1_item_6',
+            title: 'Waitlist - Approved',
+        },
+    ]
+
     return (
         <Dashboard>
-            <div className={classNames('py-2 px-8')}>
+            <div className="py-2 px-8">
                 <Collapsible
-                    headerText="Booking and Appointments Email"
+                    headerText="notifications_title_1"
                     headerButton={
                         <button
                             className={classNames(
-                                'items-center text-primary px-8 py-2 w-9/12',
+                                'items-center text-primary py-2 w-9/12',
                                 'text-xs rounded-lg border border-gray-300',
                                 'rounded-r-mdk'
                             )}
-                            onClick={(e) => e.stopPropagation() }
+                            onClick={(e) => e.stopPropagation()}
                         >
-                            Edit Category
+                            <Translation
+                                render_as="span"
+                                content_key="btn_edit_category"
+                                translations={{}}
+                            />
                         </button>
                     }
                 >
                     <div>
-                        {[
-                            'Booking Confirmation',
-                            'Booking Cancellation',
-                            'Booking Rescheduled',
-                            'Reminder Alert',
-                            'Booking Cancellation',
-                            'Waitlist - Approved',
-                        ].map((item, index) => (
+                        {uiText.map((item, index) => (
                             <div key={index}>
                                 <BookingAndAppointmentEmailItem
-                                    item={item}
+                                    item={item.translation_key}
                                 />
                             </div>
                         ))}
                     </div>
                 </Collapsible>
-                <Collapsible headerText="Membership Emails">
+                <Collapsible headerText="notifications_title_2">
                     <div>
                         <h1>THIS IS FOR MEMBERSHIP EMAILS</h1>
                     </div>
                 </Collapsible>
-                <Collapsible headerText="Promotions">
+                <Collapsible headerText="notifications_title_3">
                     <div>
                         <h1>This is for Promotions</h1>
                     </div>
@@ -296,54 +331,49 @@ function NotificationsPage() {
         </Dashboard>
     )
 }
-type BookingAndAppointmentEmailItemProps = {
-    item: string
-}
+
 function BookingAndAppointmentEmailItem({
     item,
 }: BookingAndAppointmentEmailItemProps) {
     const [isOn, setIsOn] = useState(false)
     return (
-        <div
-            className={classNames(
-                'grid grid-cols-12 py-3 bg-gray-50',
-                'border-b-2 border-gray-300 w-full'
-            )}
-        >
-            <div
-                className={classNames(
-                    'col-span-1 flex justify-center flex-wrap content-center'
-                )}
-            >
-                <i className={classNames('feather-align-justify')} />
+        <div className="grid grid-cols-12 py-3 bg-gray-50 border-b-2 border-gray-300 w-full">
+            <div className="col-span-1 flex justify-center flex-wrap content-center">
+                <i className="feather-align-justify" />
             </div>
-            <div className={classNames('col-span-7')}>
-                <div className={classNames('text-lg font-bold py-2')}>
-                    {item}
+            <div className="col-span-7">
+                <div className="text-lg font-bold py-2">
+                    <Translation
+                        render_as="span"
+                        content_key={item}
+                        translations={{}}
+                    />
                 </div>
-                <div className={classNames('text-sm')}>
-                    Sent To A Client When A Booking Is Made
+                <div className="text-sm">
+                    <Translation
+                        render_as="span"
+                        content_key="notifications_1_item_subtext"
+                        translations={{}}
+                    />
                 </div>
             </div>
-            <div
-                className={classNames(
-                    'col-span-1 flex justify-center flex-wrap content-center'
-                )}
-            >
-                <ToggleSwitch value={isOn} action={setIsOn} />
+            <div className="col-span-1 flex justify-center flex-wrap content-center">
+                {/* <ToggleSwitch value={isOn} action={setIsOn} /> */}
+                <Switch
+                    className="no-color-change"
+                    onLabel={''}
+                    offLabel={''}
+                    onChange={(e) => setIsOn(e.value)}
+                />
             </div>
-            <div
-                className={classNames(
-                    'col-span-1 flex justify-center flex-wrap content-center'
-                )}
-            >
-                {isOn ? 'On' : 'Off'}
+            <div className="col-span-1 flex justify-center flex-wrap content-center">
+                <Translation
+                    render_as="span"
+                    content_key={isOn ? 'lbl_on' : 'lbl_off'}
+                    translations={{}}
+                />
             </div>
-            <div
-                className={classNames(
-                    'col-span-2 flex justify-center flex-wrap content-center'
-                )}
-            >
+            <div className="col-span-2 flex justify-center flex-wrap content-center">
                 <button
                     className={classNames(
                         'items-center text-primary px-8 py-2',
@@ -351,17 +381,15 @@ function BookingAndAppointmentEmailItem({
                         'rounded-r-mdk'
                     )}
                 >
-                    Customize Email
+                    <Translation
+                        render_as="span"
+                        content_key="btn_customize_email"
+                        translations={{}}
+                    />
                 </button>
             </div>
         </div>
     )
-}
-
-type CollapsibleProps = {
-    headerText: string
-    headerButton?: JSX.Element
-    children: string | JSX.Element | JSX.Element[]
 }
 
 function Collapsible({
@@ -383,15 +411,21 @@ function Collapsible({
                     )}
                     onClick={() => setIsOpen(!isOpen)}
                 >
-                    <div className={classNames('col-span-10')}>
-                        <div className={classNames('pt-1 pl-4 font-bold')}>
-                            {headerText}
+                    <div className="col-span-10">
+                        <div className="pt-1 pl-4 font-bold">
+                            <Translation
+                                render_as="span"
+                                content_key={headerText}
+                                translations={{}}
+                            />
                         </div>
                     </div>
-                    {/* <div className={classNames('col-span-1 text-right')}>
-                        
-                    </div> */}
-                    <div className={classNames('col-span-2 text-right')}>
+                    <div
+                        className={classNames(
+                            'col-span-2 text-right',
+                            headerButton ? 'inline-flex' : ''
+                        )}
+                    >
                         {headerButton && headerButton}
                         <i
                             className={classNames(

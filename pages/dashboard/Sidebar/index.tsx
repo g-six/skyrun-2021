@@ -115,6 +115,12 @@ function Sidebar({ children }: Props) {
             route: '/dashboard/packages',
         },
         {
+            translation_key: 'notifications',
+            text: 'Notifications',
+            icon: 'feather-bell',
+            route: '/dashboard/notifications',
+        },
+        {
             translation_key: 'resources',
             text: 'Resources',
             icon: 'feather-folder',
@@ -156,12 +162,6 @@ function Sidebar({ children }: Props) {
             text: 'Integrations',
             icon: 'k-i-html',
             route: '/dashboard/integrations',
-        },
-        {
-            translation_key: 'notifications',
-            text: 'Notifications',
-            icon: 'feather-bell',
-            route: '/dashboard/notifications',
         },
     ]
 

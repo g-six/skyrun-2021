@@ -3,13 +3,13 @@ import styles from '../../styles/Footer.module.scss'
 
 export default function Footer(props: Record<string, string>) {
     return (
-        <footer className="container mx-auto pt-20 pb-8 lg:pb-12">
+        <footer className="container mx-auto lg:pt-20 pb-8 lg:pb-12 lg:px-0 px-6 pt-6">
             <div className="flex flex-col divide-y gap-12">
-                <div className="grid grid-cols-4 gap-2">
-                    <div className="col-span-1">
+                <div className="grid lg:grid-cols-4 gap-6 lg:gap-2">
+                    <div className="lg:col-span-1">
                         <div className={styles.logo} />
                     </div>
-                    <div className="col-span-1">
+                    <div className="lg:col-span-1">
                         <Translation
                             className="text-primary-dark circular font-bold"
                             content_key="footer_contact_title"
@@ -27,7 +27,7 @@ export default function Footer(props: Record<string, string>) {
                             </li>
                         </ul>
                     </div>
-                    <div className="col-span-1">
+                    <div className="lg:col-span-1">
                         <Translation
                             className="text-primary-dark circular font-bold"
                             content_key="footer_address_title"
@@ -50,7 +50,7 @@ export default function Footer(props: Record<string, string>) {
                             </li>
                         </ul>
                     </div>
-                    <div className="col-span-1 text-primary-dark">
+                    <div className="lg:col-span-1 text-primary-dark">
                         <Translation
                             className="circular font-bold"
                             content_key="footer_follow_us"
@@ -82,17 +82,16 @@ export default function Footer(props: Record<string, string>) {
                         </div>
                     </div>
                 </div>
-                <div className="grid grid-cols-3 gap-4 py-8 text-gray-400">
+                <div className="lg:grid lg:grid-cols-3 gap-4 py-8 text-gray-400">
                     <span className="col-span-2">
                         <Translation
                             content_key="footer_copyright_1"
                             translations={props}
                         />{' '}
-                        <Translation
+                        <strong><Translation
                             content_key="footer_copyright_2"
-                            render_as="strong"
                             translations={props}
-                        />{' '}
+                        /></strong>{' '}
                         <Translation
                             content_key="footer_copyright_3"
                             translations={props}

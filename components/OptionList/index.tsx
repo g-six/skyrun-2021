@@ -94,7 +94,7 @@ function OptionList(props: OptionListProps & withClass) {
                                         props.position ||
                                             ListFlyFrom.TOP_LEFT,
                                         props.className || '',
-                                        'relative mt-1 w-full py-1 sm:text-sm',
+                                        'mt-1 w-full py-1 sm:text-sm',
                                         props.listboxCss || 'h-40'
                                     )}
                                     static={props.static}

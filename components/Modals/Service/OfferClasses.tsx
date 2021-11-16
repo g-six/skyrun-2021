@@ -1,3 +1,4 @@
+import { Listbox } from '@headlessui/react'
 import DateInput from 'components/DateInput'
 import DropdownComponent from 'components/DropdownSelectors'
 import OptionList, { OptionListItem } from 'components/OptionList'
@@ -77,11 +78,13 @@ export function BlankOffer({
 function ServiceModalOfferClasses({
     translations,
     attributes,
+    locations,
+    staff,
+    setAttributes,
     onAttributesChanged,
-    onDuplicate,
+    removeItem,
     tenant_id,
     handleCloseModal,
-    onRemove,
     onPrevious,
     onNext,
 }: {
@@ -89,11 +92,13 @@ function ServiceModalOfferClasses({
     attributes?: ModalDataAttributes
     tenant_id: string
     handleCloseModal: (e: MouseEvent<HTMLButtonElement>) => void
-    onRemove(idx: number): void
+    locations: Record<string, string>[],
     onPrevious(): void
     onNext(): void
     onAttributesChanged(u: ModalDataAttributes, idx: number): void
-    onDuplicate(idx: number): void
+    removeItem(idx: number): void
+    staff: Record<string, string>[]
+    setAttributes(r: ModalDataAttributes): void
 }) {
     const api_error =
         attributes && (attributes.api_error as Record<string, string>)
@@ -102,39 +107,21 @@ function ServiceModalOfferClasses({
         getTimes()
     )
 
-    const { data, is_loading: locations_loading } = useFetch(
-        `/v1/locations/tenant-id/?tenantId=${tenant_id}`,
-        FetchMethods.GET,
-        true
-    )
-    const locations =
-        data && data.content && data.numberOfElements > 0
-            ? data.content.map((loc: Record<string, string>) => ({
-                  value: loc.id,
-                  text: loc.name,
-              }))
-            : []
+    let offerings =
+        attributes && (attributes.offerings as ModalDataAttributes[])
 
-    const { data: staff_api_response, is_loading: staff_loading } =
-        useFetch(`/v1/staff/?tenantId=${tenant_id}`, FetchMethods.GET, true)
-    const staff =
-        staff_api_response &&
-        staff_api_response.content &&
-        staff_api_response.numberOfElements > 0
-            ? staff_api_response.content.map(
-                  (loc: { id: string; user: Record<string, string> }) => ({
-                      value: loc.id,
-                      text: [
-                          (loc.user as unknown as Record<string, string>)
-                              .firstName,
-                          (loc.user as unknown as Record<string, string>)
-                              .lastName,
-                      ].join(' '),
-                  })
-              )
-            : []
-
-    const offerings = attributes && (attributes.offerings as ModalDataAttributes[])
+    function duplicateRow(idx: number) {
+        if (offerings && offerings[idx]) {
+            offerings.push({
+                ...offerings[idx],
+                date: new Date(offerings[idx].date as Date),
+            })
+            setAttributes({
+                ...attributes,
+                offerings,
+            })
+        }
+    }
 
     return (
         <div
@@ -164,7 +151,7 @@ function ServiceModalOfferClasses({
                 <div
                     className={classNames(
                         'justify-start',
-                        'flex-1 flex flex-col gap-3'
+                        'flex-1 flex flex-col p-3 gap-3'
                     )}
                 >
                     <div className="flex gap-2">
@@ -177,7 +164,7 @@ function ServiceModalOfferClasses({
 
                         <Translation
                             render_as="span"
-                            className="font-semibold tracking-wider font-display text-gray-500 text-xs uppercase w-52"
+                            className="font-semibold tracking-wider font-display text-gray-500 text-xs uppercase w-56"
                             content_key="instructor_col_header"
                             translations={translations}
                         />
@@ -191,7 +178,7 @@ function ServiceModalOfferClasses({
 
                         <Translation
                             render_as="span"
-                            className="font-semibold tracking-wider font-display text-gray-500 text-xs uppercase w-36"
+                            className="font-semibold tracking-wider font-display text-gray-500 text-xs uppercase w-28"
                             content_key="date_col_header"
                             translations={translations}
                         />
@@ -204,7 +191,7 @@ function ServiceModalOfferClasses({
                         />
                     </div>
 
-                    <div className="bg-primary-lighter bg-opacity-40 py-2 overflow-auto max-h-96 h-96">
+                    <div className="max-h-96 h-96 bg-primary-lighter bg-opacity-40 py-2 flex flex-col gap-2 max-h-large overflow-auto">
                         {offerings
                             ? offerings.map(
                                   (o: ModalDataAttributes, idx: number) => {
@@ -212,89 +199,134 @@ function ServiceModalOfferClasses({
                                           <div
                                               key={idx}
                                               className={classNames(
-                                                  'flex gap-2 p-2'
+                                                  'flex gap-2 px-2 h-12 overflow-visible'
                                               )}
                                           >
                                               <div className="w-44 px-1">
-                                                  {locations_loading ? (
-                                                      <div className="bg-white h-full w-40 rounded-xl" />
-                                                  ) : (
-                                                      <OptionList
+                                                  {locations &&
+                                                  locations.length ? (
+                                                      <select
                                                           id="location"
-                                                          className="text-xs"
-                                                          onChange={(
-                                                              t: OptionListItem
-                                                          ) => {
+                                                          name="location"
+                                                          onChange={(e) => {
+                                                              o.location =
+                                                                  e.target.value
                                                               onAttributesChanged(
-                                                                  {
-                                                                      location:
-                                                                          t.value as string,
-                                                                  },
+                                                                  o,
                                                                   idx
                                                               )
                                                           }}
-                                                          defaultValue={
-                                                              offerings[idx]
-                                                                  .location as string
+                                                          value={
+                                                              (o.location &&
+                                                                  o.location) as string
                                                           }
-                                                          options={
-                                                              locations
-                                                          }
-                                                          listboxCss="h-auto"
-                                                      />
+                                                      >
+                                                          {locations.map(
+                                                              ({
+                                                                  text,
+                                                                  value,
+                                                              }: Record<
+                                                                  string,
+                                                                  string
+                                                              >) => (
+                                                                  <option
+                                                                      key={
+                                                                          value
+                                                                      }
+                                                                      value={
+                                                                          value
+                                                                      }
+                                                                  >
+                                                                      {text}
+                                                                  </option>
+                                                              )
+                                                          )}
+                                                      </select>
+                                                  ) : (
+                                                      <div className="bg-white w-full block h-full bg-gray-150 rounded-lg" />
                                                   )}
                                               </div>
 
-                                              <div className="w-52 place-items-stretch  px-1">
-                                                  {staff_loading ? (
-                                                      <div className="bg-white h-full w-48 rounded-xl" />
-                                                  ) : (
-                                                      <OptionList
+                                              <div className="w-56 place-items-stretch px-1">
+                                                  {staff && staff.length ? (
+                                                      <select
                                                           id="staff"
-                                                          className="text-xs"
-                                                          onChange={(
-                                                              t: OptionListItem
-                                                          ) => {
-                                                              ;(o.staff =
-                                                                  t.value as string),
-                                                                  onAttributesChanged(
-                                                                      o,
-                                                                      idx
-                                                                  )
+                                                          name="staff"
+                                                          onChange={(e) => {
+                                                              o.staff =
+                                                                  e.target.value
+                                                              onAttributesChanged(
+                                                                  o,
+                                                                  idx
+                                                              )
                                                           }}
-                                                          options={staff}
-                                                          defaultValue={
-                                                              offerings[idx]
-                                                                  .staff as string
+                                                          value={
+                                                              (o.staff &&
+                                                                  o.staff) as string
                                                           }
-                                                          listboxCss="h-auto"
-                                                      />
+                                                      >
+                                                          {staff.map(
+                                                              ({
+                                                                  text,
+                                                                  value,
+                                                              }: Record<
+                                                                  string,
+                                                                  string
+                                                              >) => (
+                                                                  <option
+                                                                      key={
+                                                                          value
+                                                                      }
+                                                                      value={
+                                                                          value
+                                                                      }
+                                                                  >
+                                                                      {text}
+                                                                  </option>
+                                                              )
+                                                          )}
+                                                      </select>
+                                                  ) : (
+                                                      <div className="bg-white w-full block h-full bg-gray-150 rounded-lg" />
                                                   )}
                                               </div>
 
                                               <div className="w-28 px-1">
-                                                  <OptionList
+                                                  <select
                                                       id="time"
-                                                      className="font-mono text-xs"
-                                                      onChange={(
-                                                          t: OptionListItem
-                                                      ) => {
+                                                      name="time"
+                                                      onChange={(e) => {
                                                           o.time =
-                                                              t.value as string
+                                                              e.target.value
                                                           onAttributesChanged(
                                                               o,
                                                               idx
                                                           )
                                                       }}
-                                                      defaultValue={
-                                                          offerings[idx]
-                                                              .time as string
+                                                      value={
+                                                          o.time as string
                                                       }
-                                                      options={times}
-                                                      listboxCss="h-auto"
-                                                  />
+                                                  >
+                                                      {times.map(
+                                                          ({
+                                                              text,
+                                                              value,
+                                                          }) => (
+                                                              <option
+                                                                  key={
+                                                                      value
+                                                                  }
+                                                                  value={
+                                                                      value
+                                                                  }
+                                                              >
+                                                                  {text}
+                                                              </option>
+                                                          )
+                                                      )}
+                                                  </select>
                                               </div>
-                                              <div className="w-36 place-items-stretch px-1">
+                                              <div className="w-28 place-items-stretch px-1">
                                                   <DateInput
                                                       className="focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md calendar"
                                                       onChange={(
@@ -306,10 +338,9 @@ function ServiceModalOfferClasses({
                                                               idx
                                                           )
                                                       }}
-                                                      dateFormat="MMMM d"
+                                                      dateFormat="dd/MM/yyyy"
                                                       selected={
-                                                          offerings[idx]
-                                                              .date as Date
+                                                          o.date as Date
                                                       }
                                                   />
                                               </div>
@@ -318,18 +349,17 @@ function ServiceModalOfferClasses({
                                                       id={`check_${idx}`}
                                                       className="h-4 w-4 border-gray-300 rounded text-primary focus:ring-primary-light"
                                                       type="checkbox"
-                                                      onChange={(e) => {
+                                                      defaultChecked={
+                                                          o.is_recurring as boolean
+                                                      }
+                                                      onChange={(v) => {
                                                           o.is_recurring =
-                                                              e.target.checked
+                                                              v.target.checked
                                                           onAttributesChanged(
                                                               o,
                                                               idx
                                                           )
                                                       }}
-                                                      defaultChecked={
-                                                          offerings[idx]
-                                                              .is_recurring as boolean
-                                                      }
                                                   />
                                                   <Translation
                                                       render_as="label"
@@ -342,13 +372,17 @@ function ServiceModalOfferClasses({
                                                   <div className="flex-1" />
                                                   <button
                                                       type="button"
-                                                      className="text-primary bg-primary-light bg-opacity-30 h-8 w-8 rounded text-lg feather-copy"
-                                                      onClick={() => {onDuplicate(idx)}}
+                                                      className="text-primary bg-primary-light bg-opacity-30 h-10 w-10 rounded-lg text-xl feather-copy"
+                                                      onClick={() => {
+                                                          duplicateRow(idx)
+                                                      }}
                                                   />
                                                   <button
                                                       type="button"
-                                                      className="text-red-500 bg-red-100 h-8 w-8 rounded text-lg feather-trash-2"
-                                                      onClick={() => {onRemove(idx)}}
+                                                      className="text-red-500 bg-red-100 h-10 w-10 rounded-lg text-xl feather-trash-2"
+                                                      onClick={() => {
+                                                          removeItem(idx)
+                                                      }}
                                                   />
                                               </div>
                                           </div>
@@ -421,4 +455,5 @@ function getTimes() {
     } while (i < 24)
     return times
 }
+
 export default ServiceModalOfferClasses

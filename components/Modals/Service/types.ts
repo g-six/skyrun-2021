@@ -13,9 +13,3 @@ export type FormErrors = {
     primary_color?: string
     service_type?: string
 }
-
-export enum ServiceType {
-    APPOINTMENT = 'Appointment',
-    GROUP = 'Group Class',
-    SERIES = 'Series',
-}

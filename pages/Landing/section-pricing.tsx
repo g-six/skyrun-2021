@@ -232,8 +232,14 @@ export default function LandingPricingSection(
                             translations={props}
                         />
                         <Translation
-                            className="block text-center mt-8"
+                            className="block text-center text-gray-400 circular-light"
                             content_key="pricing_tier_0_subtitle_yearly"
+                            render_as="div"
+                            translations={props}
+                        />
+                        <Translation
+                            className="block text-center mt-8"
+                            content_key="pricing_tier_0_subtitle"
                             render_as="div"
                             translations={props}
                         />
@@ -434,17 +440,17 @@ export default function LandingPricingSection(
                             />
                             <ul className="list-disc ml-6 leading-loose text-sm mt-2 h-28">
                                 <Translation
-                                    content_key="pricing_tier_2_subfeature_checklist_1"
+                                    content_key="pricing_tier_1_subfeature_checklist_1"
                                     render_as="li"
                                     translations={props}
                                 />
                                 <Translation
-                                    content_key="pricing_tier_2_subfeature_checklist_2"
+                                    content_key="pricing_tier_1_subfeature_checklist_2"
                                     render_as="li"
                                     translations={props}
                                 />
                                 <Translation
-                                    content_key="pricing_tier_2_subfeature_checklist_3"
+                                    content_key="pricing_tier_1_subfeature_checklist_3"
                                     render_as="li"
                                     translations={props}
                                 />
@@ -492,7 +498,7 @@ export default function LandingPricingSection(
                             {currency.symbol}
                             {getTotalPrice(
                                 getPriceFromContent(
-                                    'pricing_tier_1_price_usd',
+                                    'pricing_tier_2_price_usd',
                                     props
                                 ),
                                 discountRate,

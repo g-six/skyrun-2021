@@ -50,7 +50,9 @@ function AboutUs() {
     return (
         <div>
             <Head>
-                <title>{translations.banner_title || 'About Us'}</title>
+                <title>
+                    {translations.about_us_page_title || 'About Us'}
+                </title>
                 <meta property="og:title" content="About Us" key="title" />
 
                 <link

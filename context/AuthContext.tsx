@@ -11,7 +11,7 @@ import signUp from 'services/UserPool'
 import { AuthContextType, SkyUser, TenantInfo } from './types'
 import { getApiRequest } from 'utils/fetch-helper'
 import { Tier } from './AppContext'
-import { UserModel } from 'components/Modals/types'
+import { ModalDataAttributes, UserModel } from 'components/Modals/types'
 
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 
@@ -52,6 +52,7 @@ export function SkyAuthProvider({ children }: Props) {
     const [already_set, setRecordsRetrievalStatus] = useState<Record<string, boolean>>({})
     const [is_drawer_expanded, toggleDrawerSize] = useState<boolean>(Cookies.get('drawer') == 'expanded')
     const [data, setData] = useState<UserProfileRecord>({})
+    const [attributes, setAttributes] = useState<ModalDataAttributes>({})
 
     const LoginModal = useModal()
     const SignupModal = useModal()
@@ -63,6 +64,8 @@ export function SkyAuthProvider({ children }: Props) {
     const StaffModal = useModal()
 
     const value = {
+        attributes,
+        setAttributes,
         user,
         is_drawer_expanded,
         toggleDrawerSize,
@@ -100,7 +103,7 @@ export function SkyAuthProvider({ children }: Props) {
                             const res: ApiUser = await getApiRequest('/v1/users/current')
                             initUserProfile(res)
                         } catch (e) {
-                            console.log(e)
+                            console.log('Error in AuthContext', e)
                         }
                     } else {
                         console.log('Cognito get profile failed')

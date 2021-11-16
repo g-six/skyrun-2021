@@ -94,7 +94,7 @@ function OptionList(props: OptionListProps & withClass) {
                                         props.position ||
                                             ListFlyFrom.TOP_LEFT,
                                         props.className || '',
-                                        'relative mt-1 w-full py-1 sm:text-sm',
+                                        'mt-1 w-full py-1 sm:text-sm',
                                         props.listboxCss || 'h-40'
                                     )}
                                     static={props.static}
@@ -107,7 +107,7 @@ function OptionList(props: OptionListProps & withClass) {
                                                     active
                                                         ? 'text-white bg-primary'
                                                         : 'text-gray-900',
-                                                    'hover:bg-primary-lighter cursor-default select-none relative py-2 pl-3 pr-9'
+                                                    'hover:bg-primary-lighter hover:text-primary cursor-default select-none relative py-2 pl-3 pr-9'
                                                 )
                                             }
                                             value={item}

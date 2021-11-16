@@ -20,6 +20,7 @@ import Cookies from 'js-cookie'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 import { classNames } from 'utils/dom-helpers'
 import { betterPathname, toTitleCase } from 'utils/string-helper'
 
@@ -31,7 +32,10 @@ function Dashboard({
 }: { redirect?: string } & Wrapper) {
     const router = useRouter()
     const {
+        attributes,
+        setAttributes,
         user,
+        tenant,
         LoginModal: LoginModalContext,
         CreateClientModal: NewClientModal,
         StaffModal: NewStaffModal,
@@ -133,7 +137,12 @@ function Dashboard({
                 <LoginModal />
                 <CreateClientModal />
                 <StaffModal />
-                <ServiceModal />
+                {tenant && tenant.id ? <StaffModal /> : <></>}
+                {tenant && tenant.id ? (
+                    <ServiceModal tenant_id={tenant.id} data={attributes} />
+                ) : (
+                    <></>
+                )}
             </Authenticated>
 
             <NotAuthenticated>

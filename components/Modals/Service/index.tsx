@@ -11,12 +11,15 @@ import {
 } from '@progress/kendo-react-layout'
 import GeneralForm from './GeneralForm'
 import { FetchMethods } from 'utils/types'
-import { useFetch } from 'utils/fetch-helper'
+import { postApiRequest, putApiRequest, useFetch } from 'utils/fetch-helper'
 import { useAppContext } from 'context/AppContext'
 import ServiceModalStaff from './Staff'
-import { ServiceApiItem } from 'types/service'
-import { ServiceType } from './types'
-import { TenantInfo } from 'context/types'
+import {
+    ServiceApiItem,
+    ServiceApiType,
+    ServiceItem,
+    ServiceType,
+} from 'types/service'
 import Translation from 'components/Translation'
 import ServiceModalMemberships from './Memberships'
 import { ModalDataAttributes, UserModel } from '../types'
@@ -41,20 +44,17 @@ const ModalProvider = createModal(
 
 export const ServiceModalCloser = ModalProvider.Closer
 
-function ServiceModal() {
-    const { ServiceModal, tenant } = useAuth()
+function ServiceModal(
+    { tenant_id, data } = {
+        tenant_id: '',
+        data: {},
+    }
+) {
+    const { setAttributes, attributes, ServiceModal: Context } = useAuth()
     const { lang, translations: common_translations } = useAppContext()
     const [translations, setTranslations] = useState(common_translations)
     const [prompt_message, toggleDialog] = useState<string>('')
-    const [attributes, setAttributes] = useState<ModalDataAttributes>({})
-
-    const categories =
-        (attributes &&
-            (attributes.categories as unknown as Record<
-                string,
-                string
-            >[])) ||
-        []
+    const categories: Record<string, string>[] = []
 
     const offerings =
         (attributes && (attributes.offerings as ModalDataAttributes[])) ||
@@ -73,7 +73,45 @@ function ServiceModal() {
         data: categories_api_response,
         status: categories_api_status,
         doFetch: getCategories,
-    } = useFetch('/v1/categories', FetchMethods.GET, true)
+    } = useFetch(
+        `/v1/categories/?tenantId=${tenant_id}`,
+        FetchMethods.GET,
+        true
+    )
+
+    const { data: staff_api_response } = useFetch(
+        `/v1/staff/?tenantId=${tenant_id}`,
+        FetchMethods.GET,
+        true
+    )
+    const staff: Record<string, string>[] =
+        staff_api_response &&
+        staff_api_response.content &&
+        staff_api_response.numberOfElements > 0
+            ? staff_api_response.content.map(
+                  (s: { id: string; user: Record<string, string> }) => ({
+                      value: s.id,
+                      text: [
+                          (s.user as unknown as Record<string, string>)
+                              .firstName,
+                          (s.user as unknown as Record<string, string>)
+                              .lastName,
+                      ].join(' '),
+                  })
+              )
+            : []
+    const { data: location_list } = useFetch(
+        `/v1/locations/tenant-id/?tenantId=${tenant_id}`,
+        FetchMethods.GET,
+        true
+    )
+    const locations =
+        location_list && location_list.content && location_list.numberOfElements > 0
+            ? location_list.content.map((loc: Record<string, string>) => ({
+                    value: loc.id,
+                    text: loc.name,
+                }))
+            : []
 
     const {
         data: create_category_api_response,
@@ -81,48 +119,32 @@ function ServiceModal() {
         doFetch: createCategory,
     } = useFetch('/v1/categories', FetchMethods.POST, false)
 
-    const {
-        data: service_api_response,
-        status: service_api_status,
-        doFetch: postService,
-    } = useFetch(
-        attributes?.id ? `/v1/services/${attributes?.id}` : '/v1/services',
-        attributes?.id ? FetchMethods.PUT : FetchMethods.POST,
-        false
-    )
-
     function handleCloseModal(e: MouseEvent<HTMLButtonElement>) {
-        ServiceModal.setAttributes({})
-        ServiceModal.close()
+        setAttributes({
+            categories: attributes.categories,
+        })
+        Context.close()
     }
 
     function updateList() {
-        ServiceModal.setAttributes({
+        setAttributes({
             has_updates: true,
         })
     }
 
-    if (!attributes || !attributes?.service_type) {
-        setAttributes({
-            ...attributes,
-            service_type: ServiceType.APPOINTMENT,
-        })
-    }
-
     const onSubmit = async () => {
-        service_api_response.message = undefined
-        service_api_response.type = undefined
         try {
             const {
                 name,
-                category,
                 description,
                 duration,
                 max_participants,
                 primary_color,
                 price,
                 service_type,
-            } = attributes as unknown as Record<string, string>
+                is_public,
+            } = attributes as unknown as ServiceItem
+
             const { staff_assigned } = attributes as unknown as Record<
                 string,
                 Record<string, string>[]
@@ -135,18 +157,18 @@ function ServiceModal() {
 
             const form_values: ServiceApiItem = {
                 id: attributes?.id as string,
-                category: {
-                    id: category as string,
-                },
+                category: attributes.category as { id: string },
                 description,
                 duration: duration as unknown as number,
                 name,
-                tenant: tenant as TenantInfo,
+                tenant: {
+                    id: tenant_id,
+                },
                 maxCapacity: max_participants as unknown as number,
-                public: true,
+                public: is_public,
                 price: price as unknown as number,
-                primaryColorHex: primary_color,
-                type: 'APPOINTMENT',
+                primaryColorHex: primary_color as string,
+                type: service_type as unknown as ServiceApiType,
                 staff: staff_assigned as unknown as {
                     id: string
                     user: UserModel
@@ -154,32 +176,85 @@ function ServiceModal() {
                 series: false,
             }
 
-            if (service_type == ServiceType.APPOINTMENT)
-                form_values.type = 'APPOINTMENT'
-            if (service_type == ServiceType.GROUP)
-                form_values.type = 'GROUP'
-            if (service_type == ServiceType.SERIES) {
-                form_values.type = 'SERIES'
+            if (form_values.type == 'SERIES') {
                 form_values.series = true
             }
 
-            const res = await postService(form_values)
+            let serviceId: string
+            if (form_values.id) {
+                serviceId = form_values.id
+                const api = await putApiRequest(
+                    `/v1/services/${form_values.id}`,
+                    form_values as unknown as Record<
+                        string,
+                        string | number | boolean
+                    >
+                )
+                const { list_item_idx } = attributes
 
-            if (res?.ok) {
-                updateList()
-                ServiceModal.close()
+                setAttributes({
+                    categories: attributes.categories,
+                    list_item_idx,
+                    updated_item: api,
+                })
+            } else {
+                const api = await postApiRequest(
+                    '/v1/services',
+                    form_values as unknown as Record<
+                        string,
+                        string | number | boolean
+                    >
+                )
+
+                setAttributes({
+                    categories: attributes.categories,
+                })
             }
+
+            if (offerings.length > 0) {
+                const offerings = attributes.offerings as Record<string, string>[]
+                console.log(offerings)
+                offerings.forEach(async ({
+                    date,
+                    time,
+                    is_recurring,
+                    id,
+                    duration,
+                    location: locationId,
+                    staff: staffId,
+                }) => {
+                    const group_class: Record<string, string | boolean | Record<string, string | boolean>> = {
+                        id,
+                        effectiveDate: date,
+                        startTime: time,
+                        endTime: '23:59',
+                        recurring: is_recurring,
+                        serviceId: attributes.id as string,
+                        groupClassSetting: {
+                            locationId,
+                            staffId,
+                        }
+                    }
+                    if (id) {
+                        const offer_api = await putApiRequest(
+                            `/v1/group_classes/${id}`,
+                            group_class,
+                        )
+                    } else {
+                        const offer_api = await postApiRequest(
+                            '/v1/group_classes',
+                            group_class,
+                        )
+                    }
+                })
+            }
+            Context.close()
         } catch (e) {
             const { message } = e as Record<string, string>
             toggleDialog(message)
         }
     }
     useEffect(() => {
-        if (service_api_response && service_api_response.message) {
-            toggleDialog(service_api_response.message)
-            service_api_response.message = undefined
-            service_api_response.type = undefined
-        }
         if (
             create_category_status == 200 &&
             create_category_api_response.id &&
@@ -224,6 +299,13 @@ function ServiceModal() {
             }
         }
 
+        if (!attributes || !attributes?.service_type) {
+            setAttributes({
+                ...attributes,
+                service_type: ServiceType.APPOINTMENT,
+            })
+        }
+
         if (lang && page_translation.data?.attributes[lang]) {
             const translations_to_add: Record<string, string> = {}
             page_translation.data.attributes[lang].forEach(
@@ -240,13 +322,9 @@ function ServiceModal() {
         common_translations,
         page_translation,
         lang,
-        attributes,
-        setAttributes,
         categories_api_response,
         categories_api_status,
         create_category_status,
-        service_api_response,
-        service_api_status,
     ])
 
     const [selected_tab, setSelectedTab] = useState<number>(0)
@@ -281,7 +359,7 @@ function ServiceModal() {
     let form_3 = <span>WIP</span>
     let form_4 = <span>WIP</span>
 
-    if (attributes && attributes.service_type == ServiceType.GROUP) {
+    if (attributes && attributes.service_type == 'GROUP') {
         step_2 = (
             <Translation
                 content_key="memberships_panel_title"
@@ -321,26 +399,27 @@ function ServiceModal() {
                     showOfferListForm={() => {
                         setAttributes({
                             ...attributes,
-                            offerings: [
-                                {
-                                    id: 'test',
-                                },
-                            ],
+                            offerings: [{
+                                date: new Date(Date.now() + 24 * 60 * 60 * 1000),
+                                location: locations && locations[0].value,
+                                staff: staff && staff[0].value,
+                                time: '10:00',
+                            }],
                         })
                     }}
                     translations={translations}
                 />
-            ) : tenant ? (
+            ) : tenant_id ? (
                 <ServiceModalOfferClasses
                     onPrevious={() => setSelectedTab(1)}
                     onNext={() => {
                         setSelectedTab(3)
                     }}
                     attributes={attributes}
-                    tenant_id={tenant && tenant.id}
-                    removeAll={() => {
-                        console.log('remove all')
-                    }}
+                    locations={locations}
+                    staff={staff}
+                    setAttributes={setAttributes}
+                    tenant_id={tenant_id}
                     onAttributesChanged={(
                         updated_attributes: ModalDataAttributes,
                         idx: number
@@ -348,6 +427,15 @@ function ServiceModal() {
                         const offerings =
                             attributes.offerings as ModalDataAttributes[]
                         offerings[idx] = updated_attributes
+                        setAttributes({
+                            ...attributes,
+                            offerings,
+                        })
+                    }}
+                    removeItem={(idx: number) => {
+                        const offerings =
+                            attributes.offerings as ModalDataAttributes[]
+                        offerings.splice(idx, 1)
                         setAttributes({
                             ...attributes,
                             offerings,
@@ -371,7 +459,9 @@ function ServiceModal() {
                         ...updated_attributes,
                     })
                 }}
+                onPrevious={() => setSelectedTab(2)}
                 translations={translations}
+                onNext={onSubmit}
             />
         )
     }
@@ -389,9 +479,7 @@ function ServiceModal() {
                             <span className="inline-block self-center text-lg text-primary-dark">
                                 <ServiceModalCloser className="self-center" />
                                 <span className="circular">
-                                    {ServiceModal.attributes?.id
-                                        ? 'Edit'
-                                        : 'New'}{' '}
+                                    {attributes?.id ? 'Edit' : 'New'}{' '}
                                     Service
                                 </span>
                             </span>

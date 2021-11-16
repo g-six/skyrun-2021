@@ -2,10 +2,10 @@ import { RadioGroup } from '@headlessui/react'
 import DropdownComponent from 'components/DropdownSelectors'
 import { DropPosition } from 'components/DropdownSelectors/common'
 import MoneyInput from 'components/MoneyInput'
-import { MouseEvent, useState } from 'react'
+import { MouseEvent, useEffect, useState } from 'react'
 import { HexColorInput, HexColorPicker } from 'react-colorful'
 import { classNames } from 'utils/dom-helpers'
-import { FormErrors, ServiceType } from './types'
+import { FormErrors } from './types'
 
 import 'react-dropzone-uploader/dist/styles.css'
 import ImageFileUploader from 'components/FileUploader/Image'
@@ -15,6 +15,7 @@ import OptionList, {
     OptionListItem,
 } from 'components/OptionList'
 import { ModalDataAttributes } from '../types'
+import { ServiceType } from 'types/service'
 
 function GeneralForm({
     attributes,
@@ -91,7 +92,9 @@ function GeneralForm({
 
                     <div className="my-8">
                         <RadioGroup
-                            value={attributes?.service_type}
+                            value={
+                                attributes?.service_type as unknown as ServiceType
+                            }
                             onChange={(v) => {
                                 setAttributes({
                                     ...attributes,
@@ -113,7 +116,7 @@ function GeneralForm({
                                 />
                             </RadioGroup.Label>
                             <div className="flex gap-6">
-                                {Object.values(ServiceType).map((v) => {
+                                {Object.keys(ServiceType).map((v, idx) => {
                                     return (
                                         <RadioGroup.Option
                                             key={v}
@@ -145,7 +148,11 @@ function GeneralForm({
                                                                 : ''
                                                         }
                                                     >
-                                                        {v}
+                                                        {
+                                                            Object.values(
+                                                                ServiceType
+                                                            )[idx]
+                                                        }
                                                     </span>
                                                 </div>
                                             )}
@@ -310,7 +317,10 @@ function GeneralForm({
                         }}
                         defaultValue={
                             (attributes &&
-                                (attributes.category as string)) ||
+                                attributes.category &&
+                                ((
+                                    attributes.category as ModalDataAttributes
+                                ).id as string)) ||
                             ''
                         }
                         className="overflow-auto"
@@ -535,7 +545,6 @@ function GeneralForm({
                             attributes && (attributes.price as number)
                         }
                         onChange={(v: string) => {
-                            console.log(v)
                             setAttributes({
                                 ...attributes,
                                 price: v,

@@ -7,13 +7,21 @@ import { classNames } from 'utils/dom-helpers'
 
 interface SignupButtonProps {
     translations: Record<string, string>
-} 
-function SignupButton({ className = '', translations = {} }: SignupButtonProps & withClass) {
+}
+function SignupButton({
+    className = '',
+    translations = {},
+}: SignupButtonProps & withClass) {
     const { tiers } = useAppContext()
     const FreePlanModalProvider = createModal(
         AuthContext,
         'SignupModal',
-        () => <Translation content_key="try_it_for_free" translations={translations} />,
+        () => (
+            <Translation
+                content_key="try_it_for_free"
+                translations={translations}
+            />
+        ),
         () => <span>Cancel</span>,
         { tier: tiers[0] }
     )

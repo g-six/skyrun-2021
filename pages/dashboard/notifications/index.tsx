@@ -1,3 +1,5 @@
+import { InvalidPasswordException } from '@aws-sdk/client-cognito-identity-provider'
+import { useItemsSelection } from '@progress/kendo-react-scheduler/dist/npm/hooks/use-items-selection'
 import ToggleSwitch from 'components/ToggleSwitch'
 import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
@@ -66,77 +68,35 @@ function NotificationsPage() {
     return (
         <Dashboard>
             <div className={classNames('py-2 px-8')}>
-                <Collapsible headerText="Booking and Appointments Email">
+                <Collapsible
+                    headerText="Booking and Appointments Email"
+                    headerButton={
+                        <button
+                            className={classNames(
+                                'items-center text-primary px-8 py-2 w-9/12',
+                                'text-xs rounded-lg border border-gray-300',
+                                'rounded-r-mdk'
+                            )}
+                            onClick={(e) => e.stopPropagation() }
+                        >
+                            Edit Category
+                        </button>
+                    }
+                >
                     <div>
-                        {[1, 2, 3, 4, 5].map((i) => (
-                            <>
-                                <div
-                                    className={classNames(
-                                        'grid grid-cols-12 border-b-2 border-gray-300 py-3 bg-gray-50'
-                                    )}
-                                    key={i}
-                                >
-                                    <div
-                                        className={classNames(
-                                            'col-span-1 flex justify-center pt-6'
-                                        )}
-                                    >
-                                        <i
-                                            className={classNames(
-                                                'feather-align-justify'
-                                            )}
-                                        />
-                                    </div>
-                                    <div
-                                        className={classNames('col-span-6')}
-                                    >
-                                        <div
-                                            className={classNames(
-                                                'text-lg font-bold py-2'
-                                            )}
-                                        >
-                                            Booking Confirmation
-                                        </div>
-                                        <div
-                                            className={classNames(
-                                                'text-sm'
-                                            )}
-                                        >
-                                            Sent To A Client When A Booking
-                                            Is Made
-                                        </div>
-                                    </div>
-                                    <div
-                                        className={classNames(
-                                            'col-span-1 flex justify-center pt-3'
-                                        )}
-                                    >
-                                        <ToggleSwitch isOn={false} />
-                                    </div>
-                                    <div
-                                        className={classNames(
-                                            'col-span-1 flex justify-center pt-6'
-                                        )}
-                                    >
-                                        On
-                                    </div>
-                                    <div
-                                        className={classNames(
-                                            'col-span-3 flex justify-center pt-3'
-                                        )}
-                                    >
-                                        <button
-                                            className={classNames(
-                                                'items-center text-primary px-8 py-2',
-                                                'font-thin rounded-lg mb-3 border border-gray-300',
-                                                'rounded-r-mdk'
-                                            )}
-                                        >
-                                            Customize Email
-                                        </button>
-                                    </div>
-                                </div>
-                            </>
+                        {[
+                            'Booking Confirmation',
+                            'Booking Cancellation',
+                            'Booking Rescheduled',
+                            'Reminder Alert',
+                            'Booking Cancellation',
+                            'Waitlist - Approved',
+                        ].map((item, index) => (
+                            <div key={index}>
+                                <BookingAndAppointmentEmailItem
+                                    item={item}
+                                />
+                            </div>
                         ))}
                     </div>
                 </Collapsible>
@@ -336,41 +296,112 @@ function NotificationsPage() {
         </Dashboard>
     )
 }
+type BookingAndAppointmentEmailItemProps = {
+    item: string
+}
+function BookingAndAppointmentEmailItem({
+    item,
+}: BookingAndAppointmentEmailItemProps) {
+    const [isOn, setIsOn] = useState(false)
+    return (
+        <div
+            className={classNames(
+                'grid grid-cols-12 py-3 bg-gray-50',
+                'border-b-2 border-gray-300 w-full'
+            )}
+        >
+            <div
+                className={classNames(
+                    'col-span-1 flex justify-center flex-wrap content-center'
+                )}
+            >
+                <i className={classNames('feather-align-justify')} />
+            </div>
+            <div className={classNames('col-span-7')}>
+                <div className={classNames('text-lg font-bold py-2')}>
+                    {item}
+                </div>
+                <div className={classNames('text-sm')}>
+                    Sent To A Client When A Booking Is Made
+                </div>
+            </div>
+            <div
+                className={classNames(
+                    'col-span-1 flex justify-center flex-wrap content-center'
+                )}
+            >
+                <ToggleSwitch value={isOn} action={setIsOn} />
+            </div>
+            <div
+                className={classNames(
+                    'col-span-1 flex justify-center flex-wrap content-center'
+                )}
+            >
+                {isOn ? 'On' : 'Off'}
+            </div>
+            <div
+                className={classNames(
+                    'col-span-2 flex justify-center flex-wrap content-center'
+                )}
+            >
+                <button
+                    className={classNames(
+                        'items-center text-primary px-8 py-2',
+                        'font-thin rounded-lg border border-gray-300',
+                        'rounded-r-mdk'
+                    )}
+                >
+                    Customize Email
+                </button>
+            </div>
+        </div>
+    )
+}
 
 type CollapsibleProps = {
     headerText: string
+    headerButton?: JSX.Element
     children: string | JSX.Element | JSX.Element[]
 }
 
-function Collapsible({ headerText, children }: CollapsibleProps) {
+function Collapsible({
+    headerText,
+    headerButton,
+    children,
+}: CollapsibleProps) {
     const [isOpen, setIsOpen] = useState(false)
     return (
         <>
             <div className={classNames('collapsible-container mb-4')}>
                 <div
                     className={classNames(
-                        'collapsible-header ',
-                        'flex bg-blue-50 w-full',
+                        'collapsible-header',
+                        'grid grid-cols-12',
+                        'bg-blue-50 w-full',
                         'py-4 text-xl rounded-t-lg',
                         !isOpen ? 'rounded-b-lg' : ''
                     )}
                     onClick={() => setIsOpen(!isOpen)}
                 >
-                    <div
-                        className={classNames(
-                            'w-11/12 pt-1 pl-4 font-bold'
-                        )}
-                    >
-                        {headerText}
+                    <div className={classNames('col-span-10')}>
+                        <div className={classNames('pt-1 pl-4 font-bold')}>
+                            {headerText}
+                        </div>
                     </div>
-                    <i
-                        className={classNames(
-                            'px-4 text-2xl cursor-pointer',
-                            isOpen
-                                ? 'feather-chevron-down'
-                                : 'feather-chevron-right'
-                        )}
-                    />
+                    {/* <div className={classNames('col-span-1 text-right')}>
+                        
+                    </div> */}
+                    <div className={classNames('col-span-2 text-right')}>
+                        {headerButton && headerButton}
+                        <i
+                            className={classNames(
+                                'px-4 text-2xl cursor-pointer',
+                                isOpen
+                                    ? 'feather-chevron-down'
+                                    : 'feather-chevron-right'
+                            )}
+                        />
+                    </div>
                 </div>
                 <div
                     className={classNames(

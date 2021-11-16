@@ -106,11 +106,13 @@ function ServiceModal(
         true
     )
     const locations =
-        location_list && location_list.content && location_list.numberOfElements > 0
+        location_list &&
+        location_list.content &&
+        location_list.numberOfElements > 0
             ? location_list.content.map((loc: Record<string, string>) => ({
-                    value: loc.id,
-                    text: loc.name,
-                }))
+                  value: loc.id,
+                  text: loc.name,
+              }))
             : []
 
     const {
@@ -212,41 +214,51 @@ function ServiceModal(
             }
 
             if (offerings.length > 0) {
-                const offerings = attributes.offerings as Record<string, string>[]
+                const offerings = attributes.offerings as Record<
+                    string,
+                    string
+                >[]
                 console.log(offerings)
-                offerings.forEach(async ({
-                    date,
-                    time,
-                    is_recurring,
-                    id,
-                    duration,
-                    location: locationId,
-                    staff: staffId,
-                }) => {
-                    const group_class: Record<string, string | boolean | Record<string, string | boolean>> = {
+                offerings.forEach(
+                    async ({
+                        date,
+                        time,
+                        is_recurring,
                         id,
-                        effectiveDate: date,
-                        startTime: time,
-                        endTime: '23:59',
-                        recurring: is_recurring,
-                        serviceId: attributes.id as string,
-                        groupClassSetting: {
-                            locationId,
-                            staffId,
+                        duration,
+                        location: locationId,
+                        staff: staffId,
+                    }) => {
+                        const group_class: Record<
+                            string,
+                            | string
+                            | boolean
+                            | Record<string, string | boolean>
+                        > = {
+                            id,
+                            effectiveDate: date,
+                            startTime: time,
+                            endTime: '23:59',
+                            recurring: is_recurring,
+                            serviceId: attributes.id as string,
+                            groupClassSetting: {
+                                locationId,
+                                staffId,
+                            },
+                        }
+                        if (id) {
+                            const offer_api = await putApiRequest(
+                                `/v1/group_classes/${id}`,
+                                group_class
+                            )
+                        } else {
+                            const offer_api = await postApiRequest(
+                                '/v1/group_classes',
+                                group_class
+                            )
                         }
                     }
-                    if (id) {
-                        const offer_api = await putApiRequest(
-                            `/v1/group_classes/${id}`,
-                            group_class,
-                        )
-                    } else {
-                        const offer_api = await postApiRequest(
-                            '/v1/group_classes',
-                            group_class,
-                        )
-                    }
-                })
+                )
             }
             Context.close()
         } catch (e) {
@@ -399,12 +411,17 @@ function ServiceModal(
                     showOfferListForm={() => {
                         setAttributes({
                             ...attributes,
-                            offerings: [{
-                                date: new Date(Date.now() + 24 * 60 * 60 * 1000),
-                                location: locations && locations[0].value,
-                                staff: staff && staff[0].value,
-                                time: '10:00',
-                            }],
+                            offerings: [
+                                {
+                                    date: new Date(
+                                        Date.now() + 24 * 60 * 60 * 1000
+                                    ),
+                                    location:
+                                        locations && locations[0].value,
+                                    staff: staff && staff[0].value,
+                                    time: '10:00',
+                                },
+                            ],
                         })
                     }}
                     translations={translations}

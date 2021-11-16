@@ -92,7 +92,7 @@ function ServiceModalOfferClasses({
     attributes?: ModalDataAttributes
     tenant_id: string
     handleCloseModal: (e: MouseEvent<HTMLButtonElement>) => void
-    locations: Record<string, string>[],
+    locations: Record<string, string>[]
     onPrevious(): void
     onNext(): void
     onAttributesChanged(u: ModalDataAttributes, idx: number): void

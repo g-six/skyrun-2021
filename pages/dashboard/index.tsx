@@ -1,29 +1,26 @@
 import { DropDownListChangeEvent } from '@progress/kendo-react-dropdowns'
 import { AppBar, AppBarSection } from '@progress/kendo-react-layout'
-import dynamic from 'next/dynamic'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import Cookies from 'js-cookie'
-
+import UniversalCreateButton from 'components/DropdownSelectors/UniversalCreateButton'
+import LanguageSelector, { Language } from 'components/LanguageSelector'
+import CreateClientModal from 'components/Modals/Client'
+import LoginModal from 'components/Modals/Login'
+import ServiceModal from 'components/Modals/Service'
+import StaffModal from 'components/Modals/Staff'
+import TenantModal from 'components/Modals/Tenant'
+import UserDropdown from 'components/Navbar/UserDropdown'
+import { Wrapper } from 'components/types'
+import UniversalSearch from 'components/UniversalSearch'
 import { useAppContext } from 'context/AppContext'
 import {
     Authenticated,
     NotAuthenticated,
     useAuth,
 } from 'context/AuthContext'
-
-import { Wrapper } from 'components/types'
-import UniversalSearch from 'components/UniversalSearch'
-import UserDropdown from 'components/Navbar/UserDropdown'
-import UniversalCreateButton from 'components/DropdownSelectors/UniversalCreateButton'
-import LanguageSelector, { Language } from 'components/LanguageSelector'
-
-import CreateClientModal from 'components/Modals/Client'
-import LoginModal from 'components/Modals/Login'
-import ServiceModal from 'components/Modals/Service'
-import StaffModal from 'components/Modals/Staff'
-import TenantModal from 'components/Modals/Tenant'
-
+import Cookies from 'js-cookie'
+import dynamic from 'next/dynamic'
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 import { classNames } from 'utils/dom-helpers'
 import { betterPathname, toTitleCase } from 'utils/string-helper'
 
@@ -35,7 +32,10 @@ function Dashboard({
 }: { redirect?: string } & Wrapper) {
     const router = useRouter()
     const {
+        attributes,
+        setAttributes,
         user,
+        tenant,
         LoginModal: LoginModalContext,
         CreateClientModal: NewClientModal,
         StaffModal: NewStaffModal,
@@ -137,7 +137,12 @@ function Dashboard({
                 <LoginModal />
                 <CreateClientModal />
                 <StaffModal />
-                <ServiceModal />
+                {tenant && tenant.id ? <StaffModal /> : <></>}
+                {tenant && tenant.id ? (
+                    <ServiceModal tenant_id={tenant.id} data={attributes} />
+                ) : (
+                    <></>
+                )}
             </Authenticated>
 
             <NotAuthenticated>

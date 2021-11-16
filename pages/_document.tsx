@@ -1,7 +1,6 @@
-import { Html, Head, Main, NextScript } from 'next/document'
-
-import { GA_TRACKING_ID } from 'lib/gtag'
 import { FB_PIXEL_ID } from 'lib/fbpixels'
+import { GA_TRACKING_ID } from 'lib/gtag'
+import { Head, Html, Main, NextScript } from 'next/document'
 
 function Document() {
     return (

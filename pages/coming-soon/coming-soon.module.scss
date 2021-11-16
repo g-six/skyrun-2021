@@ -1,0 +1,45 @@
+.hero {
+    height: 52rem;
+}
+
+.spriteBg {
+    height: 52rem;
+    width: 100vw;
+    @media (min-width: 1024px) {
+    }
+}
+.spriteBgImage {
+    background-image: url(//static.aot.plus/images/coming-soon/girla-bells.png);
+    background-position-x: center;
+    background-position-y: bottom;
+    bottom: -70px;
+    width: 100vw;
+    height: 360px;
+
+    @media (min-width: 1024px) {
+        background-position-x: right;
+        top: calc(52rem - 600px);
+        height: 600px;
+        width: 600px;
+    }
+}
+.spriteBgCircle {
+    width: 600px;
+    height: 600px;
+    bottom: -45%;
+    left: calc(50% - 300px);
+    @media (min-width: 1024px) {
+        width: 820px;
+        height: 820px;
+        left: -370px;
+        top: calc(52rem - 560px);
+    }
+}
+
+.logoBg {
+    background-image: url(//static.aot.plus/images/coming-soon/aot.svg);
+    background-position: center;
+    @media (min-width: 1024px) {
+        background-position: left;
+    }
+}

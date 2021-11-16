@@ -25,6 +25,7 @@ import ServiceModalMemberships from './Memberships'
 import { ModalDataAttributes, UserModel } from '../types'
 import ServiceModalOfferClasses, { BlankOffer } from './OfferClasses'
 import { ServiceModalBooking } from './BookingSettings'
+import { TenantInfo } from 'context/types'
 
 const ModalProvider = createModal(
     AuthContext,
@@ -50,11 +51,11 @@ function ServiceModal(
         data: {},
     }
 ) {
-    const { setAttributes, attributes, ServiceModal: Context } = useAuth()
+    const { setAttributes, attributes, ServiceModal: Context, tenant } = useAuth()
     const { lang, translations: common_translations } = useAppContext()
     const [translations, setTranslations] = useState(common_translations)
     const [prompt_message, toggleDialog] = useState<string>('')
-    const categories: Record<string, string>[] = []
+    const categories: Record<string, string>[] = (attributes.categories || []) as Record<string, string>[]
 
     const offerings =
         (attributes && (attributes.offerings as ModalDataAttributes[])) ||
@@ -210,6 +211,7 @@ function ServiceModal(
 
                 setAttributes({
                     categories: attributes.categories,
+                    refetch: true,
                 })
             }
 
@@ -274,18 +276,19 @@ function ServiceModal(
                 ({ id }) => id == create_category_api_response.id
             ).length == 0
         ) {
-            categories.push({
-                text: create_category_api_response.name,
-                value: create_category_api_response.id,
-            })
             if (
                 !attributes?.category ||
                 (attributes?.category as unknown as Record<string, string>)
                     .id != create_category_api_response.id
             ) {
+                categories.push({
+                    text: create_category_api_response.name,
+                    value: create_category_api_response.id,
+                })
                 setAttributes({
                     ...attributes,
                     category: create_category_api_response,
+                    categories,
                 })
             }
         } else if (
@@ -519,6 +522,7 @@ function ServiceModal(
                             <div className="p-10">
                                 <GeneralForm
                                     attributes={attributes}
+                                    tenant={tenant as TenantInfo}
                                     setAttributes={setAttributes}
                                     translations={translations}
                                     onNext={() => setSelectedTab(1)}

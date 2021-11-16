@@ -1,15 +1,27 @@
 import { createModal } from 'components/Modals/ModalFactory'
+import Translation from 'components/Translation'
 import { withClass } from 'components/types'
 import { useAppContext } from 'context/AppContext'
 import { AuthContext } from 'context/AuthContext'
 import { classNames } from 'utils/dom-helpers'
 
-function SignupButton({ className = '' }: withClass) {
+interface SignupButtonProps {
+    translations: Record<string, string>
+}
+function SignupButton({
+    className = '',
+    translations = {},
+}: SignupButtonProps & withClass) {
     const { tiers } = useAppContext()
     const FreePlanModalProvider = createModal(
         AuthContext,
         'SignupModal',
-        () => <span>Try it for free</span>,
+        () => (
+            <Translation
+                content_key="try_it_for_free"
+                translations={translations}
+            />
+        ),
         () => <span>Cancel</span>,
         { tier: tiers[0] }
     )

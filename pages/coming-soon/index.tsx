@@ -1,14 +1,15 @@
 import Footer from 'components/Footer'
 import LoginModal from 'components/Modals/Login'
+import SignupModal from 'components/Modals/Signup'
 import Navbar from 'components/Navbar'
 import Translation from 'components/Translation'
 import { useAppContext } from 'context/AppContext'
+import getConfig from 'next/config'
 import Head from 'next/head'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { useFetch } from 'utils/fetch-helper'
 import { FetchMethods } from 'utils/types'
 
-import getConfig from 'next/config'
 const { COMING_SOON_TRANSLATION_ID } = getConfig().publicRuntimeConfig
 
 function ComingSoon() {
@@ -48,13 +49,11 @@ function ComingSoon() {
     return (
         <div>
             <Head>
-                <title>
-                    Nerubia | Your Software as a Solution development
-                    partner
-                </title>
+                <title>{translations.header_title || 'Coming Soon'}</title>
                 <meta
-                    name="description"
-                    content="Skyrun - A Nerubia base code"
+                    property="og:title"
+                    content="Coming Soon"
+                    key="title"
                 />
 
                 <link
@@ -77,32 +76,31 @@ function ComingSoon() {
             <Navbar />
 
             <main
-                className="bg-no-repeat bg-primary-lighter bg-opacity-50 overflow-hidden bg-contain xl:bg-50% relative"
+                className="bg-no-repeat h-venti bg-primary-lighter bg-opacity-50 overflow-hidden bg-contain xl:bg-50% relative"
                 style={{
                     backgroundImage:
                         'url(//static.aot.plus/images/coming-soon/sophia-bells-min.png)',
                     backgroundPosition: 'bottom left',
-                    minHeight: 800,
                 }}
             >
-                <section className="container mx-auto py-32">
+                <section className="container px-6 md:px-12 lg:px-0 lg:mx-auto lg:py-32 py-12">
                     <div className="lg:grid grid-cols-2 xl:grid-cols-5 max-w-4xl gap-12 mx-auto">
-                        <div className="xl:col-span-4 xl:col-start-2">
+                        <div className="xl:col-span-4 xl:col-start-2 text-right lg:text-left">
                             <div
-                                className="bg-contain h-16 w-alley block"
+                                className="bg-contain h-10 bg-no-repeat lg:h-16 lg:w-alley inline-block lg:bg-left bg-right w-full"
                                 style={{
                                     backgroundImage:
                                         'url(//static.aot.plus/images/coming-soon/aot.svg)',
                                 }}
                             />
-                            <div className="h-44 pt-12 text-transparent bg-clip-text bg-gradient-to-br from-primary-lighter via-primary-150 to-sky-600">
+                            <div className="h-12 lg:h-44 lg:pt-12 text-transparent bg-clip-text bg-gradient-to-br from-primary-lighter via-primary-150 to-sky-600">
                                 {is_loading ? (
-                                    <div className="font-display text-6xl leading-relaxed">
+                                    <div className="font-display lg:text-6xl leading-relaxed">
                                         ...
                                     </div>
                                 ) : (
                                     <Translation
-                                        className="font-display font-bold text-6xl leading-relaxed"
+                                        className="font-display font-bold text-3xl lg:text-6xl md:text-4xl lg:leading-relaxed"
                                         content_key="launching_soon_title"
                                         render_as="div"
                                         translations={translations}
@@ -110,10 +108,10 @@ function ComingSoon() {
                                 )}
                             </div>
 
-                            <div className="flex bg-white rounded-full">
+                            <div className="flex lg:flex-row flex-col lg:bg-white rounded-full gap-3 lg:gap-0 items-end lg:items-stretch">
                                 <input
                                     type="text"
-                                    className="py-5 pl-8 pr-4 rounded-l-full border-0 flex-1 placeholder-gray-300 text-gray-700 focus:ring-0 focus:border-0"
+                                    className="lg:py-5 lg:pl-8 lg:pr-4 lg:rounded-l-full lg:rounded-r-0 rounded-full border-0 lg:flex-1 lg:w-auto w-72 placeholder-gray-300 text-gray-700 focus:ring-0 focus:border-0"
                                     placeholder={
                                         translations.enter_email ||
                                         'enter_email'
@@ -125,7 +123,7 @@ function ComingSoon() {
                                     }}
                                 />
                                 <a
-                                    className="bg-primary text-white rounded-full w-56 flex items-center justify-center font-display text-lg"
+                                    className="bg-primary text-white rounded-full w-56 flex items-center justify-center font-display text-lg py-2"
                                     href={`https://aotplus.activehosted.com/f/5?email=${encodeURI(
                                         email
                                     )}`}
@@ -147,7 +145,7 @@ function ComingSoon() {
                                 />
 
                                 <div>
-                                    <div className="flex gap-3 mt-3">
+                                    <div className="flex gap-3 mt-3 justify-end lg:justify-start">
                                         <a
                                             href="https://www.facebook.com/aotplus.software"
                                             target="_blank"
@@ -174,7 +172,8 @@ function ComingSoon() {
                 <div className="rounded bg-primary-150 bg-opacity-30 rounded-full h-48 w-48 absolute block -right-10 bottom-10" />
             </main>
 
-            <Footer />
+            <Footer {...translations} />
+            <SignupModal />
             <LoginModal />
         </div>
     )

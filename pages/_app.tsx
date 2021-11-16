@@ -1,14 +1,14 @@
-import { useCallback, useState, useEffect, ReactElement } from 'react'
+import { SkyAuthProvider } from 'context/AuthContext'
+import * as fbq from 'lib/fbpixels'
+import * as gtag from 'lib/gtag'
 import type { AppProps } from 'next/app'
 import dynamic from 'next/dynamic'
-import '../styles/globals.scss'
-import SkyContext, { SkyAppDataProvider } from '../context/AppContext'
-import { classNames } from 'utils/dom-helpers'
-import { SkyAuthProvider } from 'context/AuthContext'
 import { useRouter } from 'next/router'
-import * as gtag from 'lib/gtag'
-import * as fbq from 'lib/fbpixels'
 import Script from 'next/script'
+import { ReactElement, useCallback, useEffect, useState } from 'react'
+import { classNames } from 'utils/dom-helpers'
+import SkyContext, { SkyAppDataProvider } from '../context/AppContext'
+import '../styles/globals.scss'
 
 const GridSpinner = dynamic(() => import('components/Spinners/grid'), {
     ssr: false,

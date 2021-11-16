@@ -167,9 +167,9 @@ export default function Navbar() {
                                                     href={item.href}
                                                     className={classNames(
                                                         item.current
-                                                            ? 'bg-gray-900 text-black'
-                                                            : 'text-gray-100 hover:bg-gray-200 hover:text-black',
-                                                        'block px-3 py-2 rounded-md text-base'
+                                                            ? 'bg-gray-900'
+                                                            : 'hover:bg-gray-200 hover:text-black',
+                                                        'block px-3 py-2 rounded-md text-base text-black'
                                                     )}
                                                     aria-current={
                                                         item.current
@@ -177,7 +177,14 @@ export default function Navbar() {
                                                             : undefined
                                                     }
                                                 >
-                                                    {item.label}
+                                                    <Translation
+                                                        content_key={
+                                                            item.label
+                                                        }
+                                                        translations={
+                                                            translations
+                                                        }
+                                                    />
                                                 </a>
                                             ))}
                                         </div>

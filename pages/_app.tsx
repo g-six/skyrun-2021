@@ -1,10 +1,14 @@
-import { useCallback, useState, useEffect, ReactElement } from 'react'
+import { SkyAuthProvider } from 'context/AuthContext'
+import * as fbq from 'lib/fbpixels'
+import * as gtag from 'lib/gtag'
 import type { AppProps } from 'next/app'
 import dynamic from 'next/dynamic'
-import '../styles/globals.scss'
-import SkyContext, { SkyAppDataProvider } from '../context/AppContext'
+import { useRouter } from 'next/router'
+import Script from 'next/script'
+import { ReactElement, useCallback, useEffect, useState } from 'react'
 import { classNames } from 'utils/dom-helpers'
-import { SkyAuthProvider } from 'context/AuthContext'
+import SkyContext, { SkyAppDataProvider } from '../context/AppContext'
+import '../styles/globals.scss'
 
 const GridSpinner = dynamic(() => import('components/Spinners/grid'), {
     ssr: false,
@@ -26,6 +30,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         locale_id: '',
     })
     const [blur, setBlur] = useState(true)
+    const router = useRouter()
 
     const onLanguageChange = useCallback(
         (event) => {
@@ -55,9 +60,47 @@ function MyApp({ Component, pageProps }: AppProps) {
         setFetching(false)
     }, [is_fetching, context])
 
+    useEffect(() => {
+        fbq.pageview()
+        const handleRouteChange = () => {
+            fbq.pageview()
+        }
+        router.events.on('routeChangeComplete', handleRouteChange)
+        return () => {
+            router.events.off('routeChangeComplete', handleRouteChange)
+        }
+    }, [router.events])
+
+    useEffect(() => {
+        const handleRouteChange = (url: URL) => {
+            gtag.pageview(url)
+        }
+        router.events.on('routeChangeComplete', handleRouteChange)
+        return () => {
+            router.events.off('routeChangeComplete', handleRouteChange)
+        }
+    }, [router.events])
+
     return (
         <SafeHydrate>
             <SkyAppDataProvider>
+                <Script
+                    id="fb-pixel-script"
+                    strategy="afterInteractive"
+                    dangerouslySetInnerHTML={{
+                        __html: `
+                        !function(f,b,e,v,n,t,s)
+                        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+                        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+                        n.queue=[];t=b.createElement(e);t.async=!0;
+                        t.src=v;s=b.getElementsByTagName(e)[0];
+                        s.parentNode.insertBefore(t,s)}(window, document,'script',
+                        'https://connect.facebook.net/en_US/fbevents.js');
+                        fbq('init', ${fbq.FB_PIXEL_ID});
+                    `,
+                    }}
+                />
                 <SkyAuthProvider>
                     {blur ? (
                         <div

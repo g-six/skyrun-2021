@@ -18,9 +18,12 @@ export default function Footer(props: Record<string, string>) {
                         />
                         <ul className="mt-2">
                             <li>
-                                <a href="tel:0063322312705">
-                                    +63 32 233 2233
-                                </a>
+                                <Translation
+                                    content_key="phone_number"
+                                    href="tel:0063322312705"
+                                    render_as="a"
+                                    translations={props}
+                                />
                             </li>
                         </ul>
                     </div>
@@ -38,9 +41,12 @@ export default function Footer(props: Record<string, string>) {
                                 translations={props}
                             />
                             <li>
-                                <a href="tel:0063322312705">
-                                    +63 32 233 2233
-                                </a>
+                                <Translation
+                                    content_key="phone_number"
+                                    href="tel:0063322312705"
+                                    render_as="a"
+                                    translations={props}
+                                />
                             </li>
                         </ul>
                     </div>

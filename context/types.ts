@@ -1,5 +1,5 @@
 import { AuthenticationResultType, ConfirmForgotPasswordCommandOutput, SignUpCommandOutput } from '@aws-sdk/client-cognito-identity-provider'
-import { ModalHook } from 'components/Modals/types'
+import { ModalDataAttributes, ModalHook } from 'components/Modals/types'
 import { Dispatch, SetStateAction } from 'react'
 import { UserModel } from 'services/profile'
 
@@ -49,6 +49,8 @@ export type AuthContextType = {
     LocationModal: ModalHook
     ServiceModal: ModalHook
     StaffModal: ModalHook
+    attributes: ModalDataAttributes
+    setAttributes(e: ModalDataAttributes): void
     is_drawer_expanded: boolean,
     toggleDrawerSize: Dispatch<SetStateAction<boolean>>,
     confirmForgotPassword(email: string, new_password: string, code: string): Promise<ConfirmForgotPasswordCommandOutput>

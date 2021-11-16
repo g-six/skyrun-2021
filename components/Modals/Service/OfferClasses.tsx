@@ -1,3 +1,4 @@
+import { Listbox } from '@headlessui/react'
 import DateInput from 'components/DateInput'
 import DropdownComponent from 'components/DropdownSelectors'
 import OptionList, { OptionListItem } from 'components/OptionList'
@@ -77,10 +78,13 @@ export function BlankOffer({
 function ServiceModalOfferClasses({
     translations,
     attributes,
+    locations,
+    staff,
+    setAttributes,
     onAttributesChanged,
+    removeItem,
     tenant_id,
     handleCloseModal,
-    removeAll,
     onPrevious,
     onNext,
 }: {
@@ -88,10 +92,13 @@ function ServiceModalOfferClasses({
     attributes?: ModalDataAttributes
     tenant_id: string
     handleCloseModal: (e: MouseEvent<HTMLButtonElement>) => void
-    removeAll(): void
+    locations: Record<string, string>[],
     onPrevious(): void
     onNext(): void
     onAttributesChanged(u: ModalDataAttributes, idx: number): void
+    removeItem(idx: number): void
+    staff: Record<string, string>[]
+    setAttributes(r: ModalDataAttributes): void
 }) {
     const api_error =
         attributes && (attributes.api_error as Record<string, string>)
@@ -100,49 +107,22 @@ function ServiceModalOfferClasses({
         getTimes()
     )
 
-    const { data } = useFetch(
-        `/v1/locations/tenant-id/?tenantId=${tenant_id}`,
-        FetchMethods.GET,
-        true
-    )
-    const locations =
-        data && data.content && data.numberOfElements > 0
-            ? data.content.map((loc: Record<string, string>) => ({
-                  value: loc.id,
-                  text: loc.name,
-              }))
-            : []
-
-    const { data: staff_api_response } = useFetch(
-        `/v1/staff/?tenantId=${tenant_id}`,
-        FetchMethods.GET,
-        true
-    )
-    const staff =
-        staff_api_response &&
-        staff_api_response.content &&
-        staff_api_response.numberOfElements > 0
-            ? staff_api_response.content.map(
-                  (loc: { id: string; user: Record<string, string> }) => ({
-                      value: loc.id,
-                      text: [
-                          (loc.user as unknown as Record<string, string>)
-                              .firstName,
-                          (loc.user as unknown as Record<string, string>)
-                              .lastName,
-                      ].join(' '),
-                  })
-              )
-            : []
-
-    function duplicateRow(idx: number) {}
-
-    const offerings =
+    let offerings =
         attributes && (attributes.offerings as ModalDataAttributes[])
 
-    useEffect(() => {
-        console.log(offerings)
-    }, [offerings])
+    function duplicateRow(idx: number) {
+        if (offerings && offerings[idx]) {
+            offerings.push({
+                ...offerings[idx],
+                date: new Date(offerings[idx].date as Date),
+            })
+            setAttributes({
+                ...attributes,
+                offerings,
+            })
+        }
+    }
+
     return (
         <div
             className="relative flex flex-col"
@@ -171,7 +151,7 @@ function ServiceModalOfferClasses({
                 <div
                     className={classNames(
                         'justify-start',
-                        'overflow-auto max-h-96 h-96 flex-1 flex flex-col p-3 gap-3'
+                        'flex-1 flex flex-col p-3 gap-3'
                     )}
                 >
                     <div className="flex gap-2">
@@ -211,72 +191,140 @@ function ServiceModalOfferClasses({
                         />
                     </div>
 
-                    <div className="bg-primary-lighter bg-opacity-40 py-2">
+                    <div className="max-h-96 h-96 bg-primary-lighter bg-opacity-40 py-2 flex flex-col gap-2 max-h-large overflow-auto">
                         {offerings
                             ? offerings.map(
                                   (o: ModalDataAttributes, idx: number) => {
-                                      console.log(offerings[idx].date)
                                       return (
                                           <div
                                               key={idx}
                                               className={classNames(
-                                                  'flex gap-2 px-2'
+                                                  'flex gap-2 px-2 h-12 overflow-visible'
                                               )}
                                           >
                                               <div className="w-44 px-1">
-                                                  <OptionList
-                                                      id="location"
-                                                      className="text-xs"
-                                                      onChange={(
-                                                          t: OptionListItem
-                                                      ) => {
-                                                          ;(o.location =
-                                                              t.value as string),
+                                                  {locations &&
+                                                  locations.length ? (
+                                                      <select
+                                                          id="location"
+                                                          name="location"
+                                                          onChange={(e) => {
+                                                              o.location =
+                                                                  e.target.value
                                                               onAttributesChanged(
                                                                   o,
                                                                   idx
                                                               )
-                                                      }}
-                                                      options={locations}
-                                                      listboxCss="h-auto"
-                                                  />
+                                                          }}
+                                                          value={
+                                                              (o.location &&
+                                                                  o.location) as string
+                                                          }
+                                                      >
+                                                          {locations.map(
+                                                              ({
+                                                                  text,
+                                                                  value,
+                                                              }: Record<
+                                                                  string,
+                                                                  string
+                                                              >) => (
+                                                                  <option
+                                                                      key={
+                                                                          value
+                                                                      }
+                                                                      value={
+                                                                          value
+                                                                      }
+                                                                  >
+                                                                      {text}
+                                                                  </option>
+                                                              )
+                                                          )}
+                                                      </select>
+                                                  ) : (
+                                                      <div className="bg-white w-full block h-full bg-gray-150 rounded-lg" />
+                                                  )}
                                               </div>
 
-                                              <div className="w-56 place-items-stretch  px-1">
-                                                  <OptionList
-                                                      id="staff"
-                                                      className="text-xs"
-                                                      onChange={(
-                                                          t: OptionListItem
-                                                      ) => {
-                                                          ;(o.staff =
-                                                              t.value as string),
+                                              <div className="w-56 place-items-stretch px-1">
+                                                  {staff && staff.length ? (
+                                                      <select
+                                                          id="staff"
+                                                          name="staff"
+                                                          onChange={(e) => {
+                                                              o.staff =
+                                                                  e.target.value
                                                               onAttributesChanged(
                                                                   o,
                                                                   idx
                                                               )
-                                                      }}
-                                                      options={staff}
-                                                      listboxCss="h-auto"
-                                                  />
+                                                          }}
+                                                          value={
+                                                              (o.staff &&
+                                                                  o.staff) as string
+                                                          }
+                                                      >
+                                                          {staff.map(
+                                                              ({
+                                                                  text,
+                                                                  value,
+                                                              }: Record<
+                                                                  string,
+                                                                  string
+                                                              >) => (
+                                                                  <option
+                                                                      key={
+                                                                          value
+                                                                      }
+                                                                      value={
+                                                                          value
+                                                                      }
+                                                                  >
+                                                                      {text}
+                                                                  </option>
+                                                              )
+                                                          )}
+                                                      </select>
+                                                  ) : (
+                                                      <div className="bg-white w-full block h-full bg-gray-150 rounded-lg" />
+                                                  )}
                                               </div>
 
                                               <div className="w-28 px-1">
-                                                  <OptionList
+                                                  <select
                                                       id="time"
-                                                      className="font-mono text-xs"
-                                                      onChange={(
-                                                          t: OptionListItem
-                                                      ) => {
+                                                      name="time"
+                                                      onChange={(e) => {
                                                           o.time =
-                                                              t.value as string
+                                                              e.target.value
                                                           onAttributesChanged(
                                                               o,
                                                               idx
                                                           )
                                                       }}
-                                                      options={times}
-                                                  />
+                                                      value={
+                                                          o.time as string
+                                                      }
+                                                  >
+                                                      {times.map(
+                                                          ({
+                                                              text,
+                                                              value,
+                                                          }) => (
+                                                              <option
+                                                                  key={
+                                                                      value
+                                                                  }
+                                                                  value={
+                                                                      value
+                                                                  }
+                                                              >
+                                                                  {text}
+                                                              </option>
+                                                          )
+                                                      )}
+                                                  </select>
                                               </div>
                                               <div className="w-28 place-items-stretch px-1">
                                                   <DateInput
@@ -292,20 +340,30 @@ function ServiceModalOfferClasses({
                                                       }}
                                                       dateFormat="dd/MM/yyyy"
                                                       selected={
-                                                          offerings[idx]
-                                                              .date as Date
+                                                          o.date as Date
                                                       }
                                                   />
                                               </div>
                                               <div className="flex-1 items-center flex px-1 gap-2">
                                                   <input
-                                                      id="check_1"
+                                                      id={`check_${idx}`}
                                                       className="h-4 w-4 border-gray-300 rounded text-primary focus:ring-primary-light"
                                                       type="checkbox"
+                                                      defaultChecked={
+                                                          o.is_recurring as boolean
+                                                      }
+                                                      onChange={(v) => {
+                                                          o.is_recurring =
+                                                              v.target.checked
+                                                          onAttributesChanged(
+                                                              o,
+                                                              idx
+                                                          )
+                                                      }}
                                                   />
                                                   <Translation
                                                       render_as="label"
-                                                      htmlFor="check_1"
+                                                      htmlFor={`check_${idx}`}
                                                       content_key="recurring_label"
                                                       translations={
                                                           translations
@@ -322,6 +380,9 @@ function ServiceModalOfferClasses({
                                                   <button
                                                       type="button"
                                                       className="text-red-500 bg-red-100 h-10 w-10 rounded-lg text-xl feather-trash-2"
+                                                      onClick={() => {
+                                                          removeItem(idx)
+                                                      }}
                                                   />
                                               </div>
                                           </div>
@@ -394,4 +455,5 @@ function getTimes() {
     } while (i < 24)
     return times
 }
+
 export default ServiceModalOfferClasses

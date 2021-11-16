@@ -1,6 +1,13 @@
 import { UserModel } from 'components/Modals/types'
 
 export type ServiceApiType = 'APPOINTMENT' | 'GROUP' | 'SERIES'
+
+export enum ServiceType {
+    APPOINTMENT = 'Appointment',
+    GROUP = 'Group Class',
+    SERIES = 'Series',
+}
+
 export type ServiceApiItem = {
     id?: string,
     accentColorHex?: string,
@@ -63,6 +70,7 @@ export interface ServiceItem extends ServiceBase {
     id?: string,
     addons?: string[],
     is_public: boolean,
+    description: string,
     category: {
         id: string,
         name?: string,
@@ -74,5 +82,6 @@ export interface ServiceItem extends ServiceBase {
         last_name: string,
     }[],
     memberships?: Record<string, string>[],
+    service_type: ServiceType,
 }
 

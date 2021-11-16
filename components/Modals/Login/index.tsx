@@ -74,14 +74,16 @@ function LoginModal() {
 
     useEffect(() => {
         if (lang && translation.data?.attributes[lang]) {
+            const additional_translations: { [key: string]: string } = {}
             translation.data.attributes[lang].forEach(
                 ({ key, value }: any) => {
-                    setTranslations((translations) => ({
-                        ...translations,
-                        [key]: value,
-                    }))
+                    additional_translations[key] = value
                 }
             )
+            setTranslations({
+                ...translations,
+                ...additional_translations,
+            })
         }
     }, [translation, lang])
 

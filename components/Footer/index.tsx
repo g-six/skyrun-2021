@@ -88,10 +88,12 @@ export default function Footer(props: Record<string, string>) {
                             content_key="footer_copyright_1"
                             translations={props}
                         />{' '}
-                        <strong><Translation
-                            content_key="footer_copyright_2"
-                            translations={props}
-                        /></strong>{' '}
+                        <strong>
+                            <Translation
+                                content_key="footer_copyright_2"
+                                translations={props}
+                            />
+                        </strong>{' '}
                         <div className="block mt-2 md:hidden" />
                         <Translation
                             content_key="footer_copyright_3"

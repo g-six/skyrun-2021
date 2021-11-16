@@ -7,6 +7,7 @@ import Cookies from 'js-cookie'
 import { Fragment, useState } from 'react'
 import logout from 'services/logout'
 import { classNames } from 'utils/dom-helpers'
+import { isProdEnv } from 'utils/environment-helper'
 
 interface Props {
     locale?: string
@@ -22,6 +23,16 @@ export function UserDropdown({ locale }: Props) {
             setUsername(Cookies.get('email'))
         } catch (e) {
             console.error(e)
+        }
+    }
+
+    const handleLoginOnClick = () => {
+        if (isProdEnv() === true) {
+            window
+                .open('https://aotplus.activehosted.com/f/5', '_blank')
+                ?.focus()
+        } else {
+            LoginModal.open()
         }
     }
 
@@ -99,9 +110,7 @@ export function UserDropdown({ locale }: Props) {
             <button
                 type="button"
                 className="font-display text-black"
-                onClick={() => {
-                    LoginModal.open()
-                }}
+                onClick={() => handleLoginOnClick()}
             >
                 <Translation
                     content_key="login"

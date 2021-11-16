@@ -211,6 +211,7 @@ function ServiceModal(
 
                 setAttributes({
                     categories: attributes.categories,
+                    refetch: true,
                 })
             }
 

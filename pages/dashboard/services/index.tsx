@@ -1,6 +1,7 @@
 import DropdownComponent from 'components/DropdownSelectors'
 import { DropPosition } from 'components/DropdownSelectors/common'
 import { UserModel } from 'components/Modals/types'
+import Translation from 'components/Translation'
 import ViewModeSelector from 'components/ViewModeSelector'
 import { ViewMode } from 'components/ViewModeSelector/types'
 import { useAppContext } from 'context/AppContext'
@@ -206,12 +207,21 @@ function DashboardServices() {
             })
             setServices(services)
         }
+
+        if (attributes.refetch) {
+            setAttributes({
+                ...attributes,
+                refetch: false,
+            })
+            doFetch()
+        }
     }, [
         data,
         page_translation,
         lang,
         attributes.list_item_idx,
         attributes.updated_item,
+        attributes.refetch,
     ])
 
     return (
@@ -271,7 +281,7 @@ function DashboardServices() {
                                 className="flex items-center bg-primary-lighter text-primary px-8 py-2 font-thin rounded-lg"
                             >
                                 <i className="feather-plus text-xl mr-2" />
-                                Add New
+                                <Translation content_key="add_new_button" translations={translations} />
                             </button>
                         </div>
                     </div>

@@ -20,7 +20,6 @@ import Cookies from 'js-cookie'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
 import { classNames } from 'utils/dom-helpers'
 import { betterPathname, toTitleCase } from 'utils/string-helper'
 
@@ -74,7 +73,9 @@ function Dashboard({
     return (
         <>
             <Head>
-                <title>{translations.dashboard || 'Dashboard'}</title>
+                <title>
+                    {translations.dashboard_page_title || 'Dashboard'}
+                </title>
                 <meta property="og:title" content="Dashboard" key="title" />
                 <link
                     href="https://static.aot.plus/feather.css"

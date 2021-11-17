@@ -5,6 +5,7 @@ import Translation from 'components/Translation'
 import { useAppContext } from 'context/AppContext'
 import { AuthContext } from 'context/AuthContext'
 import { useState } from 'react'
+import { isProdEnv } from 'utils/environment-helper'
 
 enum CurrencyIso {
     USD = 'USD',
@@ -135,6 +136,12 @@ export default function LandingPricingSection(
 
     const handleCurrencySelection = (idx: number) => {
         setCurrency(currencies[idx])
+    }
+
+    const handleSignupOnClick = () => {
+        window
+            .open('https://aotplus.activehosted.com/f/5', '_blank')
+            ?.focus()
     }
 
     return (
@@ -315,14 +322,34 @@ export default function LandingPricingSection(
                             </ul>
                         </div>
 
-                        <FreePlanModalProvider.Opener
-                            className="mt-8 shadow w-full flex items-center justify-center
+                        {isProdEnv() ? (
+                            <div className="overflow-hidden ">
+                                <button
+                                    className="mt-8 shadow w-full flex items-center justify-center
                             px-6 py-4 text-base text-white font-bold
                             bg-primary-light rounded-full
                             transition duration-300 ease-in-out
                             hover:bg-opacity-80
                             md:text-xl md:px-10"
-                        />
+                                    type="button"
+                                    onClick={() => handleSignupOnClick()}
+                                >
+                                    <Translation
+                                        content_key="main_cta_button"
+                                        translations={props}
+                                    />
+                                </button>
+                            </div>
+                        ) : (
+                            <FreePlanModalProvider.Opener
+                                className="mt-8 shadow w-full flex items-center justify-center
+                            px-6 py-4 text-base text-white font-bold
+                            bg-primary-light rounded-full
+                            transition duration-300 ease-in-out
+                            hover:bg-opacity-80
+                            md:text-xl md:px-10"
+                            />
+                        )}
                     </div>
 
                     <div className="bg-white rounded-2xl shadow-2xl w-full py-10 px-8">
@@ -451,14 +478,34 @@ export default function LandingPricingSection(
                             </ul>
                         </div>
 
-                        <SinglePlanModalProvider.Opener
-                            className="mt-8 shadow w-full flex items-center justify-center
+                        {isProdEnv() ? (
+                            <div className="overflow-hidden ">
+                                <button
+                                    className="mt-8 shadow w-full flex items-center justify-center
                             px-6 py-4 text-base text-white font-bold
                             bg-primary-dark rounded-full
                             transition duration-300 ease-in-out
                             hover:bg-opacity-80
                             md:text-xl md:px-10"
-                        />
+                                    type="button"
+                                    onClick={() => handleSignupOnClick()}
+                                >
+                                    <Translation
+                                        content_key="section_4_cta_button"
+                                        translations={props}
+                                    />
+                                </button>
+                            </div>
+                        ) : (
+                            <SinglePlanModalProvider.Opener
+                                className="mt-8 shadow w-full flex items-center justify-center
+                            px-6 py-4 text-base text-white font-bold
+                            bg-primary-dark rounded-full
+                            transition duration-300 ease-in-out
+                            hover:bg-opacity-80
+                            md:text-xl md:px-10"
+                            />
+                        )}
                     </div>
 
                     <div className="bg-white rounded-2xl shadow-2xl w-full py-10 px-8">
@@ -587,14 +634,34 @@ export default function LandingPricingSection(
                             </ul>
                         </div>
 
-                        <MultiLocModalProvider.Opener
-                            className="mt-8 shadow w-full flex items-center justify-center
+                        {isProdEnv() ? (
+                            <div className="overflow-hidden ">
+                                <button
+                                    className="mt-8 shadow w-full flex items-center justify-center
                             px-6 py-4 text-base text-white font-bold
                             bg-secondary rounded-full
                             transition duration-300 ease-in-out
                             hover:bg-opacity-80
                             md:text-xl md:px-10"
-                        />
+                                    type="button"
+                                    onClick={() => handleSignupOnClick()}
+                                >
+                                    <Translation
+                                        content_key="main_cta_button"
+                                        translations={props}
+                                    />
+                                </button>
+                            </div>
+                        ) : (
+                            <MultiLocModalProvider.Opener
+                                className="mt-8 shadow w-full flex items-center justify-center
+                            px-6 py-4 text-base text-white font-bold
+                            bg-secondary rounded-full
+                            transition duration-300 ease-in-out
+                            hover:bg-opacity-80
+                            md:text-xl md:px-10"
+                            />
+                        )}
                     </div>
                 </div>
 

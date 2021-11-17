@@ -3,6 +3,7 @@ import { useAppContext } from 'context/AppContext'
 import { useAuth } from 'context/AuthContext'
 import { useEffect } from 'react'
 import { classNames } from 'utils/dom-helpers'
+import { isProdEnv } from 'utils/environment-helper'
 import styles from '../../styles/Landing/section-try-cta.module.scss'
 
 export default function LandingSectionTryCTA(
@@ -10,6 +11,16 @@ export default function LandingSectionTryCTA(
 ) {
     const { tiers } = useAppContext()
     const { SignupModal } = useAuth()
+
+    const handleSignupOnClick = () => {
+        if (isProdEnv() === true) {
+            window
+                .open('https://aotplus.activehosted.com/f/5', '_blank')
+                ?.focus()
+        } else {
+            SignupModal.open()
+        }
+    }
 
     useEffect(() => {
         if (tiers && tiers[0]) {
@@ -58,7 +69,7 @@ export default function LandingSectionTryCTA(
                                 hover:bg-opacity-80
                                 md:px-10"
                                 onClick={() => {
-                                    SignupModal.open()
+                                    handleSignupOnClick()
                                 }}
                             >
                                 <Translation

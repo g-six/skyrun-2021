@@ -9,6 +9,7 @@ import getConfig from 'next/config'
 import Head from 'next/head'
 import { useEffect, useState } from 'react'
 import { classNames } from 'utils/dom-helpers'
+import { isProdEnv } from 'utils/environment-helper'
 import { useFetch } from 'utils/fetch-helper'
 import { FetchMethods } from 'utils/types'
 
@@ -29,6 +30,16 @@ function AboutUs() {
     const [translations, setTranslations] = useState<
         Record<string, string>
     >({})
+
+    const handleSignupOnClick = () => {
+        if (isProdEnv() === true) {
+            window
+                .open('https://aotplus.activehosted.com/f/5', '_blank')
+                ?.focus()
+        } else {
+            SignupModalCtx.open()
+        }
+    }
 
     useEffect(() => {
         if (lang && translation.data?.attributes[lang]) {
@@ -118,9 +129,7 @@ function AboutUs() {
                                     'md:text-xl w-60'
                                 )}
                                 type="button"
-                                onClick={() => {
-                                    SignupModalCtx.open()
-                                }}
+                                onClick={() => handleSignupOnClick()}
                             >
                                 {is_loading ? (
                                     '• • •'
@@ -377,9 +386,7 @@ function AboutUs() {
                                 'w-80'
                             )}
                             type="button"
-                            onClick={() => {
-                                SignupModalCtx.open()
-                            }}
+                            onClick={() => handleSignupOnClick()}
                         >
                             {is_loading ? (
                                 '• • •'

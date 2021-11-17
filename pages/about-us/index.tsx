@@ -9,6 +9,7 @@ import getConfig from 'next/config'
 import Head from 'next/head'
 import { useEffect, useState } from 'react'
 import { classNames } from 'utils/dom-helpers'
+import { isProdEnv } from 'utils/environment-helper'
 import { useFetch } from 'utils/fetch-helper'
 import { FetchMethods } from 'utils/types'
 
@@ -30,6 +31,16 @@ function AboutUs() {
         Record<string, string>
     >({})
 
+    const handleSignupOnClick = () => {
+        if (isProdEnv() === true) {
+            window
+                .open('https://aotplus.activehosted.com/f/5', '_blank')
+                ?.focus()
+        } else {
+            SignupModalCtx.open()
+        }
+    }
+
     useEffect(() => {
         if (lang && translation.data?.attributes[lang]) {
             const translations_to_add: Record<string, string> = {}
@@ -50,7 +61,9 @@ function AboutUs() {
     return (
         <div>
             <Head>
-                <title>{translations.banner_title || 'About Us'}</title>
+                <title>
+                    {translations.about_us_page_title || 'About Us'}
+                </title>
                 <meta property="og:title" content="About Us" key="title" />
 
                 <link
@@ -118,9 +131,7 @@ function AboutUs() {
                                     'md:text-xl w-60'
                                 )}
                                 type="button"
-                                onClick={() => {
-                                    SignupModalCtx.open()
-                                }}
+                                onClick={() => handleSignupOnClick()}
                             >
                                 {is_loading ? (
                                     '• • •'
@@ -377,9 +388,7 @@ function AboutUs() {
                                 'w-80'
                             )}
                             type="button"
-                            onClick={() => {
-                                SignupModalCtx.open()
-                            }}
+                            onClick={() => handleSignupOnClick()}
                         >
                             {is_loading ? (
                                 '• • •'

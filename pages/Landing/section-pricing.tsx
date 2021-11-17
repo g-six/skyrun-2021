@@ -5,6 +5,7 @@ import Translation from 'components/Translation'
 import { useAppContext } from 'context/AppContext'
 import { AuthContext } from 'context/AuthContext'
 import { useState } from 'react'
+import { isProdEnv } from 'utils/environment-helper'
 
 enum CurrencyIso {
     USD = 'USD',
@@ -137,6 +138,12 @@ export default function LandingPricingSection(
         setCurrency(currencies[idx])
     }
 
+    const handleSignupOnClick = () => {
+        window
+            .open('https://aotplus.activehosted.com/f/5', '_blank')
+            ?.focus()
+    }
+
     return (
         <section className="pt-20 pb-40 pricing-plans bg-primary bg-opacity-10">
             <div className="container m-auto">
@@ -232,8 +239,14 @@ export default function LandingPricingSection(
                             translations={props}
                         />
                         <Translation
-                            className="block text-center mt-8"
+                            className="block text-center text-gray-400 circular-light"
                             content_key="pricing_tier_0_subtitle_yearly"
+                            render_as="div"
+                            translations={props}
+                        />
+                        <Translation
+                            className="block text-center mt-8"
+                            content_key="pricing_tier_0_subtitle"
                             render_as="div"
                             translations={props}
                         />
@@ -315,14 +328,34 @@ export default function LandingPricingSection(
                             </ul>
                         </div>
 
-                        <FreePlanModalProvider.Opener
-                            className="mt-8 shadow w-full flex items-center justify-center
+                        {isProdEnv() ? (
+                            <div className="overflow-hidden ">
+                                <button
+                                    className="mt-8 shadow w-full flex items-center justify-center
                             px-6 py-4 text-base text-white font-bold
                             bg-primary-light rounded-full
                             transition duration-300 ease-in-out
                             hover:bg-opacity-80
                             md:text-xl md:px-10"
-                        />
+                                    type="button"
+                                    onClick={() => handleSignupOnClick()}
+                                >
+                                    <Translation
+                                        content_key="main_cta_button"
+                                        translations={props}
+                                    />
+                                </button>
+                            </div>
+                        ) : (
+                            <FreePlanModalProvider.Opener
+                                className="mt-8 shadow w-full flex items-center justify-center
+                            px-6 py-4 text-base text-white font-bold
+                            bg-primary-light rounded-full
+                            transition duration-300 ease-in-out
+                            hover:bg-opacity-80
+                            md:text-xl md:px-10"
+                            />
+                        )}
                     </div>
 
                     <div className="bg-white rounded-2xl shadow-2xl w-full py-10 px-8">
@@ -434,31 +467,51 @@ export default function LandingPricingSection(
                             />
                             <ul className="list-disc ml-6 leading-loose text-sm mt-2 h-28">
                                 <Translation
-                                    content_key="pricing_tier_2_subfeature_checklist_1"
+                                    content_key="pricing_tier_1_subfeature_checklist_1"
                                     render_as="li"
                                     translations={props}
                                 />
                                 <Translation
-                                    content_key="pricing_tier_2_subfeature_checklist_2"
+                                    content_key="pricing_tier_1_subfeature_checklist_2"
                                     render_as="li"
                                     translations={props}
                                 />
                                 <Translation
-                                    content_key="pricing_tier_2_subfeature_checklist_3"
+                                    content_key="pricing_tier_1_subfeature_checklist_3"
                                     render_as="li"
                                     translations={props}
                                 />
                             </ul>
                         </div>
 
-                        <SinglePlanModalProvider.Opener
-                            className="mt-8 shadow w-full flex items-center justify-center
+                        {isProdEnv() ? (
+                            <div className="overflow-hidden ">
+                                <button
+                                    className="mt-8 shadow w-full flex items-center justify-center
                             px-6 py-4 text-base text-white font-bold
                             bg-primary-dark rounded-full
                             transition duration-300 ease-in-out
                             hover:bg-opacity-80
                             md:text-xl md:px-10"
-                        />
+                                    type="button"
+                                    onClick={() => handleSignupOnClick()}
+                                >
+                                    <Translation
+                                        content_key="section_4_cta_button"
+                                        translations={props}
+                                    />
+                                </button>
+                            </div>
+                        ) : (
+                            <SinglePlanModalProvider.Opener
+                                className="mt-8 shadow w-full flex items-center justify-center
+                            px-6 py-4 text-base text-white font-bold
+                            bg-primary-dark rounded-full
+                            transition duration-300 ease-in-out
+                            hover:bg-opacity-80
+                            md:text-xl md:px-10"
+                            />
+                        )}
                     </div>
 
                     <div className="bg-white rounded-2xl shadow-2xl w-full py-10 px-8">
@@ -492,7 +545,7 @@ export default function LandingPricingSection(
                             {currency.symbol}
                             {getTotalPrice(
                                 getPriceFromContent(
-                                    'pricing_tier_1_price_usd',
+                                    'pricing_tier_2_price_usd',
                                     props
                                 ),
                                 discountRate,
@@ -587,14 +640,34 @@ export default function LandingPricingSection(
                             </ul>
                         </div>
 
-                        <MultiLocModalProvider.Opener
-                            className="mt-8 shadow w-full flex items-center justify-center
+                        {isProdEnv() ? (
+                            <div className="overflow-hidden ">
+                                <button
+                                    className="mt-8 shadow w-full flex items-center justify-center
                             px-6 py-4 text-base text-white font-bold
                             bg-secondary rounded-full
                             transition duration-300 ease-in-out
                             hover:bg-opacity-80
                             md:text-xl md:px-10"
-                        />
+                                    type="button"
+                                    onClick={() => handleSignupOnClick()}
+                                >
+                                    <Translation
+                                        content_key="main_cta_button"
+                                        translations={props}
+                                    />
+                                </button>
+                            </div>
+                        ) : (
+                            <MultiLocModalProvider.Opener
+                                className="mt-8 shadow w-full flex items-center justify-center
+                            px-6 py-4 text-base text-white font-bold
+                            bg-secondary rounded-full
+                            transition duration-300 ease-in-out
+                            hover:bg-opacity-80
+                            md:text-xl md:px-10"
+                            />
+                        )}
                     </div>
                 </div>
 

@@ -1,16 +1,21 @@
-import { createModal } from 'components/Modals/ModalFactory'
 import Translation from 'components/Translation'
-import { AuthContext } from 'context/AuthContext'
+import { useAuth } from 'context/AuthContext'
+import { isProdEnv } from 'utils/environment-helper'
 import styles from '../../styles/Landing/hero.module.scss'
 
 export default function LandingHero(props: Record<string, string>) {
-    const ModalProvider = createModal(AuthContext, 'SignupModal', () => (
-        <Translation
-            content_key="main_cta_button"
-            render_as="span"
-            translations={props}
-        />
-    ))
+    const { SignupModal: SignupModalCtx } = useAuth()
+
+    const handleSignupOnClick = () => {
+        if (isProdEnv() === true) {
+            window
+                .open('https://aotplus.activehosted.com/f/5', '_blank')
+                ?.focus()
+        } else {
+            SignupModalCtx.open()
+        }
+    }
+
     return (
         <div className={styles.gradBg}>
             <div className={styles.gradHero}>
@@ -45,7 +50,7 @@ export default function LandingHero(props: Record<string, string>) {
                         />
                         <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
                             <div className="overflow-hidden ">
-                                <ModalProvider.Opener
+                                <button
                                     className="shadow w-full flex items-center justify-center
                                 px-6 py-4 text-base text-white font-bold
                                 bg-primary border rounded-full
@@ -53,7 +58,14 @@ export default function LandingHero(props: Record<string, string>) {
                                 hover:bg-transparent border-solid border-primary
                                 hover:text-primary
                                 md:text-xl md:px-10"
-                                />
+                                    type="button"
+                                    onClick={() => handleSignupOnClick()}
+                                >
+                                    <Translation
+                                        content_key="main_cta_button"
+                                        translations={props}
+                                    />
+                                </button>
                             </div>
                         </div>
                     </div>

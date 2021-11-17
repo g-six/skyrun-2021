@@ -1,20 +1,24 @@
-import { createModal } from 'components/Modals/ModalFactory'
 import Translation from 'components/Translation'
-import { AuthContext } from 'context/AuthContext'
+import { useAuth } from 'context/AuthContext'
 import { ReactElement } from 'react'
 import { classNames } from 'utils/dom-helpers'
+import { isProdEnv } from 'utils/environment-helper'
 import styles from '../../styles/Landing/section-features.module.scss'
 
 export default function LandingFeaturesSection(
     props: Record<string, string>
 ) {
-    const ModalProvider = createModal(AuthContext, 'SignupModal', () => (
-        <Translation
-            content_key="section_4_cta_button"
-            render_as="span"
-            translations={props}
-        />
-    ))
+    const { SignupModal: SignupModalCtx } = useAuth()
+
+    const handleSignupOnClick = () => {
+        if (isProdEnv() === true) {
+            window
+                .open('https://aotplus.activehosted.com/f/5', '_blank')
+                ?.focus()
+        } else {
+            SignupModalCtx.open()
+        }
+    }
 
     const section_3_checklist: ReactElement[] = []
     props['section_3_checklist'] &&
@@ -271,14 +275,21 @@ export default function LandingFeaturesSection(
 
                     <div className="sm:flex sm:justify-center lg:justify-start max-w-5xl mx-auto mt-5">
                         <div className="overflow-hidden ">
-                            <ModalProvider.Opener
+                            <button
                                 className="shadow w-full flex items-center justify-center
                                 px-6 py-4 text-base text-white font-bold
                                 bg-secondary border rounded-full
                                 transition duration-300 ease-in-out
                                 hover:bg-opacity-80
                                 md:text-xl md:px-10"
-                            />
+                                type="button"
+                                onClick={() => handleSignupOnClick()}
+                            >
+                                <Translation
+                                    content_key="section_4_cta_button"
+                                    translations={props}
+                                />
+                            </button>
                         </div>
                     </div>
                 </div>

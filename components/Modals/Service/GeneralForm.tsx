@@ -16,6 +16,7 @@ import OptionList, {
 } from 'components/OptionList'
 import { ModalDataAttributes } from '../types'
 import { ServiceType } from 'types/service'
+import { TenantInfo } from 'context/types'
 
 function GeneralForm({
     attributes,
@@ -25,6 +26,7 @@ function GeneralForm({
     onSubmit,
     onNext,
     createCategory,
+    tenant,
 }: {
     attributes: ModalDataAttributes
     setAttributes(r: ModalDataAttributes): void
@@ -33,6 +35,7 @@ function GeneralForm({
     onSubmit(): void
     onNext(): void
     createCategory(c: Record<string, string>): void
+    tenant: TenantInfo
 }) {
     const [is_category_opened, toggleCategoryOpen] =
         useState<boolean>(false)
@@ -78,6 +81,7 @@ function GeneralForm({
         createCategory({
             name: category_name,
             type: 'SERVICE',
+            tenantId: tenant.id as string,
         })
         toggleCategoryOpen(false)
     }

@@ -281,7 +281,10 @@ function DashboardServices() {
                                 className="flex items-center bg-primary-lighter text-primary px-8 py-2 font-thin rounded-lg"
                             >
                                 <i className="feather-plus text-xl mr-2" />
-                                <Translation content_key="add_new_button" translations={translations} />
+                                <Translation
+                                    content_key="add_new_button"
+                                    translations={translations}
+                                />
                             </button>
                         </div>
                     </div>

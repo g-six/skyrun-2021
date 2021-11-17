@@ -51,11 +51,17 @@ function ServiceModal(
         data: {},
     }
 ) {
-    const { setAttributes, attributes, ServiceModal: Context, tenant } = useAuth()
+    const {
+        setAttributes,
+        attributes,
+        ServiceModal: Context,
+        tenant,
+    } = useAuth()
     const { lang, translations: common_translations } = useAppContext()
     const [translations, setTranslations] = useState(common_translations)
     const [prompt_message, toggleDialog] = useState<string>('')
-    const categories: Record<string, string>[] = (attributes.categories || []) as Record<string, string>[]
+    const categories: Record<string, string>[] = (attributes.categories ||
+        []) as Record<string, string>[]
 
     const offerings =
         (attributes && (attributes.offerings as ModalDataAttributes[])) ||

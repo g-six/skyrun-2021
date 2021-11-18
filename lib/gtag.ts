@@ -1,4 +1,8 @@
-export const GA_TRACKING_ID = process.env.NODE_ENV === "production" ? process.env.GA_MEASUREMENT_ID_PROD : process.env.GA_MEASUREMENT_ID_NON_PROD
+import getConfig from 'next/config'
+
+const { NODE_ENV, GA_MEASUREMENT_ID_PROD, GA_MEASUREMENT_ID_NON_PROD } = getConfig().publicRuntimeConfig
+
+export const GA_TRACKING_ID = NODE_ENV === "production" ? GA_MEASUREMENT_ID_PROD : GA_MEASUREMENT_ID_NON_PROD
 
 // https://developers.google.com/analytics/devguides/collection/gtagjs/pages
 export const pageview = (url: URL): void => {

@@ -1,6 +1,7 @@
 import DropdownComponent from 'components/DropdownSelectors'
 import { DropPosition } from 'components/DropdownSelectors/common'
-import { UserModel } from 'components/Modals/types'
+import { ModalDataAttributes, UserModel } from 'components/Modals/types'
+import GridSpinner from 'components/Spinners/grid'
 import Translation from 'components/Translation'
 import ViewModeSelector from 'components/ViewModeSelector'
 import { ViewMode } from 'components/ViewModeSelector/types'
@@ -9,7 +10,7 @@ import { useAuth } from 'context/AuthContext'
 import getConfig from 'next/config'
 import { useEffect, useState } from 'react'
 import { ServiceApiItem, ServiceItem, ServiceType } from 'types/service'
-import { useFetch } from 'utils/fetch-helper'
+import { useFetch, deleteApiRequest } from 'utils/fetch-helper'
 import { FetchMethods } from 'utils/types'
 import Dashboard from '..'
 import ServiceList from './ServiceList'
@@ -69,6 +70,7 @@ export function normalizeItem(s: ServiceApiItem): ServiceItem {
         image_src,
     }
 }
+
 function DashboardServices() {
     const {
         tenant,
@@ -76,6 +78,8 @@ function DashboardServices() {
         attributes,
         setAttributes,
     } = useAuth()
+    const categories = attributes.categories as Record<string, string>[]
+
     const [services, setServices] = useState<ServiceItem[]>([])
     const { lang, translations: common_translations } = useAppContext()
     const [translations, setTranslations] = useState(common_translations)
@@ -86,20 +90,33 @@ function DashboardServices() {
     const [view_mode, setViewMode] = useState<ViewMode>(ViewMode.GRID)
     const [selected_instructors, selectInstructors] = useState<number[]>([])
     const [selected_categories, selectCategories] = useState<number[]>([])
-    const { data, doFetch } = useFetch(
+    const [should_fetch_categories, toggleFetchCategories] =
+        useState<boolean>(true)
+    const { data, doFetch, is_loading } = useFetch(
         `/v1/services/tenant-id/${tenant?.id}`,
         FetchMethods.GET,
         !!tenant?.id
     )
 
-    const { data: page_translation } = useFetch(
-        `/v1/contents?url=${encodeURI(
-            `https://cms.aot.plus/jsonapi/node/page_translation/${SERVICE_MODAL_TRANSLATION_ID}`
-        )}`,
+    const {
+        data: categories_api_response,
+        status: categories_api_status,
+        doFetch: getCategories,
+    } = useFetch(
+        `/v1/categories/?tenantId=${tenant?.id}`,
         FetchMethods.GET,
-        true,
-        true
+        false
     )
+
+    const { data: page_translation, is_loading: is_loading_translations } =
+        useFetch(
+            `/v1/contents?url=${encodeURI(
+                `https://cms.aot.plus/jsonapi/node/page_translation/${SERVICE_MODAL_TRANSLATION_ID}`
+            )}`,
+            FetchMethods.GET,
+            true,
+            true
+        )
 
     const instructor_filter = {
         label: <>Instructor</>,
@@ -178,6 +195,16 @@ function DashboardServices() {
         }
     }
 
+    async function handleDeleteCategory(category_id: string) {
+        setAttributes({
+            ...attributes,
+            categories: categories.filter((c) => {
+                return c.value != category_id
+            }),
+        })
+        await deleteApiRequest(`/v1/categories/${category_id}`)
+    }
+
     useEffect(() => {
         const list: ServiceItem[] =
             data && data.content && data.content.map(normalizeItem)
@@ -185,17 +212,28 @@ function DashboardServices() {
             setServices(list)
         }
 
-        if (lang && page_translation.data?.attributes[lang]) {
+        if (
+            lang &&
+            page_translation.data?.attributes[lang] &&
+            !is_loading_translations
+        ) {
             const translations_to_add: Record<string, string> = {}
             page_translation.data.attributes[lang].forEach(
                 ({ key, value }: any) => {
                     translations_to_add[key] = value
                 }
             )
-            setTranslations({
-                ...translations,
-                ...translations_to_add,
-            })
+            if (
+                Object.keys({
+                    ...translations,
+                    ...translations_to_add,
+                }).length > Object.keys(translations).length
+            ) {
+                setTranslations({
+                    ...translations,
+                    ...translations_to_add,
+                })
+            }
         }
 
         if (attributes.list_item_idx && attributes.updated_item) {
@@ -207,6 +245,36 @@ function DashboardServices() {
             })
             setServices(services)
         }
+        if (
+            categories_api_status == 200 &&
+            categories_api_response.content.length > 0
+        ) {
+            let fetched_categories = [] as ModalDataAttributes[]
+            if (attributes.categories) {
+                fetched_categories =
+                    attributes.categories as ModalDataAttributes[]
+            }
+            if (
+                categories_api_response.content.length !=
+                fetched_categories.length
+            )
+                categories_api_response.content.forEach(
+                    (category: Record<string, string>) => {
+                        if (category.type == 'SERVICE') {
+                            fetched_categories.push({
+                                text: category.name,
+                                value: category.id,
+                            })
+                        }
+                    }
+                )
+            if (fetched_categories.length > 0 && !attributes.categories) {
+                setAttributes({
+                    ...attributes,
+                    categories: fetched_categories,
+                })
+            }
+        }
 
         if (attributes.refetch) {
             setAttributes({
@@ -215,6 +283,10 @@ function DashboardServices() {
             })
             doFetch()
         }
+        if (tenant?.id && should_fetch_categories) {
+            toggleFetchCategories(false)
+            getCategories()
+        }
     }, [
         data,
         page_translation,
@@ -222,77 +294,107 @@ function DashboardServices() {
         attributes.list_item_idx,
         attributes.updated_item,
         attributes.refetch,
+        categories_api_status,
+        categories_api_response,
+        should_fetch_categories,
+        tenant,
+        services.length,
+        is_loading_translations,
     ])
 
     return (
         <Dashboard>
-            <div className="flex flex-col mt-4 gap-6 py-2 sm:px-6 lg:px-8">
-                <div className="align-middle inline-block min-w-full">
-                    <div className="flex justify-between">
-                        <div className="flex gap-4 items-center">
-                            <ViewModeSelector
-                                view_mode={view_mode}
-                                setViewMode={setViewMode}
-                            />
-                            <DropdownComponent
-                                items={[instructor_filter, category_filter]}
-                            />
-                        </div>
-
-                        <div className="flex items-center gap-6">
-                            <div>
+            {!tenant?.id ||
+            is_loading_translations ||
+            should_fetch_categories ||
+            is_loading ? (
+                <div className="absolute inset-0 block flex flex-col justify-center items-center">
+                    <div className="flex-1" />
+                    <GridSpinner height={24} width={24} />
+                    <div className="flex-1" />
+                </div>
+            ) : (
+                <div className="flex flex-col mt-4 gap-6 py-2 sm:px-6 lg:px-8">
+                    <div className="align-middle inline-block min-w-full">
+                        <div className="flex justify-between">
+                            <div className="flex gap-4 items-center">
+                                <ViewModeSelector
+                                    view_mode={view_mode}
+                                    setViewMode={setViewMode}
+                                />
                                 <DropdownComponent
                                     items={[
-                                        {
-                                            label: (
-                                                <button
-                                                    type="button"
-                                                    className="flex items-center gap-2 text-primary text-sm px-6 py-3 rounded-md hover:bg-primary hover:text-primary-lighter"
-                                                >
-                                                    <i className="feather-settings" />
-                                                    <span>
-                                                        Customize Booking
-                                                        Page
-                                                    </span>
-                                                </button>
-                                            ),
-                                        },
+                                        instructor_filter,
+                                        category_filter,
                                     ]}
-                                    label={
-                                        <div className="flex items-center gap-2 text-base font-thin text-primary">
-                                            <i className="feather-eye" />
-                                            <span className="mr-1">
-                                                Preview Booking Page
-                                            </span>
-                                            <span className="border-l-gray-300 border-l -mt-4 -mr-4 px-3 h-full -mb-4 py-2">
-                                                <i className="feather-chevron-down" />
-                                            </span>
-                                        </div>
-                                    }
-                                    style={{}}
-                                    dropboxClassname="border-0"
-                                    position={DropPosition.TOP_RIGHT}
                                 />
                             </div>
-                            <button
-                                onClick={() => {
-                                    ModalContext.open()
-                                }}
-                                className="flex items-center bg-primary-lighter text-primary px-8 py-2 font-thin rounded-lg"
-                            >
-                                <i className="feather-plus text-xl mr-2" />
-                                <Translation content_key="add_new_button" translations={translations} />
-                            </button>
+
+                            <div className="flex items-center gap-6">
+                                <div>
+                                    <DropdownComponent
+                                        items={[
+                                            {
+                                                label: (
+                                                    <button
+                                                        type="button"
+                                                        className="flex items-center gap-2 text-primary text-sm px-6 py-3 rounded-md hover:bg-primary hover:text-primary-lighter"
+                                                    >
+                                                        <i className="feather-settings" />
+                                                        <span>
+                                                            Customize
+                                                            Booking Page
+                                                        </span>
+                                                    </button>
+                                                ),
+                                            },
+                                        ]}
+                                        label={
+                                            <div className="flex items-center gap-2 text-base font-thin text-primary">
+                                                <i className="feather-eye" />
+                                                <Translation
+                                                    render_as="span"
+                                                    className="mr-1"
+                                                    translations={
+                                                        translations
+                                                    }
+                                                    content_key="preview_booking_btn"
+                                                />
+                                                <span className="border-l-gray-300 border-l -mt-4 -mr-4 px-3 h-full -mb-4 py-2">
+                                                    <i className="feather-chevron-down" />
+                                                </span>
+                                            </div>
+                                        }
+                                        style={{}}
+                                        dropboxClassname="border-0"
+                                        position={DropPosition.TOP_RIGHT}
+                                    />
+                                </div>
+                                <button
+                                    onClick={() => {
+                                        ModalContext.open()
+                                    }}
+                                    className="flex items-center bg-primary-lighter text-primary px-8 py-2 font-thin rounded-lg"
+                                >
+                                    <i className="feather-plus text-xl mr-2" />
+                                    <Translation
+                                        content_key="add_new_btn"
+                                        translations={translations}
+                                    />
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <ServiceList
-                    services={services}
-                    translations={translations}
-                    editItem={handleItemEdit}
-                />
-            </div>
+                    <ServiceList
+                        services={services}
+                        categories={categories}
+                        translations={translations}
+                        editItem={handleItemEdit}
+                        deleteEmptyCategory={handleDeleteCategory}
+                    />
+                </div>
+            )}
         </Dashboard>
     )
 }

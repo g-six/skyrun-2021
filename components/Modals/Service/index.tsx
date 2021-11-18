@@ -51,11 +51,17 @@ function ServiceModal(
         data: {},
     }
 ) {
-    const { setAttributes, attributes, ServiceModal: Context, tenant } = useAuth()
+    const {
+        setAttributes,
+        attributes,
+        ServiceModal: Context,
+        tenant,
+    } = useAuth()
     const { lang, translations: common_translations } = useAppContext()
     const [translations, setTranslations] = useState(common_translations)
     const [prompt_message, toggleDialog] = useState<string>('')
-    const categories: Record<string, string>[] = (attributes.categories || []) as Record<string, string>[]
+    const categories: Record<string, string>[] = (attributes.categories ||
+        []) as Record<string, string>[]
 
     const offerings =
         (attributes && (attributes.offerings as ModalDataAttributes[])) ||
@@ -67,16 +73,6 @@ function ServiceModal(
         )}`,
         FetchMethods.GET,
         true,
-        true
-    )
-
-    const {
-        data: categories_api_response,
-        status: categories_api_status,
-        doFetch: getCategories,
-    } = useFetch(
-        `/v1/categories/?tenantId=${tenant_id}`,
-        FetchMethods.GET,
         true
     )
 
@@ -116,11 +112,28 @@ function ServiceModal(
               }))
             : []
 
-    const {
-        data: create_category_api_response,
-        status: create_category_status,
-        doFetch: createCategory,
-    } = useFetch('/v1/categories', FetchMethods.POST, false)
+    async function createCategory(category: {
+        name: string
+        type: string
+        tenantId: string
+    }) {
+        const created_category = await postApiRequest(
+            '/v1/categories',
+            category
+        )
+
+        if (created_category.id) {
+            categories.push({
+                value: created_category.id,
+                text: created_category.name,
+            })
+            setAttributes({
+                ...attributes,
+                category: created_category.id,
+                categories,
+            })
+        }
+    }
 
     function handleCloseModal(e: MouseEvent<HTMLButtonElement>) {
         setAttributes({
@@ -160,7 +173,7 @@ function ServiceModal(
 
             const form_values: ServiceApiItem = {
                 id: attributes?.id as string,
-                category: attributes.category as { id: string },
+                category: { id: attributes.category as string },
                 description,
                 duration: duration as unknown as number,
                 name,
@@ -220,7 +233,7 @@ function ServiceModal(
                     string,
                     string
                 >[]
-                console.log(offerings)
+
                 offerings.forEach(
                     async ({
                         date,
@@ -269,51 +282,6 @@ function ServiceModal(
         }
     }
     useEffect(() => {
-        if (
-            create_category_status == 200 &&
-            create_category_api_response.id &&
-            categories.filter(
-                ({ id }) => id == create_category_api_response.id
-            ).length == 0
-        ) {
-            if (
-                !attributes?.category ||
-                (attributes?.category as unknown as Record<string, string>)
-                    .id != create_category_api_response.id
-            ) {
-                categories.push({
-                    text: create_category_api_response.name,
-                    value: create_category_api_response.id,
-                })
-                setAttributes({
-                    ...attributes,
-                    category: create_category_api_response,
-                    categories,
-                })
-            }
-        } else if (
-            categories_api_status == 200 &&
-            categories_api_response.content.length > 0 &&
-            categories_api_response.content.length != categories.length
-        ) {
-            categories_api_response.content.forEach(
-                (category: Record<string, string>) => {
-                    if (category.type == 'SERVICE') {
-                        categories.push({
-                            text: category.name,
-                            value: category.id,
-                        })
-                    }
-                }
-            )
-            if (categories.length > 0) {
-                setAttributes({
-                    ...attributes,
-                    categories,
-                })
-            }
-        }
-
         if (!attributes || !attributes?.service_type) {
             setAttributes({
                 ...attributes,
@@ -333,14 +301,7 @@ function ServiceModal(
                 ...translations_to_add,
             })
         }
-    }, [
-        common_translations,
-        page_translation,
-        lang,
-        categories_api_response,
-        categories_api_status,
-        create_category_status,
-    ])
+    }, [attributes.category, common_translations, page_translation, lang])
 
     const [selected_tab, setSelectedTab] = useState<number>(0)
     const handleSelect = (e: TabStripSelectEventArguments) => {

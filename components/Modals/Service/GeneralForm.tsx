@@ -2,7 +2,7 @@ import { RadioGroup } from '@headlessui/react'
 import DropdownComponent from 'components/DropdownSelectors'
 import { DropPosition } from 'components/DropdownSelectors/common'
 import MoneyInput from 'components/MoneyInput'
-import { MouseEvent, useEffect, useState } from 'react'
+import { MouseEvent, useState } from 'react'
 import { HexColorInput, HexColorPicker } from 'react-colorful'
 import { classNames } from 'utils/dom-helpers'
 import { FormErrors } from './types'
@@ -65,10 +65,7 @@ function GeneralForm({
         if (id) {
             setAttributes({
                 ...attributes,
-                category: {
-                    id,
-                    name,
-                },
+                category: id,
             })
         }
     }
@@ -319,14 +316,7 @@ function GeneralForm({
                         onActivate={() => {
                             toggleCategoryOpen(true)
                         }}
-                        defaultValue={
-                            (attributes &&
-                                attributes.category &&
-                                ((
-                                    attributes.category as ModalDataAttributes
-                                ).id as string)) ||
-                            ''
-                        }
+                        defaultValue={attributes?.category as string}
                         className="overflow-auto"
                         options={categories.map(
                             ({ text, value, disabled }, idx) => {

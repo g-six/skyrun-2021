@@ -101,7 +101,7 @@ function OptionList(props: OptionListProps & withClass) {
                                 >
                                     {props.options.map((item) => (
                                         <Listbox.Option
-                                            key={item.text}
+                                            key={item.value}
                                             className={({ active }) =>
                                                 classNames(
                                                     active

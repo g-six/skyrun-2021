@@ -76,16 +76,6 @@ function ServiceModal(
         true
     )
 
-    const {
-        data: categories_api_response,
-        status: categories_api_status,
-        doFetch: getCategories,
-    } = useFetch(
-        `/v1/categories/?tenantId=${tenant_id}`,
-        FetchMethods.GET,
-        true
-    )
-
     const { data: staff_api_response } = useFetch(
         `/v1/staff/?tenantId=${tenant_id}`,
         FetchMethods.GET,
@@ -125,6 +115,7 @@ function ServiceModal(
     const {
         data: create_category_api_response,
         status: create_category_status,
+        is_loading: is_creating_category,
         doFetch: createCategory,
     } = useFetch('/v1/categories', FetchMethods.POST, false)
 
@@ -226,7 +217,7 @@ function ServiceModal(
                     string,
                     string
                 >[]
-                console.log(offerings)
+
                 offerings.forEach(
                     async ({
                         date,
@@ -297,27 +288,6 @@ function ServiceModal(
                     categories,
                 })
             }
-        } else if (
-            categories_api_status == 200 &&
-            categories_api_response.content.length > 0 &&
-            categories_api_response.content.length != categories.length
-        ) {
-            categories_api_response.content.forEach(
-                (category: Record<string, string>) => {
-                    if (category.type == 'SERVICE') {
-                        categories.push({
-                            text: category.name,
-                            value: category.id,
-                        })
-                    }
-                }
-            )
-            if (categories.length > 0) {
-                setAttributes({
-                    ...attributes,
-                    categories,
-                })
-            }
         }
 
         if (!attributes || !attributes?.service_type) {
@@ -343,9 +313,8 @@ function ServiceModal(
         common_translations,
         page_translation,
         lang,
-        categories_api_response,
-        categories_api_status,
         create_category_status,
+        is_creating_category,
     ])
 
     const [selected_tab, setSelectedTab] = useState<number>(0)

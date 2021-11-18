@@ -57,7 +57,7 @@ export function ServiceList({
                             </div>
                             <Disclosure.Panel className="overflow-hidden bg-gray-100 rounded-b-lg">
                                 {services.map(
-                                    (service: ServiceItem) => {
+                                    (service: ServiceItem, idx: number) => {
                                         if (service.category.id as string == id) {
                                             serviced_category_idx++
                                             return <div

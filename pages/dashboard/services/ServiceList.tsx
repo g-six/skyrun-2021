@@ -78,7 +78,7 @@ export function ServiceList({
                                                     )}
                                                 >
                                                     <i className="feather-menu" />
-                                                    <span className="2xl:w-72 text-left">
+                                                    <span className="2xl:w-72 lg:w-52 text-left">
                                                         {service.name}
                                                     </span>
                                                     <span className="w-24 px-3 bg-green-100 text-green-800 text-xs font-display rounded-full py-1 w-32 text-center">

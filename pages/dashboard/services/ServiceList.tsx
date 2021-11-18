@@ -49,10 +49,10 @@ export function ServiceList({
                                     {name}
                                 </Disclosure.Button>
                                 <button
-                                    className="bg-primary-lighter bg-opacity-40 text-primary w-12 h-12 rounded-lg"
+                                    className="border border-primary-lighter font-display text-primary text-base h-10 px-6 rounded-lg"
                                     type="button"
                                 >
-                                    <i className="feather-edit" />
+                                    <Translation content_key="edit_category_btn" translations={translations} />
                                 </button>
                                 <Disclosure.Button>
                                     <i className="feather-chevron-down text-xl" />
@@ -129,13 +129,7 @@ export function ServiceList({
                                                     <div className="flex-1" />
                                                     <button
                                                         type="button"
-                                                        className="bg-red-100 text-red-600 h-12 w-12 rounded-lg"
-                                                    >
-                                                        <i className="feather-archive" />
-                                                    </button>
-                                                    <button
-                                                        type="button"
-                                                        className="bg-primary-lighter bg-opacity-50 text-primary-light h-12 w-12 rounded-lg"
+                                                        className="bg-primary-lighter bg-opacity-50 text-xl text-primary-light h-12 w-12 rounded-lg"
                                                         onClick={() => {
                                                             editItem(
                                                                 service,
@@ -144,6 +138,12 @@ export function ServiceList({
                                                         }}
                                                     >
                                                         <i className="feather-edit" />
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        className="bg-red-100 text-red-500 h-12 w-12 text-xl rounded-lg"
+                                                    >
+                                                        <i className="feather-archive" />
                                                     </button>
                                                 </div>
                                             )

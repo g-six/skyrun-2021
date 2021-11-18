@@ -1,3 +1,5 @@
+import { KeyboardEventHandler } from 'react'
+
 type InputProps = {
     id?: string
     error?: string
@@ -5,6 +7,7 @@ type InputProps = {
     defaultValue?: number
     className?: string
     onChange?(value: string): void
+    onKeyPressCapture?: KeyboardEventHandler
 }
 export function MoneyInput(props: InputProps) {
     return (

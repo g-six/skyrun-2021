@@ -1,8 +1,8 @@
 import getConfig from 'next/config'
 
-const { NODE_ENV, GA_MEASUREMENT_ID_PROD, GA_MEASUREMENT_ID_NON_PROD } = getConfig().publicRuntimeConfig
+const { BITBUCKET_BRANCH, GA_MEASUREMENT_ID_PROD, GA_MEASUREMENT_ID_NON_PROD } = getConfig().publicRuntimeConfig
 
-export const GA_TRACKING_ID = NODE_ENV === "production" ? GA_MEASUREMENT_ID_PROD : GA_MEASUREMENT_ID_NON_PROD
+export const GA_TRACKING_ID = BITBUCKET_BRANCH != "prod" ? GA_MEASUREMENT_ID_NON_PROD : GA_MEASUREMENT_ID_PROD
 
 // https://developers.google.com/analytics/devguides/collection/gtagjs/pages
 export const pageview = (url: URL): void => {

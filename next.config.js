@@ -41,6 +41,11 @@ module.exports = {
       '/': { page: '/' },
       ...translated_pages,
     })
+    console.log('BITBUCKET_BRANCH:', BITBUCKET_BRANCH)
+    console.log('NODE_ENV:', NODE_ENV)
+    console.log('GA_MEASUREMENT_ID_PROD:', GA_MEASUREMENT_ID_PROD)
+    console.log('GA_MEASUREMENT_ID_PROD:', GA_MEASUREMENT_ID_PROD)
+    console.log('FACEBOOK_PIXEL_ID:', FACEBOOK_PIXEL_ID)
     return {
       '/': { page: process.env.LANDING_PAGE || '/' },
       ...translated_pages,

@@ -66,7 +66,7 @@ export function ServiceList({
                                                     classNames(serviced_category_idx % 2 ? 'bg-opacity-30' : 'bg-opacity-70', 'bg-white py-2 px-6 flex items-center gap-3')
                                                 }
                                             >
-                                                <i className="feather-menu" />{serviced_category_idx}
+                                                <i className="feather-menu" />
                                                 <span className="2xl:w-72 text-left">
                                                     {service.name}
                                                 </span>
@@ -111,6 +111,12 @@ export function ServiceList({
                                                 <div className="flex-1" />
                                                 <button
                                                     type="button"
+                                                    className="bg-red-100 text-red-600 h-12 w-12 rounded-lg"
+                                                >
+                                                    <i className="feather-archive" />
+                                                </button>
+                                                <button
+                                                    type="button"
                                                     className="bg-primary-lighter bg-opacity-50 text-primary-light h-12 w-12 rounded-lg"
                                                     onClick={() => {
                                                         editItem(
@@ -120,12 +126,6 @@ export function ServiceList({
                                                     }}
                                                 >
                                                     <i className="feather-edit" />
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    className="bg-red-100 text-red-600 h-12 w-12 rounded-lg"
-                                                >
-                                                    <i className="feather-archive" />
                                                 </button>
                                             </div>
                                         } else return ''

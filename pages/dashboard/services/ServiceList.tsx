@@ -1,6 +1,7 @@
 import { Disclosure } from '@headlessui/react'
 import Translation from 'components/Translation'
 import { ServiceItem } from 'types/service'
+import { classNames } from 'utils/dom-helpers'
 export function ServiceList({
     categories = [],
     translations = {},
@@ -32,13 +33,15 @@ export function ServiceList({
         }
     )
 
+    let serviced_category_idx = 0
+
     return (
         <div className="flex flex-col gap-6">
             {serviced_categories.map(({ id, name }) => {
                 return (
-                    <div key={id}>
+                    <div key={id} className="overflow-hidden rounded-lg border-b border-r border-gray-100">
                         <Disclosure defaultOpen>
-                            <div className="flex gap-3 bg-primary-lighter bg-opacity-30 text-primary text-lg py-4 px-6 rounded-t-lg w-full text-left justify-between items-center">
+                            <div className="flex gap-3 bg-primary-lighter bg-opacity-30 text-primary text-lg py-4 px-6 w-full text-left justify-between items-center">
                                 <Disclosure.Button className="flex-1 text-left">
                                     {name}
                                 </Disclosure.Button>
@@ -52,16 +55,18 @@ export function ServiceList({
                                     <i className="feather-chevron-down text-xl" />
                                 </Disclosure.Button>
                             </div>
-                            <Disclosure.Panel>
+                            <Disclosure.Panel className="overflow-hidden bg-gray-100 rounded-b-lg">
                                 {services.map(
-                                    (service: ServiceItem, idx) => {
-                                        return (service.category
-                                            .id as string) == id ? (
-                                            <div
+                                    (service: ServiceItem) => {
+                                        if (service.category.id as string == id) {
+                                            serviced_category_idx++
+                                            return <div
                                                 key={service.id}
-                                                className="bg-gray-50 py-2 px-6 flex items-center gap-3"
+                                                className={
+                                                    classNames(serviced_category_idx % 2 ? 'bg-opacity-30' : 'bg-opacity-70', 'bg-white py-2 px-6 flex items-center gap-3')
+                                                }
                                             >
-                                                <i className="feather-menu" />
+                                                <i className="feather-menu" />{serviced_category_idx}
                                                 <span className="2xl:w-72 text-left">
                                                     {service.name}
                                                 </span>
@@ -123,9 +128,7 @@ export function ServiceList({
                                                     <i className="feather-archive" />
                                                 </button>
                                             </div>
-                                        ) : (
-                                            ''
-                                        )
+                                        } else return ''
                                     }
                                 )}
                             </Disclosure.Panel>
@@ -140,7 +143,7 @@ export function ServiceList({
                         className="bg-gray-50 px-6 py-4 rounded-lg flex flex-col md:flex-row items-center gap-6"
                         key={value}
                     >
-                        <span className="text-gray-400 text-lg font-thin font-display flex-1">
+                        <span className="text-gray-300 text-lg font-thin font-display flex-1">
                             {text}
                         </span>
                         <div className="flex place-content-end gap-3">

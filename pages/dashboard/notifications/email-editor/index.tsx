@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { KeyboardEvent, useRef } from 'react';
 import Dashboard from "pages/dashboard"
 import { useRouter } from 'next/router'
 // import { Editor } from "react-draft-wysiwyg";
@@ -8,6 +8,8 @@ import { EditorState } from "draft-js";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { useState } from "react";
 import dynamic from 'next/dynamic'
+import TagsDropdown from '../tags-dropdown'
+import { InputChangeEvent } from '@progress/kendo-react-inputs';
 
 const Editor = dynamic(() => {
   return import("react-draft-wysiwyg").then(mod => mod.Editor)
@@ -27,7 +29,14 @@ const defaultLanguages = [
 function EmailEditor(){
   const [editorState, setEditorState] = useState(EditorState.createEmpty())
   const [languages, setLanguages] = useState(defaultLanguages)
-  const [selectedLanguage, setSelectedLanguage] = useState(languages[0])
+  const [selectedLanguage, setSelectedLanguage] = useState(languages[0]) 
+  const [showTagsDropDown, setShowTagsDropDown] = useState(false)
+  const [emailSubject, setEmailSubject] = useState('')
+  const [tagsDropDownTopPosition, setTagsDropDownTopPosition] = useState(0)
+  const [tagsDropDownLeftPosition, setTagsDropDownLeftPosition] = useState(0)
+
+  const txtEmailSubject = useRef() as React.MutableRefObject<HTMLInputElement>;
+  const widthRef = useRef()  as React.MutableRefObject<HTMLSpanElement>;
   const router = useRouter()
 
   const uiTags = [
@@ -47,10 +56,19 @@ function EmailEditor(){
     { key:'btn_Export', title: 'Export'},
   ]
 
-
   const onEditorStateChange = (_editorState: any) => {
     setEditorState(_editorState)
   } 
+  const handleKeyUpEvent = (e: KeyboardEvent<HTMLInputElement>) => {
+    if(e.code === "Slash"){
+      setTagsDropDownTopPosition(txtEmailSubject.current.getBoundingClientRect().top - 30 + document.documentElement.scrollTop) 
+      setTagsDropDownLeftPosition(txtEmailSubject.current.getBoundingClientRect().left + 30 + widthRef.current.getBoundingClientRect().width)
+      setShowTagsDropDown(true)
+    }
+  }
+  const handleChangeEvent = (e: InputChangeEvent) => {
+    setEmailSubject(`${e.target.value}`)
+  }
 
   return (
     <Dashboard>
@@ -188,12 +206,15 @@ function EmailEditor(){
           />
           <input
             type="text"
-            id="first-name"
-            autoComplete="first_name"
+            id="email-subject"
+            ref={txtEmailSubject} 
             className={classNames(
                 'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
             )}
+            onKeyUp={(e) => handleKeyUpEvent(e)}
+            onChange={(e) => handleChangeEvent(e)}
           /> 
+          <span ref={widthRef} className="invisible">{emailSubject}</span>
           <Translation
             render_as="div"
             content_key="lbl_email_body"
@@ -209,10 +230,25 @@ function EmailEditor(){
           />
 
         </div>
+
+        <div 
+          className={classNames('absolute bg-white')}
+          style={{
+            display: showTagsDropDown ? 'unset':'none',
+            top: `${tagsDropDownTopPosition}px`,
+            left: `${tagsDropDownLeftPosition}px`,
+            height: 'fit-content'
+          }}
+          >
+          <TagsDropdown/> 
+        </div>
+
         
       </div>
     </Dashboard>
   )
 }
+
+
 
 export default EmailEditor

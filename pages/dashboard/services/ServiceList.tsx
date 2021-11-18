@@ -48,7 +48,7 @@ export function ServiceList({
                                         return (service.category
                                             .id as string) == id ? (
                                             <div
-                                                key={idx}
+                                                key={service.id}
                                                 className="bg-gray-50 py-2 px-6 flex items-center gap-3"
                                             >
                                                 <i className="feather-menu" />

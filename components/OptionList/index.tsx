@@ -36,9 +36,8 @@ function OptionList(props: OptionListProps & withClass) {
 
     useEffect(() => {
         if (
-            !selected?.value &&
             props.defaultValue &&
-            selected?.value != props.defaultValue
+            (selected?.value != props.defaultValue || !selected?.value)
         ) {
             const [selected_items] = props.options.filter(
                 (c: OptionListItem) => {

@@ -173,7 +173,7 @@ function ServiceModal(
 
             const form_values: ServiceApiItem = {
                 id: attributes?.id as string,
-                category: attributes.category as { id: string },
+                category: { id: attributes.category as string },
                 description,
                 duration: duration as unknown as number,
                 name,

@@ -38,10 +38,20 @@ export function ServiceList({
                 return (
                     <div key={id}>
                         <Disclosure defaultOpen>
-                            <Disclosure.Button className="bg-primary-lighter bg-opacity-30 text-primary text-lg py-4 px-6 rounded-t-lg w-full text-left flex justify-between items-center">
-                                {name}
-                                <i className="feather-chevron-down text-xl" />
-                            </Disclosure.Button>
+                            <div className="flex gap-3 bg-primary-lighter bg-opacity-30 text-primary text-lg py-4 px-6 rounded-t-lg w-full text-left justify-between items-center">
+                                <Disclosure.Button className="flex-1 text-left">
+                                    {name}
+                                </Disclosure.Button>
+                                <button
+                                    className="bg-primary-lighter bg-opacity-40 text-primary w-12 h-12 rounded-lg"
+                                    type="button"
+                                >
+                                    <i className="feather-edit" />
+                                </button>
+                                <Disclosure.Button>
+                                    <i className="feather-chevron-down text-xl" />
+                                </Disclosure.Button>
+                            </div>
                             <Disclosure.Panel>
                                 {services.map(
                                     (service: ServiceItem, idx) => {
@@ -127,24 +137,24 @@ export function ServiceList({
             {empty_categories.map(({ text, value }) => {
                 return (
                     <div
-                        className="bg-gray-50 px-5 py-4 rounded-lg flex flex-col md:flex-row items-center gap-6"
+                        className="bg-gray-50 px-6 py-4 rounded-lg flex flex-col md:flex-row items-center gap-6"
                         key={value}
                     >
                         <span className="text-gray-400 text-lg font-thin font-display flex-1">
                             {text}
                         </span>
-                        <div className="flex place-content-end gap-2">
+                        <div className="flex place-content-end gap-3">
                             <button
-                                className="bg-red-100 text-red-600 w-10 h-10 rounded"
+                                className="bg-red-100 text-red-600 w-12 h-12 rounded-lg"
                                 type="button"
                                 onClick={() => {
                                     deleteEmptyCategory(value)
                                 }}
                             >
-                                <i className="feather-trash" />
+                                <i className="feather-archive" />
                             </button>
                             <button
-                                className="bg-primary-lighter bg-opacity-40 text-primary w-10 h-10 rounded"
+                                className="bg-primary-lighter bg-opacity-40 text-primary w-12 h-12 rounded-lg"
                                 type="button"
                             >
                                 <i className="feather-edit" />

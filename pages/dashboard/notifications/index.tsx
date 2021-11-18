@@ -340,46 +340,45 @@ function BookingAndAppointmentEmailItem({
     const router = useRouter()
 
     return (
-        <div className="grid grid-cols-12 py-3 bg-gray-50 border-b-2 border-gray-300 w-full">
-            <div className="col-span-1 flex justify-center flex-wrap content-center">
-                <i className="feather-align-justify" />
-            </div>
-            <div className="col-span-7">
-                <div className="text-lg font-bold py-2">
-                    <Translation
-                        render_as="span"
-                        content_key={item}
-                        translations={{}}
-                    />
+        <div className="flex px-3 py-3 bg-gray-50 content-center border-b-2 border-gray-300 w-full">
+            <div className="flex justify-center gap-8">
+                <div className="flex flex-wrap content-center">
+                    <i className="feather-align-justify" />
                 </div>
-                <div className="text-sm">
-                    <Translation
-                        render_as="span"
-                        content_key="notifications_1_item_subtext"
-                        translations={{}}
-                    />
+                <div>
+                    <div className="text-lg font-bold py-2">
+                        <Translation
+                            render_as="span"
+                            content_key={item}
+                            translations={{}}
+                        />
+                    </div>
+                    <div className="text-sm">
+                        <Translation
+                            render_as="span"
+                            content_key="notifications_1_item_subtext"
+                            translations={{}}
+                        />
+                    </div>
                 </div>
             </div>
-            <div className="col-span-1 flex justify-center flex-wrap content-center">
-                {/* <ToggleSwitch value={isOn} action={setIsOn} /> */}
+           
+            <div className="w-full flex flex-wrap content-center justify-end gap-3">
                 <Switch
                     className="no-color-change"
                     onLabel={''}
                     offLabel={''}
                     onChange={(e) => setIsOn(e.value)}
                 />
-            </div>
-            <div className="col-span-1 flex justify-center flex-wrap content-center">
                 <Translation
                     render_as="span"
                     content_key={isOn ? 'lbl_on' : 'lbl_off'}
+                    className="flex flex-wrap content-center"
                     translations={{}}
                 />
-            </div>
-            <div className="col-span-2 flex justify-center flex-wrap content-center">
                 <button
                     className={classNames(
-                        'items-center text-primary px-8 py-2',
+                        'items-center h-11 text-primary px-8 py-2',
                         'font-thin rounded-lg border border-gray-300',
                         'rounded-r-mdk'
                     )}
@@ -391,7 +390,7 @@ function BookingAndAppointmentEmailItem({
                         translations={{}}
                     />
                 </button>
-            </div>
+            </div> 
         </div>
     )
 }

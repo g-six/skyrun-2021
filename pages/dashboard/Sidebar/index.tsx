@@ -307,10 +307,10 @@ function Sidebar({ children }: Props) {
                 {children}
                 <button
                     className={classNames(
-                        'absolute bottom-16 bg-primary text-white w-9 h-9 transition-all duration-200',
+                        'absolute bottom-16 bg-primary text-white w-9 h-9 transition-all duration-200 -left-4',
                         ctx.is_drawer_expanded
-                            ? 'left-56 shadow-xl border-r border-indigo-50'
-                            : 'left-10 hover:bg-opacity-30 bg-opacity-70',
+                            ? 'shadow-xl border-r border-indigo-50'
+                            : 'hover:bg-opacity-30 bg-opacity-70',
                         'duration-200 ease-linear transition-all rounded-full'
                     )}
                     id="BtnExpandSidebar"

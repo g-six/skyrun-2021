@@ -6,7 +6,7 @@ export function ServiceList({
     translations = {},
     services = [],
     editItem = (e, i) => {},
-    deleteEmptyCategory = (category_id: string) => {}
+    deleteEmptyCategory = (category_id: string) => {},
 }: {
     categories: Record<string, string>[]
     services: ServiceItem[]
@@ -23,9 +23,14 @@ export function ServiceList({
             serviced_categories.push(svc.category)
         }
     })
-    const empty_categories: Record<string, string>[] = categories.filter((category: Record<string, string>) => {
-        return serviced_categories.filter(({ id }) => (id == category.value)).length == 0
-    })
+    const empty_categories: Record<string, string>[] = categories.filter(
+        (category: Record<string, string>) => {
+            return (
+                serviced_categories.filter(({ id }) => id == category.value)
+                    .length == 0
+            )
+        }
+    )
 
     return (
         <div className="flex flex-col gap-6">
@@ -120,20 +125,33 @@ export function ServiceList({
             })}
 
             {empty_categories.map(({ text, value }) => {
-                return <div className="bg-gray-50 px-5 py-4 rounded-lg flex flex-col md:flex-row items-center gap-6" key={value}>
-                    <span className="text-gray-400 text-lg font-thin font-display flex-1">{text}</span>
-                    <div className="flex place-content-end gap-2">
-                        <button
-                            className="bg-red-100 text-red-600 w-10 h-10 rounded"
-                            type="button"
-                            onClick={() => { deleteEmptyCategory(value) }}
-                            ><i className="feather-trash" /></button>
-                        <button
-                            className="bg-primary-lighter bg-opacity-40 text-primary w-10 h-10 rounded"
-                            type="button"
-                            ><i className="feather-edit" /></button>
+                return (
+                    <div
+                        className="bg-gray-50 px-5 py-4 rounded-lg flex flex-col md:flex-row items-center gap-6"
+                        key={value}
+                    >
+                        <span className="text-gray-400 text-lg font-thin font-display flex-1">
+                            {text}
+                        </span>
+                        <div className="flex place-content-end gap-2">
+                            <button
+                                className="bg-red-100 text-red-600 w-10 h-10 rounded"
+                                type="button"
+                                onClick={() => {
+                                    deleteEmptyCategory(value)
+                                }}
+                            >
+                                <i className="feather-trash" />
+                            </button>
+                            <button
+                                className="bg-primary-lighter bg-opacity-40 text-primary w-10 h-10 rounded"
+                                type="button"
+                            >
+                                <i className="feather-edit" />
+                            </button>
+                        </div>
                     </div>
-                </div>
+                )
             })}
         </div>
     )

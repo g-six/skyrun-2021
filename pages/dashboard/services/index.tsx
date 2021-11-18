@@ -251,9 +251,13 @@ function DashboardServices() {
         ) {
             let fetched_categories = [] as ModalDataAttributes[]
             if (attributes.categories) {
-                fetched_categories = attributes.categories as ModalDataAttributes[]
+                fetched_categories =
+                    attributes.categories as ModalDataAttributes[]
             }
-            if (categories_api_response.content.length != fetched_categories.length)
+            if (
+                categories_api_response.content.length !=
+                fetched_categories.length
+            )
                 categories_api_response.content.forEach(
                     (category: Record<string, string>) => {
                         if (category.type == 'SERVICE') {

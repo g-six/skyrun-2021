@@ -54,9 +54,9 @@ function EmailEditor(){
 
   return (
     <Dashboard>
-      <div className="py-2 px-8">
-        <div className="h-auto grid grid-cols-2">
-          <div>
+      <div className="py-2 px-8 text-black">
+        <div className="w-full flex">
+          <div className="w-auto">
             <div className="inline-flex cursor-pointer" 
               onClick={() => router.back()}>
               <i className="feather-chevron-left" />
@@ -76,7 +76,7 @@ function EmailEditor(){
               />
             </div>
           </div>
-          <div className="flex justify-end gap-3 pt-2">
+          <div className="flex w-full flex-wrap content-center justify-end gap-3 pt-2">
             <button
               className={classNames(
                 'items-center text-primary px-8 py-2 h-12',
@@ -126,9 +126,7 @@ function EmailEditor(){
             languages.map(lang => <>
               <button
                 className={classNames(
-                    'flex items-center text-primary p-px',
-                    'rounded-lg',
-                    'rounded-r-mdk',
+                    'flex flex-wrap content-center justify-center text-primary p-px w-14 rounded-lg',
                     selectedLanguage.flag === lang.flag ? 'bg-primary-lighter' : ''
                 )}
                 onClick={() => setSelectedLanguage(lang)}
@@ -152,7 +150,7 @@ function EmailEditor(){
                 )}
                 defaultValue="default"
             >
-                <option value="default" disabled selected>
+                <option value="default" disabled selected className="add-language-placeholder">
                     +&nbsp;&nbsp; ADD LANGUAGE
                 </option>
                 <option value="PH">PH</option>
@@ -161,13 +159,13 @@ function EmailEditor(){
             </select>
         </div>
 
-        <div className="py-5">
+        <div className="py-5 flex flex-wrap">
           {
             uiTags.map(tag => <>
               <Translation
                   render_as="span"
                   content_key={tag.key}
-                  className="text-sm ml-2 p-1 bg-gray-50"
+                  className="text-sm ml-2 mb-2 p-1 bg-gray-50 text-gray-400"
                   translations={{}}
                 />
             </>)
@@ -177,17 +175,41 @@ function EmailEditor(){
           <Translation
             render_as="span"
             content_key='Insert these tags while typing by pressing "/"'
-            className="text-sm text-gray"
+            className="text-sm text-gray-400 my-3"
             translations={{}}
           />
         </div>
-        <Editor
-          editorState={editorState}
-          toolbarClassName="toolbarClassName"
-          wrapperClassName="wrapperClassName"
-          editorClassName="editorClassName"
-          onEditorStateChange={onEditorStateChange}
-        />
+        <div className="w-9/12"> 
+          <Translation
+            render_as="div"
+            content_key="lbl_email_subject"
+            className="py-4 font-semibold"
+            translations={{}}
+          />
+          <input
+            type="text"
+            id="first-name"
+            autoComplete="first_name"
+            className={classNames(
+                'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
+            )}
+          /> 
+          <Translation
+            render_as="div"
+            content_key="lbl_email_body"
+            className="py-4 font-semibold"
+            translations={{}}
+          />
+          <Editor
+            editorState={editorState}
+            toolbarClassName="editor-toolbar"
+            wrapperClassName="editor-wrapper"
+            editorClassName="editor-body"
+            onEditorStateChange={onEditorStateChange}
+          />
+
+        </div>
+        
       </div>
     </Dashboard>
   )

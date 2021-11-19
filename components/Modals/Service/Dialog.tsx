@@ -1,14 +1,18 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, ReactElement, useEffect, useState } from 'react'
 
+export interface DialogProps {
+    prompt_message: string | ReactElement
+    onCloseModal(): void
+}
 export default function DialogModal({
-    prompt_message = <></>,
+    prompt_message = '',
     onCloseModal = (): void => {},
-}) {
-    let [message, setMessage] = useState<ReactElement>(prompt_message)
+}: DialogProps) {
+    let [message, setMessage] = useState<ReactElement | string>(prompt_message)
 
     function closeModal() {
-        setMessage(<></>)
+        setMessage('')
         onCloseModal()
     }
 

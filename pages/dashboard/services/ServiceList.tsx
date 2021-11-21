@@ -39,7 +39,10 @@ export function ServiceList({
         <div className="flex flex-col gap-6">
             {serviced_categories.map(({ id, name }) => {
                 return (
-                    <div key={id} className="overflow-hidden rounded-lg border-b border-r border-gray-100">
+                    <div
+                        key={id}
+                        className="overflow-hidden rounded-lg border-b border-r border-gray-100"
+                    >
                         <Disclosure defaultOpen>
                             <div className="flex gap-3 bg-primary-lighter bg-opacity-30 text-primary text-lg py-4 px-6 w-full text-left justify-between items-center">
                                 <Disclosure.Button className="flex-1 text-left">
@@ -58,76 +61,92 @@ export function ServiceList({
                             <Disclosure.Panel className="overflow-hidden bg-gray-100 rounded-b-lg">
                                 {services.map(
                                     (service: ServiceItem, idx: number) => {
-                                        if (service.category.id as string == id) {
+                                        if (
+                                            (service.category
+                                                .id as string) == id
+                                        ) {
                                             serviced_category_idx++
-                                            return <div
-                                                key={service.id}
-                                                className={
-                                                    classNames(serviced_category_idx % 2 ? 'bg-opacity-30' : 'bg-opacity-70', 'bg-white py-2 px-6 flex items-center gap-3')
-                                                }
-                                            >
-                                                <i className="feather-menu" />
-                                                <span className="2xl:w-72 text-left">
-                                                    {service.name}
-                                                </span>
-                                                <span className="w-24 px-3 bg-green-100 text-green-800 text-xs font-display rounded-full py-1 w-32 text-center">
-                                                    {service.service_type}
-                                                </span>
-                                                <span className="w-24 text-center">
-                                                    SGD {service.price}
-                                                </span>
-                                                <div className="w-60">
-                                                    <strong className="text-sm">
-                                                        {service.duration}{' '}
-                                                        <Translation
-                                                            content_key="mins"
-                                                            translations={
-                                                                translations
-                                                            }
-                                                        />
-                                                    </strong>
-                                                    <span className="text-sm">
-                                                        <Translation
-                                                            content_key="max_participants"
-                                                            translations={
-                                                                translations
-                                                            }
-                                                        />
-                                                        :{' '}
+                                            return (
+                                                <div
+                                                    key={service.id}
+                                                    className={classNames(
+                                                        serviced_category_idx %
+                                                            2
+                                                            ? 'bg-opacity-30'
+                                                            : 'bg-opacity-70',
+                                                        'bg-white py-2 px-6 flex items-center gap-3'
+                                                    )}
+                                                >
+                                                    <i className="feather-menu" />
+                                                    <span className="2xl:w-72 text-left">
+                                                        {service.name}
+                                                    </span>
+                                                    <span className="w-24 px-3 bg-green-100 text-green-800 text-xs font-display rounded-full py-1 w-32 text-center">
                                                         {
-                                                            service.max_participants
+                                                            service.service_type
                                                         }
                                                     </span>
+                                                    <span className="w-24 text-center">
+                                                        SGD {service.price}
+                                                    </span>
+                                                    <div className="w-60">
+                                                        <strong className="text-sm">
+                                                            {
+                                                                service.duration
+                                                            }{' '}
+                                                            <Translation
+                                                                content_key="mins"
+                                                                translations={
+                                                                    translations
+                                                                }
+                                                            />
+                                                        </strong>
+                                                        <span className="text-sm">
+                                                            <Translation
+                                                                content_key="max_participants"
+                                                                translations={
+                                                                    translations
+                                                                }
+                                                            />
+                                                            :{' '}
+                                                            {
+                                                                service.max_participants
+                                                            }
+                                                        </span>
+                                                    </div>
+                                                    <span>
+                                                        {
+                                                            service.staff
+                                                                .length
+                                                        }{' '}
+                                                        <Translation
+                                                            content_key="staff_assgined"
+                                                            translations={
+                                                                translations
+                                                            }
+                                                        />
+                                                    </span>
+                                                    <div className="flex-1" />
+                                                    <button
+                                                        type="button"
+                                                        className="bg-red-100 text-red-600 h-12 w-12 rounded-lg"
+                                                    >
+                                                        <i className="feather-archive" />
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        className="bg-primary-lighter bg-opacity-50 text-primary-light h-12 w-12 rounded-lg"
+                                                        onClick={() => {
+                                                            editItem(
+                                                                service,
+                                                                idx
+                                                            )
+                                                        }}
+                                                    >
+                                                        <i className="feather-edit" />
+                                                    </button>
                                                 </div>
-                                                <span>
-                                                    {service.staff.length}{' '}
-                                                    <Translation
-                                                        content_key="staff_assgined"
-                                                        translations={
-                                                            translations
-                                                        }
-                                                    />
-                                                </span>
-                                                <div className="flex-1" />
-                                                <button
-                                                    type="button"
-                                                    className="bg-red-100 text-red-600 h-12 w-12 rounded-lg"
-                                                >
-                                                    <i className="feather-archive" />
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    className="bg-primary-lighter bg-opacity-50 text-primary-light h-12 w-12 rounded-lg"
-                                                    onClick={() => {
-                                                        editItem(
-                                                            service,
-                                                            idx
-                                                        )
-                                                    }}
-                                                >
-                                                    <i className="feather-edit" />
-                                                </button>
-                                            </div>
+                                            )
                                         } else return ''
                                     }
                                 )}

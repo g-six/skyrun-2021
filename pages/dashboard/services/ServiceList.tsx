@@ -52,7 +52,10 @@ export function ServiceList({
                                     className="border border-primary-lighter font-display text-primary text-base h-10 px-6 rounded-lg"
                                     type="button"
                                 >
-                                    <Translation content_key="edit_category_btn" translations={translations} />
+                                    <Translation
+                                        content_key="edit_category_btn"
+                                        translations={translations}
+                                    />
                                 </button>
                                 <Disclosure.Button>
                                     <i className="feather-chevron-down text-xl" />

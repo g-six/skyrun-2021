@@ -1,11 +1,15 @@
 import { Dialog, Transition } from '@headlessui/react'
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, ReactElement, useEffect, useState } from 'react'
 
+export interface DialogProps {
+    prompt_message: string | ReactElement
+    onCloseModal(): void
+}
 export default function DialogModal({
     prompt_message = '',
     onCloseModal = (): void => {},
-}) {
-    let [message, setMessage] = useState<string>('')
+}: DialogProps) {
+    let [message, setMessage] = useState<ReactElement | string>(prompt_message)
 
     function closeModal() {
         setMessage('')
@@ -20,11 +24,17 @@ export default function DialogModal({
         <Transition
             appear
             show={!!(message || prompt_message)}
-            as={Fragment}
+            as="div"
+            enter="transition-opacity duration-75"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="transition-opacity duration-150"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
         >
             <Dialog
                 as="div"
-                className="fixed inset-0 z-10 overflow-y-auto"
+                className="fixed inset-0 z-40 overflow-y-auto"
                 onClose={closeModal}
             >
                 <div className="min-h-screen px-4 text-center">
@@ -37,7 +47,7 @@ export default function DialogModal({
                         leaveFrom="opacity-100"
                         leaveTo="opacity-0"
                     >
-                        <Dialog.Overlay className="fixed inset-0" />
+                        <Dialog.Overlay className="fixed inset-0 backdrop-filter backdrop-brightness-50" />
                     </Transition.Child>
 
                     {/* This element is to trick the browser into centering the modal contents. */}

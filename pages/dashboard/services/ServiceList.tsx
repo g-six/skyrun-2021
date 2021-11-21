@@ -49,10 +49,10 @@ export function ServiceList({
                                     {name}
                                 </Disclosure.Button>
                                 <button
-                                    className="bg-primary-lighter bg-opacity-40 text-primary w-12 h-12 rounded-lg"
+                                    className="border border-primary-lighter font-display text-primary text-base h-10 px-6 rounded-lg"
                                     type="button"
                                 >
-                                    <i className="feather-edit" />
+                                    <Translation content_key="edit_category_btn" translations={translations} />
                                 </button>
                                 <Disclosure.Button>
                                     <i className="feather-chevron-down text-xl" />
@@ -78,7 +78,11 @@ export function ServiceList({
                                                     )}
                                                 >
                                                     <i className="feather-menu" />
+<<<<<<< HEAD
                                                     <span className="2xl:w-72 text-left">
+=======
+                                                    <span className="2xl:w-72 lg:w-52 text-left">
+>>>>>>> 0ef5f28cde556b42f8fc0d8f2021841dc322acce
                                                         {service.name}
                                                     </span>
                                                     <span className="w-24 px-3 bg-green-100 text-green-800 text-xs font-display rounded-full py-1 w-32 text-center">
@@ -129,6 +133,7 @@ export function ServiceList({
                                                     <div className="flex-1" />
                                                     <button
                                                         type="button"
+<<<<<<< HEAD
                                                         className="bg-red-100 text-red-600 h-12 w-12 rounded-lg"
                                                     >
                                                         <i className="feather-archive" />
@@ -136,6 +141,9 @@ export function ServiceList({
                                                     <button
                                                         type="button"
                                                         className="bg-primary-lighter bg-opacity-50 text-primary-light h-12 w-12 rounded-lg"
+=======
+                                                        className="bg-primary-lighter bg-opacity-50 text-xl text-primary-light h-12 w-12 rounded-lg"
+>>>>>>> 0ef5f28cde556b42f8fc0d8f2021841dc322acce
                                                         onClick={() => {
                                                             editItem(
                                                                 service,
@@ -145,6 +153,15 @@ export function ServiceList({
                                                     >
                                                         <i className="feather-edit" />
                                                     </button>
+<<<<<<< HEAD
+=======
+                                                    <button
+                                                        type="button"
+                                                        className="bg-red-100 text-red-500 h-12 w-12 text-xl rounded-lg"
+                                                    >
+                                                        <i className="feather-archive" />
+                                                    </button>
+>>>>>>> 0ef5f28cde556b42f8fc0d8f2021841dc322acce
                                                 </div>
                                             )
                                         } else return ''

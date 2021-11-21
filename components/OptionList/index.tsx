@@ -14,6 +14,7 @@ export type OptionListItem = {
 }
 export interface OptionListProps {
     id: string
+    button_classnames?: string
     defaultValue?: string
     position?: ListFlyFrom
     onChange: (t: OptionListItem) => void
@@ -63,6 +64,7 @@ function OptionList(props: OptionListProps & withClass) {
                                 props.error
                                     ? 'bg-red-100 border-red-300'
                                     : 'bg-white border-gray-300',
+                                props.button_classnames || '',
                                 'relative w-full border rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-primary-light focus:border-primary-light sm:text-base'
                             )}
                             role="button"

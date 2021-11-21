@@ -17,6 +17,7 @@ import OptionList, {
 import { ModalDataAttributes } from '../types'
 import { ServiceType } from 'types/service'
 import { TenantInfo } from 'context/types'
+import { handleInputEnter } from 'utils/input-helper'
 
 function GeneralForm({
     attributes,
@@ -93,9 +94,7 @@ function GeneralForm({
 
                     <div className="my-8">
                         <RadioGroup
-                            value={
-                                attributes?.service_type as unknown as ServiceType
-                            }
+                            value={attributes?.service_type}
                             onChange={(v) => {
                                 setAttributes({
                                     ...attributes,
@@ -287,6 +286,7 @@ function GeneralForm({
                             })
                         }}
                         defaultValue={(attributes?.name as string) || ''}
+                        onKeyPressCapture={handleInputEnter(onSubmit)}
                     />
                     {form_errors.name && (
                         <span className="text-sm text-red-700">
@@ -318,6 +318,7 @@ function GeneralForm({
                         }}
                         defaultValue={attributes?.category as string}
                         className="overflow-auto"
+                        button_classnames="px-6 py-3"
                         options={categories.map(
                             ({ text, value, disabled }, idx) => {
                                 return {
@@ -446,6 +447,7 @@ function GeneralForm({
                     <input
                         type="number"
                         id="duration"
+                        onKeyPressCapture={handleInputEnter(onSubmit)}
                         className={classNames(
                             'px-6 py-3 mt-1 focus:ring-primary-light focus:border-primary-light block w-full shadow-sm border-gray-300 rounded-md',
                             form_errors.duration
@@ -504,6 +506,7 @@ function GeneralForm({
                                 max_participants: e.target.value,
                             })
                         }}
+                        onKeyPressCapture={handleInputEnter(onSubmit)}
                     />
 
                     {form_errors.max_participants && (
@@ -544,6 +547,7 @@ function GeneralForm({
                                 price: v,
                             })
                         }}
+                        onKeyPressCapture={handleInputEnter(onSubmit)}
                     />
                     {form_errors.price && (
                         <Translation

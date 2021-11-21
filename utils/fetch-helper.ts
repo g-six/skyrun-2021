@@ -63,7 +63,10 @@ export async function postApiRequest(
         const response = await fetch(fetchPath(path), req_init)
 
         try {
-            return await response.json()
+            const results = await response.json()
+            results.status = response.status
+            results.ok = response.ok
+            return results
         } catch (e) {
             return { error: 'API error' }
         }
@@ -96,7 +99,10 @@ export async function putApiRequest(
         const response = await fetch(fetchPath(path), req_init)
 
         try {
-            return await response.json()
+            const results = await response.json()
+            results.status = response.status
+            results.ok = response.ok
+            return results
         } catch (e) {
             return { error: 'API error' }
         }

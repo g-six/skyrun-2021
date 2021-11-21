@@ -181,7 +181,7 @@ function DashboardServices() {
                 ...attributes,
                 id,
                 name,
-                category,
+                category: category.id,
                 description: description || '',
                 duration: duration || '',
                 is_public,
@@ -372,6 +372,10 @@ function DashboardServices() {
                                 </div>
                                 <button
                                     onClick={() => {
+                                        setAttributes({
+                                            ...attributes,
+                                            service_type: 'GROUP',
+                                        })
                                         ModalContext.open()
                                     }}
                                     className="flex items-center bg-primary-lighter text-primary px-8 py-2 font-thin rounded-lg"

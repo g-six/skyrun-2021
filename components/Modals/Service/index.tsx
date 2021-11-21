@@ -1,4 +1,4 @@
-import { useEffect, useState, MouseEvent } from 'react'
+import { useEffect, useState, MouseEvent, ReactElement } from 'react'
 import DialogModal from './Dialog'
 
 import { createModal } from '../ModalFactory'
@@ -59,7 +59,9 @@ function ServiceModal(
     } = useAuth()
     const { lang, translations: common_translations } = useAppContext()
     const [translations, setTranslations] = useState(common_translations)
-    const [prompt_message, toggleDialog] = useState<string>('')
+    const [prompt_message, toggleDialog] = useState<string | ReactElement>(
+        ''
+    )
     const categories: Record<string, string>[] = (attributes.categories ||
         []) as Record<string, string>[]
 
@@ -148,7 +150,42 @@ function ServiceModal(
         })
     }
 
+    function handleOfferClassClick() {
+        const missing_prerequisites = []
+        if (locations.length > 0) {
+        } else {
+            missing_prerequisites.push('location')
+        }
+        if (staff.length > 0) {
+        } else {
+            missing_prerequisites.push('staff')
+        }
+
+        if (missing_prerequisites.length > 0) {
+            const message = `missing_${missing_prerequisites.join('_')}`
+            toggleDialog(
+                <Translation
+                    content_key={message}
+                    translations={translations}
+                />
+            )
+        } else {
+            setAttributes({
+                ...attributes,
+                offerings: [
+                    {
+                        date: new Date(Date.now() + 24 * 60 * 60 * 1000),
+                        location: locations && locations[0].value,
+                        staff: staff && staff[0].value,
+                        time: '10:00',
+                    },
+                ],
+            })
+        }
+    }
+
     const onSubmit = async () => {
+        let success = false
         try {
             const {
                 name,
@@ -222,13 +259,19 @@ function ServiceModal(
                     >
                 )
 
-                setAttributes({
-                    categories: attributes.categories,
-                    refetch: true,
-                })
+                if (api.ok) {
+                    success = true
+                    setAttributes({
+                        categories: attributes.categories,
+                        refetch: true,
+                    })
+                } else {
+                    toggleDialog(api.message)
+                }
             }
 
-            if (offerings.length > 0) {
+            if (success && offerings.length > 0) {
+                success = false
                 const offerings = attributes.offerings as Record<
                     string,
                     string
@@ -274,8 +317,9 @@ function ServiceModal(
                         }
                     }
                 )
+                success = true
             }
-            Context.close()
+            if (success) Context.close()
         } catch (e) {
             const { message } = e as Record<string, string>
             toggleDialog(message)
@@ -372,22 +416,7 @@ function ServiceModal(
                         setSelectedTab(3)
                     }}
                     attributes={attributes}
-                    showOfferListForm={() => {
-                        setAttributes({
-                            ...attributes,
-                            offerings: [
-                                {
-                                    date: new Date(
-                                        Date.now() + 24 * 60 * 60 * 1000
-                                    ),
-                                    location:
-                                        locations && locations[0].value,
-                                    staff: staff && staff[0].value,
-                                    time: '10:00',
-                                },
-                            ],
-                        })
-                    }}
+                    showOfferListForm={handleOfferClassClick}
                     translations={translations}
                 />
             ) : tenant_id ? (

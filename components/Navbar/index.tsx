@@ -1,14 +1,10 @@
-import { Fragment, useEffect, useState } from 'react'
-import Cookies from 'js-cookie'
-import Link from 'next/link'
-import { Disclosure, Menu, Transition } from '@headlessui/react'
+import { useEffect, useState } from 'react'
+import { Disclosure } from '@headlessui/react'
 import { MenuIcon, XIcon } from '@heroicons/react/outline'
-import logout from 'services/logout'
 import SkyContext, {
     SkyContextProps,
     useAppContext,
 } from 'context/AppContext'
-import { useAuth } from 'context/AuthContext'
 
 import { DropDownListChangeEvent } from '@progress/kendo-react-dropdowns'
 import LanguageSelector, { Language } from 'components/LanguageSelector'

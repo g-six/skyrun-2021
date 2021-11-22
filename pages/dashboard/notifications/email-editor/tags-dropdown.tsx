@@ -1,6 +1,6 @@
 import { classNames } from "@progress/kendo-react-common"
 import Translation from "components/Translation"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 export const uiTags = [
   { key:'dd_lbl_First_Name', title: 'Client', isLabel: true},
@@ -23,16 +23,42 @@ export const uiTags = [
   { key:'dd_item_Export', title: 'Export'},
 ]
 
-function TagsDropdown(){
+type TagsDrapdownProps = {
+  handleShow: (value: boolean) => void
+  isShown: boolean
+  top: number
+  left: number
+}
+
+function TagsDropdown({ handleShow, isShown, top, left }:TagsDrapdownProps ){
   const [search,setSearch] = useState('')
   const [filteredTag, setFilterTag] = useState(uiTags)
+  const searchRef = useRef()  as React.MutableRefObject<HTMLInputElement>;
 
   const handleSearchChange = (_search: string) => {
     setSearch(_search)
     setFilterTag( (_search === '') ? uiTags : filteredTag.filter(tag => tag.title.toLocaleLowerCase().includes(_search.toLocaleLowerCase())))
   }
+  const handleOnSelectTag = () => {
+    handleSearchChange('')
+    handleShow(false)
+  }
+
+  useEffect(() => {
+    searchRef.current.focus()
+    return () => {}
+  },[isShown])
+
   return (
-    <>
+    <div 
+      className={classNames('absolute bg-white')}
+      style={{
+        display: isShown ? 'unset':'none',
+        top: `${top}px`,
+        left: `${left}px`,
+        height: 'fit-content'
+      }}
+      >
       <div className="w-72 h-auto p-4 shadow-lg">
         <div className="relative rounded-md shadow-sm">
           <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
@@ -40,8 +66,9 @@ function TagsDropdown(){
           </div>
           <input
               type="text"
-              name="keyword"
-              id="keyword"
+              name="tag-search"
+              id="tag-search"
+              ref={searchRef}
               className={classNames(
                   'focus:ring-primary-dark focus:border-primary-dark rounded-md',
                   'blockpy-2 pl-12 pr-9',
@@ -59,22 +86,24 @@ function TagsDropdown(){
       </div>
         {
           filteredTag.map(tag => <>
-            <Translation
-              render_as="div"
-              content_key={tag.title}
+            <div 
               className={classNames('py-1',
-                tag.isLabel ? 
-                'uppercase text-semibold text-xs':
-                'text-gray-400 text-sm'
+                  tag.isLabel ? 
+                  'uppercase text-semibold text-xs':
+                  'text-gray-400 text-sm cursor-pointer'
 
               )}
-              translations={{}}
-            />
+              onClick={handleOnSelectTag}>
+              <Translation
+                content_key={tag.title} 
+                translations={{}}
+              />
+            </div>
           </>)
         }
 
       </div>
-    </>
+    </div>
   )
   
 }

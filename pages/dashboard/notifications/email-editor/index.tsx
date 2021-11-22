@@ -1,4 +1,4 @@
-import React, { KeyboardEvent, useRef } from 'react';
+import React, { KeyboardEvent, useEffect, useRef } from 'react';
 import Dashboard from "pages/dashboard"
 import { useRouter } from 'next/router'
 // import { Editor } from "react-draft-wysiwyg";
@@ -8,7 +8,8 @@ import { EditorState } from "draft-js";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { useState } from "react";
 import dynamic from 'next/dynamic'
-import TagsDropdown from '../tags-dropdown'
+import TagsDropdown from './tags-dropdown'
+import EmailSettings from './email-settings'
 import { InputChangeEvent } from '@progress/kendo-react-inputs';
 
 const Editor = dynamic(() => {
@@ -70,9 +71,16 @@ function EmailEditor(){
     setEmailSubject(`${e.target.value}`)
   }
 
+  useEffect(() => {
+    if(!showTagsDropDown && txtEmailSubject) {
+      // txtEmailSubject.current.focus()
+    }
+    return () => {}
+  },[showTagsDropDown])
+
   return (
     <Dashboard>
-      <div className="py-2 px-8 text-black">
+      <div className="py-2 px-8 w-full text-black">
         <div className="w-full flex">
           <div className="w-auto">
             <div className="inline-flex cursor-pointer" 
@@ -214,7 +222,7 @@ function EmailEditor(){
             onKeyUp={(e) => handleKeyUpEvent(e)}
             onChange={(e) => handleChangeEvent(e)}
           /> 
-          <span ref={widthRef} className="invisible">{emailSubject}</span>
+          <span ref={widthRef} className="invisible">&nbsp;{emailSubject}&nbsp;</span>
           <Translation
             render_as="div"
             content_key="lbl_email_body"
@@ -231,17 +239,13 @@ function EmailEditor(){
 
         </div>
 
-        <div 
-          className={classNames('absolute bg-white')}
-          style={{
-            display: showTagsDropDown ? 'unset':'none',
-            top: `${tagsDropDownTopPosition}px`,
-            left: `${tagsDropDownLeftPosition}px`,
-            height: 'fit-content'
-          }}
-          >
-          <TagsDropdown/> 
-        </div>
+        <TagsDropdown 
+            handleShow={setShowTagsDropDown} 
+            isShown={showTagsDropDown}
+            top={tagsDropDownTopPosition}
+            left={tagsDropDownLeftPosition}/>
+        
+        <EmailSettings />
 
         
       </div>

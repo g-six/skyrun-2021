@@ -15,12 +15,10 @@ interface Props {
 export function UserDropdown({ locale }: Props) {
     const { translations } = useAppContext()
     const { user, LoginModal } = useAuth()
-    const [username, setUsername] = useState(Cookies.get('email'))
-
     async function killSession() {
         try {
             await logout()
-            setUsername(Cookies.get('email'))
+            location.href = '/'
         } catch (e) {
             console.error(e)
         }

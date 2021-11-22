@@ -162,9 +162,14 @@ export function useFetch<Body = any, Result = any>(
                 mode: 'cors',
                 headers: {
                     ...headers,
-                    'Authorization': Cookies.get('id_token') ? `Bearer ${Cookies.get('id_token')}` : undefined,
                     'Content-Type': 'application/json',
                 },
+            }
+            if (Cookies.get('id_token')) {
+                req_init.headers = {
+                    ...req_init.headers,
+                    Authorization: `Bearer ${Cookies.get('id_token')}`,
+                }
             }
             if (body) {
                 req_init = {

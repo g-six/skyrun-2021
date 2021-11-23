@@ -95,6 +95,18 @@ function EmailEditor() {
         return () => {}
     }, [showTagsDropDown])
 
+    useEffect(() => {
+        if (showEmailSettings){ 
+            window.onscroll = function() {
+                window.scrollTo(scrollLeft, scrollTop)
+            }
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop
+            const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft
+        } else { 
+            window.onscroll = function() {};
+        }
+    },[showEmailSettings])
+
     return (
         <Dashboard>
             <div

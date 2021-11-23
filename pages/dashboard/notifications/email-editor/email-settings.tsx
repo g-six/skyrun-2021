@@ -36,7 +36,7 @@ function EmailSettings({ handleShow, isShown }: EmailSettingsProps) {
                 !isShown ? 'hidden' : ''
             )}
         >
-            <div className="bg-white w-1/3 h-full p-4">
+            <div className="bg-white w-1/3 h-full p-4 overflow-y-auto">
                 <Translation
                     render_as="div"
                     content_key="lbl_email_settings"

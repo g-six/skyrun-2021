@@ -1,6 +1,6 @@
 import { InvalidPasswordException } from '@aws-sdk/client-cognito-identity-provider'
 import { useItemsSelection } from '@progress/kendo-react-scheduler/dist/npm/hooks/use-items-selection'
-import  { useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 import { Switch } from '@progress/kendo-react-inputs'
 import Translation from 'components/Translation'
 import { useState } from 'react'
@@ -362,7 +362,7 @@ function BookingAndAppointmentEmailItem({
                     </div>
                 </div>
             </div>
-           
+
             <div className="w-full flex flex-wrap content-center justify-end gap-3">
                 <Switch
                     className="no-color-change"
@@ -382,7 +382,9 @@ function BookingAndAppointmentEmailItem({
                         'font-thin rounded-lg border border-gray-300',
                         'rounded-r-mdk'
                     )}
-                    onClick={() => router.push('/dashboard/notifications/email-editor')}
+                    onClick={() =>
+                        router.push('/dashboard/notifications/email-editor')
+                    }
                 >
                     <Translation
                         render_as="span"
@@ -390,7 +392,7 @@ function BookingAndAppointmentEmailItem({
                         translations={{}}
                     />
                 </button>
-            </div> 
+            </div>
         </div>
     )
 }

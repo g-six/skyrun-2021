@@ -78,3 +78,25 @@ nav {
 .k-popup {
     border: none;
 }
+
+.k-radio {
+    border-color: rgba(0, 0, 0, 0.08);
+    color: transparent;
+    background-color: #fff;
+    height: 25px !important;
+    width: 25px !important;
+}
+.k-radio::before {
+    content: "";
+    width: 17px;
+    height: 17px;
+}
+.k-radio:checked, .k-radio.k-checked {
+    border-color: $primary-300 !important;
+    color: $primary-300; 
+    background-color: white;
+}
+
+input[tabindex="0"] + label{
+    color: $primary-300; 
+}

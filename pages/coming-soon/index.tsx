@@ -163,7 +163,7 @@ function ComingSoon() {
                                 />
 
                                 <div>
-                                    <div className="flex gap-3 mt-3 justify-center lg:justify-start">
+                                    <div className="flex gap-3 mt-3 justify-center lg:justify-center">
                                         <a
                                             href="https://www.facebook.com/aotplus.software"
                                             target="_blank"

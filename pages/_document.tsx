@@ -1,5 +1,5 @@
-import { FB_PIXEL_ID } from 'lib/fbpixels'
-import { GA_TRACKING_ID } from 'lib/gtag'
+import { FACEBOOK_PIXEL_ID } from 'lib/fbpixels'
+import { GA_MEASUREMENT_ID } from 'lib/gtag'
 import { Head, Html, Main, NextScript } from 'next/document'
 
 function Document() {
@@ -10,7 +10,7 @@ function Document() {
                 <>
                     <script
                         async
-                        src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
+                        src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
                     />
                     <script
                         // eslint-disable-next-line react/no-danger
@@ -19,7 +19,7 @@ function Document() {
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', '${GA_TRACKING_ID}');
+            gtag('config', '${GA_MEASUREMENT_ID}');
           `,
                         }}
                     />
@@ -29,7 +29,7 @@ function Document() {
                             height="1"
                             width="1"
                             style={{ display: 'none' }}
-                            src={`https://www.facebook.com/tr?id=${FB_PIXEL_ID}&ev=PageView&noscript=1`}
+                            src={`https://www.facebook.com/tr?id=${FACEBOOK_PIXEL_ID}&ev=PageView&noscript=1`}
                             alt="no-script"
                         />
                     </noscript>

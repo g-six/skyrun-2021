@@ -13,63 +13,10 @@ import { ServiceApiItem, ServiceItem, ServiceType } from 'types/service'
 import { useFetch, deleteApiRequest } from 'utils/fetch-helper'
 import { FetchMethods } from 'utils/types'
 import Dashboard from '..'
+import { normalizeItem } from './normalize-item'
 import ServiceList from './ServiceList'
 
 const { SERVICE_MODAL_TRANSLATION_ID } = getConfig().publicRuntimeConfig
-
-export function normalizeItem(s: ServiceApiItem): ServiceItem {
-    const {
-        id,
-        accentColorHex: accent_color,
-        primaryColorHex: primary_color,
-        secondaryColorHex: secondary_color,
-        duration,
-        addons,
-        blockTimeAfter: blocked_from,
-        blockTimeBefore: blocked_to,
-        category,
-        name,
-        price,
-        maxCapacity: max_capacity,
-        description,
-        longDescription: long_description,
-        customSlug: slug,
-        imageUrl: image_src,
-        staff,
-    } = s
-
-    return {
-        id,
-        accent_color,
-        primary_color,
-        secondary_color,
-        duration,
-        addons,
-        is_public: s.public || false,
-        max_participants: s.maxCapacity || 0,
-        blocked_from,
-        blocked_to,
-        category,
-        name,
-        price,
-        description,
-        long_description,
-        service_type: s.type as ServiceType,
-        slug,
-        staff:
-            (staff &&
-                staff.map(
-                    ({ id, user }: { id: string; user: UserModel }) => ({
-                        id,
-                        user_id: user.id as string,
-                        first_name: user.firstName,
-                        last_name: user.lastName,
-                    })
-                )) ||
-            [],
-        image_src,
-    }
-}
 
 function DashboardServices() {
     const {
@@ -82,8 +29,8 @@ function DashboardServices() {
 
     const [services, setServices] = useState<ServiceItem[]>([])
     const [group_classes, setGroupClasses] = useState<
-        Record<string, Record<string, string | Date>[]>
-    >({})
+        Record<string, string | Date>[]
+    >([])
     const { lang, translations: common_translations } = useAppContext()
     const [translations, setTranslations] = useState(common_translations)
     const [is_instructor_expanded, toggleInstructorFilter] =
@@ -101,11 +48,7 @@ function DashboardServices() {
         !!tenant?.id
     )
 
-    const {
-        data: group_classes_data,
-        doFetch: fetchGroupClasses,
-        is_loading: is_fetching_group_class,
-    } = useFetch(
+    const { data: group_classes_data } = useFetch(
         `/v1/group_classes/?tenantId=${tenant?.id}`,
         FetchMethods.GET,
         !!tenant?.id
@@ -203,7 +146,7 @@ function DashboardServices() {
                 primary_color: primary_color || '',
                 service_type,
                 list_item_idx: idx,
-                offerings: group_classes[id] || [],
+                group_classes: group_classes || [],
             })
             ModalContext.open()
         }
@@ -327,16 +270,9 @@ function DashboardServices() {
                             staff: group_staff_id,
                             time: startTime.substr(0, 5),
                         }
-                        /**
-                         * date: new Date(Date.now() + 24 * 60 * 60 * 1000),
-                        location: locations && locations[0].value,
-                        staff: staff && staff[0].value,
-                        time: '10:00',
-                         */
-                        if (group_classes[group_class.serviceId]) {
-                            group_classes[group_class.serviceId].push(rec)
-                        } else {
-                            group_classes[group_class.serviceId] = [rec]
+
+                        if (attributes.id == group_class.serviceId) {
+                            group_classes.push(rec)
                         }
                         already_added.push(group_class.id)
                     }

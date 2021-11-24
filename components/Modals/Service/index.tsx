@@ -51,10 +51,15 @@ const ModalProvider = createModal(
 
 function getEndTime(time: string, duration: number) {
     const [hour, minutes] = time.split(':')
-    let total_minutes = parseInt(hour, 10) * 60 + parseInt(minutes, 10)
+    let total_minutes = parseInt(hour) * 60 + parseInt(minutes)
     total_minutes = total_minutes + duration
     const to_hour = Math.floor(total_minutes / 60)
-    return [to_hour, total_minutes - to_hour * 60].join(':')
+    const end_time = [
+        to_hour,
+        `0${(total_minutes - to_hour * 60) % 60}`.substr(-2),
+    ].join(':')
+
+    return end_time
 }
 
 export const ServiceModalCloser = ModalProvider.Closer
@@ -79,8 +84,9 @@ function ServiceModal(
     const categories: Record<string, string>[] = (attributes.categories ||
         []) as Record<string, string>[]
 
-    const offerings =
-        (attributes && (attributes.offerings as ModalDataAttributes[])) ||
+    const group_classes =
+        (attributes &&
+            (attributes.group_classes as ModalDataAttributes[])) ||
         []
 
     const { data: page_translation } = useFetch(
@@ -186,7 +192,7 @@ function ServiceModal(
         } else {
             setAttributes({
                 ...attributes,
-                offerings: [
+                group_classes: [
                     {
                         date: new Date(Date.now() + 24 * 60 * 60 * 1000),
                         location: locations && locations[0].value,
@@ -288,9 +294,9 @@ function ServiceModal(
                     toggleDialog(api.message)
                 }
             }
-            if (success && offerings.length > 0) {
+            if (success && group_classes.length > 0) {
                 success = false
-                offerings.forEach(
+                group_classes.forEach(
                     async ({
                         date,
                         time,
@@ -328,6 +334,7 @@ function ServiceModal(
                             )
                         }
                         if (!offer_api.ok) {
+                            console.log('API Error for Group Class')
                             console.log(offer_api.message, id, time, date)
                         }
                     }
@@ -426,7 +433,7 @@ function ServiceModal(
             />
         )
         form_3 =
-            offerings.length == 0 ? (
+            group_classes.length == 0 ? (
                 <BlankOffer
                     onNext={() => {
                         setSelectedTab(3)
@@ -450,28 +457,28 @@ function ServiceModal(
                         updated_attributes: ModalDataAttributes,
                         idx: number
                     ) => {
-                        const offerings =
-                            attributes.offerings as ModalDataAttributes[]
-                        offerings[idx] = updated_attributes
+                        const group_classes =
+                            attributes.group_classes as ModalDataAttributes[]
+                        group_classes[idx] = updated_attributes
                         setAttributes({
                             ...attributes,
-                            offerings,
+                            group_classes,
                         })
                     }}
                     removeItem={async (idx: number) => {
-                        const offerings =
-                            attributes.offerings as ModalDataAttributes[]
-                        const { id } = offerings[idx]
+                        const group_classes =
+                            attributes.group_classes as ModalDataAttributes[]
+                        const { id } = group_classes[idx]
+                        group_classes.splice(idx, 1)
+                        setAttributes({
+                            ...attributes,
+                            group_classes,
+                        })
                         if (id) {
                             await deleteApiRequest(
                                 `/v1/group_classes/${id}?hardDelete=true`
                             )
                         }
-                        offerings.splice(idx, 1)
-                        setAttributes({
-                            ...attributes,
-                            offerings,
-                        })
                     }}
                     translations={translations}
                     handleCloseModal={handleCloseModal}

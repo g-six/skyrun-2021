@@ -107,21 +107,21 @@ function ServiceModalOfferClasses({
         getTimes()
     )
 
-    let offerings =
-        attributes && (attributes.offerings as ModalDataAttributes[])
+    let group_classes =
+        attributes && (attributes.group_classes as ModalDataAttributes[])
 
     function duplicateRow(idx: number) {
-        if (offerings && offerings[idx]) {
-            offerings.push({
-                location: offerings[idx].location,
-                staff: offerings[idx].staff,
-                time: offerings[idx].time,
-                date: new Date(offerings[idx].date as Date),
-                is_recurring: offerings[idx].is_recurring,
+        if (group_classes && group_classes[idx]) {
+            group_classes.push({
+                location: group_classes[idx].location,
+                staff: group_classes[idx].staff,
+                time: group_classes[idx].time,
+                date: new Date(group_classes[idx].date as Date),
+                is_recurring: group_classes[idx].is_recurring,
             })
             setAttributes({
                 ...attributes,
-                offerings,
+                group_classes,
             })
         }
     }
@@ -195,8 +195,8 @@ function ServiceModalOfferClasses({
                     </div>
 
                     <div className="max-h-96 h-96 bg-primary-lighter bg-opacity-40 py-2 flex flex-col gap-2 max-h-large overflow-auto">
-                        {offerings
-                            ? offerings.map(
+                        {group_classes
+                            ? group_classes.map(
                                   (o: ModalDataAttributes, idx: number) => {
                                       return (
                                           <div

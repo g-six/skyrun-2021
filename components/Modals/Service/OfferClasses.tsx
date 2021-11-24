@@ -113,8 +113,11 @@ function ServiceModalOfferClasses({
     function duplicateRow(idx: number) {
         if (offerings && offerings[idx]) {
             offerings.push({
-                ...offerings[idx],
+                location: offerings[idx].location,
+                staff: offerings[idx].staff,
+                time: offerings[idx].time,
                 date: new Date(offerings[idx].date as Date),
+                is_recurring: offerings[idx].is_recurring,
             })
             setAttributes({
                 ...attributes,

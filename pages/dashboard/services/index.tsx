@@ -81,6 +81,9 @@ function DashboardServices() {
     const categories = attributes.categories as Record<string, string>[]
 
     const [services, setServices] = useState<ServiceItem[]>([])
+    const [group_classes, setGroupClasses] = useState<
+        Record<string, Record<string, string | Date>[]>
+    >({})
     const { lang, translations: common_translations } = useAppContext()
     const [translations, setTranslations] = useState(common_translations)
     const [is_instructor_expanded, toggleInstructorFilter] =
@@ -94,6 +97,16 @@ function DashboardServices() {
         useState<boolean>(true)
     const { data, doFetch, is_loading } = useFetch(
         `/v1/services/tenant-id/${tenant?.id}`,
+        FetchMethods.GET,
+        !!tenant?.id
+    )
+
+    const {
+        data: group_classes_data,
+        doFetch: fetchGroupClasses,
+        is_loading: is_fetching_group_class,
+    } = useFetch(
+        `/v1/group_classes/?tenantId=${tenant?.id}`,
         FetchMethods.GET,
         !!tenant?.id
     )
@@ -190,6 +203,7 @@ function DashboardServices() {
                 primary_color: primary_color || '',
                 service_type,
                 list_item_idx: idx,
+                offerings: group_classes[id] || [],
             })
             ModalContext.open()
         }
@@ -287,6 +301,50 @@ function DashboardServices() {
             toggleFetchCategories(false)
             getCategories()
         }
+        if (
+            group_classes_data.content &&
+            Object.keys(group_classes).length == 0
+        ) {
+            const already_added: string[] = []
+            group_classes_data.content.forEach(
+                (group_class: Record<string, string>) => {
+                    if (
+                        group_class.id &&
+                        already_added.indexOf(group_class.id) == -1
+                    ) {
+                        const { effectiveDate, startTime } = group_class
+                        const {
+                            locationId: group_location_id,
+                            staffId: group_staff_id,
+                        } = group_class.groupClassSetting as unknown as Record<
+                            string,
+                            string
+                        >
+                        const rec = {
+                            id: group_class.id,
+                            date: new Date(effectiveDate),
+                            location: group_location_id,
+                            staff: group_staff_id,
+                            time: startTime.substr(0, 5),
+                        }
+                        /**
+                         * date: new Date(Date.now() + 24 * 60 * 60 * 1000),
+                        location: locations && locations[0].value,
+                        staff: staff && staff[0].value,
+                        time: '10:00',
+                         */
+                        if (group_classes[group_class.serviceId]) {
+                            group_classes[group_class.serviceId].push(rec)
+                        } else {
+                            group_classes[group_class.serviceId] = [rec]
+                        }
+                        already_added.push(group_class.id)
+                    }
+                }
+            )
+
+            setGroupClasses(group_classes)
+        }
     }, [
         data,
         page_translation,
@@ -299,6 +357,7 @@ function DashboardServices() {
         should_fetch_categories,
         tenant,
         services.length,
+        group_classes_data.content,
         is_loading_translations,
     ])
 

@@ -115,6 +115,7 @@ export async function putApiRequest(
 export async function deleteApiRequest(
     path: string,
     headers: Record<string, string> = {},
+    body?: unknown,
 ) {
 
     let req_init: RequestInit = {
@@ -124,6 +125,10 @@ export async function deleteApiRequest(
             ...headers,
             'Content-Type': 'application/json',
         },
+    }
+
+    if (body) {
+        req_init.body = JSON.stringify(body) as BodyInit
     }
 
     if (Cookies.get('id_token')) {

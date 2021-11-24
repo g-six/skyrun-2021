@@ -11,7 +11,12 @@ import {
 } from '@progress/kendo-react-layout'
 import GeneralForm from './GeneralForm'
 import { FetchMethods } from 'utils/types'
-import { postApiRequest, putApiRequest, useFetch } from 'utils/fetch-helper'
+import {
+    deleteApiRequest,
+    postApiRequest,
+    putApiRequest,
+    useFetch,
+} from 'utils/fetch-helper'
 import { useAppContext } from 'context/AppContext'
 import ServiceModalStaff from './Staff'
 import {
@@ -26,6 +31,7 @@ import { ModalDataAttributes, UserModel } from '../types'
 import ServiceModalOfferClasses, { BlankOffer } from './OfferClasses'
 import { ServiceModalBooking } from './BookingSettings'
 import { TenantInfo } from 'context/types'
+import SchedulingRules from './SchedulingRules'
 
 const ModalProvider = createModal(
     AuthContext,
@@ -42,6 +48,14 @@ const ModalProvider = createModal(
         </span>
     )
 )
+
+function getEndTime(time: string, duration: number) {
+    const [hour, minutes] = time.split(':')
+    let total_minutes = parseInt(hour, 10) * 60 + parseInt(minutes, 10)
+    total_minutes = total_minutes + duration
+    const to_hour = Math.floor(total_minutes / 60)
+    return [to_hour, total_minutes - to_hour * 60].join(':')
+}
 
 export const ServiceModalCloser = ModalProvider.Closer
 
@@ -176,6 +190,7 @@ function ServiceModal(
                     {
                         date: new Date(Date.now() + 24 * 60 * 60 * 1000),
                         location: locations && locations[0].value,
+                        duration: attributes.duration as number,
                         staff: staff && staff[0].value,
                         time: '10:00',
                     },
@@ -250,6 +265,10 @@ function ServiceModal(
                     list_item_idx,
                     updated_item: api,
                 })
+
+                if (api.id) {
+                    success = true
+                }
             } else {
                 const api = await postApiRequest(
                     '/v1/services',
@@ -269,51 +288,47 @@ function ServiceModal(
                     toggleDialog(api.message)
                 }
             }
-
             if (success && offerings.length > 0) {
                 success = false
-                const offerings = attributes.offerings as Record<
-                    string,
-                    string
-                >[]
-
                 offerings.forEach(
                     async ({
                         date,
                         time,
                         is_recurring,
                         id,
-                        duration,
                         location: locationId,
                         staff: staffId,
                     }) => {
-                        const group_class: Record<
-                            string,
-                            | string
-                            | boolean
-                            | Record<string, string | boolean>
-                        > = {
+                        const group_class: {} = {
                             id,
                             effectiveDate: date,
                             startTime: time,
-                            endTime: '23:59',
+                            endTime: getEndTime(
+                                time as string,
+                                form_values.duration as number
+                            ),
                             recurring: is_recurring,
+                            duration: form_values.duration,
                             serviceId: attributes.id as string,
                             groupClassSetting: {
                                 locationId,
                                 staffId,
                             },
                         }
+                        let offer_api
                         if (id) {
-                            const offer_api = await putApiRequest(
+                            offer_api = await putApiRequest(
                                 `/v1/group_classes/${id}`,
                                 group_class
                             )
                         } else {
-                            const offer_api = await postApiRequest(
+                            offer_api = await postApiRequest(
                                 '/v1/group_classes',
                                 group_class
                             )
+                        }
+                        if (!offer_api.ok) {
+                            console.log(offer_api.message, id, time, date)
                         }
                     }
                 )
@@ -378,6 +393,7 @@ function ServiceModal(
 
     let form_3 = <span>WIP</span>
     let form_4 = <span>WIP</span>
+    let form_5
 
     if (attributes && attributes.service_type == 'GROUP') {
         step_2 = (
@@ -442,9 +458,15 @@ function ServiceModal(
                             offerings,
                         })
                     }}
-                    removeItem={(idx: number) => {
+                    removeItem={async (idx: number) => {
                         const offerings =
                             attributes.offerings as ModalDataAttributes[]
+                        const { id } = offerings[idx]
+                        if (id) {
+                            await deleteApiRequest(
+                                `/v1/group_classes/${id}?hardDelete=true`
+                            )
+                        }
                         offerings.splice(idx, 1)
                         setAttributes({
                             ...attributes,
@@ -460,6 +482,23 @@ function ServiceModal(
 
         form_4 = (
             <ServiceModalBooking
+                attributes={attributes}
+                onChangeAttribute={(
+                    updated_attributes: ModalDataAttributes
+                ) => {
+                    setAttributes({
+                        ...attributes,
+                        ...updated_attributes,
+                    })
+                }}
+                onPrevious={() => setSelectedTab(2)}
+                translations={translations}
+                onNext={onSubmit}
+            />
+        )
+
+        form_5 = (
+            <SchedulingRules
                 attributes={attributes}
                 onChangeAttribute={(
                     updated_attributes: ModalDataAttributes
@@ -538,6 +577,20 @@ function ServiceModal(
                         >
                             <div className="p-10">{form_4}</div>
                         </TabStripTab>
+                        {form_5 ? (
+                            <TabStripTab
+                                title={
+                                    <Translation
+                                        content_key="scheduling_rules_title"
+                                        translations={translations}
+                                    />
+                                }
+                            >
+                                <div className="p-10">{form_5}</div>
+                            </TabStripTab>
+                        ) : (
+                            ''
+                        )}
                     </TabStrip>
                 </div>
             </ModalWrapper>

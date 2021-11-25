@@ -42,7 +42,7 @@ export async function getApiRequest(
 
 export async function postApiRequest(
     path: string,
-    body: Record<string, string | number | boolean | Record<string, string | number | boolean>> = {},
+    body: unknown = {},
     headers: Record<string, string> = {},
 ) {
     let req_init: RequestInit = {
@@ -78,7 +78,7 @@ export async function postApiRequest(
 
 export async function putApiRequest(
     path: string,
-    body: Record<string, string | number | boolean | Record<string, string | number | boolean>> = {},
+    body: unknown = {},
     headers: Record<string, string> = {},
 ) {
     let req_init: RequestInit = {

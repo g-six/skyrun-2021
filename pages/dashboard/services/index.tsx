@@ -255,7 +255,8 @@ function DashboardServices() {
                         group_class.id &&
                         already_added.indexOf(group_class.id) == -1
                     ) {
-                        const { effectiveDate, startTime } = group_class
+                        const { effectiveDate, startTime, recurring } =
+                            group_class
                         const {
                             locationId: group_location_id,
                             staffId: group_staff_id,
@@ -268,6 +269,7 @@ function DashboardServices() {
                             date: new Date(effectiveDate),
                             location: group_location_id,
                             staff: group_staff_id,
+                            is_recurring: recurring,
                             time: startTime.substr(0, 5),
                         }
                         if (group_class.serviceId) {

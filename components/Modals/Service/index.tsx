@@ -27,7 +27,13 @@ import {
 } from 'types/service'
 import Translation from 'components/Translation'
 import ServiceModalMemberships from './Memberships'
-import { ModalDataAttributes, UserModel } from '../types'
+import {
+    GroupClass,
+    GroupClassApi,
+    ModalDataAttributes,
+    RecurrenceSchedule,
+    UserModel,
+} from '../types'
 import ServiceModalOfferClasses, { BlankOffer } from './OfferClasses'
 import { ServiceModalBooking } from './BookingSettings'
 import { TenantInfo } from 'context/types'
@@ -48,6 +54,16 @@ const ModalProvider = createModal(
         </span>
     )
 )
+
+const days_of_week = [
+    'SUNDAY',
+    'MONDAY',
+    'TUESDAY',
+    'WEDNESDAY',
+    'THURSDAY',
+    'FRIDAY',
+    'SATURDAY',
+]
 
 function getEndTime(time: string, duration: number) {
     const [hour, minutes] = time.split(':')
@@ -85,9 +101,7 @@ function ServiceModal(
         []) as Record<string, string>[]
 
     const group_classes =
-        (attributes &&
-            (attributes.group_classes as ModalDataAttributes[])) ||
-        []
+        (attributes && (attributes.group_classes as GroupClass[])) || []
 
     const { data: page_translation } = useFetch(
         `/v1/contents?url=${encodeURI(
@@ -297,6 +311,7 @@ function ServiceModal(
             }
             if (success && group_classes.length > 0) {
                 success = false
+                let successful_classes = 0
                 group_classes.forEach(
                     async ({
                         date,
@@ -306,21 +321,36 @@ function ServiceModal(
                         location: locationId,
                         staff: staffId,
                     }) => {
-                        const group_class: {} = {
+                        const effectiveDate = date
+                            .toISOString()
+                            .substr(0, 10)
+                        const group_class: GroupClassApi = {
                             id,
-                            effectiveDate: date,
+                            effectiveDate,
                             startTime: time,
                             endTime: getEndTime(
                                 time as string,
                                 form_values.duration as number
                             ),
-                            recurring: is_recurring,
+                            recurring: is_recurring || false,
                             duration: form_values.duration,
                             serviceId: attributes.id as string,
                             groupClassSetting: {
                                 locationId,
                                 staffId,
                             },
+                        }
+                        if (!group_class.recurring) {
+                            group_class.expiryDate =
+                                group_class.effectiveDate
+                        } else {
+                            group_class.recurrenceSchedule = 'WEEKLY'
+                            group_class.dayOfWeek =
+                                days_of_week[
+                                    new Date(
+                                        group_class.effectiveDate
+                                    ).getDay()
+                                ]
                         }
                         let offer_api
                         if (id) {
@@ -335,14 +365,17 @@ function ServiceModal(
                             )
                         }
                         if (!offer_api.ok) {
-                            console.log('API Error for Group Class')
-                            console.log(offer_api.message, id, time, date)
+                            toggleDialog(offer_api.message)
+                            setSelectedTab(4)
+                        } else {
+                            successful_classes++
+                        }
+                        if (successful_classes == group_classes.length) {
+                            Context.close()
                         }
                     }
                 )
-                success = true
-            }
-            if (success) Context.close()
+            } else if (success) Context.close()
         } catch (e) {
             const { message } = e as Record<string, string>
             toggleDialog(message)

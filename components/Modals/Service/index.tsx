@@ -482,7 +482,7 @@ function ServiceModal(
                         }
                     }}
                     translations={translations}
-                    onClose={handleCloseModal}
+                    handleCloseModal={handleCloseModal}
                 />
             ) : (
                 <span>Tenant not present</span>

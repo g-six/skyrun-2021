@@ -80,7 +80,6 @@ function ServiceModalOfferClasses({
     handleCloseModal,
     locations,
     onAttributesChanged,
-    onClose,
     onPrevious,
     onNext,
     removeItem,
@@ -413,7 +412,7 @@ function ServiceModalOfferClasses({
                 <button
                     type="button"
                     className="border border-gray-300 rounded-lg py-3 inline-block mr-3 px-10"
-                    onClick={onClose}
+                    onClick={handleCloseModal}
                 >
                     Cancel
                 </button>

@@ -30,7 +30,10 @@ export function Translation(p: TranslationProps) {
         Object.keys(p.content_values).length > 0
     ) {
         Object.keys(p.content_values).forEach((key: string) => {
-            text = text.split(`{${key}}`).join(p.content_values[key])
+            if (p.content_values && p.content_values[key]) {
+                const val = p.content_values[key] as string
+                text = text.split(`{${key}}`).join(val)
+            }
         })
     }
 

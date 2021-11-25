@@ -16,8 +16,8 @@ import {
     getApiRequest,
 } from 'utils/fetch-helper'
 import { FetchMethods } from 'utils/types'
+import { normalizeItem } from 'utils/normalize-item'
 import Dashboard from '..'
-import { normalizeItem } from './normalize-item'
 import ServiceList from './ServiceList'
 
 const { SERVICE_MODAL_TRANSLATION_ID } = getConfig().publicRuntimeConfig

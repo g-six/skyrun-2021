@@ -49,6 +49,7 @@ export type AuthContextType = {
     LocationModal: ModalHook
     ServiceModal: ModalHook
     StaffModal: ModalHook
+    CreditCardModal: ModalHook
     attributes: ModalDataAttributes
     setAttributes(e: ModalDataAttributes): void
     is_drawer_expanded: boolean,

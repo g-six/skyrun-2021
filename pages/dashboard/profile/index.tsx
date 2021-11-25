@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react'
 import { useFetch } from 'utils/fetch-helper'
 import { FetchMethods } from 'utils/types'
 import Dashboard from ".."
+import PaymentMethod from './payment-method'
 import Subscriptions from './subscriptions'
 
 const { LANDING_TRANSLATION_ID } = getConfig().publicRuntimeConfig
@@ -71,7 +72,7 @@ function DashboardProfile() {
           </TabStripTab>
           <TabStripTab title="Payment Methods">
             <div className="p-10">
-
+              <PaymentMethod {...translations} />
             </div>
           </TabStripTab>
           <TabStripTab title="Invoices">

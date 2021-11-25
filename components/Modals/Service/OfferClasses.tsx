@@ -76,23 +76,25 @@ export function BlankOffer({
 }
 
 function ServiceModalOfferClasses({
-    translations,
     attributes,
-    locations,
-    staff,
-    setAttributes,
-    onAttributesChanged,
-    removeItem,
-    tenant_id,
     handleCloseModal,
+    locations,
+    onAttributesChanged,
+    onClose,
     onPrevious,
     onNext,
+    removeItem,
+    setAttributes,
+    staff,
+    tenant_id,
+    translations,
 }: {
     translations: Record<string, string>
     attributes?: ModalDataAttributes
     tenant_id: string
     handleCloseModal: (e: MouseEvent<HTMLButtonElement>) => void
     locations: Record<string, string>[]
+    onClose: (e: MouseEvent<HTMLButtonElement>) => void
     onPrevious(): void
     onNext(): void
     onAttributesChanged(u: ModalDataAttributes, idx: number): void
@@ -408,6 +410,13 @@ function ServiceModalOfferClasses({
             </div>
 
             <div className="flex justify-end">
+                <button
+                    type="button"
+                    className="border border-gray-300 rounded-lg py-3 inline-block mr-3 px-10"
+                    onClick={onClose}
+                >
+                    Cancel
+                </button>
                 <button
                     type="button"
                     className="border border-gray-300 rounded-lg py-3 inline-block mr-3 px-10"

@@ -29,8 +29,8 @@ function DashboardServices() {
 
     const [services, setServices] = useState<ServiceItem[]>([])
     const [group_classes, setGroupClasses] = useState<
-        Record<string, string | Date>[]
-    >([])
+        Record<string, Record<string, string | Date>[]>
+    >({})
     const { lang, translations: common_translations } = useAppContext()
     const [translations, setTranslations] = useState(common_translations)
     const [is_instructor_expanded, toggleInstructorFilter] =
@@ -146,7 +146,7 @@ function DashboardServices() {
                 primary_color: primary_color || '',
                 service_type,
                 list_item_idx: idx,
-                group_classes: group_classes || [],
+                group_classes: group_classes[id] || [],
             })
             ModalContext.open()
         }
@@ -270,9 +270,11 @@ function DashboardServices() {
                             staff: group_staff_id,
                             time: startTime.substr(0, 5),
                         }
-
-                        if (attributes.id == group_class.serviceId) {
-                            group_classes.push(rec)
+                        if (group_class.serviceId) {
+                            if (!group_classes[group_class.serviceId]) {
+                                group_classes[group_class.serviceId] = []
+                            }
+                            group_classes[group_class.serviceId].push(rec)
                         }
                         already_added.push(group_class.id)
                     }
@@ -387,6 +389,7 @@ function DashboardServices() {
 
                     <ServiceList
                         services={services}
+                        group_classes={group_classes}
                         categories={categories}
                         translations={translations}
                         editItem={handleItemEdit}

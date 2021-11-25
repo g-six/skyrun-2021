@@ -162,6 +162,7 @@ function ServiceModal(
             categories: attributes.categories,
         })
         Context.close()
+        setSelectedTab(0)
     }
 
     function updateList() {
@@ -481,7 +482,7 @@ function ServiceModal(
                         }
                     }}
                     translations={translations}
-                    handleCloseModal={handleCloseModal}
+                    onClose={handleCloseModal}
                 />
             ) : (
                 <span>Tenant not present</span>
@@ -501,6 +502,7 @@ function ServiceModal(
                 onPrevious={() => setSelectedTab(2)}
                 translations={translations}
                 onNext={onSubmit}
+                onClose={handleCloseModal}
             />
         )
 

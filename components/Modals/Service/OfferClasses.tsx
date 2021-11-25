@@ -1,13 +1,16 @@
-import { Listbox } from '@headlessui/react'
 import DateInput from 'components/DateInput'
-import DropdownComponent from 'components/DropdownSelectors'
-import OptionList, { OptionListItem } from 'components/OptionList'
 import Translation from 'components/Translation'
 import { MouseEvent, useEffect, useState } from 'react'
 import { classNames } from 'utils/dom-helpers'
-import { useFetch } from 'utils/fetch-helper'
-import { FetchMethods } from 'utils/types'
 import { ModalDataAttributes } from '../types'
+
+function isPast(d: unknown): boolean {
+    if (d == undefined) return false
+    return (
+        (d as Date).toISOString().substr(0, 10) <
+        new Date().toISOString().substr(0, 10)
+    )
+}
 
 export function BlankOffer({
     attributes,
@@ -76,17 +79,17 @@ export function BlankOffer({
 }
 
 function ServiceModalOfferClasses({
-    translations,
     attributes,
-    locations,
-    staff,
-    setAttributes,
-    onAttributesChanged,
-    removeItem,
-    tenant_id,
     handleCloseModal,
+    locations,
+    onAttributesChanged,
     onPrevious,
     onNext,
+    removeItem,
+    setAttributes,
+    staff,
+    tenant_id,
+    translations,
 }: {
     translations: Record<string, string>
     attributes?: ModalDataAttributes
@@ -107,18 +110,22 @@ function ServiceModalOfferClasses({
         getTimes()
     )
 
-    let offerings =
-        attributes && (attributes.offerings as ModalDataAttributes[])
+    let group_classes =
+        attributes && (attributes.group_classes as ModalDataAttributes[])
 
     function duplicateRow(idx: number) {
-        if (offerings && offerings[idx]) {
-            offerings.push({
-                ...offerings[idx],
-                date: new Date(offerings[idx].date as Date),
+        if (group_classes && group_classes[idx]) {
+            group_classes.push({
+                location: group_classes[idx].location,
+                staff: group_classes[idx].staff,
+                time: group_classes[idx].time,
+                duration: group_classes[idx].duration,
+                date: new Date(group_classes[idx].date as Date),
+                is_recurring: group_classes[idx].is_recurring,
             })
             setAttributes({
                 ...attributes,
-                offerings,
+                group_classes,
             })
         }
     }
@@ -192,8 +199,8 @@ function ServiceModalOfferClasses({
                     </div>
 
                     <div className="max-h-96 h-96 bg-primary-lighter bg-opacity-40 py-2 flex flex-col gap-2 max-h-large overflow-auto">
-                        {offerings
-                            ? offerings.map(
+                        {group_classes
+                            ? group_classes.map(
                                   (o: ModalDataAttributes, idx: number) => {
                                       return (
                                           <div
@@ -347,8 +354,16 @@ function ServiceModalOfferClasses({
                                               <div className="flex-1 items-center flex px-1 gap-2">
                                                   <input
                                                       id={`check_${idx}`}
-                                                      className="h-4 w-4 border-gray-300 rounded text-primary focus:ring-primary-light"
+                                                      className={classNames(
+                                                          'h-4 w-4 border-gray-300 rounded focus:ring-primary-light',
+                                                          isPast(o.date)
+                                                              ? 'text-gray-200'
+                                                              : 'text-primary'
+                                                      )}
                                                       type="checkbox"
+                                                      disabled={isPast(
+                                                          o.date
+                                                      )}
                                                       defaultChecked={
                                                           o.is_recurring as boolean
                                                       }
@@ -361,6 +376,10 @@ function ServiceModalOfferClasses({
                                                           )
                                                       }}
                                                   />
+                                                  {o.date <
+                                                      new Date()
+                                                          .toUTCString()
+                                                          .substr(10) || ''}
                                                   <Translation
                                                       render_as="label"
                                                       htmlFor={`check_${idx}`}
@@ -405,6 +424,13 @@ function ServiceModalOfferClasses({
             </div>
 
             <div className="flex justify-end">
+                <button
+                    type="button"
+                    className="border border-gray-300 rounded-lg py-3 inline-block mr-3 px-10"
+                    onClick={handleCloseModal}
+                >
+                    Cancel
+                </button>
                 <button
                     type="button"
                     className="border border-gray-300 rounded-lg py-3 inline-block mr-3 px-10"

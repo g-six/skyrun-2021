@@ -575,7 +575,7 @@ function GeneralForm({
                         onClick={handleCloseModal}
                     >
                         <Translation
-                            content_key="cancel_button"
+                            content_key="cancel"
                             translations={translations}
                         />
                     </button>
@@ -597,7 +597,7 @@ function GeneralForm({
                         )}
                     >
                         <Translation
-                            content_key="save_button"
+                            content_key="save"
                             translations={translations}
                         />
                     </button>
@@ -619,7 +619,7 @@ function GeneralForm({
                         )}
                     >
                         <Translation
-                            content_key="next_button"
+                            content_key="next"
                             translations={translations}
                         />
                     </button>

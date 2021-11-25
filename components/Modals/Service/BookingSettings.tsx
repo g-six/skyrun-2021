@@ -1,6 +1,7 @@
 import { RadioGroup } from '@headlessui/react'
 import { CheckIcon } from '@heroicons/react/solid'
 import Translation from 'components/Translation'
+import { MouseEvent } from 'react'
 import { classNames } from 'utils/dom-helpers'
 import { ModalDataAttributes } from '../types'
 
@@ -8,12 +9,14 @@ export function ServiceModalBooking({
     attributes,
     onChangeAttribute,
     translations,
+    onClose,
     onPrevious,
     onNext,
 }: {
     attributes: ModalDataAttributes
     onChangeAttribute(d: ModalDataAttributes): void
     translations: Record<string, string>
+    onClose: (e: MouseEvent<HTMLButtonElement>) => void
     onPrevious(): void
     onNext(): void
 }) {
@@ -154,12 +157,22 @@ export function ServiceModalBooking({
                 <button
                     type="button"
                     className="border border-gray-300 rounded-lg py-3 inline-block mr-3 px-10"
+                    onClick={onClose}
+                >
+                    <Translation
+                        content_key="cancel"
+                        translations={translations}
+                    />
+                </button>
+                <button
+                    type="button"
+                    className="border border-gray-300 rounded-lg py-3 inline-block mr-3 px-10"
                     onClick={() => {
                         onPrevious()
                     }}
                 >
                     <Translation
-                        content_key="previous_button"
+                        content_key="previous"
                         translations={translations}
                     />
                 </button>
@@ -181,7 +194,7 @@ export function ServiceModalBooking({
                     )}
                 >
                     <Translation
-                        content_key="finish_button"
+                        content_key="finish"
                         translations={translations}
                     />
                 </button>

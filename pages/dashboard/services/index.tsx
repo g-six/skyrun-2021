@@ -10,66 +10,17 @@ import { useAuth } from 'context/AuthContext'
 import getConfig from 'next/config'
 import { useEffect, useState } from 'react'
 import { ServiceApiItem, ServiceItem, ServiceType } from 'types/service'
-import { useFetch, deleteApiRequest } from 'utils/fetch-helper'
+import {
+    useFetch,
+    deleteApiRequest,
+    getApiRequest,
+} from 'utils/fetch-helper'
 import { FetchMethods } from 'utils/types'
+import { normalizeItem } from 'utils/normalize-item'
 import Dashboard from '..'
 import ServiceList from './ServiceList'
 
 const { SERVICE_MODAL_TRANSLATION_ID } = getConfig().publicRuntimeConfig
-
-export function normalizeItem(s: ServiceApiItem): ServiceItem {
-    const {
-        id,
-        accentColorHex: accent_color,
-        primaryColorHex: primary_color,
-        secondaryColorHex: secondary_color,
-        duration,
-        addons,
-        blockTimeAfter: blocked_from,
-        blockTimeBefore: blocked_to,
-        category,
-        name,
-        price,
-        maxCapacity: max_capacity,
-        description,
-        longDescription: long_description,
-        customSlug: slug,
-        imageUrl: image_src,
-        staff,
-    } = s
-
-    return {
-        id,
-        accent_color,
-        primary_color,
-        secondary_color,
-        duration,
-        addons,
-        is_public: s.public || false,
-        max_participants: s.maxCapacity || 0,
-        blocked_from,
-        blocked_to,
-        category,
-        name,
-        price,
-        description,
-        long_description,
-        service_type: s.type as ServiceType,
-        slug,
-        staff:
-            (staff &&
-                staff.map(
-                    ({ id, user }: { id: string; user: UserModel }) => ({
-                        id,
-                        user_id: user.id as string,
-                        first_name: user.firstName,
-                        last_name: user.lastName,
-                    })
-                )) ||
-            [],
-        image_src,
-    }
-}
 
 function DashboardServices() {
     const {
@@ -81,6 +32,9 @@ function DashboardServices() {
     const categories = attributes.categories as Record<string, string>[]
 
     const [services, setServices] = useState<ServiceItem[]>([])
+    const [group_classes, setGroupClasses] = useState<
+        Record<string, Record<string, string | Date>[]>
+    >({})
     const { lang, translations: common_translations } = useAppContext()
     const [translations, setTranslations] = useState(common_translations)
     const [is_instructor_expanded, toggleInstructorFilter] =
@@ -97,6 +51,13 @@ function DashboardServices() {
         FetchMethods.GET,
         !!tenant?.id
     )
+
+    const { data: group_classes_data, doFetch: fetchGroupClasses } =
+        useFetch(
+            `/v1/group_classes/?tenantId=${tenant?.id}`,
+            FetchMethods.GET,
+            !!tenant?.id
+        )
 
     const {
         data: categories_api_response,
@@ -190,6 +151,7 @@ function DashboardServices() {
                 primary_color: primary_color || '',
                 service_type,
                 list_item_idx: idx,
+                group_classes: group_classes[id] || [],
             })
             ModalContext.open()
         }
@@ -283,9 +245,69 @@ function DashboardServices() {
             })
             doFetch()
         }
+
+        if (attributes.refetch_classes) {
+            setAttributes({
+                ...attributes,
+                refetch_classes: false,
+            })
+            fetchGroupClasses()
+        }
         if (tenant?.id && should_fetch_categories) {
             toggleFetchCategories(false)
             getCategories()
+        }
+        if (
+            group_classes_data.content &&
+            Object.keys(group_classes).length == 0
+        ) {
+            const already_added: string[] = []
+            group_classes_data.content.forEach(
+                (item: Record<string, string>) => {
+                    if (item.id && already_added.indexOf(item.id) == -1) {
+                        const { effectiveDate, startTime, recurring } = item
+                        const {
+                            locationId: group_location_id,
+                            staffId: group_staff_id,
+                        } = item.groupClassSetting as unknown as Record<
+                            string,
+                            string
+                        >
+                        const rec = {
+                            id: item.id,
+                            date: new Date(effectiveDate),
+                            location: group_location_id,
+                            staff: group_staff_id,
+                            is_recurring: recurring,
+                            time: startTime.substr(0, 5),
+                        }
+                        if (item.serviceId) {
+                            if (!group_classes[item.serviceId]) {
+                                group_classes[item.serviceId] = []
+                            }
+                            group_classes[item.serviceId].push(rec)
+                        }
+                        already_added.push(item.id)
+                    }
+                }
+            )
+
+            if (
+                group_classes_data.number *
+                    group_classes_data.numberOfElements >
+                group_classes_data.totalElements
+            ) {
+                ;(async () => {
+                    const { content } = await getApiRequest(
+                        `/v1/group_classes/?tenantId=${tenant?.id}&page=${
+                            group_classes_data.number + 1
+                        }`
+                    )
+                    console.log(content)
+                })()
+            }
+
+            setGroupClasses(group_classes)
         }
     }, [
         data,
@@ -299,6 +321,7 @@ function DashboardServices() {
         should_fetch_categories,
         tenant,
         services.length,
+        group_classes_data.content,
         is_loading_translations,
     ])
 
@@ -392,6 +415,7 @@ function DashboardServices() {
 
                     <ServiceList
                         services={services}
+                        group_classes={group_classes}
                         categories={categories}
                         translations={translations}
                         editItem={handleItemEdit}

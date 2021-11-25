@@ -1,9 +1,23 @@
 import { Disclosure } from '@headlessui/react'
 import Translation from 'components/Translation'
-import { ServiceItem } from 'types/service'
+import { ServiceItem, ServiceType } from 'types/service'
 import { classNames } from 'utils/dom-helpers'
+
+export function getServiceBg(service_type: string) {
+    switch (service_type) {
+        case 'GROUP':
+            return 'bg-blue-100 text-grey-600'
+        case 'APPOINTMENT':
+            return 'bg-green-100 text-green-900'
+        case 'SERIES':
+            return 'bg-red-100 text-grey-600'
+        default:
+            return 'bg-green-100 text-green-800'
+    }
+}
 export function ServiceList({
     categories = [],
+    group_classes = {},
     translations = {},
     services = [],
     editItem = (e, i) => {},
@@ -11,6 +25,7 @@ export function ServiceList({
 }: {
     categories: Record<string, string>[]
     services: ServiceItem[]
+    group_classes: Record<string, Record<string, string | Date>[]>
     translations: Record<string, string>
     deleteEmptyCategory(category_id: string): void
     editItem(s: ServiceItem, list_item_idx: number): void
@@ -77,58 +92,104 @@ export function ServiceList({
                                                             2
                                                             ? 'bg-opacity-30'
                                                             : 'bg-opacity-70',
-                                                        'bg-white py-2 px-6 flex items-center gap-3'
+                                                        'bg-white py-2 px-6 flex items-center gap-3 text-sm'
                                                     )}
                                                 >
                                                     <i className="feather-menu" />
                                                     <span className="2xl:w-72 lg:w-52 text-left">
                                                         {service.name}
                                                     </span>
-                                                    <span className="w-24 px-3 bg-green-100 text-green-800 text-xs font-display rounded-full py-1 w-32 text-center">
-                                                        {
+                                                    <Translation
+                                                        render_as="span"
+                                                        content_key={
                                                             service.service_type
                                                         }
-                                                    </span>
+                                                        translations={
+                                                            translations
+                                                        }
+                                                        className={classNames(
+                                                            getServiceBg(
+                                                                service.service_type
+                                                            ),
+                                                            'w-24 px-3 text-xs font-bold rounded-full tracking-widest py-1 w-32 text-center uppercase'
+                                                        )}
+                                                    />
                                                     <span className="w-24 text-center">
                                                         SGD {service.price}
                                                     </span>
-                                                    <div className="w-60">
-                                                        <strong className="text-sm">
-                                                            {
-                                                                service.duration
-                                                            }{' '}
-                                                            <Translation
-                                                                content_key="mins"
-                                                                translations={
-                                                                    translations
-                                                                }
-                                                            />
-                                                        </strong>
-                                                        <span className="text-sm">
-                                                            <Translation
-                                                                content_key="max_participants"
-                                                                translations={
-                                                                    translations
-                                                                }
-                                                            />
-                                                            :{' '}
-                                                            {
-                                                                service.max_participants
-                                                            }
-                                                        </span>
-                                                    </div>
-                                                    <span>
-                                                        {
-                                                            service.staff
-                                                                .length
-                                                        }{' '}
+
+                                                    <strong className="w-16">
+                                                        {service.duration}{' '}
                                                         <Translation
-                                                            content_key="staff_assgined"
+                                                            content_key="mins"
                                                             translations={
                                                                 translations
                                                             }
                                                         />
+                                                    </strong>
+                                                    <span className="w-32">
+                                                        <Translation
+                                                            content_key="max_participants"
+                                                            translations={
+                                                                translations
+                                                            }
+                                                        />
+                                                        :{' '}
+                                                        {
+                                                            service.max_participants
+                                                        }
                                                     </span>
+
+                                                    {(service.service_type as string) ==
+                                                    'APPOINTMENT' ? (
+                                                        <span>
+                                                            {
+                                                                service
+                                                                    .staff
+                                                                    .length
+                                                            }{' '}
+                                                            <Translation
+                                                                content_key="staff_assigned"
+                                                                translations={
+                                                                    translations
+                                                                }
+                                                            />
+                                                        </span>
+                                                    ) : (
+                                                        ''
+                                                    )}
+
+                                                    {(service.service_type as string) ==
+                                                        'GROUP' &&
+                                                    service.id &&
+                                                    group_classes[
+                                                        service.id
+                                                    ] ? (
+                                                        <span>
+                                                            <Translation
+                                                                content_key="upcoming_classes"
+                                                                content_values={{
+                                                                    num_of_classes:
+                                                                        group_classes[
+                                                                            service
+                                                                                .id
+                                                                        ]
+                                                                            .length,
+                                                                }}
+                                                                translations={
+                                                                    translations
+                                                                }
+                                                            />
+                                                        </span>
+                                                    ) : (
+                                                        <Translation
+                                                            content_key="no_upcoming_classes"
+                                                            translations={
+                                                                translations
+                                                            }
+                                                        />
+                                                    )}
+
                                                     <div className="flex-1" />
                                                     <button
                                                         type="button"

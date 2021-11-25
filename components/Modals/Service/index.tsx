@@ -11,7 +11,12 @@ import {
 } from '@progress/kendo-react-layout'
 import GeneralForm from './GeneralForm'
 import { FetchMethods } from 'utils/types'
-import { postApiRequest, putApiRequest, useFetch } from 'utils/fetch-helper'
+import {
+    deleteApiRequest,
+    postApiRequest,
+    putApiRequest,
+    useFetch,
+} from 'utils/fetch-helper'
 import { useAppContext } from 'context/AppContext'
 import ServiceModalStaff from './Staff'
 import {
@@ -22,10 +27,17 @@ import {
 } from 'types/service'
 import Translation from 'components/Translation'
 import ServiceModalMemberships from './Memberships'
-import { ModalDataAttributes, UserModel } from '../types'
+import {
+    GroupClass,
+    GroupClassApi,
+    ModalDataAttributes,
+    RecurrenceSchedule,
+    UserModel,
+} from '../types'
 import ServiceModalOfferClasses, { BlankOffer } from './OfferClasses'
 import { ServiceModalBooking } from './BookingSettings'
 import { TenantInfo } from 'context/types'
+import SchedulingRules from './SchedulingRules'
 
 const ModalProvider = createModal(
     AuthContext,
@@ -42,6 +54,29 @@ const ModalProvider = createModal(
         </span>
     )
 )
+
+const days_of_week = [
+    'SUNDAY',
+    'MONDAY',
+    'TUESDAY',
+    'WEDNESDAY',
+    'THURSDAY',
+    'FRIDAY',
+    'SATURDAY',
+]
+
+function getEndTime(time: string, duration: number) {
+    const [hour, minutes] = time.split(':')
+    let total_minutes = parseInt(hour) * 60 + parseInt(minutes)
+    total_minutes = total_minutes + duration
+    const to_hour = Math.floor(total_minutes / 60)
+    const end_time = [
+        to_hour,
+        `0${(total_minutes - to_hour * 60) % 60}`.substr(-2),
+    ].join(':')
+
+    return end_time
+}
 
 export const ServiceModalCloser = ModalProvider.Closer
 
@@ -65,9 +100,8 @@ function ServiceModal(
     const categories: Record<string, string>[] = (attributes.categories ||
         []) as Record<string, string>[]
 
-    const offerings =
-        (attributes && (attributes.offerings as ModalDataAttributes[])) ||
-        []
+    const group_classes =
+        (attributes && (attributes.group_classes as GroupClass[])) || []
 
     const { data: page_translation } = useFetch(
         `/v1/contents?url=${encodeURI(
@@ -142,6 +176,7 @@ function ServiceModal(
             categories: attributes.categories,
         })
         Context.close()
+        setSelectedTab(0)
     }
 
     function updateList() {
@@ -172,10 +207,11 @@ function ServiceModal(
         } else {
             setAttributes({
                 ...attributes,
-                offerings: [
+                group_classes: [
                     {
                         date: new Date(Date.now() + 24 * 60 * 60 * 1000),
                         location: locations && locations[0].value,
+                        duration: attributes.duration as number,
                         staff: staff && staff[0].value,
                         time: '10:00',
                     },
@@ -250,6 +286,10 @@ function ServiceModal(
                     list_item_idx,
                     updated_item: api,
                 })
+
+                if (api.id) {
+                    success = true
+                }
             } else {
                 const api = await postApiRequest(
                     '/v1/services',
@@ -261,65 +301,103 @@ function ServiceModal(
 
                 if (api.ok) {
                     success = true
-                    setAttributes({
-                        categories: attributes.categories,
-                        refetch: true,
-                    })
                 } else {
                     toggleDialog(api.message)
                 }
             }
-
-            if (success && offerings.length > 0) {
+            if (success && group_classes.length > 0) {
                 success = false
-                const offerings = attributes.offerings as Record<
-                    string,
-                    string
-                >[]
-
-                offerings.forEach(
-                    async ({
-                        date,
-                        time,
-                        is_recurring,
-                        id,
-                        duration,
-                        location: locationId,
-                        staff: staffId,
-                    }) => {
-                        const group_class: Record<
-                            string,
-                            | string
-                            | boolean
-                            | Record<string, string | boolean>
-                        > = {
+                let successful_classes = 0
+                group_classes.forEach(
+                    async (
+                        {
+                            date,
+                            time,
+                            is_recurring,
                             id,
-                            effectiveDate: date,
+                            location: locationId,
+                            staff: staffId,
+                        },
+                        class_idx: number
+                    ) => {
+                        const effectiveDate = date
+                            .toISOString()
+                            .substr(0, 10)
+                        const group_class: GroupClassApi = {
+                            id,
+                            effectiveDate,
                             startTime: time,
-                            endTime: '23:59',
-                            recurring: is_recurring,
+                            endTime: getEndTime(
+                                time as string,
+                                form_values.duration as number
+                            ),
+                            recurring: is_recurring || false,
+                            duration: form_values.duration,
                             serviceId: attributes.id as string,
                             groupClassSetting: {
                                 locationId,
                                 staffId,
                             },
                         }
+                        if (!group_class.recurring) {
+                            group_class.expiryDate =
+                                group_class.effectiveDate
+                        } else {
+                            group_class.recurrenceSchedule = 'WEEKLY'
+                            group_class.dayOfWeek =
+                                days_of_week[
+                                    new Date(
+                                        group_class.effectiveDate
+                                    ).getDay()
+                                ]
+                        }
+                        let offer_api
                         if (id) {
-                            const offer_api = await putApiRequest(
+                            offer_api = await putApiRequest(
                                 `/v1/group_classes/${id}`,
                                 group_class
                             )
+                            group_classes[class_idx].id = offer_api.id
                         } else {
-                            const offer_api = await postApiRequest(
+                            offer_api = await postApiRequest(
                                 '/v1/group_classes',
                                 group_class
                             )
+                            group_classes[class_idx] = {
+                                id: offer_api.id,
+                                date: new Date(offer_api.effectiveDate),
+                                time: offer_api.startTime,
+                                is_recurring: offer_api.recurring,
+                                location:
+                                    offer_api.groupClassSetting.locationId,
+                                staff: offer_api.groupClassSetting.staffId,
+                            }
+                        }
+                        if (!offer_api.ok) {
+                            toggleDialog(offer_api.message)
+                            setSelectedTab(4)
+                        } else {
+                            successful_classes++
+                        }
+                        if (successful_classes == group_classes.length) {
+                            setAttributes({
+                                categories: attributes.categories,
+                                group_classes,
+                                refetch_classes: true,
+                            })
+                            Context.close()
+                            setSelectedTab(0)
                         }
                     }
                 )
-                success = true
+            } else if (success) {
+                Context.close()
+                setAttributes({
+                    categories: attributes.categories,
+                    refetch: true,
+                })
+                setSelectedTab(0)
             }
-            if (success) Context.close()
         } catch (e) {
             const { message } = e as Record<string, string>
             toggleDialog(message)
@@ -378,6 +456,7 @@ function ServiceModal(
 
     let form_3 = <span>WIP</span>
     let form_4 = <span>WIP</span>
+    let form_5
 
     if (attributes && attributes.service_type == 'GROUP') {
         step_2 = (
@@ -410,7 +489,7 @@ function ServiceModal(
             />
         )
         form_3 =
-            offerings.length == 0 ? (
+            group_classes.length == 0 ? (
                 <BlankOffer
                     onNext={() => {
                         setSelectedTab(3)
@@ -434,22 +513,28 @@ function ServiceModal(
                         updated_attributes: ModalDataAttributes,
                         idx: number
                     ) => {
-                        const offerings =
-                            attributes.offerings as ModalDataAttributes[]
-                        offerings[idx] = updated_attributes
+                        const group_classes =
+                            attributes.group_classes as ModalDataAttributes[]
+                        group_classes[idx] = updated_attributes
                         setAttributes({
                             ...attributes,
-                            offerings,
+                            group_classes,
                         })
                     }}
-                    removeItem={(idx: number) => {
-                        const offerings =
-                            attributes.offerings as ModalDataAttributes[]
-                        offerings.splice(idx, 1)
+                    removeItem={async (idx: number) => {
+                        const group_classes =
+                            attributes.group_classes as ModalDataAttributes[]
+                        const { id } = group_classes[idx]
+                        group_classes.splice(idx, 1)
                         setAttributes({
                             ...attributes,
-                            offerings,
+                            group_classes,
                         })
+                        if (id) {
+                            await deleteApiRequest(
+                                `/v1/group_classes/${id}?hardDelete=true`
+                            )
+                        }
                     }}
                     translations={translations}
                     handleCloseModal={handleCloseModal}
@@ -460,6 +545,24 @@ function ServiceModal(
 
         form_4 = (
             <ServiceModalBooking
+                attributes={attributes}
+                onChangeAttribute={(
+                    updated_attributes: ModalDataAttributes
+                ) => {
+                    setAttributes({
+                        ...attributes,
+                        ...updated_attributes,
+                    })
+                }}
+                onPrevious={() => setSelectedTab(2)}
+                translations={translations}
+                onNext={onSubmit}
+                onClose={handleCloseModal}
+            />
+        )
+
+        form_5 = (
+            <SchedulingRules
                 attributes={attributes}
                 onChangeAttribute={(
                     updated_attributes: ModalDataAttributes
@@ -538,6 +641,20 @@ function ServiceModal(
                         >
                             <div className="p-10">{form_4}</div>
                         </TabStripTab>
+                        {form_5 ? (
+                            <TabStripTab
+                                title={
+                                    <Translation
+                                        content_key="scheduling_rules_title"
+                                        translations={translations}
+                                    />
+                                }
+                            >
+                                <div className="p-10">{form_5}</div>
+                            </TabStripTab>
+                        ) : (
+                            ''
+                        )}
                     </TabStrip>
                 </div>
             </ModalWrapper>

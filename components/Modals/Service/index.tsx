@@ -309,14 +309,17 @@ function ServiceModal(
                 success = false
                 let successful_classes = 0
                 group_classes.forEach(
-                    async ({
-                        date,
-                        time,
-                        is_recurring,
-                        id,
-                        location: locationId,
-                        staff: staffId,
-                    }) => {
+                    async (
+                        {
+                            date,
+                            time,
+                            is_recurring,
+                            id,
+                            location: locationId,
+                            staff: staffId,
+                        },
+                        class_idx: number
+                    ) => {
                         const effectiveDate = date
                             .toISOString()
                             .substr(0, 10)
@@ -354,11 +357,21 @@ function ServiceModal(
                                 `/v1/group_classes/${id}`,
                                 group_class
                             )
+                            group_classes[class_idx].id = offer_api.id
                         } else {
                             offer_api = await postApiRequest(
                                 '/v1/group_classes',
                                 group_class
                             )
+                            group_classes[class_idx] = {
+                                id: offer_api.id,
+                                date: new Date(offer_api.effectiveDate),
+                                time: offer_api.startTime,
+                                is_recurring: offer_api.recurring,
+                                location:
+                                    offer_api.groupClassSetting.locationId,
+                                staff: offer_api.groupClassSetting.staffId,
+                            }
                         }
                         if (!offer_api.ok) {
                             toggleDialog(offer_api.message)
@@ -369,8 +382,8 @@ function ServiceModal(
                         if (successful_classes == group_classes.length) {
                             setAttributes({
                                 categories: attributes.categories,
+                                group_classes,
                                 refetch_classes: true,
-                                refetch: true,
                             })
                             Context.close()
                             setSelectedTab(0)

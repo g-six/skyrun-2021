@@ -10,7 +10,11 @@ import { useAuth } from 'context/AuthContext'
 import getConfig from 'next/config'
 import { useEffect, useState } from 'react'
 import { ServiceApiItem, ServiceItem, ServiceType } from 'types/service'
-import { useFetch, deleteApiRequest } from 'utils/fetch-helper'
+import {
+    useFetch,
+    deleteApiRequest,
+    getApiRequest,
+} from 'utils/fetch-helper'
 import { FetchMethods } from 'utils/types'
 import Dashboard from '..'
 import { normalizeItem } from './normalize-item'
@@ -259,38 +263,49 @@ function DashboardServices() {
         ) {
             const already_added: string[] = []
             group_classes_data.content.forEach(
-                (group_class: Record<string, string>) => {
-                    if (
-                        group_class.id &&
-                        already_added.indexOf(group_class.id) == -1
-                    ) {
-                        const { effectiveDate, startTime, recurring } =
-                            group_class
+                (item: Record<string, string>) => {
+                    if (item.id && already_added.indexOf(item.id) == -1) {
+                        const { effectiveDate, startTime, recurring } = item
                         const {
                             locationId: group_location_id,
                             staffId: group_staff_id,
-                        } = group_class.groupClassSetting as unknown as Record<
+                        } = item.groupClassSetting as unknown as Record<
                             string,
                             string
                         >
                         const rec = {
-                            id: group_class.id,
+                            id: item.id,
                             date: new Date(effectiveDate),
                             location: group_location_id,
                             staff: group_staff_id,
                             is_recurring: recurring,
                             time: startTime.substr(0, 5),
                         }
-                        if (group_class.serviceId) {
-                            if (!group_classes[group_class.serviceId]) {
-                                group_classes[group_class.serviceId] = []
+                        if (item.serviceId) {
+                            if (!group_classes[item.serviceId]) {
+                                group_classes[item.serviceId] = []
                             }
-                            group_classes[group_class.serviceId].push(rec)
+                            group_classes[item.serviceId].push(rec)
                         }
-                        already_added.push(group_class.id)
+                        already_added.push(item.id)
                     }
                 }
             )
+
+            if (
+                group_classes_data.number *
+                    group_classes_data.numberOfElements >
+                group_classes_data.totalElements
+            ) {
+                ;(async () => {
+                    const { content } = await getApiRequest(
+                        `/v1/group_classes/?tenantId=${tenant?.id}&page=${
+                            group_classes_data.number + 1
+                        }`
+                    )
+                    console.log(content)
+                })()
+            }
 
             setGroupClasses(group_classes)
         }

@@ -117,6 +117,7 @@ function ServiceModalOfferClasses({
                 location: group_classes[idx].location,
                 staff: group_classes[idx].staff,
                 time: group_classes[idx].time,
+                duration: group_classes[idx].duration,
                 date: new Date(group_classes[idx].date as Date),
                 is_recurring: group_classes[idx].is_recurring,
             })

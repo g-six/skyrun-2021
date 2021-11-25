@@ -1,14 +1,10 @@
 import getConfig from 'next/config'
 
-const { BITBUCKET_BRANCH, GA_MEASUREMENT_ID_PROD, GA_MEASUREMENT_ID_NON_PROD } = getConfig().publicRuntimeConfig
-
-export const GA_TRACKING_ID = BITBUCKET_BRANCH != "prod" ? GA_MEASUREMENT_ID_NON_PROD : GA_MEASUREMENT_ID_PROD
+export const { GA_MEASUREMENT_ID } = getConfig().publicRuntimeConfig
 
 // https://developers.google.com/analytics/devguides/collection/gtagjs/pages
 export const pageview = (url: URL): void => {
-  window.gtag("config", GA_TRACKING_ID, {
-    page_path: url,
-  })
+  window.gtag("config", GA_MEASUREMENT_ID)
 }
 
 type GTagEvent = {

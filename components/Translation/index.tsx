@@ -17,6 +17,7 @@ export type TranslationProps = {
         | 'i'
         | 'a'
     content_key: string
+    content_values?: Record<string, string | number | Date>
     translations: Record<string, string>
 }
 
@@ -24,6 +25,16 @@ export function Translation(p: TranslationProps) {
     let text = p.translations[p.content_key]
     if (text == undefined) {
         text = p.content_key
+    } else if (
+        p.content_values &&
+        Object.keys(p.content_values).length > 0
+    ) {
+        Object.keys(p.content_values).forEach((key: string) => {
+            if (p.content_values && p.content_values[key]) {
+                const val = p.content_values[key] as string
+                text = text.split(`{${key}}`).join(val)
+            }
+        })
     }
 
     switch (p.render_as) {

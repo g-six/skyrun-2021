@@ -33,3 +33,37 @@ export type SubmitError = {
     name: CognitoErrorTypes
     message: string
 }
+
+export enum RecurrenceSchedule {
+    NONE,
+    DAILY,
+    WEEKLY,
+    MONTHLY_ON_DAY,
+    MONTHLY_ON_DATE,
+}
+
+export type GroupClassApi = {
+    id?: string
+    effectiveDate: Date | string,
+    expiryDate?: Date | string,
+    startTime: string,
+    endTime: string,
+    recurring: boolean,
+    recurrenceSchedule?: string,
+    dayOfWeek?: string,
+    duration: number,
+    serviceId: string,
+    groupClassSetting: {
+        locationId: string,
+        staffId: string,
+    },
+}
+
+export type GroupClass = {
+    id?: string
+    date: Date,
+    time: string,
+    is_recurring: boolean,
+    location: string,
+    staff: string,
+}

@@ -23,6 +23,7 @@ const conf = {
       '^.+\\.(jpg|jpeg|png|gif|webp|svg)$': `<rootDir>/__mocks__/fileMock.js`,
       '^components/(.*)$': '<rootDir>/components/$1',
       '^context/(.*)$': '<rootDir>/context/$1',
+      '^pages/(.*)$': '<rootDir>/pages/$1',
       '^services/(.*)$': '<rootDir>/services/$1',
       '^utils/(.*)$': '<rootDir>/utils/$1',
     },

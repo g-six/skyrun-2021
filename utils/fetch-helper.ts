@@ -42,7 +42,7 @@ export async function getApiRequest(
 
 export async function postApiRequest(
     path: string,
-    body: Record<string, string | number | boolean | Record<string, string | number | boolean>> = {},
+    body: unknown = {},
     headers: Record<string, string> = {},
 ) {
     let req_init: RequestInit = {
@@ -78,7 +78,7 @@ export async function postApiRequest(
 
 export async function putApiRequest(
     path: string,
-    body: Record<string, string | number | boolean | Record<string, string | number | boolean>> = {},
+    body: unknown = {},
     headers: Record<string, string> = {},
 ) {
     let req_init: RequestInit = {
@@ -115,6 +115,7 @@ export async function putApiRequest(
 export async function deleteApiRequest(
     path: string,
     headers: Record<string, string> = {},
+    body?: unknown,
 ) {
 
     let req_init: RequestInit = {
@@ -124,6 +125,10 @@ export async function deleteApiRequest(
             ...headers,
             'Content-Type': 'application/json',
         },
+    }
+
+    if (body) {
+        req_init.body = JSON.stringify(body) as BodyInit
     }
 
     if (Cookies.get('id_token')) {

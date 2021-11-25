@@ -1,8 +1,6 @@
 import getConfig from 'next/config'
 
-const { FACEBOOK_PIXEL_ID } = getConfig().publicRuntimeConfig
-
-export const FB_PIXEL_ID = FACEBOOK_PIXEL_ID
+export const { FACEBOOK_PIXEL_ID } = getConfig().publicRuntimeConfig
 
 export const pageview = () => {
   window.fbq('track', 'PageView')

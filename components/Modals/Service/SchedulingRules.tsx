@@ -124,7 +124,7 @@ export function SchedulingRules({
                     }}
                 >
                     <Translation
-                        content_key="previous_button"
+                        content_key="previous"
                         translations={translations}
                     />
                 </button>
@@ -146,7 +146,7 @@ export function SchedulingRules({
                     )}
                 >
                     <Translation
-                        content_key="finish_button"
+                        content_key="finish"
                         translations={translations}
                     />
                 </button>

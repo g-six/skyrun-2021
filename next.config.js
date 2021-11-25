@@ -3,19 +3,20 @@
 const languages = ['en', 'zh']
 const translated_pages = {}
 const pages = [
-  '',
-  'about-us',
-  'coming-soon',
-  'dashboard',
-  'dashboard/calendar',
-  'dashboard/clients',
-  'dashboard/locations',
-  'dashboard/packages',
-  'dashboard/products',
-  'dashboard/reports',
-  'dashboard/resources',
-  'dashboard/services',
-  'dashboard/settings',
+    '',
+    'about-us',
+    'coming-soon',
+    'dashboard',
+    'dashboard/calendar',
+    'dashboard/clients',
+    'dashboard/locations',
+    'dashboard/packages',
+    'dashboard/products',
+    'dashboard/reports',
+    'dashboard/profile',
+    'dashboard/resources',
+    'dashboard/services',
+    'dashboard/settings',
 ]
 pages.forEach((page) => {
   languages.forEach((language) => {

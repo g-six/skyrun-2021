@@ -3,12 +3,12 @@ import {
     DrawerContent,
     DrawerItem,
     DrawerItemProps,
-    DrawerSelectEvent,
+    DrawerSelectEvent
 } from '@progress/kendo-react-layout'
-import { Language } from 'components/LanguageSelector'
 import { useAppContext } from 'context/AppContext'
 import { useAuth } from 'context/AuthContext'
 import Cookies from 'js-cookie'
+import getConfig from 'next/config'
 import { useRouter } from 'next/router'
 import { MouseEvent, ReactElement, useEffect, useState } from 'react'
 import { classNames } from 'utils/dom-helpers'
@@ -18,7 +18,6 @@ import { betterPathname } from 'utils/string-helper'
 import { FetchMethods } from 'utils/types'
 import TenantSelector from './TenantSelector'
 
-import getConfig from 'next/config'
 const { TENANT_SIDEBAR } = getConfig().publicRuntimeConfig
 
 type SidebarItem = {
@@ -137,6 +136,12 @@ function Sidebar({ children }: Props) {
             text: 'Reports',
             icon: 'k-i-star-outline',
             route: '/dashboard/reports',
+        },
+        {
+            translation_key: 'profile',
+            text: 'Profile',
+            icon: 'feather-user',
+            route: '/dashboard/profile',
         },
         { separator: true },
         {

@@ -48,11 +48,12 @@ function DashboardServices() {
         !!tenant?.id
     )
 
-    const { data: group_classes_data } = useFetch(
-        `/v1/group_classes/?tenantId=${tenant?.id}`,
-        FetchMethods.GET,
-        !!tenant?.id
-    )
+    const { data: group_classes_data, doFetch: fetchGroupClasses } =
+        useFetch(
+            `/v1/group_classes/?tenantId=${tenant?.id}`,
+            FetchMethods.GET,
+            !!tenant?.id
+        )
 
     const {
         data: categories_api_response,
@@ -239,6 +240,14 @@ function DashboardServices() {
                 refetch: false,
             })
             doFetch()
+        }
+
+        if (attributes.refetch_classes) {
+            setAttributes({
+                ...attributes,
+                refetch_classes: false,
+            })
+            fetchGroupClasses()
         }
         if (tenant?.id && should_fetch_categories) {
             toggleFetchCategories(false)

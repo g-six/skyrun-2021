@@ -301,10 +301,6 @@ function ServiceModal(
 
                 if (api.ok) {
                     success = true
-                    setAttributes({
-                        categories: attributes.categories,
-                        refetch: true,
-                    })
                 } else {
                     toggleDialog(api.message)
                 }
@@ -371,11 +367,24 @@ function ServiceModal(
                             successful_classes++
                         }
                         if (successful_classes == group_classes.length) {
+                            setAttributes({
+                                categories: attributes.categories,
+                                refetch_classes: true,
+                                refetch: true,
+                            })
                             Context.close()
+                            setSelectedTab(0)
                         }
                     }
                 )
-            } else if (success) Context.close()
+            } else if (success) {
+                Context.close()
+                setAttributes({
+                    categories: attributes.categories,
+                    refetch: true,
+                })
+                setSelectedTab(0)
+            }
         } catch (e) {
             const { message } = e as Record<string, string>
             toggleDialog(message)

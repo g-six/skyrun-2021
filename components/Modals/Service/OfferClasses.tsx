@@ -1,13 +1,16 @@
-import { Listbox } from '@headlessui/react'
 import DateInput from 'components/DateInput'
-import DropdownComponent from 'components/DropdownSelectors'
-import OptionList, { OptionListItem } from 'components/OptionList'
 import Translation from 'components/Translation'
 import { MouseEvent, useEffect, useState } from 'react'
 import { classNames } from 'utils/dom-helpers'
-import { useFetch } from 'utils/fetch-helper'
-import { FetchMethods } from 'utils/types'
 import { ModalDataAttributes } from '../types'
+
+function isPast(d: unknown): boolean {
+    if (d == undefined) return false
+    return (
+        (d as Date).toISOString().substr(0, 10) <
+        new Date().toISOString().substr(0, 10)
+    )
+}
 
 export function BlankOffer({
     attributes,
@@ -352,8 +355,16 @@ function ServiceModalOfferClasses({
                                               <div className="flex-1 items-center flex px-1 gap-2">
                                                   <input
                                                       id={`check_${idx}`}
-                                                      className="h-4 w-4 border-gray-300 rounded text-primary focus:ring-primary-light"
+                                                      className={classNames(
+                                                          'h-4 w-4 border-gray-300 rounded focus:ring-primary-light',
+                                                          isPast(o.date)
+                                                              ? 'text-gray-200'
+                                                              : 'text-primary'
+                                                      )}
                                                       type="checkbox"
+                                                      disabled={isPast(
+                                                          o.date
+                                                      )}
                                                       defaultChecked={
                                                           o.is_recurring as boolean
                                                       }
@@ -366,6 +377,10 @@ function ServiceModalOfferClasses({
                                                           )
                                                       }}
                                                   />
+                                                  {o.date <
+                                                      new Date()
+                                                          .toUTCString()
+                                                          .substr(10) || ''}
                                                   <Translation
                                                       render_as="label"
                                                       htmlFor={`check_${idx}`}

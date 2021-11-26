@@ -62,6 +62,7 @@ export function SkyAuthProvider({ children }: Props) {
     const LocationModal = useModal()
     const ServiceModal = useModal()
     const StaffModal = useModal()
+    const CreditCardModal = useModal()
 
     const value = {
         attributes,
@@ -133,6 +134,7 @@ export function SkyAuthProvider({ children }: Props) {
         tenants,
         setTenant,
         CreateClientModal,
+        CreditCardModal,
         GeneralModal,
         LocationModal,
         LoginModal,

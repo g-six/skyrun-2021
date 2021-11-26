@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react'
 import { useFetch } from 'utils/fetch-helper'
 import { FetchMethods } from 'utils/types'
 import Dashboard from ".."
+import Invoices from './invoices'
 import PaymentMethod from './payment-method'
 import Subscriptions from './subscriptions'
 
@@ -77,7 +78,7 @@ function DashboardProfile() {
           </TabStripTab>
           <TabStripTab title="Invoices">
             <div className="p-10">
-
+              <Invoices {...translations} />
             </div>
           </TabStripTab>
 

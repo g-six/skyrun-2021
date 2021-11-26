@@ -279,7 +279,7 @@ function AddCard(translations: Record<string, string>){
             </fieldset>
           </div>
 
-          <div className="flex justify-end gap-3 w-3/4">
+          <div className="flex justify-end gap-3 w-full">
             <button
                 className={classNames(
                     'group relative w-1/4 flex justify-center',
